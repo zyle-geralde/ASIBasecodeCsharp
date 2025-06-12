@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ASI.Basecode.Data.Models
 {
-    public class Profile
+    public class PersonProfile
     {
         public string ProfileID { get; set; }
         public string? FirstName { get; set; }
