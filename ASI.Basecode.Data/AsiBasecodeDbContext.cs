@@ -18,6 +18,16 @@ namespace ASI.Basecode.Data
         }
 
         public virtual DbSet<User> Users { get; set; }
+
+        //Added
+        public virtual DbSet<Book> Books { get; set; }
+        public virtual DbSet<BookGenreBridge> BookGenreBridges { get; set; }
+        public virtual DbSet<BookGenre> BookGenres { get; set; }
+        public virtual DbSet<Review> Reviews { get; set; }
+        public virtual DbSet<Reply> Replies { get; set; }
+        public virtual DbSet<Admin> Admins { get; set; }
+        public virtual DbSet<PersonProfile> PersonProfiles{get;set;}
+        //Added
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>(entity =>
