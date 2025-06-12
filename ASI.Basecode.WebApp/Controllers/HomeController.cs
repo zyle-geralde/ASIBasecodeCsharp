@@ -1,9 +1,11 @@
 ﻿using ASI.Basecode.WebApp.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+//using Microsoft.AspNetCore.Authorization; add this to allow anonymous
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -32,6 +34,7 @@ namespace ASI.Basecode.WebApp.Controllers
         /// Returns Home View.
         /// </summary>
         /// <returns> Home View </returns>
+        //[AllowAnonymous] //This is to bypass authentication. Ex. if you want to access this route without loging in
         public IActionResult Index()
         {
             return View();
