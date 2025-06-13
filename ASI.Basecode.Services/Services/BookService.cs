@@ -26,5 +26,10 @@ namespace ASI.Basecode.Services.Services
             await _bookRepository.AddBook(book);
         }
 
+        public async Task<List<Book>> GetAllBooks()
+        {
+            return await _bookRepository.GetAllBooks();
+        }
+
     }
 }
