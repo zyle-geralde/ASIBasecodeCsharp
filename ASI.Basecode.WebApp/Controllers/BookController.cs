@@ -55,8 +55,8 @@ namespace ASI.Basecode.WebApp.Controllers
                                   ? DateTime.ParseExact(request.PublicationDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
                                   : (DateTime?)null,
 
-                // Handle comma-separated strings for lists
-                Publisher = request.Publisher, // Store as string if no ValueConverter
+                // Handle comma-separated strings
+                Publisher = request.Publisher, // Store as string
                 PublicationLocation = request.PublicationLocation, // Store as string
                 Author = request.Author // Store as string
             };
@@ -68,7 +68,7 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (e.g., using ILogger)
+                // Log the exception
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
