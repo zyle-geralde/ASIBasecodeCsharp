@@ -1,5 +1,80 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using ASI.Basecode.Data.Models
+@model List<Book>
+
 @{
+    ViewData["Title"] = "Book List";
+}
+
+<h1>All Books</h1>
+
+<p>
+    <a href="/Book/AddBook">Add New Book</a>
+</p>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Cover</th>
+                <th>Title</th>
+                <th>Subtitle</th>
+                <th>Author</th>
+                <th>Publisher</th>
+                <th>Publication Date</th>
+                <th>Language</th>
+                <th>Pages</th>
+                <th>Rating</th>
+                <th>Likes</th>
+                <th>Series</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(book.CoverImage))
+                        {
+                            <img src="@book.CoverImage" alt="Cover Image" style="max-width: 100px; height: auto;" />
+                        }
+                        else
+                        {
+                            <span>No Image</span>
+                        }
+                    </td>
+                    <td>@book.Title</td>
+                    <td>@book.Subtitle</td>
+                    <td>@book.Author</td>
+                    <td>@book.Publisher</td>
+                    <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
+                    <td>@book.Language</td>
+                    <td>@book.NumberOfPages</td>
+                    <td>@book.AverageRating</td>
+                    <td>@book.Likes</td>
+                    <td>@book.SeriesName</td>
+                    <td>@book.Description</td>
+                    <td>
+                        <!-- Uncomment this later after implementing it
+                        <a href="/Book/Details/@book.BookId">Details</a> |
+                        <a href="/Book/Edit/@book.BookId">Edit</a> |
+                        <a href="/Book/Delete/@book.BookId">Delete</a>-->
+
+                        <a href="">Details</a> |
+                        <a href="">Edit</a> |
+                        <a href="">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No books found. Why not</p>
 }
