@@ -23,7 +23,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost("add")] // Defines a POST endpoint for adding a book
         // You would typically add authorization here, e.g., [Authorize(Roles = "Admin")]
-        [AllowAnonymous]
+        [AllowAnonymous]//Added to bypass authorization. No need to LogIn or Sign Up
         public async Task<IActionResult> AddBook([FromBody] CreateBookRequest request)
         {
             if (!ModelState.IsValid)
@@ -50,15 +50,13 @@ namespace ASI.Basecode.WebApp.Controllers
                 BookFile = request.BookFileUrl,
 
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
-                UploadDate = !string.IsNullOrWhiteSpace(request.UploadDate)
-                             ? DateTime.ParseExact(request.UploadDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-                             : (DateTime?)null,
+                UploadDate = DateTime.UtcNow,
                 PublicationDate = !string.IsNullOrWhiteSpace(request.PublicationDate)
                                   ? DateTime.ParseExact(request.PublicationDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
                                   : (DateTime?)null,
 
-                // Handle comma-separated strings for lists
-                Publisher = request.Publisher, // Store as string if no ValueConverter
+                // Handle comma-separated strings
+                Publisher = request.Publisher, // Store as string
                 PublicationLocation = request.PublicationLocation, // Store as string
                 Author = request.Author // Store as string
             };
@@ -70,7 +68,7 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (e.g., using ILogger)
+                // Log the exception
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }

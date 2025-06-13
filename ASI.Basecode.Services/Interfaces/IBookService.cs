@@ -10,5 +10,6 @@ namespace ASI.Basecode.Services.Interfaces
     public interface IBookService
     {
         Task AddBook(Book book);
+        Task<List<Book>> GetAllBooks();
     }
 }
