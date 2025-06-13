@@ -50,9 +50,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 BookFile = request.BookFileUrl,
 
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
-                UploadDate = !string.IsNullOrWhiteSpace(request.UploadDate)
-                             ? DateTime.ParseExact(request.UploadDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-                             : (DateTime?)null,
+                UploadDate = DateTime.UtcNow,
                 PublicationDate = !string.IsNullOrWhiteSpace(request.PublicationDate)
                                   ? DateTime.ParseExact(request.PublicationDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
                                   : (DateTime?)null,
