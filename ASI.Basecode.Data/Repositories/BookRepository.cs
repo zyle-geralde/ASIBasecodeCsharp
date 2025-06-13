@@ -23,6 +23,10 @@ namespace ASI.Basecode.Data.Repositories
             await _dbContext.Books.AddAsync(book);
             await _dbContext.SaveChangesAsync();
         }
+        public async Task<List<Book>> GetAllBooks() 
+        {
+            return await _dbContext.Books.ToListAsync();
+        }
 
     }
 }
