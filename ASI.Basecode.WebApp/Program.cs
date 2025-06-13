@@ -18,6 +18,7 @@ appBuilder.Configuration.AddJsonFile("appsettings.json",
 
 appBuilder.WebHost.UseIISIntegration();
 
+
 appBuilder.Logging
     .AddConfiguration(appBuilder.Configuration.GetLoggingSection())
     .AddConsole()
@@ -29,6 +30,8 @@ configurer.ConfigureServices(appBuilder.Services);
 var app = appBuilder.Build();
 
 configurer.ConfigureApp(app, app.Environment);
+
+app.UseStaticFiles();
 
 app.MapControllerRoute(
     name: "default",

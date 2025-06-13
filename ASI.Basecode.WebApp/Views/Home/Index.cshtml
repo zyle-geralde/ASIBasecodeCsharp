@@ -1,8 +1,241 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+
+    // Genre
+    var genres = new List<Tuple<string, string>>
+    {
+        Tuple.Create("Romance", "/img/Books.jpg"),
+        Tuple.Create("Horror", "/img/Books.jpg"),
+        Tuple.Create("Photography", "/img/Books.jpg"),
+        Tuple.Create("Science Fiction", "/img/Books.jpg"),
+        Tuple.Create("Fantasy", "/img/Books.jpg")
+    };
+
+    // Top Rated Books
+    var topRatedBooks = new List<dynamic>
+    {
+        new {
+            Title = "The Midnight Library",
+            Author = "Matt Haig",
+            Description = "Between life and death, Nora Seed finds a library where she can try out different lives she could have lived. She must search for the perfect life as she tries to decide what makes a life truly fulfilling.",
+            ImageUrl = "https://placehold.co/120x180/D1D5DB/4B5563?text=Midnight+Library",
+            Rating = 5,
+            Tags = new List<string> { "Fiction", "Fantasy", "Philosophy" }
+        }
+    };
+
+    // New Books
+    var newBooks = new List<dynamic>
+    {
+        new {
+            Title = "Fourth Wing",
+            Author = "Rebecca Yarros",
+            Description = "Violet Sorrengail was supposed to enter the Scribe Quadrant, but her commanding general mother forces her to join the brutal, dragon-riding Basgiath War College.",
+            ImageUrl = "https://placehold.co/120x180/D1D5DB/4B5563?text=Fourth+Wing",
+            Rating = 4,
+            Tags = new List<string> { "Fantasy", "Romance", "Adventure" }
+        }
+    };
+
+    // Featured Books
+    var featuredBooks = new List<dynamic>
+    {
+        new {
+            Title = "Normal People",
+            Author = "Sally Rooney",
+            Description = "Two Irish teens from different social classes navigate a deep, complicated relationship through high school and college, defined by miscommunication, insecurity, and personal growth.",
+            ImageUrl = "https://placehold.co/120x180/7F8C8D/ECF0F1?text=Normal+People",
+            Rating = 4,
+            Tags = new List<string> { "Fiction", "Horror", "Coming-of-Age" }
+        },
+        new {
+            Title = "The Silent Patient",
+            Author = "Alex Michaelides",
+            Description = "A famous painter who murders her husband, and the psychotherapist obsessed with uncovering her motive. A gripping psychological thriller that will keep you guessing.",
+            ImageUrl = "https://placehold.co/120x180/7F8C8D/ECF0F1?text=Silent+Patient",
+            Rating = 5,
+            Tags = new List<string> { "Thriller", "Mystery" }
+        },
+        new {
+            Title = "Project Hail Mary",
+            Author = "Andy Weir",
+            Description = "Ryland Grace is the sole survivor on a desperate, last-chance mission to save humanity—and he can't remember any of it. An astrophsyicist and school teacher, he's tasked with figuring out how to save humanity from a dying sun.",
+            ImageUrl = "https://placehold.co/120x180/7F8C8D/ECF0F1?text=Project+Hail+Mary",
+            Rating = 5,
+            Tags = new List<string> { "Sci-Fi", "Adventure" }
+        },
+        new {
+            Title = "Where the Crawdads Sing",
+            Author = "Delia Owens",
+            Description = "A young woman who raised herself in the marshes of North Carolina becomes a suspect in a murder case. A poignant coming-of-age story interwoven with a mystery.",
+            ImageUrl = "https://placehold.co/120x180/D1D5DB/4B5563?text=Crawdads+Sing",
+            Rating = 4,
+            Tags = new List<string> { "Fiction", "Mystery", "Coming-of-Age" }
+        }
+    };
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BasaBuzz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/css/Index.css" asp-append-version="true" />
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="main-grid">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- What Do You Feel Like Reading? Section -->
+                <section class="section-card-genre">
+                    <h2>What Do You Feel Like Reading?</h2>
+                    <p>Find books that match your mood!</p>
+                    <div class="category-scroll-container">
+                        @foreach (var genre in genres)
+                        {
+                            <div class="category-card">
+                                <img src="@genre.Item2" alt="@genre.Item1 Books">
+                                <div class="category-card-overlay">
+                                    <span>@genre.Item1</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </section>
+
+                <!-- View Books Top Rated By Users? Section -->
+                <section class="section-card">
+                    <div class="book-list-header">
+                        <h2>View Books Top Rated By Users?</h2>
+                        <a href="#">See More</a>
+                    </div>
+                    @foreach (var book in topRatedBooks) 
+                    {
+                        <div class="book-card">
+                            <img src="@book.ImageUrl" alt="@book.Title Book Cover">
+                            <div class="book-card-content">
+                                <h3>@book.Title</h3>
+                                <p class="author">by @book.Author</p>
+                                <p class="description">@book.Description</p>
+                                <div class="star-rating">
+                                    <div class="stars">
+                                        @for (int i = 0; i < 5; i++)
+                                        {
+                                            if (i < book.Rating)
+                                            {
+                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                            else
+                                            {
+                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                        }
+                                    </div>
+                                    <span class="rating-text">@book.Rating/5</span> 
+                                </div>
+                                <div class="genre-tags">
+                                    @foreach (var tag in book.Tags)
+                                    {
+                                        <span class="genre-tag @tag.ToLower().Replace(" ", "-")">@tag</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </section>
+
+                <!-- View New Books Section -->
+                <section class="section-card">
+                    <div class="book-list-header">
+                        <h2>View New Books</h2>
+                        <a href="#">See More</a>
+                    </div>
+                    @foreach (var book in newBooks) 
+                    {
+                        <div class="book-card">
+                            <img src="@book.ImageUrl" alt="@book.Title Book Cover">
+                            <div class="book-card-content">
+                                <h3>@book.Title</h3>
+                                <p class="author">by @book.Author</p>
+                                <p class="description">@book.Description</p>
+                                <div class="star-rating">
+                                    <div class="stars">
+                                        @for (int i = 0; i < 5; i++)
+                                        {
+                                            if (i < book.Rating)
+                                            {
+                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                            else
+                                            {
+                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                        }
+                                    </div>
+                                    <span class="rating-text">@book.Rating/5</span> 
+                                </div>
+                                <div class="genre-tags">
+                                    @foreach (var tag in book.Tags)
+                                    {
+                                        <span class="genre-tag @tag.ToLower().Replace(" ", "-")">@tag</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </section>
+            </div>
+
+            <!-- Right Column - Featured Reads -->
+            <div class="featured-column">
+                <div class="book-list-header">
+                    <h2>Featured Reads</h2>
+                    <a href="#">See More</a>
+                </div>
+
+                @foreach (var book in featuredBooks)
+                {
+                    <div class="featured-book-card">
+                        <img src="@book.ImageUrl" alt="@book.Title Book Cover">
+                        <div class="featured-book-card-content">
+                            <h3>@book.Title</h3>
+                            <p class="author">by @book.Author</p>
+                            <p class="description">@book.Description</p>
+                            <div class="star-rating featured-star-rating">
+                                <div class="stars">
+                                    @for (int i = 0; i < 5; i++)
+                                    {
+                                        if (i < book.Rating)
+                                        {
+                                            <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                        }
+                                        else
+                                        {
+                                            <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="genre-tags">
+                                @foreach (var tag in book.Tags)
+                                {
+                                    <span class="featured-genre-tag @tag.ToLower().Replace(" ", "-")">@tag</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+
