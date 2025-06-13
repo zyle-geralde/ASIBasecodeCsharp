@@ -23,7 +23,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost("add")] // Defines a POST endpoint for adding a book
         // You would typically add authorization here, e.g., [Authorize(Roles = "Admin")]
-        [AllowAnonymous]
+        [AllowAnonymous]//Added to bypass authorization. No need to LogIn or Sign Up
         public async Task<IActionResult> AddBook([FromBody] CreateBookRequest request)
         {
             if (!ModelState.IsValid)
