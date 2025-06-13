@@ -32,5 +32,10 @@ namespace ASI.Basecode.Data.Repositories
             UnitOfWork.SaveChanges();
         }
 
+        //public IQueryable<User> GetUsers()
+        //{
+        //    return this.GetDbSet<User>().get;
+        //}
+
     }
 }
