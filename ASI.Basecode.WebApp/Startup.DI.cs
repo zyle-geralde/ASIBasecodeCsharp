@@ -35,15 +35,21 @@ namespace ASI.Basecode.WebApp
             // Services
             this._services.TryAddSingleton<TokenValidationParametersFactory>();
             this._services.AddScoped<IUserService, UserService>();
-          
+            this._services.AddScoped<IBookService, BookService>();
+
 
             // Repositories
             this._services.AddScoped<IUserRepository, UserRepository>();
+            this._services.AddScoped<IBookRepository, BookRepository>();
 
             // Manager Class
             this._services.AddScoped<SignInManager>();
 
             this._services.AddHttpClient();
+
+            //Controllers with views
+            this._services.AddControllersWithViews();
+            // services.AddControllers(); // For API only
         }
     }
 }
