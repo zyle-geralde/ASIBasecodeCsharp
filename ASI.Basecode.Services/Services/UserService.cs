@@ -5,6 +5,7 @@ using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using static ASI.Basecode.Resources.Constants.Enums;
@@ -51,5 +52,18 @@ namespace ASI.Basecode.Services.Services
                 throw new InvalidDataException(Resources.Messages.Errors.UserExists);
             }
         }
+
+        public IEnumerable<User> GetAllUsers()
+        {
+            var users = _repository
+                            .GetUsers()
+                            .ToList();
+
+            var vmList = _mapper
+                            .Map<List<User>>(users)
+                            .OrderBy(vm => vm.UserId);
+
+            return vmList;
+        }
+        }
     }
-}
