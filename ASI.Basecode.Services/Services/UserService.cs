@@ -8,6 +8,8 @@ using System;
 using System.IO;
 using System.Linq;
 using static ASI.Basecode.Resources.Constants.Enums;
+using System.Net.Mail;
+using System.Net;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -51,5 +53,7 @@ namespace ASI.Basecode.Services.Services
                 throw new InvalidDataException(Resources.Messages.Errors.UserExists);
             }
         }
+
+
     }
 }
