@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -15,5 +16,14 @@ namespace ASI.Basecode.WebApp.Controllers
             var model = _userService.GetAllUsers();
             return View("~/Views/Users/Index.cshtml", model);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _userService.DeleteUser(id);
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
