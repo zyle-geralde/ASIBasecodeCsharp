@@ -1,6 +1,7 @@
-﻿using System;
-using ASI.Basecode.Data.Interfaces;
+﻿using ASI.Basecode.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace ASI.Basecode.Data
 {
@@ -39,5 +40,10 @@ namespace ASI.Basecode.Data
         {
             Database.Dispose();
         }
+
+        public Task<int> SaveChangesAsync()
+        {
+            return Database.SaveChangesAsync();
+            }
     }
 }

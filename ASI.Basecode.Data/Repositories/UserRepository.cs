@@ -32,10 +32,16 @@ namespace ASI.Basecode.Data.Repositories
             UnitOfWork.SaveChanges();
         }
 
-        //public IQueryable<User> GetUsers()
-        //{
-        //    return this.GetDbSet<User>().get;
-        //}
+        public async Task<bool> DeleteUser(string userId)
+        {
+            var user = await GetDbSet<User>().FindAsync(userId);
+            if (user == null) return false;
+
+            GetDbSet<User>().Remove(user);
+            await UnitOfWork.SaveChangesAsync();
+            return true;
+        }
+
 
     }
 }

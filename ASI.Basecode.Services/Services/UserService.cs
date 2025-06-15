@@ -11,6 +11,7 @@ using System.Linq;
 using static ASI.Basecode.Resources.Constants.Enums;
 using System.Net.Mail;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -67,5 +68,10 @@ namespace ASI.Basecode.Services.Services
 
             return vmList;
         }
+
+        public async Task<bool> DeleteUser(string userId)
+        {
+            return await _repository.DeleteUser(userId);
         }
     }
+}
