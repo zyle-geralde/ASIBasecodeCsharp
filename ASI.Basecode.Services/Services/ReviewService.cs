@@ -1,6 +1,7 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.ServiceModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,15 +19,29 @@ namespace ASI.Basecode.Services.Services
             _reviewRepository = reviewRepository;
         }
 
-        public async Task AddReview(Review review)
+        public async Task AddReview(ReviewViewModel reviewModel)
         {
-            if (review == null)
+            if (reviewModel == null)
             {
-                throw new ArgumentNullException(nameof(review), "Review cannot be null");
+                throw new ArgumentNullException(nameof(reviewModel), "Review cannot be null");
             }
+
+            var review = new Review
+            {
+                ReviewId = Guid.NewGuid().ToString(),
+                BookId = reviewModel.BookId,
+                Rating = reviewModel.Rating,
+                Comment = reviewModel.Comment,
+                Likes = reviewModel.Likes,
+                UserId = reviewModel.UserId,
+                ReviewImage = reviewModel.ReviewImage,
+                UploadDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow
+            };
+
             await _reviewRepository.AddReview(review);
         }
-
+        
         public async Task<List<Review>> GetAllReviews()
         {
             return await _reviewRepository.GetAllReviews();

@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.ServiceModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -26,16 +27,14 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(Review review)
+        public async Task<IActionResult> Add(ReviewViewModel reviewModel)
         {
             if (ModelState.IsValid)
             {
-                review.ReviewId = Guid.NewGuid().ToString();
-                await _reviewService.AddReview(review);
+                await _reviewService.AddReview(reviewModel);
                 return RedirectToAction("Index");
             }
-
-            return View("~/Views/Reviews/Add.cshtml", review);
+            return View("~/Views/Reviews/Add.cshtml", reviewModel);
         }
 
         [HttpPost]

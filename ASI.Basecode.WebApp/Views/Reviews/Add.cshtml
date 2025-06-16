@@ -1,4 +1,4 @@
-﻿@model ASI.Basecode.Data.Models.Review
+﻿@model ASI.Basecode.Services.ServiceModels.ReviewViewModel
 
 @{
     ViewData["Title"] = "Add Review";
@@ -6,16 +6,16 @@
 
 <h2>Add New Review</h2>
 
-<form asp-action="Add" method="post">
+<form asp-action="Add" method="post" enctype="multipart/form-data">
     <div class="form-group">
-        <label asp-for="BookId" class="control-label">Book ID</label>
-        <input asp-for="BookId" class="form-control" />
+        <label asp-for="BookId" class="control-label">Book Name</label>
+        <input asp-for="BookId" class="form-control"></input>
         <span asp-validation-for="BookId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="Rating" class="control-label">Rating</label>
-        <input asp-for="Rating" type="number" step="0.1" class="form-control" />
+        <input asp-for="Rating" type="number" step="0.1" min="0" max="5" class="form-control" />
         <span asp-validation-for="Rating" class="text-danger"></span>
     </div>
 
@@ -26,15 +26,17 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="Likes" class="control-label">Likes</label>
-        <input asp-for="Likes" type="number" class="form-control" />
-        <span asp-validation-for="Likes" class="text-danger"></span>
+        <label asp-for="UserId" class="control-label">User ID</label>
+        <input asp-for="UserId" class="form-control" readonly value="@User.Identity.Name" />
+        <span asp-validation-for="UserId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ReviewImage" class="control-label">Review Image</label>
+        <input type="file" name="ReviewImageFile" class="form-control" accept="image/*" />
+        <span asp-validation-for="ReviewImage" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
-
-@* @section Scripts { *@
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

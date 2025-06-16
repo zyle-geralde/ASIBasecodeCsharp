@@ -1,4 +1,5 @@
 ﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Services.ServiceModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace ASI.Basecode.Services.Interfaces
 {
     public interface IReviewService
     {
-        Task AddReview(Review review);
+        Task AddReview(ReviewViewModel reviewModel);
         Task<List<Review>> GetAllReviews();
         Task<Review> GetReviewById(string reviewId);
         Task<bool> DeleteReview(string reviewId);
