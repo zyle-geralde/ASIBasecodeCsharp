@@ -13,5 +13,8 @@ namespace ASI.Basecode.Data.Models
         public string BookGenreId { get; set; }
         public string GenreName { get; set; }
         public string? GenreDescription { get; set; }
+        public string AdminId { get; set; }
+        public DateTime? UploadDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
     }
 }

@@ -18,5 +18,8 @@ namespace ASI.Basecode.Data.Models
         public string? ProfilePicture { get; set; }
         public DateTime? BirthDate { get; set; }
         public string? Location { get; set; }
+        public string? Role { get; set; }
+
+        public string? AboutMe { get; set; }
     }
 }

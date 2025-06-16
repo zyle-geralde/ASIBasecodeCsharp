@@ -31,5 +31,10 @@ namespace ASI.Basecode.Services.Services
             return await _bookRepository.GetAllBooks();
         }
 
+        public async Task<Book?> GetBookById(string bookId)
+        {
+            return await _bookRepository.GetBookById(bookId);
+        }
+
     }
 }

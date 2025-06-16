@@ -1,0 +1,53 @@
+﻿
+.admin-layout {
+    display: flex;
+    min-height: 100vh; 
+}
+
+.main-content {
+    margin-top: 60px; 
+    margin-left: 256px; 
+    flex-grow: 1; 
+    padding: 24px;
+    overflow-y: auto; 
+    overflow-x: auto; 
+    min-width: 0; 
+    box-sizing: border-box; 
+}
+
+.add-book-container {
+    background-color: #fff;
+    padding: 32px; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+}
+
+
+.add-book-form-title {
+    font-size: 1.875rem; 
+    font-weight: 700; 
+    color: #1f2937;
+    margin-bottom: 16px;
+}
+
+.add-book-form-subtitle {
+    font-size: 1rem;
+    color: #4b5563;
+    margin-bottom: 32px; 
+}
+
+.add-book-form-section-title {
+    font-size: 1.25rem; 
+    font-weight: 600; 
+    color: #1f2937;
+    margin-top: 32px; 
+    margin-bottom: 16px; 
+}
+
+.add-book-form-grid {
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 24px;
+}
+
+
