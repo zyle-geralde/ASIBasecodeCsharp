@@ -16,5 +16,12 @@ namespace ASI.Basecode.Data.Models
         public float Rating { get; set; }
         public string Comment { get; set; }
         public int Likes { get; set; }
+        public string UserId { get; set; }
+
+        public string ReviewImage { get; set; }
+
+        public DateTime? UploadDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+
     }
 }

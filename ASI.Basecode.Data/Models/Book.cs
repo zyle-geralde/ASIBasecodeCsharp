@@ -14,6 +14,7 @@ namespace ASI.Basecode.Data.Models
         public string? Title { get; set; }
         public string? Subtitle { get; set; }
         public DateTime? UploadDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
         public DateTime? PublicationDate { get; set; }
         public string? Publisher { get; set; }
         public string? PublicationLocation { get; set; }
@@ -23,9 +24,14 @@ namespace ASI.Basecode.Data.Models
         public string? CoverImage { get; set; }
         public string? BookFile { get; set; }
         public string? SeriesName { get; set; }
+        public int? SeriesOrder { get; set; }
         public string? SeriesDescription { get; set; }
         public float? AverageRating { get; set; }
         public string? Author { get; set; }
         public int? Likes { get; set; }
+        public string? ISBN10 { get; set; }
+        public string? ISBN13 { get; set; }
+        public string? Edition { get; set; }
+        public string AdminId { get; set; }
     }
 }
