@@ -37,5 +37,13 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return View("~/Views/Reviews/Add.cshtml", review);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id)
+        {
+            await _reviewService.DeleteReview(id);
+            return RedirectToAction("Index");
+        }
     }
 }

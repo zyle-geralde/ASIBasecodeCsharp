@@ -8,6 +8,8 @@ namespace ASI.Basecode.Data.Interfaces
     public interface IReviewRepository
     {
         Task AddReview(Review review);
-        Task<List<Review>> GetAllReviews(); 
+        Task<List<Review>> GetAllReviews();
+        Task<Review> GetReviewById(string reviewId);
+        Task DeleteReview(string reviewId);
     }
 }

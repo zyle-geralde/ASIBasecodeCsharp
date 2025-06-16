@@ -29,5 +29,24 @@ namespace ASI.Basecode.Data.Repositories
             return await _dbContext.Reviews.ToListAsync();
 
         }
+
+        public async Task<Review> GetReviewById(string reviewId)
+        {
+            return await _dbContext.Reviews.SingleAsync(r => r.ReviewId == reviewId);
+        }
+
+        public async Task DeleteReview(string reviewId)
+        {
+            var review = await GetReviewById(reviewId);
+            if (review != null)
+            {
+                _dbContext.Reviews.Remove(review);
+                await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new KeyNotFoundException($"Review {reviewId} not found.");
+            }
+        }
     }
 }
