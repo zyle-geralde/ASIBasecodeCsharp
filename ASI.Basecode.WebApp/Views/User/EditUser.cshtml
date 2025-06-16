@@ -3,53 +3,56 @@
     <link rel="stylesheet" href="~/css/edituser.css" />
 }
 
-<div class="edit-user-container">
-    <div class="content-wrapper">
-        <div class="header-section">
-            <h1>Edit User Details</h1>
-            <p>Edit details of the new user here.</p>
+<div class="admin-layout">
+    @await Html.PartialAsync("_AdminSidebarMenu")
+    <div class="edit-user-container">
+        <div class="content-wrapper">
+            <div class="header-section">
+                <h1>Edit User Details</h1>
+                <p>Edit details of the new user here.</p>
+            </div>
+
+            <form class="edit-user-form">
+                <div class="profile-section">
+                    <div class="profile-image">
+                        <img src="~/images/profile-placeholder.png" alt="Profile" id="preview-image" />
+                    </div>
+                    <div class="upload-input">
+                        <input type="file" id="profilePhoto" name="profilePhoto" hidden accept="image/jpeg,image/png">
+                        <button type="button" class="browse-btn" onclick="document.getElementById('profilePhoto').click()">
+                            <span>BROWSE</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" placeholder="Juan">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Cruz">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" placeholder="Juanito">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="juancruz@gmail.com">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="cancel-btn">CANCEL</button>
+                    <button type="submit" class="submit-btn">SAVE CHANGES</button>
+                </div>
+            </form>
         </div>
-
-        <form class="edit-user-form">
-            <div class="profile-section">
-                <div class="profile-image">
-                    <img src="~/images/profile-placeholder.png" alt="Profile" id="preview-image" />
-                </div>
-                <div class="upload-input">
-                    <input type="file" id="profilePhoto" name="profilePhoto" hidden accept="image/jpeg,image/png">
-                    <button type="button" class="browse-btn" onclick="document.getElementById('profilePhoto').click()">
-                        <span>BROWSE</span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" name="firstName" placeholder="Juan">
-                </div>
-                <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" placeholder="Cruz">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Juanito">
-                </div>
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="juancruz@gmail.com">
-                </div>
-            </div>
-
-            <div class="button-group">
-                <button type="button" class="cancel-btn">CANCEL</button>
-                <button type="submit" class="submit-btn">SAVE CHANGES</button>
-            </div>
-        </form>
     </div>
 </div>
 
