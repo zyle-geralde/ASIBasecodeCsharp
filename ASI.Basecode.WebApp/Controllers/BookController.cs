@@ -42,6 +42,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 Language = request.Language,
                 SeriesName = request.SeriesName,
                 SeriesDescription = request.SeriesDescription,
+                SeriesOrder = request.SeriesOrder,
                 AverageRating = 0,
                 Likes = 0,
 
@@ -51,6 +52,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
                 UploadDate = DateTime.UtcNow,
+                UpdatedDate  = DateTime.UtcNow,
                 PublicationDate = !string.IsNullOrWhiteSpace(request.PublicationDate)
                                   ? DateTime.ParseExact(request.PublicationDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
                                   : (DateTime?)null,
@@ -58,7 +60,11 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Handle comma-separated strings
                 Publisher = request.Publisher, // Store as string
                 PublicationLocation = request.PublicationLocation, // Store as string
-                Author = request.Author // Store as string
+                Author = request.Author, // Store as string
+                ISBN10 = request.ISBN10,
+                ISBN13 = request.ISBN13,
+                Edition = request.Edition,
+                AdminId = "admin1"
             };
 
             try

@@ -45,6 +45,22 @@
         <input type="text" id="seriesName" name="SeriesName">
     </div>
     <div>
+        <label for="seriesOrder">Series Order:</label>
+        <input type="number" id="seriesOrder" name="SeriesOrder">
+    </div>
+    <div>
+        <label for="isbn10">ISBN10:</label>
+        <input type="text" id="isbnten" name="ISBN10">
+    </div>
+    <div>
+        <label for="isbn13">ISBN13:</label>
+        <input type="text" id="isbnthitheen" name="ISBN13">
+    </div>
+    <div>
+        <label for="edition">Edition:</label>
+        <input type="text" id="edition" name="Edition">
+    </div>
+    <div>
         <label for="seriesDescription">Series Description:</label>
         <textarea id="seriesDescription" name="SeriesDescription"></textarea>
     </div>
@@ -195,7 +211,7 @@
         // Convert FormData to a plain JavaScript object
         const bookData = {};
         for (const [key, value] of formData.entries()) {
-            if (key === 'NumberOfPages' || key === 'Likes' || key === 'AverageRating') {
+            if (key === 'NumberOfPages' || key === 'Likes' || key === 'AverageRating' || key == "SeriesOrder") {
                 //Use the unary plus operator (+) to convert to number.
                 bookData[key] = +value || 0;
             } else {

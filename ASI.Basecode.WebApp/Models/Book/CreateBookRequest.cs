@@ -20,6 +20,9 @@ namespace ASI.Basecode.WebApp.Models.Book
         public string? UploadDate { get; set; }
 
         [DataType(DataType.Date)]
+        public DateTime? UpdatedDate { get; set; }
+
+        [DataType(DataType.Date)]
         public string? PublicationDate { get; set; }
 
         public string? Publisher { get; set; }
@@ -41,6 +44,8 @@ namespace ASI.Basecode.WebApp.Models.Book
         [StringLength(100)]
         public string? SeriesName { get; set; }
 
+        public int? SeriesOrder { get; set; }
+
         [StringLength(500)]
         public string? SeriesDescription { get; set; }
 
@@ -49,5 +54,15 @@ namespace ASI.Basecode.WebApp.Models.Book
         public string? Author { get; set; }
 
         public int? Likes { get; set; }
+
+        [StringLength(100)]
+        public string? ISBN10 { get; set; }
+
+        [StringLength(100)]
+        public string? ISBN13 { get; set; }
+
+        [StringLength(100)]
+        public string? Edition { get; set; }
+        public string AdminId { get; set; }
     }
 }
