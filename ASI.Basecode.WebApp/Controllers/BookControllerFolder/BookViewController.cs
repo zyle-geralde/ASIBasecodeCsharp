@@ -36,5 +36,14 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             List<Book> books = await _bookService.GetAllBooks();
             return View("~/Views/Books/ListBook.cshtml", books);
         }
+
+        [HttpGet]
+        [Route("Book/EditBook/{bookId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> EditBook(string bookId)
+        {
+           Book book = await _bookService.GetBookById(bookId);
+           return View("~/Views/Books/EditBook.cshtml",book);
+        }
     }
 }
