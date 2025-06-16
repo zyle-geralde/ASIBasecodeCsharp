@@ -2,44 +2,46 @@
 .admin-layout {
     display: flex;
     min-height: 100vh;
+    width: 100%;
 }
 
 .add-user-container {
     flex: 1;
-    margin-left: 300px; /* Match sidebar width */
+    margin-top: 50px;
+    margin-left: 275px; /* Match sidebar width */
     background-color: #f5f5f5;
     padding: 1rem;
     min-height: 100vh;
 }
 
 body {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
+    margin: 0;
     padding: 0;
+    min-height: 100vh;
     background-color: #f5f5f5;
 }
 
 .add-user-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
     flex: 1;
-    min-height: 100vh;
+    margin-left: 300px; /* Space for sidebar */
     background-color: #f5f5f5;
-    padding: 4.5rem;
-    margin-bottom: 0;
+    min-height: 100vh;
+    display: flex;
+    padding: 0;
+}
+
+.edit-user-container,
+.add-user-container {
+    transition: margin-left 0.3s ease-in-out;
 }
 
 .content-wrapper {
-    background: white;
-    padding: 1.75rem;
-    border-radius: 8px;
+    flex: 1; /* Make content wrapper fill the container */
+    padding: 2rem;
     width: 100%;
-    max-width: 800px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    min-height: auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .header-section {
@@ -215,5 +217,11 @@ input[type="file"] {
 
     .button-group button {
         width: 100%;
+    }
+
+    .edit-user-container,
+    .add-user-container {
+        margin-left: 0;
+        padding: 1rem;
     }
 }
