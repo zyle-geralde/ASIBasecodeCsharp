@@ -1,0 +1,139 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+
+    var currentPagePath = ViewContext.RouteData.Values["page"]?.ToString();
+}
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+
+    .admin-layout {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    .add-book-sidebar {
+        width: 256px;
+        background-color: #3e4f4a;
+        color: #e5e7eb;
+        padding: 16px;
+        padding-top: 64px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        flex-shrink: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 1;
+    }
+
+    .add-book-sidebar-header {
+        margin-bottom: 32px;
+    }
+
+        .add-book-sidebar-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+    .add-book-sidebar-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .add-book-nav-item {
+        margin-bottom: 8px;
+    }
+
+    .add-book-nav-link {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        border-radius: 8px;
+        color: #ded6c9;
+        text-decoration: none;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    }
+
+        .add-book-nav-link:hover {
+            background-color: #ded6c9;
+            color: #3e4f4a;
+        }
+
+    .add-book-nav-link-active {
+        background-color: #ded6c9;
+        color: #3e4f4a;
+    }
+
+    .add-book-nav-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+    }
+
+</style>
+
+<link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+@RenderSection("styles", required: false)
+@Html.Partial("_Header")
+<div class="admin-layout">
+
+    <aside class="add-book-sidebar">
+        <div class="add-book-sidebar-header">
+            @* <h2>Admin Panel</h2> *@
+        </div>
+        <nav class="add-book-sidebar-nav">
+            <ul>
+                <li class="add-book-nav-item">
+                    <a href="/Dashboard" class="add-book-nav-link @(currentPagePath == "/Dashboard" || currentPagePath == "/Dashboard/Index" ? "add-book-nav-link-active" : "")">
+                        <svg class="add-book-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l7 7m-15 0v10a1 1 0 001 1h3m-10-9h9.284c.032.112.066.223.109.333.342.825.966 1.547 1.777 2.053l.255.155c.677.41 1.528.536 2.39.378l.245-.054a2 2 0 001.272-1.63L21 9V6.2a1 1 0 00-.293-.707L18.414 4"></path></svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="add-book-nav-item">
+                    <a href="/Book/AddBook" class="add-book-nav-link @(currentPagePath == "/Book/AddBook" ? "add-book-nav-link-active" : "")">
+                        <svg class="add-book-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.523 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.523 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        Books
+                    </a>
+                </li>
+                <li class="add-book-nav-item">
+                    <a href="/Reviews/Index" class="add-book-nav-link @(currentPagePath == "/Reviews/Index" ? "add-book-nav-link-active" : "")">
+                        <svg class="add-book-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                        Reviews
+                    </a>
+                </li>
+                <li class="add-book-nav-item">
+                    <a href="/Genres/Index" class="add-book-nav-link @(currentPagePath == "/Genres/Index" ? "add-book-nav-link-active" : "")">
+                        <svg class="add-book-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Genres
+                    </a>
+                </li>
+                <li class="add-book-nav-item">
+                    <a href="/User/Index" class="add-book-nav-link @(currentPagePath == "/User/Index" ? "add-book-nav-link-active" : "")">
+                        <svg class="add-book-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.109-1.282-.326-1.874M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.109-1.282.326-1.874m0 0a2.007 2.007 0 012.336-2.336c.55-.174 1.137-.282 1.777-.282s1.227.108 1.777.282c.8.252 1.498.777 2.053 1.432M12 10a4 4 0 110-8 4 4 0 010 8z"></path></svg>
+                        Users
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <div class="main-content">
+        @* This is where the content of the pages will be rendered *@
+        @RenderBody()
+    </div>
+</div>
+
+
+@RenderSection("scripts", required: false)

@@ -1,53 +1,176 @@
-﻿
-.admin-layout {
-    display: flex;
-    min-height: 100vh; 
-}
-
-.main-content {
-    margin-top: 60px; 
-    margin-left: 256px; 
-    flex-grow: 1; 
-    padding: 24px;
-    overflow-y: auto; 
-    overflow-x: auto; 
-    min-width: 0; 
-    box-sizing: border-box; 
+﻿.main-content {
+    margin-top: 60px;
+    margin-left: 270px;
+    margin-right: auto;
+    flex-grow: 1;
+    padding: 0px;
+    overflow-y: auto;
+    overflow-x: auto;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .add-book-container {
     background-color: #fff;
-    padding: 32px; 
-    max-width: 1200px; 
-    margin: 0 auto; 
+    padding: 24px;
+    margin: 0;
 }
 
-
 .add-book-form-title {
-    font-size: 1.875rem; 
-    font-weight: 700; 
+    font-size: 30px;
+    font-weight: 700;
     color: #1f2937;
     margin-bottom: 16px;
 }
 
 .add-book-form-subtitle {
-    font-size: 1rem;
+    font-size: 16px;
     color: #4b5563;
-    margin-bottom: 32px; 
+    margin-bottom: 32px;
 }
 
 .add-book-form-section-title {
-    font-size: 1.25rem; 
-    font-weight: 600; 
+    font-size: 20px;
+    font-weight: 600;
     color: #1f2937;
-    margin-top: 32px; 
-    margin-bottom: 16px; 
+    margin-top: 32px;
+    margin-bottom: 16px;
 }
 
 .add-book-form-grid {
     display: grid;
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
     gap: 24px;
 }
 
+@media (min-width: 768px) {
+    .add-book-form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .add-book-form-grid-span-2 {
+        grid-column: span 2 / span 2;
+    }
+}
+
+.add-book-form-group {
+    margin-bottom: 0;
+}
+
+.add-book-form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.add-book-form-input,
+.add-book-form-textarea,
+.add-book-form-select {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 4px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    font-size: 16px;
+    line-height: 1.5;
+    color: #374151;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+}
+
+    .add-book-form-input:focus,
+    .add-book-form-textarea:focus,
+    .add-book-form-select:focus {
+        outline: none;
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5);
+    }
+
+.add-book-form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.add-book-file-upload-wrapper {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.add-book-file-input-text {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    font-size: 16px;
+    color: #374151;
+    background-color: #f9fafb;
+    box-sizing: border-box;
+}
+
+.add-book-browse-button {
+    margin-left: 12px;
+    padding: 8px 16px;
+    background-color: #e5e7eb;
+    color: #374151;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    border: none;
+    flex-shrink: 0;
+}
+
+    .add-book-browse-button:hover {
+        background-color: #d1d5db;
+    }
+
+.add-book-upload-status {
+    color: #6b7280;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.add-book-submit-button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    margin-top: 32px;
+    border-radius: 8px;
+    background-color: #4f46e5;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+    .add-book-submit-button:hover {
+        background-color: #4338ca;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+.add-book-date-input-wrapper {
+    position: relative;
+}
+
+.add-book-date-input-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #9ca3af;
+    width: 20px;
+    height: 20px;
+}
 
