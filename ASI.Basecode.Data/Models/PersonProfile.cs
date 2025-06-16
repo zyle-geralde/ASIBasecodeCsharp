@@ -14,9 +14,14 @@ namespace ASI.Basecode.Data.Models
         public string? FirstName { get; set; }
         public string? MiddleName { get; set; }
         public string? LastName { get; set; }
+        public string? Suffix { get; set; }
         public string? Gender { get; set; }
         public string? ProfilePicture { get; set; }
         public DateTime? BirthDate { get; set; }
         public string? Location { get; set; }
+        public string? Role { get; set; }
+
+        public string? AboutMe { get; set; }
+
     }
 }

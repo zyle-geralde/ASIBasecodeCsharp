@@ -11,5 +11,7 @@ namespace ASI.Basecode.Data.Interfaces
     {
         Task AddBook(Book book);
         Task<List<Book>> GetAllBooks();
+
+        Task<Book?> GetBookById(string bookId);
     }
 }
