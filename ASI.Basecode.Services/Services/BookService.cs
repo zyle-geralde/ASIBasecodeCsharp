@@ -70,7 +70,6 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ApplicationException($"Failed to add book: {ex.Message}", ex);
             }
-            //await _bookRepository.AddBook(book);
         }
 
         public async Task<List<Book>> GetAllBooks()

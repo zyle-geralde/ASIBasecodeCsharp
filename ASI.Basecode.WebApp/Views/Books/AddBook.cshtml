@@ -99,10 +99,43 @@
 
     // Initialize Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
 
     const app = initializeApp(firebaseConfig);
     const storage = getStorage(app);
+
+    async function deleteFileFromFirebase(fileUrl) {
+        if (!fileUrl) {
+            console.warn("Attempted to delete null or empty file URL.");
+            return;
+        }
+        try {
+            //Get a reference to the file from the download URL
+            const fileRef = ref(storage, fileUrl);
+            await deleteObject(fileRef);
+            console.log(`Successfully deleted file: ${fileUrl}`);
+        } catch (error) {
+            alert(`Failed to delete file ${fileUrl}:`, error)
+            console.error(`Failed to delete file ${fileUrl}:`, error);
+        }
+    }
+
+    async function deleteUrlFromError(coverUrlCopy, coverUploadStatusCopy, bookFileUploadStatusCopy, bookUrlCopy) {
+        if (coverUrlCopy) {
+            await deleteFileFromFirebase(coverUrlCopy);
+            coverUploadStatusCopy.textContent = 'Cover image upload rolled back due to backend error.';
+        }
+        else{
+            alert("No cover Url")
+        }
+        if (bookUrlCopy) {
+            await deleteFileFromFirebase(bookUrlCopy);
+            bookFileUploadStatusCopy.textContent = 'Book file upload rolled back due to backend error.';
+        }
+        else{
+            alert("No book Url")
+        }
+    }
 
     //Firebase Upload Function
     //This function returns the download URL or null on failure/no file
@@ -159,6 +192,9 @@
         const coverImageUrlInput = document.getElementById('coverImageUrl');
         const bookFileUrlInput = document.getElementById('bookFileUrl');
 
+        let coverUrlHold = ""
+        let bookUrlHold = ""
+
         // Clear previous status messages
         coverUploadStatus.textContent = '';
         bookFileUploadStatus.textContent = '';
@@ -198,6 +234,8 @@
 
             coverImageUrlInput.value = coverUrl; //Set hidden field with obtained URL
             bookFileUrlInput.value = bookUrl;   //Set hidden field with obtained URL
+            coverUrlHold= coverUrl;//Set hold variable
+            bookUrlHold= bookUrl//Set hold variable
 
         } catch (uploadError) {
             alert('File upload to Firebase failed.');
@@ -227,7 +265,7 @@
 
         // Handling of Api
         try {
-            const response = await fetch('/api/Book/add', {
+            const response = await fetch('/api/BookApi/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -250,10 +288,13 @@
                 // Check for 'errors' property for validation messages from ASP.NET Core
                 alert(`Error: ${JSON.stringify(errorData.errors || errorData.Message || "An unknown error occurred on the server.")}`);
                 console.error('Backend error details:', errorData);
+
+                await deleteUrlFromError(coverUrlHold, coverUploadStatus,  bookFileUploadStatus,bookUrlHold);
             }
         } catch (backendError) {
             console.error('Network or unexpected error during backend submission:', backendError);
             alert('An unexpected error occurred while saving book data. Please try again.');
+            await deleteUrlFromError(coverUrlHold, coverUploadStatus, bookFileUploadStatus, bookUrlHold);
         }
     });
 </script>

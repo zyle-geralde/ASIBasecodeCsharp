@@ -4,20 +4,19 @@ using System.Threading.Tasks;
 using System.Globalization;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Data.Models;
-using ASI.Basecode.WebApp.Models.Book;
 using Microsoft.AspNetCore.Authorization;
 using ASI.Basecode.Services.ServiceModels;
 
-namespace ASI.Basecode.WebApp.Controllers
+namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class BookController : ControllerBase
+    public class BookApiController : ControllerBase
     {
 
         private readonly IBookService _bookService;
 
-        public BookController(IBookService bookService)
+        public BookApiController(IBookService bookService)
         {
             _bookService = bookService;
         }
@@ -36,11 +35,11 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 // Call the service method, which now encapsulates the mapping and database operation
                 await _bookService.AddBook(request);
-                return Ok(new { Message = "Book added successfully!"});
+                return Ok(new { Message = "Book added successfully!" });
             }
-            catch (ApplicationException ex) 
+            catch (ApplicationException ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { ex.Message });
             }
             catch (Exception ex)
             {
