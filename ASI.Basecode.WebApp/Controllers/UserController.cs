@@ -21,5 +21,10 @@ namespace ASI.Basecode.WebApp.Controllers
             return View();
         }
 
+        public IActionResult EditUser()
+        {
+            return View();
+        }
+
     }
 }

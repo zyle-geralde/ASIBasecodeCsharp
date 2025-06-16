@@ -5,25 +5,22 @@
     overflow-y: auto;
 }
 
-.add-user-container {
+.edit-user-container {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     flex: 1;
-    min-height: 100vh;
     background-color: #f5f5f5;
-    padding: 1.75rem;
-    margin-bottom: 0;
+    padding: 1rem;
 }
 
 .content-wrapper {
     background: white;
-    padding: 1.75rem;
+    padding: 2rem;
     border-radius: 8px;
     width: 100%;
     max-width: 800px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    min-height: auto;
 }
 
 .header-section {
@@ -41,32 +38,60 @@
     font-size: 14px;
 }
 
-.add-user-form {
+.edit-user-form {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    height: 100%;
 }
 
-.form-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-bottom: auto;
+/* Update the profile section and related components */
+.profile-section {
+    position: relative;
+    width: fit-content;
+    margin-bottom: 2rem;
+}
+
+.profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 2px solid #647D7F;
+    position: relative;
+}
+
+.upload-input {
+    position: absolute;
+    bottom: 0;
+    right: -110px;
+}
+
+.browse-btn {
+    background: #647D7F;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: block;
+}
+
+.browse-btn span {
+    display: inline-block;
+    transform: skew(20deg);
 }
 
 .form-row {
     display: flex;
-    gap: 1rem; 
-    margin-bottom: 1rem; 
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .form-group {
     flex: 1;
-    min-width: 0; 
+    min-width: 0;
     display: flex;
     flex-direction: column;
 }
@@ -82,85 +107,17 @@ label {
 input[type="text"],
 input[type="email"] {
     width: 100%;
-    padding: 0.5rem; 
+    padding: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
-}
-
-.upload-section {
-    margin-bottom: 1rem;
-    align-self: center;
-    width: 100%;
-}
-
-.upload-input {
-    position: relative;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.file-display {
-    flex: 1;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    color: #666;
-    background: #fff;
-}
-
-input[type="file"] {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.browse-btn {
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #647D7F;
-    color: white;
-    padding: 0.5rem 1.25rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.file-instructions {
-    display: flex;
-    flex-direction: column;
-    font-size: 0.875rem;
-    color: #666;
-    margin-top: 0.5rem;
-}
-
-.file-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem; 
-    margin-bottom: 0.5rem; 
-}
-
-.file-info small {
-    color: #666;
-    font-size: 12px;
 }
 
 .button-group {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    margin-top: 1rem; 
-    padding-bottom: 0; 
+    margin-top: 1rem;
 }
 
 .cancel-btn {
@@ -183,6 +140,7 @@ input[type="file"] {
     cursor: pointer;
 }
 
+/* Responsive adjustments */
 @media (max-width: 768px) {
     .form-row {
         flex-direction: column;
@@ -199,5 +157,18 @@ input[type="file"] {
 
     .button-group button {
         width: 100%;
+    }
+
+    .profile-section {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .upload-input {
+        position: relative;
+        right: auto;
+        margin-top: 1rem;
     }
 }
