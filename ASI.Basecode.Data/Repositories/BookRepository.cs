@@ -27,6 +27,10 @@ namespace ASI.Basecode.Data.Repositories
         {
             return await _dbContext.Books.ToListAsync();
         }
+        public async Task<Book?> GetBookById(string bookId)
+        {
+            return await _dbContext.Books.FirstOrDefaultAsync(book => book.BookId == bookId);
+        }
 
     }
 }
