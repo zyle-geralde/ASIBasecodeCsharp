@@ -15,5 +15,11 @@ namespace ASI.Basecode.WebApp.Controllers
             var model = _userService.GetAllUsers();
             return View("~/Views/Users/Index.cshtml", model);
         }
+
+        public IActionResult AddUser()
+        {
+            return View();
+        }
+
     }
 }
