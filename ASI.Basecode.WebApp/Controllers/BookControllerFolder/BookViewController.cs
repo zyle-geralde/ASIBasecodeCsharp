@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.ServiceModels;
 
 namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 {
@@ -44,6 +45,15 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         {
            Book book = await _bookService.GetBookById(bookId);
            return View("~/Views/Books/EditBook.cshtml",book);
+        }
+
+        [HttpGet]
+        [Route("Book/BookDetails/{bookId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetBook(string bookId)
+        {
+            Book book = await _bookService.GetBookById(bookId);
+            return View("~/Views/Books/BookDetails.cshtml", book);
         }
     }
 }
