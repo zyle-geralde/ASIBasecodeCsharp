@@ -171,6 +171,24 @@
             }
         }
 
+    async function deleteCoverUrl(coverUrlCopy) {
+            if (coverUrlCopy) {
+                await deleteFileFromFirebase(coverUrlCopy);
+            }
+            else {
+                alert("No cover Url")
+            }
+        }
+
+    async function deleteBookUrl(bookUrlCopy) {
+            if (bookUrlCopy) {
+                await deleteFileFromFirebase(bookUrlCopy);
+            }
+            else {
+                alert("No book Url")
+            }
+        }
+
     //Firebase Upload Function
     //This function returns the download URL or null on failure/no file
     async function uploadFileToFirebase(file, path, statusElement) {
@@ -226,27 +244,26 @@
         const coverImageUrlInput = document.getElementById('coverImageUrl');
         const bookFileUrlInput = document.getElementById('bookFileUrl');
         const exisitngCoverImage = document.getElementById('exisitngCoverImage');
-            const existngBookFile = document.getElementById('existngBookFile');
+        const existngBookFile = document.getElementById('existngBookFile');
+
+   
+        //Indicated wether a new cover or book is uploaded
         let isCoverUploaded = false
         let isBookUploaded = false
 
+        //cover and book url added from add book
+        //will be used to delete the previous url if a new one is added.
+        const coverImageFromAddBook =  exisitngCoverImage.src
+        const bookFilFromAddBook = existngBookFile.getAttribute('href');
 
+        //holds the current Url uploded
         let coverUrlHold = exisitngCoverImage.src
-            let bookUrlHold = existngBookFile.getAttribute('href');
+        let bookUrlHold = existngBookFile.getAttribute('href');
 
         // Clear previous status messages
         coverUploadStatus.textContent = '';
         bookFileUploadStatus.textContent = '';
 
-        //Validate if files are selected
-        /*if (!coverImageFile || !bookFile) {
-            alert('Please select a cover image file.');
-            return;
-        }
-        if () {
-            alert('Please select a book file.');
-            return;
-        }*/
 
         //Upload files to Firebase
         try {
@@ -329,6 +346,15 @@
                 bookFileUploadStatus.textContent = '';
                 coverImageUrlInput.value = '';
                 bookFileUrlInput.value = '';
+                if(isCoverUploaded){
+                        await deleteCoverUrl(coverImageFromAddBook);
+                       
+                }
+                if (isBookUploaded) {
+                        await deleteBookUrl(bookFilFromAddBook);
+                        
+                    }
+                    window.location.href = "/Book/ListBook";
                 
             } else {
                 const errorData = await response.json();
