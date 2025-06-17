@@ -3,87 +3,147 @@
 *@
 @model ASI.Basecode.Data.Models.Book
 @{
-    ViewData["Title"] = "Book Details";
-}
-@{
 }
 
-        <h1 class="add-book-form-title">Book Detials</h1>
+<div class="book-details-container">
+    @if (Model != null)
+    {
+        <div class="book-cover-section" style="margin-top:200px">
+            <h1 class="book-title">@Html.DisplayFor(model => model.Title)</h1>
 
-        <div>
-            <label for="title">Title:</label>
-            <input type="text" id="title" name="Title" required asp-for="Title">
-        </div>
-        <div>
-            <label for="subtitle">Subtitle:</label>
-            <input type="text" id="subtitle" name="Subtitle" asp-for="Subtitle">
-        </div>
-        <div>
-            <label for="publicationDate">Publication Date:</label>
-            <input type="date" id="publicationDate" name="PublicationDate" asp-for="PublicationDate">
-        </div>
-        <div>
-            <label for="publisher">Publisher:</label>
-            <input type="text" id="publisher" name="Publisher" asp-for="Publisher">
-        </div>
-        <div>
-            <label for="publicationLocation">Publication Location:</label>
-            <input type="text" id="publicationLocation" name="PublicationLocation" asp-for="PublicationLocation">
-        </div>
-        <div>
-            <label for="description">Description:</label>
-            <textarea id="description" name="Description" asp-for="Description"></textarea>
-        </div>
-        <div>
-            <label for="numberOfPages">Number of Pages:</label>
-            <input type="number" id="numberOfPages" name="NumberOfPages" asp-for="NumberOfPages">
-        </div>
-        <div>
-            <label for="language">Language:</label>
-            <input type="text" id="language" name="Language" asp-for="Language">
-        </div>
-        <div>
-            <label for="seriesName">Series Name:</label>
-            <input type="text" id="seriesName" name="SeriesName" asp-for="SeriesName">
-        </div>
-        <div>
-            <label for="seriesOrder">Series Order:</label>
-            <input type="number" id="seriesOrder" name="SeriesOrder" asp-for="SeriesOrder">
-        </div>
-        <div>
-            <label for="isbn10">ISBN10:</label>
-            <input type="text" id="isbnten" name="ISBN10" asp-for="ISBN10">
-        </div>
-        <div>
-            <label for="isbn13">ISBN13:</label>
-            <input type="text" id="isbnthitheen" name="ISBN13" asp-for="ISBN13">
-        </div>
-        <div>
-            <label for="edition">Edition:</label>
-            <input type="text" id="edition" name="Edition" asp-for="Edition">
-        </div>
-        <div>
-            <label for="seriesDescription">Series Description:</label>
-            <textarea id="seriesDescription" name="SeriesDescription" asp-for="SeriesDescription"></textarea>
-        </div>
-        <div>
-            <label for="author">Author (comma-separated):</label>
-            <input type="text" id="author" name="Author" asp-for="Author">
-        </div>
+                <h2 class="book-subtitle">@Html.DisplayFor(model => model.Subtitle)</h2>
+            
 
 
-        <h3>Cover Image Upload</h3>
-        <div>
-            <label for="coverImageFile">Select Cover Image:</label>
-            <input type="file" id="coverImageFile" accept="image/*"> <p id="coverUploadStatus" style="color: gray;"></p>
-        <input type="hidden" id="coverImageUrl" name="CoverImageUrl" asp-for="CoverImageUrl">
+                <img src="@Model.CoverImage" alt="Book Cover" class="book-cover" />
+
+
+
+                <div style="margin-top: 15px;">
+                    <a href="@Model.BookFile" target="_blank" class="detail-value">View Book File</a>
+                </div>
+            
         </div>
 
-        <h3>Book File Upload (e.g., PDF)</h3>
-        <div>
-            <label for="bookFile">Select Book File:</label>
-            <input type="file" id="bookFile" accept=".pdf,.epub"> <p id="bookFileUploadStatus" style="color: gray;"></p>
-        <input type="hidden" id="bookFileUrl" name="BookFileUrl" asp-for="BookFileUrl">
+        <div class="book-info-section">
+            <div class="detail-group">
+                <span class="detail-label">Book ID:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.BookId)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Author:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.Author)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Description:</span>
+                <div class="description-box">
+                    @Html.DisplayFor(model => model.Description)
+                </div>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Publication Date:</span>
+                <span class="detail-value">@Model.PublicationDate?.ToString("MMMM dd, yyyy")</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Publisher:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.Publisher)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Publication Location:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.PublicationLocation)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Number of Pages:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.NumberOfPages)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Language:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.Language)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">ISBN-10:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.ISBN10)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">ISBN-13:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.ISBN13)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Edition:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.Edition)</span>
+            </div>
+
+           
+                <div class="detail-group">
+                    <span class="detail-label">Series Name:</span>
+                    <span class="detail-value">@Html.DisplayFor(model => model.SeriesName)</span>
+                </div>
+                <div class="detail-group">
+                    <span class="detail-label">Series Order:</span>
+                    <span class="detail-value">@Html.DisplayFor(model => model.SeriesOrder)</span>
+                </div>
+
+                    <div class="detail-group">
+                        <span class="detail-label">Series Description:</span>
+                        <div class="description-box">
+                            @Html.DisplayFor(model => model.SeriesDescription)
+                        </div>
+                    </div>
+
+
+            <div class="detail-group">
+                <span class="detail-label">Average Rating:</span>
+                <span class="detail-value">@Model.AverageRating?.ToString("0.0") / 5.0</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Likes:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.Likes)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Upload Date:</span>
+                <span class="detail-value">@Model.UploadDate?.ToString("MMMM dd, yyyy hh:mm tt")</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Last Updated:</span>
+                <span class="detail-value">@Model.UpdatedDate?.ToString("MMMM dd, yyyy hh:mm tt")</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Admin ID (Uploader):</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.AdminId)</span>
+            </div>
+
+            
+                <div class="detail-group">
+                    <span class="detail-label">Updated By Admin ID:</span>
+                    <span class="detail-value">@Html.DisplayFor(model => model.UpdatedByAdminId)</span>
+                </div>
+            
         </div>
 
-        <button type="submit">Edit Book</button>
+    }
+    else
+    {
+        <p>Book details could not be loaded. Please ensure a valid Book ID was provided.</p>
+    }
+</div>
+
+@section scripts {
+    <script>
+        // Any specific JavaScript for this details page can go here.
+    </script>
+}
+
