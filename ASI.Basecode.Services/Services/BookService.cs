@@ -128,5 +128,19 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
+        public async Task DeletBook(string bookId)
+        {
+
+            try
+            {
+                await _bookRepository.DeleteBook(bookId);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to Delete book: {ex.Message}", ex);
+            }
+            
+        }
+
     }
 }

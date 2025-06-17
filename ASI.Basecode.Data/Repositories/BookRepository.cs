@@ -61,6 +61,14 @@ namespace ASI.Basecode.Data.Repositories
 
             await _dbContext.SaveChangesAsync();
         }
+        public async Task DeleteBook(string bookId)
+        {
+            Book existingBook = await GetBookById(bookId);
+
+            _dbContext.Books.Remove(existingBook);
+            await _dbContext.SaveChangesAsync();
+            
+        }
 
     }
 }
