@@ -1,32 +1,4 @@
-﻿/* Add these styles at the top of your adduser.css */
-.main-content {
-    margin-top: 60px;
-    margin-left: 270px;
-    margin-right: auto;
-    flex-grow: 1;
-    padding: 0px;
-    overflow-y: auto;
-    overflow-x: auto;
-    min-width: 0;
-    box-sizing: border-box;
-}
-
-.admin-layout {
-    display: flex;
-    min-height: 100vh;
-    width: 100%;
-}
-
-
-
-body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    background-color: #f5f5f5;
-}
-
-.add-user-container {
+﻿.add-user-container {
     flex: 1;
     background-color: #f5f5f5;
     min-height: 100vh;
@@ -39,28 +11,18 @@ body {
     transition: margin-left 0.3s ease-in-out;
 }
 
-.content-wrapper {
-    flex: 1; /* Make content wrapper fill the container */
-    padding: 3rem;
+/*.content-wrapper {
+    flex: 1;*/ /* Make content wrapper fill the container */
+    /*padding: 3rem;
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
-}
+}*/
 
-.header-section {
-    margin-bottom: 2rem;
-}
-
-.header-section h1 {
-    color: #647D7F;
-    font-size: 40px;
-    margin-bottom: 0.5rem;
-}
-
-.header-section p {
-    color: #666;
-    font-size: 16px;
+/*----------------wala ni sa common ang padding---------------*/
+.admin-common-content-wrapper {
+    padding: 3rem; 
 }
 
 .add-user-form {
@@ -93,14 +55,14 @@ body {
     display: flex;
     flex-direction: column;
 }
-
+/* naa sa common
 label {
     display: block;
     margin-bottom: 0.5rem;
     color: #647D7F;
     font-size: 14px;
     font-weight: 500;
-}
+}*/
 
 input[type="text"],
 input[type="email"] {

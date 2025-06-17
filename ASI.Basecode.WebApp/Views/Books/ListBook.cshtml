@@ -20,8 +20,8 @@
 <div class="content-card p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="header-section">
-            <h2 class="mb-1">Books</h2>
-            <p class="text-muted">Manage your book collection</p>
+            <h1>Books</h1>
+            <p>Manage your book collection</p>
         </div>
         <p>
             <a href="/Book/AddBook" class="btn btn-secondary">
@@ -153,45 +153,16 @@
 
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function showSuccessModal() {
             var deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
-            if (deleteModal) { 
-                deleteModal.hide();
-            }
+            deleteModal.hide();
 
-            setTimeout(function() {
+            setTimeout(function () {
                 var successModal = new bootstrap.Modal(document.getElementById('successModal'));
                 successModal.show();
             }, 100);
         }
-
-        //Logic to set the current book ID when delete modal is opened
-        document.addEventListener('DOMContentLoaded', function() {
-            var deleteModal = document.getElementById('deleteModal');
-            if (deleteModal) {
-                deleteModal.addEventListener('show.bs.modal', function (event) {
-                    var button = event.relatedTarget;
-                    var userId = button.getAttribute('data-id'); 
-                    
-                    
-                    //Funtion here
-
-
-
-                });
-            }
-
-            var confirmDeleteButton = document.querySelector('#deleteModal .btn-danger');
-            if (confirmDeleteButton) {
-                confirmDeleteButton.addEventListener('click', function() {
-                    
-                    // DELETE
-
-                    showSuccessModal();
-                });
-            }
-        });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 }
