@@ -1,0 +1,149 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model ASI.Basecode.Data.Models.Book
+@{
+}
+
+<div class="book-details-container">
+    @if (Model != null)
+    {
+        <div class="book-cover-section" style="margin-top:200px">
+            <h1 class="book-title">@Html.DisplayFor(model => model.Title)</h1>
+
+                <h2 class="book-subtitle">@Html.DisplayFor(model => model.Subtitle)</h2>
+            
+
+
+                <img src="@Model.CoverImage" alt="Book Cover" class="book-cover" />
+
+
+
+                <div style="margin-top: 15px;">
+                    <a href="@Model.BookFile" target="_blank" class="detail-value">View Book File</a>
+                </div>
+            
+        </div>
+
+        <div class="book-info-section">
+            <div class="detail-group">
+                <span class="detail-label">Book ID:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.BookId)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Author:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.Author)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Description:</span>
+                <div class="description-box">
+                    @Html.DisplayFor(model => model.Description)
+                </div>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Publication Date:</span>
+                <span class="detail-value">@Model.PublicationDate?.ToString("MMMM dd, yyyy")</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Publisher:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.Publisher)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Publication Location:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.PublicationLocation)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Number of Pages:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.NumberOfPages)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Language:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.Language)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">ISBN-10:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.ISBN10)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">ISBN-13:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.ISBN13)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Edition:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.Edition)</span>
+            </div>
+
+           
+                <div class="detail-group">
+                    <span class="detail-label">Series Name:</span>
+                    <span class="detail-value">@Html.DisplayFor(model => model.SeriesName)</span>
+                </div>
+                <div class="detail-group">
+                    <span class="detail-label">Series Order:</span>
+                    <span class="detail-value">@Html.DisplayFor(model => model.SeriesOrder)</span>
+                </div>
+
+                    <div class="detail-group">
+                        <span class="detail-label">Series Description:</span>
+                        <div class="description-box">
+                            @Html.DisplayFor(model => model.SeriesDescription)
+                        </div>
+                    </div>
+
+
+            <div class="detail-group">
+                <span class="detail-label">Average Rating:</span>
+                <span class="detail-value">@Model.AverageRating?.ToString("0.0") / 5.0</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Likes:</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.Likes)</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Upload Date:</span>
+                <span class="detail-value">@Model.UploadDate?.ToString("MMMM dd, yyyy hh:mm tt")</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Last Updated:</span>
+                <span class="detail-value">@Model.UpdatedDate?.ToString("MMMM dd, yyyy hh:mm tt")</span>
+            </div>
+
+            <div class="detail-group">
+                <span class="detail-label">Admin ID (Uploader):</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.AdminId)</span>
+            </div>
+
+            
+                <div class="detail-group">
+                    <span class="detail-label">Updated By Admin ID:</span>
+                    <span class="detail-value">@Html.DisplayFor(model => model.UpdatedByAdminId)</span>
+                </div>
+            
+        </div>
+
+    }
+    else
+    {
+        <p>Book details could not be loaded. Please ensure a valid Book ID was provided.</p>
+    }
+</div>
+
+@section scripts {
+    <script>
+        // Any specific JavaScript for this details page can go here.
+    </script>
+}
+
