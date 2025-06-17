@@ -11,6 +11,7 @@ using System.Linq;
 using static ASI.Basecode.Resources.Constants.Enums;
 using System.Net.Mail;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -68,13 +69,17 @@ namespace ASI.Basecode.Services.Services
             return vmList;
         }
 
-        public void DeleteUser(int id)
+        public async Task<bool> DeleteUser(int id)
         {
-            var exists = _repository.GetUsers().Any(u => u.Id == id);
-            if(!exists)
-                throw new KeyNotFoundException("User not found");
-            _repository.DeleteUser(id);
-        }
+            var user = await _repository.GetUserById(id);
 
+            if (user == null)
+            {
+                return false;
+            }
+
+            await _repository.DeleteUser(id);
+            return true;
+        }
     }
 }

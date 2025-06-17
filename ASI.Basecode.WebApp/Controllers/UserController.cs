@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -30,11 +31,29 @@ namespace ASI.Basecode.WebApp.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
         {
-            _userService.DeleteUser(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                bool deleted = await _userService.DeleteUser(id);
+
+                if (!deleted)
+                {
+                    TempData["ErrorMessage"] = "User could not be deleted.";
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = "User deleted successfully.";
+                }
+            }
+            catch (Exception e)
+            {
+                TempData["ErrorMessage"] = $"An error occurred while deleting the user: {e.Message}";
+            }
+
+            return RedirectToAction("Index");
+
         }
 
     }

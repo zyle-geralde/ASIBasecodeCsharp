@@ -2,6 +2,7 @@
 using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,13 @@ namespace ASI.Basecode.Services.Services
     public class ReviewService : IReviewService
     {
         private readonly IReviewRepository _reviewRepository;
+        private readonly IMapper _mapper;
 
-        public ReviewService(IReviewRepository reviewRepository)
+        public ReviewService(IReviewRepository reviewRepository, IMapper mapper)
         {
             _reviewRepository = reviewRepository;
+            _mapper = mapper;
+
         }
 
         public async Task AddReview(ReviewViewModel reviewModel)
@@ -85,11 +89,12 @@ namespace ASI.Basecode.Services.Services
             if (existing == null)
                 return false;
 
-            existing.BookId = reviewModel.BookId;
-            existing.Rating = reviewModel.Rating;
-            existing.Comment = reviewModel.Comment;
-            existing.Likes = reviewModel.Likes;
-            existing.ReviewImage = reviewModel.ReviewImage;
+            _mapper.Map(reviewModel, existing);
+
+            //existing.Rating = reviewModel.Rating;
+            //existing.Comment = reviewModel.Comment;
+            //existing.Likes = reviewModel.Likes;
+            //existing.ReviewImage = reviewModel.ReviewImage;
             existing.UpdatedDate = DateTime.UtcNow;
 
             await _reviewRepository.UpdateReview(existing);
