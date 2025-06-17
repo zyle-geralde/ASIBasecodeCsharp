@@ -40,7 +40,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
                 if (!deleted)
                 {
-                    TempData["ErrorMessage"] = "Usercould not be deleted.";
+                    TempData["ErrorMessage"] = "User could not be deleted.";
                 }
                 else
                 {
