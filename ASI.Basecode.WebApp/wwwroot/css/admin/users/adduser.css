@@ -1,18 +1,23 @@
 ﻿/* Add these styles at the top of your adduser.css */
+.main-content {
+    margin-top: 60px;
+    margin-left: 270px;
+    margin-right: auto;
+    flex-grow: 1;
+    padding: 0px;
+    overflow-y: auto;
+    overflow-x: auto;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
 .admin-layout {
     display: flex;
     min-height: 100vh;
     width: 100%;
 }
 
-.add-user-container {
-    flex: 1;
-    margin-top: 50px;
-    margin-left: 275px; /* Match sidebar width */
-    background-color: #f5f5f5;
-    padding: 1rem;
-    min-height: 100vh;
-}
+
 
 body {
     margin: 0;
@@ -23,11 +28,10 @@ body {
 
 .add-user-container {
     flex: 1;
-    margin-left: 300px; /* Space for sidebar */
     background-color: #f5f5f5;
     min-height: 100vh;
     display: flex;
-    padding: 0;
+    padding: 25px;
 }
 
 .edit-user-container,
@@ -37,7 +41,7 @@ body {
 
 .content-wrapper {
     flex: 1; /* Make content wrapper fill the container */
-    padding: 2rem;
+    padding: 3rem;
     width: 100%;
     height: 100%;
     display: flex;
@@ -50,21 +54,22 @@ body {
 
 .header-section h1 {
     color: #647D7F;
-    font-size: 24px;
+    font-size: 40px;
     margin-bottom: 0.5rem;
 }
 
 .header-section p {
     color: #666;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .add-user-form {
     display: flex;
+    justify-content: flex-start;
     flex-direction: column;
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 1100px;
+    margin: 0;
     height: 100%;
 }
 
@@ -72,14 +77,14 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2rem;
     margin-bottom: auto;
 }
 
 .form-row {
     display: flex;
-    gap: 1rem; 
-    margin-bottom: 1rem; 
+    gap: 3rem; 
+    margin-bottom: 2rem; 
 }
 
 .form-group {
@@ -92,7 +97,7 @@ body {
 label {
     display: block;
     margin-bottom: 0.5rem;
-    color: #333;
+    color: #647D7F;
     font-size: 14px;
     font-weight: 500;
 }
@@ -108,8 +113,8 @@ input[type="email"] {
 
 .upload-section {
     margin-bottom: 1rem;
-    align-self: center;
-    width: 100%;
+    align-self: start;
+    width: 50%;
 }
 
 .upload-input {
@@ -118,6 +123,7 @@ input[type="email"] {
     display: flex;
     align-items: center;
     gap: 10px;
+    
 }
 
 .file-display {
@@ -163,8 +169,9 @@ input[type="file"] {
 
 .file-info {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.15rem; 
+    justify-content: space-between;
     margin-bottom: 0.5rem; 
 }
 
@@ -201,7 +208,7 @@ input[type="file"] {
     cursor: pointer;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 785px) {
     .form-row {
         flex-direction: column;
         gap: 1rem;
