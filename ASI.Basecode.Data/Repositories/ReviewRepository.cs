@@ -45,8 +45,26 @@ namespace ASI.Basecode.Data.Repositories
             }
             else
             {
-                throw new KeyNotFoundException($"Review {reviewId} not found.");
+                throw new KeyNotFoundException("Review not found.");
             }
+        }
+
+        public async Task UpdateReview(Review review)
+        {
+            var existingReview = await GetReviewById(review.ReviewId);
+            if (existingReview == null)
+            {
+                throw new KeyNotFoundException("Review not found.");
+            }
+
+            existingReview.BookId = review.BookId;
+            existingReview.Rating = review.Rating;
+            existingReview.Comment = review.Comment;
+            existingReview.Likes = review.Likes;
+            existingReview.ReviewImage = review.ReviewImage;
+            existingReview.UpdatedDate = DateTime.UtcNow;
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

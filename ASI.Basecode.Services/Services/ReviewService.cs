@@ -75,5 +75,25 @@ namespace ASI.Basecode.Services.Services
 
 
         }
+
+        public async Task<bool> UpdateReview(ReviewViewModel reviewModel)
+        {
+            if (reviewModel == null)
+                throw new ArgumentNullException(nameof(reviewModel));
+
+            var existing = await _reviewRepository.GetReviewById(reviewModel.ReviewId);
+            if (existing == null)
+                return false;
+
+            existing.BookId = reviewModel.BookId;
+            existing.Rating = reviewModel.Rating;
+            existing.Comment = reviewModel.Comment;
+            existing.Likes = reviewModel.Likes;
+            existing.ReviewImage = reviewModel.ReviewImage;
+            existing.UpdatedDate = DateTime.UtcNow;
+
+            await _reviewRepository.UpdateReview(existing);
+            return true;
+        }
     }
 }
