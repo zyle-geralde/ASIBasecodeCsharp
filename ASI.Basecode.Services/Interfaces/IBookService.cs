@@ -13,5 +13,7 @@ namespace ASI.Basecode.Services.Interfaces
         Task AddBook(BookViewModel book);
         Task<List<Book>> GetAllBooks();
         Task<Book?> GetBookById(string bookId);
+
+        Task EditBook(BookViewModel request);
     }
 }

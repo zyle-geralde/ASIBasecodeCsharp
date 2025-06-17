@@ -82,5 +82,53 @@ namespace ASI.Basecode.Services.Services
             return await _bookRepository.GetBookById(bookId);
         }
 
+        public async Task EditBook(BookViewModel request)
+        {
+            var book = new Book
+            {
+                BookId = request.BookId,
+                Title = request.Title,
+                Subtitle = request.Subtitle,
+                Description = request.Description,
+                NumberOfPages = request.NumberOfPages,
+                Language = request.Language,
+                SeriesName = request.SeriesName,
+                SeriesDescription = request.SeriesDescription,
+                SeriesOrder = request.SeriesOrder,
+                AverageRating = 0,
+                Likes = 0,
+
+                // Firebase Storage URLs are directly mapped
+                CoverImage = request.CoverImageUrl,
+                BookFile = request.BookFileUrl,
+
+                // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
+                UpdatedDate = DateTime.UtcNow,
+                PublicationDate = !string.IsNullOrWhiteSpace(request.PublicationDate)
+                                 ? DateTime.ParseExact(request.PublicationDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
+                                 : (DateTime?)null,
+
+                // Handle comma-separated strings
+                Publisher = request.Publisher, // Store as string
+                PublicationLocation = request.PublicationLocation, // Store as string
+                Author = request.Author, // Store as string
+                ISBN10 = request.ISBN10,
+                ISBN13 = request.ISBN13,
+                Edition = request.Edition,
+                AdminId = "admin1",
+                UpdatedByAdminId = "Logged Admin"
+            };
+
+
+            try
+            {
+                await _bookRepository.EditBook(book);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to Edit book: {ex.Message}", ex);
+            }
+        }
+
     }
 }

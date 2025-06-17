@@ -1,6 +1,7 @@
 ﻿using ASI.Basecode.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -25,6 +26,15 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult EditUser()
         {
             return View();
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _userService.DeleteUser(id);
+            return RedirectToAction(nameof(Index));
         }
 
     }

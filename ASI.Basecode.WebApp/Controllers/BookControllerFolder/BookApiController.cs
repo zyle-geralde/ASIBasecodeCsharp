@@ -47,5 +47,31 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             }
 
         }
+
+        [HttpPost("edit")]
+        [AllowAnonymous]
+        public async Task<IActionResult> EditBook([FromBody] BookViewModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Return validation errors
+            }
+
+            try
+            {
+                // Call the service method, which now encapsulates the mapping and database operation
+                await _bookService.EditBook(request);
+                return Ok(new { Message = "Book Edited successfully!" });
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+
+        }
     }
 }

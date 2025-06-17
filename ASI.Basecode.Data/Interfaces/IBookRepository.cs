@@ -14,6 +14,7 @@ namespace ASI.Basecode.Data.Interfaces
 
         Task<Book?> GetBookById(string bookId);
 
+        Task EditBook(Book book);
 
     }
 }
