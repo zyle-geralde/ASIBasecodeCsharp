@@ -1,0 +1,54 @@
+﻿@model IEnumerable<ASI.Basecode.Data.Models.Review>
+
+@{
+    ViewData["Title"] = "Book Reviews";
+}
+
+<h2>Book Reviews</h2>
+
+<p>
+    <a asp-action="Add" class="btn btn-primary">Add New Review</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Review ID</th>
+            <th>Book ID</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Likes</th>
+            <th style="width:160px">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>@review.ReviewId</td>
+                <td>@review.BookId</td>
+                <td>@review.Rating</td>
+                <td>@review.Comment</td>
+                <td>@review.Likes</td>
+                <td>
+                    <a asp-action="Edit"
+                       asp-route-id="@review.ReviewId"
+                       class="btn btn-sm btn-primary">
+                      Edit
+                    </a>
+
+                    <form asp-action="Delete"
+                          asp-route-id="@review.ReviewId"
+                          method="post"
+                          class="d-inline"
+                          onsubmit="return confirm('Are you sure you want to delete this user?');">
+                      @Html.AntiForgeryToken()
+                      <button type="submit" class="btn btn-sm btn-danger">
+                        Delete
+                      </button>
+                    </form>
+                </td>
+            </tr>
+            }
+    </tbody>
+</table>
