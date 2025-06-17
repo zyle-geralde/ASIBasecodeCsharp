@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\css\admin\NewFolder\**" />
+    <Content Remove="wwwroot\css\admin\NewFolder\**" />
+    <EmbeddedResource Remove="wwwroot\css\admin\NewFolder\**" />
+    <EntityDeploy Remove="wwwroot\css\admin\NewFolder\**" />
+    <None Remove="wwwroot\css\admin\NewFolder\**" />
+    <TypeScriptCompile Remove="wwwroot\css\admin\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="appsettings.json.rej" />
   </ItemGroup>
 
