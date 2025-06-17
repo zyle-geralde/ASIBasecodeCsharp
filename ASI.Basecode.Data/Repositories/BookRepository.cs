@@ -46,6 +46,7 @@ namespace ASI.Basecode.Data.Repositories
             existingBook.PublicationLocation = book.PublicationLocation;
             existingBook.Language = book.Language;
             existingBook.NumberOfPages = book.NumberOfPages;
+            existingBook.UpdatedDate = book.UpdatedDate;
             existingBook.SeriesName = book.SeriesName;
             existingBook.SeriesOrder = book.SeriesOrder;
             existingBook.SeriesDescription = book.SeriesDescription;
