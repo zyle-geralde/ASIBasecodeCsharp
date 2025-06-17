@@ -8,14 +8,9 @@
 }
 
 @section styles {
-    <link rel="stylesheet" href="~/css/add-book.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin/addbook.css" asp-append-version="true" />
 }
 
-
-    @* @Html.Partial("_AdminSidebarLayout") *@
-
-
-    @* <div class="main-content"> *@
         <div class="add-book-container">
             <h1 class="add-book-form-title">Add New Book</h1>
             <p class="add-book-form-subtitle">Enter details of the new book here.</p>
@@ -121,7 +116,7 @@
             <div class="add-book-form-group add-book-form-grid-span-2">
                 <label for="coverImageFile" class="add-book-form-label">Select Cover Image:</label>
                 <div class="add-book-file-upload-wrapper">
-                    <input type="text" class="add-book-file-input-text" readonly id="coverFileNameDisplay" placeholder="Text">
+                    <input type="text" class="add-book-file-input-text" readonly id="coverFileNameDisplay" >
                     <input type="file" id="coverImageFile" accept="image/*" name="CoverImageFile" style="display: none;" required>
                     <button type="button" class="add-book-browse-button" onclick="document.getElementById('coverImageFile').click();">BROWSE</button>
                 </div>
@@ -133,7 +128,7 @@
             <div class="add-book-form-group add-book-form-grid-span-2">
                 <label for="bookFile" class="add-book-form-label">Select Book File:</label>
                 <div class="add-book-file-upload-wrapper">
-                    <input type="text" class="add-book-file-input-text" readonly id="bookFileNameDisplay" placeholder="Text">
+                    <input type="text" class="add-book-file-input-text" readonly id="bookFileNameDisplay">
                     <input type="file" id="bookFile" accept=".pdf,.epub" name="BookFile" style="display: none;" required>
                     <button type="button" class="add-book-browse-button" onclick="document.getElementById('bookFile').click();">BROWSE</button>
                 </div>
@@ -141,95 +136,13 @@
                 <input type="hidden" id="bookFileUrl" name="BookFileUrl">
             </div>
 
-
-                <button type="submit" class="add-book-submit-button">Add Book</button>
+            <div class="button-container">
+                <button type="button" class="cancel-button" onclick="location.href='/Book/ListBook';">CANCEL</button>
+                <button type="submit" class="add-book-submit-button">ADD BOOK</button>
+            </div>
             </form>
         </div>
 
-    @* </div> *@
-   
-  
-
-@* <form id="addBookForm">
-    <div>
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="Title" required>
-    </div>
-    <div>
-        <label for="subtitle">Subtitle:</label>
-        <input type="text" id="subtitle" name="Subtitle">
-    </div>
-    <div>
-        <label for="publicationDate">Publication Date:</label>
-        <input type="date" id="publicationDate" name="PublicationDate">
-    </div>
-    <div>
-        <label for="publisher">Publisher:</label>
-        <input type="text" id="publisher" name="Publisher">
-    </div>
-    <div>
-        <label for="publicationLocation">Publication Location:</label>
-        <input type="text" id="publicationLocation" name="PublicationLocation">
-    </div>
-    <div>
-        <label for="description">Description:</label>
-        <textarea id="description" name="Description"></textarea>
-    </div>
-    <div>
-        <label for="numberOfPages">Number of Pages:</label>
-        <input type="number" id="numberOfPages" name="NumberOfPages">
-    </div>
-    <div>
-        <label for="language">Language:</label>
-        <input type="text" id="language" name="Language">
-    </div>
-    <div>
-        <label for="seriesName">Series Name:</label>
-        <input type="text" id="seriesName" name="SeriesName">
-    </div>
-    <div>
-        <label for="seriesOrder">Series Order:</label>
-        <input type="number" id="seriesOrder" name="SeriesOrder">
-    </div>
-    <div>
-        <label for="isbn10">ISBN10:</label>
-        <input type="text" id="isbnten" name="ISBN10">
-    </div>
-    <div>
-        <label for="isbn13">ISBN13:</label>
-        <input type="text" id="isbnthitheen" name="ISBN13">
-    </div>
-    <div>
-        <label for="edition">Edition:</label>
-        <input type="text" id="edition" name="Edition">
-    </div>
-    <div>
-        <label for="seriesDescription">Series Description:</label>
-        <textarea id="seriesDescription" name="SeriesDescription"></textarea>
-    </div>
-    <div>
-        <label for="author">Author (comma-separated):</label>
-        <input type="text" id="author" name="Author">
-    </div>
-
-
-    <h3>Cover Image Upload</h3>
-    <div>
-        <label for="coverImageFile">Select Cover Image:</label>
-        <input type="file" id="coverImageFile" accept="image/*" required> <p id="coverUploadStatus" style="color: gray;"></p>
-        <input type="hidden" id="coverImageUrl" name="CoverImageUrl">
-    </div>
-
-    <h3>Book File Upload (e.g., PDF)</h3>
-    <div>
-        <label for="bookFile">Select Book File:</label>
-        <input type="file" id="bookFile" accept=".pdf,.epub" required> <p id="bookFileUploadStatus" style="color: gray;"></p>
-        <input type="hidden" id="bookFileUrl" name="BookFileUrl">
-    </div>
-
-    <button type="submit">Add Book</button>
-</form>
- *@
 <script type="module">
     
     document.getElementById('coverImageFile').addEventListener('change', function () {
