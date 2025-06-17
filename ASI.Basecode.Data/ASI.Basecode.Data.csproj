@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="bootstrap" Version="5.3.6" />
     <PackageReference Include="CsvHelper" Version="27.2.1" />
     <PackageReference Include="EFCore.BulkExtensions" Version="6.5.2" />
     <PackageReference Include="EntityFramework" Version="6.5.1" />
