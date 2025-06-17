@@ -16,5 +16,6 @@ namespace ASI.Basecode.Data.Models
         public string AdminId { get; set; }
         public DateTime? UploadDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public string? UpdatedByAdminId { get; set; }
     }
 }

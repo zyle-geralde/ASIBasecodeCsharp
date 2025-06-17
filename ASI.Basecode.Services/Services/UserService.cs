@@ -67,5 +67,14 @@ namespace ASI.Basecode.Services.Services
 
             return vmList;
         }
+
+        public void DeleteUser(int id)
+        {
+            var exists = _repository.GetUsers().Any(u => u.Id == id);
+            if(!exists)
+                throw new KeyNotFoundException("User not found");
+            _repository.DeleteUser(id);
         }
+
     }
+}

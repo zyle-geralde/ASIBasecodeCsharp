@@ -3,19 +3,14 @@
 *@
 
 @{
-    ViewData["Title"] = "Books";
+    ViewData["Title"] = "Add New Book";
     Layout = "_AdminSidebarLayout";
 }
 
 @section styles {
-    <link rel="stylesheet" href="~/css/add-book.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin/addbook.css" asp-append-version="true" />
 }
 
-
-    @* @Html.Partial("_AdminSidebarLayout") *@
-
-
-    @* <div class="main-content"> *@
         <div class="add-book-container">
             <h1 class="add-book-form-title">Add New Book</h1>
             <p class="add-book-form-subtitle">Enter details of the new book here.</p>
@@ -62,6 +57,10 @@
                         <input type="text" id="seriesName" name="SeriesName" class="add-book-form-input">
                     </div>
                     <div class="add-book-form-group">
+                        <label for="seriesOrder" class="add-book-form-label">Series Order:</label>
+                           <input type="number" id="seriesOrder" name="SeriesOrder" class="add-book-form-input">
+                    </div>
+                    <div class="add-book-form-group">
                         <label for="seriesDescription" class="add-book-form-label">Series Description:</label>
                         <textarea id="seriesDescription" name="SeriesDescription" class="add-book-form-textarea"></textarea>
                     </div>
@@ -100,8 +99,16 @@
                         </select>
                     </div>
                     <div class="add-book-form-group">
-                        <label for="isbn" class="add-book-form-label">ISBN:</label>
-                        <input type="text" id="isbn" name="ISBN" class="add-book-form-input" placeholder="e.g., 978-0525559474">
+                        <label for="isbn10" class="add-book-form-label">ISBN10:</label>
+                        <input type="text" id="isbnten" name="ISBN10" class="add-book-form-input">
+                    </div>
+                    <div class="add-book-form-group">
+                        <label for="isbn13" class="add-book-form-label">ISBN13:</label>
+                        <input type="text" id="isbnthitheen" name="ISBN13" class="add-book-form-input">
+                    </div class="add-book-form-group">
+                    <div>
+                        <label for="edition" class="add-book-form-label">Edition:</label>
+                        <input type="text" id="edition" name="Edition" class="add-book-form-input">
                     </div>
                 </div>
 
@@ -109,7 +116,7 @@
             <div class="add-book-form-group add-book-form-grid-span-2">
                 <label for="coverImageFile" class="add-book-form-label">Select Cover Image:</label>
                 <div class="add-book-file-upload-wrapper">
-                    <input type="text" class="add-book-file-input-text" readonly id="coverFileNameDisplay" placeholder="Text">
+                    <input type="text" class="add-book-file-input-text" readonly id="coverFileNameDisplay" >
                     <input type="file" id="coverImageFile" accept="image/*" name="CoverImageFile" style="display: none;" required>
                     <button type="button" class="add-book-browse-button" onclick="document.getElementById('coverImageFile').click();">BROWSE</button>
                 </div>
@@ -121,7 +128,7 @@
             <div class="add-book-form-group add-book-form-grid-span-2">
                 <label for="bookFile" class="add-book-form-label">Select Book File:</label>
                 <div class="add-book-file-upload-wrapper">
-                    <input type="text" class="add-book-file-input-text" readonly id="bookFileNameDisplay" placeholder="Text">
+                    <input type="text" class="add-book-file-input-text" readonly id="bookFileNameDisplay">
                     <input type="file" id="bookFile" accept=".pdf,.epub" name="BookFile" style="display: none;" required>
                     <button type="button" class="add-book-browse-button" onclick="document.getElementById('bookFile').click();">BROWSE</button>
                 </div>
@@ -129,79 +136,13 @@
                 <input type="hidden" id="bookFileUrl" name="BookFileUrl">
             </div>
 
-
-                <button type="submit" class="add-book-submit-button">Add Book</button>
+            <div class="button-container">
+                <button type="button" class="cancel-button" onclick="location.href='/Book/ListBook';">CANCEL</button>
+                <button type="submit" class="add-book-submit-button">ADD BOOK</button>
+            </div>
             </form>
         </div>
 
-    @* </div> *@
-   
-  
-
-@* <form id="addBookForm">
-    <div>
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="Title" required>
-    </div>
-    <div>
-        <label for="subtitle">Subtitle:</label>
-        <input type="text" id="subtitle" name="Subtitle">
-    </div>
-    <div>
-        <label for="publicationDate">Publication Date:</label>
-        <input type="date" id="publicationDate" name="PublicationDate">
-    </div>
-    <div>
-        <label for="publisher">Publisher:</label>
-        <input type="text" id="publisher" name="Publisher">
-    </div>
-    <div>
-        <label for="publicationLocation">Publication Location:</label>
-        <input type="text" id="publicationLocation" name="PublicationLocation">
-    </div>
-    <div>
-        <label for="description">Description:</label>
-        <textarea id="description" name="Description"></textarea>
-    </div>
-    <div>
-        <label for="numberOfPages">Number of Pages:</label>
-        <input type="number" id="numberOfPages" name="NumberOfPages">
-    </div>
-    <div>
-        <label for="language">Language:</label>
-        <input type="text" id="language" name="Language">
-    </div>
-    <div>
-        <label for="seriesName">Series Name:</label>
-        <input type="text" id="seriesName" name="SeriesName">
-    </div>
-    <div>
-        <label for="seriesDescription">Series Description:</label>
-        <textarea id="seriesDescription" name="SeriesDescription"></textarea>
-    </div>
-    <div>
-        <label for="author">Author (comma-separated):</label>
-        <input type="text" id="author" name="Author">
-    </div>
-
-
-    <h3>Cover Image Upload</h3>
-    <div>
-        <label for="coverImageFile">Select Cover Image:</label>
-        <input type="file" id="coverImageFile" accept="image/*" required> <p id="coverUploadStatus" style="color: gray;"></p>
-        <input type="hidden" id="coverImageUrl" name="CoverImageUrl">
-    </div>
-
-    <h3>Book File Upload (e.g., PDF)</h3>
-    <div>
-        <label for="bookFile">Select Book File:</label>
-        <input type="file" id="bookFile" accept=".pdf,.epub" required> <p id="bookFileUploadStatus" style="color: gray;"></p>
-        <input type="hidden" id="bookFileUrl" name="BookFileUrl">
-    </div>
-
-    <button type="submit">Add Book</button>
-</form>
- *@
 <script type="module">
     
     document.getElementById('coverImageFile').addEventListener('change', function () {
@@ -228,10 +169,43 @@
 
     // Initialize Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
 
     const app = initializeApp(firebaseConfig);
     const storage = getStorage(app);
+
+    async function deleteFileFromFirebase(fileUrl) {
+        if (!fileUrl) {
+            console.warn("Attempted to delete null or empty file URL.");
+            return;
+        }
+        try {
+            //Get a reference to the file from the download URL
+            const fileRef = ref(storage, fileUrl);
+            await deleteObject(fileRef);
+            console.log(`Successfully deleted file: ${fileUrl}`);
+        } catch (error) {
+            alert(`Failed to delete file ${fileUrl}:`, error)
+            console.error(`Failed to delete file ${fileUrl}:`, error);
+        }
+    }
+
+    async function deleteUrlFromError(coverUrlCopy, coverUploadStatusCopy, bookFileUploadStatusCopy, bookUrlCopy) {
+        if (coverUrlCopy) {
+            await deleteFileFromFirebase(coverUrlCopy);
+            coverUploadStatusCopy.textContent = 'Cover image upload rolled back due to backend error.';
+        }
+        else{
+            alert("No cover Url")
+        }
+        if (bookUrlCopy) {
+            await deleteFileFromFirebase(bookUrlCopy);
+            bookFileUploadStatusCopy.textContent = 'Book file upload rolled back due to backend error.';
+        }
+        else{
+            alert("No book Url")
+        }
+    }
 
     //Firebase Upload Function
     //This function returns the download URL or null on failure/no file
@@ -288,6 +262,9 @@
         const coverImageUrlInput = document.getElementById('coverImageUrl');
         const bookFileUrlInput = document.getElementById('bookFileUrl');
 
+        let coverUrlHold = ""
+        let bookUrlHold = ""
+
         // Clear previous status messages
         coverUploadStatus.textContent = '';
         bookFileUploadStatus.textContent = '';
@@ -327,6 +304,8 @@
 
             coverImageUrlInput.value = coverUrl; //Set hidden field with obtained URL
             bookFileUrlInput.value = bookUrl;   //Set hidden field with obtained URL
+            coverUrlHold= coverUrl;//Set hold variable
+            bookUrlHold= bookUrl//Set hold variable
 
         } catch (uploadError) {
             alert('File upload to Firebase failed.');
@@ -340,7 +319,7 @@
         // Convert FormData to a plain JavaScript object
         const bookData = {};
         for (const [key, value] of formData.entries()) {
-            if (key === 'NumberOfPages' || key === 'Likes' || key === 'AverageRating') {
+            if (key === 'NumberOfPages' || key === 'Likes' || key === 'AverageRating' || key == "SeriesOrder") {
                 //Use the unary plus operator (+) to convert to number.
                 bookData[key] = +value || 0;
             } else {
@@ -356,7 +335,7 @@
 
         // Handling of Api
         try {
-            const response = await fetch('/api/Book/add', {
+            const response = await fetch('/api/BookApi/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -379,10 +358,13 @@
                 // Check for 'errors' property for validation messages from ASP.NET Core
                 alert(`Error: ${JSON.stringify(errorData.errors || errorData.Message || "An unknown error occurred on the server.")}`);
                 console.error('Backend error details:', errorData);
+
+                await deleteUrlFromError(coverUrlHold, coverUploadStatus,  bookFileUploadStatus,bookUrlHold);
             }
         } catch (backendError) {
             console.error('Network or unexpected error during backend submission:', backendError);
             alert('An unexpected error occurred while saving book data. Please try again.');
+            await deleteUrlFromError(coverUrlHold, coverUploadStatus, bookFileUploadStatus, bookUrlHold);
         }
     });
 </script>

@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ASI.Basecode.WebApp.Models.Book
-
+namespace ASI.Basecode.Services.ServiceModels
 {
-    public class CreateBookRequest
+    public class BookViewModel
     {
         [StringLength(500)]
         public string BookId { get; set; }
@@ -20,11 +23,14 @@ namespace ASI.Basecode.WebApp.Models.Book
         public string? UploadDate { get; set; }
 
         [DataType(DataType.Date)]
+        public DateTime? UpdatedDate { get; set; }
+
+        [DataType(DataType.Date)]
         public string? PublicationDate { get; set; }
 
         public string? Publisher { get; set; }
 
-        public string? PublicationLocation { get; set; } 
+        public string? PublicationLocation { get; set; }
 
         [StringLength(10000)]
         public string? Description { get; set; }
@@ -35,11 +41,13 @@ namespace ASI.Basecode.WebApp.Models.Book
         public string? Language { get; set; }
 
         public string? CoverImageUrl { get; set; }
-        
+
         public string? BookFileUrl { get; set; }
 
         [StringLength(100)]
         public string? SeriesName { get; set; }
+
+        public int? SeriesOrder { get; set; }
 
         [StringLength(500)]
         public string? SeriesDescription { get; set; }
@@ -49,5 +57,16 @@ namespace ASI.Basecode.WebApp.Models.Book
         public string? Author { get; set; }
 
         public int? Likes { get; set; }
+
+        [StringLength(100)]
+        public string? ISBN10 { get; set; }
+
+        [StringLength(100)]
+        public string? ISBN13 { get; set; }
+
+        [StringLength(100)]
+        public string? Edition { get; set; }
+        public string AdminId { get; set; }
+        public string? UpdatedByAdminId { get; set; }
     }
 }

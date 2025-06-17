@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ASI.Basecode.Services.Interfaces;
 
-namespace ASI.Basecode.WebApp.Controllers
+namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 {
     //This controller will handle actions that return views
     public class BookViewController : Controller
@@ -27,14 +27,23 @@ namespace ASI.Basecode.WebApp.Controllers
             return View("~/Views/Books/AddBook.cshtml");
         }
 
-        
+
         [HttpGet]
         [Route("Book/ListBook")]
         [AllowAnonymous]
         public async Task<IActionResult> ListBook()
         {
             List<Book> books = await _bookService.GetAllBooks();
-            return View("~/Views/Books/ListBook.cshtml",books); 
+            return View("~/Views/Books/ListBook.cshtml", books);
+        }
+
+        [HttpGet]
+        [Route("Book/EditBook/{bookId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> EditBook(string bookId)
+        {
+           Book book = await _bookService.GetBookById(bookId);
+           return View("~/Views/Books/EditBook.cshtml",book);
         }
     }
 }
