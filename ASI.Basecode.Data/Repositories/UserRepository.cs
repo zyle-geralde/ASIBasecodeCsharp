@@ -32,6 +32,13 @@ namespace ASI.Basecode.Data.Repositories
             UnitOfWork.SaveChanges();
         }
 
+        public void DeleteUser(int id)
+        {
+            var user = this.GetDbSet<User>().Single(u => u.Id == id);
+            if (user == null) return;
 
+            this.GetDbSet<User>().Remove(user);
+            UnitOfWork.SaveChanges();
+        }
     }
 }
