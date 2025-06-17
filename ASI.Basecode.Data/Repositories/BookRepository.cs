@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using ASI.Basecode.Data.Interfaces;
@@ -30,6 +31,34 @@ namespace ASI.Basecode.Data.Repositories
         public async Task<Book?> GetBookById(string bookId)
         {
             return await _dbContext.Books.FirstOrDefaultAsync(book => book.BookId == bookId);
+        }
+
+        public async Task EditBook(Book book)
+        {
+            Book existingBook = await GetBookById(book.BookId);
+
+
+            existingBook.Title = book.Title;
+            existingBook.Subtitle = book.Subtitle;
+            existingBook.Author = book.Author;
+            existingBook.Publisher = book.Publisher;
+            existingBook.PublicationDate = book.PublicationDate;
+            existingBook.PublicationLocation = book.PublicationLocation;
+            existingBook.Language = book.Language;
+            existingBook.NumberOfPages = book.NumberOfPages;
+            existingBook.SeriesName = book.SeriesName;
+            existingBook.SeriesOrder = book.SeriesOrder;
+            existingBook.SeriesDescription = book.SeriesDescription;
+            existingBook.Description = book.Description;
+            existingBook.ISBN10 = book.ISBN10;
+            existingBook.ISBN13 = book.ISBN13;
+            existingBook.Edition = book.Edition;
+            existingBook.CoverImage = book.CoverImage;
+            existingBook.BookFile = book.BookFile;
+            existingBook.UpdatedByAdminId = book.UpdatedByAdminId;
+
+
+            await _dbContext.SaveChangesAsync();
         }
 
     }

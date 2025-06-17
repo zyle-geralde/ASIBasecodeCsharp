@@ -21,6 +21,7 @@
             <p class="add-book-form-subtitle">Enter details of the book here.</p>
 
     <form id="addBookForm" asp-action="EditBook">
+        <input type="hidden" asp-for="BookId" />
     <div>
         <label for="title">Title:</label>
         <input type="text" id="title" name="Title" required asp-for="Title">
@@ -84,26 +85,26 @@
 
 
     <h3>Cover Image Upload</h3>
-    <img src="@Model.CoverImage" />
+    <img src="@Model.CoverImage" id="exisitngCoverImage" />
     <div>
         <label for="coverImageFile">Select Cover Image:</label>
-        <input type="file" id="coverImageFile" accept="image/*" required> <p id="coverUploadStatus" style="color: gray;"></p>
-        <input type="hidden" id="coverImageUrl" name="CoverImageUrl">
+        <input type="file" id="coverImageFile" accept="image/*"> <p id="coverUploadStatus" style="color: gray;"></p>
+            <input type="hidden" id="coverImageUrl" name="CoverImageUrl" asp-for="CoverImage">
     </div>
 
     <h3>Book File Upload (e.g., PDF)</h3>
-    <a href = "@Model.BookFile" target="_blank">Open Book</a>
+        <a href="@Model.BookFile" target="_blank" id="existngBookFile">Open Book</a>
     <div>
         <label for="bookFile">Select Book File:</label>
-        <input type="file" id="bookFile" accept=".pdf,.epub" required> <p id="bookFileUploadStatus" style="color: gray;"></p>
-        <input type="hidden" id="bookFileUrl" name="BookFileUrl">
+        <input type="file" id="bookFile" accept=".pdf,.epub"> <p id="bookFileUploadStatus" style="color: gray;"></p>
+            <input type="hidden" id="bookFileUrl" name="BookFileUrl" asp-for="BookFile">
     </div>
 
-    <button type="submit">Add Book</button>
+    <button type="submit">Edit Book</button>
 </form>
 
 
-<!--<script type="module">
+<script type="module">
     
     document.getElementById('coverImageFile').addEventListener('change', function () {
         const fileName = this.files[0] ? this.files[0].name : 'Text'; 
@@ -150,7 +151,7 @@
         }
     }
 
-    async function deleteUrlFromError(coverUrlCopy, coverUploadStatusCopy, bookFileUploadStatusCopy, bookUrlCopy) {
+    async function deleteCoverUrlFromError(coverUrlCopy, coverUploadStatusCopy) {
         if (coverUrlCopy) {
             await deleteFileFromFirebase(coverUrlCopy);
             coverUploadStatusCopy.textContent = 'Cover image upload rolled back due to backend error.';
@@ -158,14 +159,17 @@
         else{
             alert("No cover Url")
         }
-        if (bookUrlCopy) {
-            await deleteFileFromFirebase(bookUrlCopy);
-            bookFileUploadStatusCopy.textContent = 'Book file upload rolled back due to backend error.';
-        }
-        else{
-            alert("No book Url")
-        }
     }
+
+    async function deleteBookUrlFromError(bookFileUploadStatusCopy, bookUrlCopy) {
+            if (bookUrlCopy) {
+                await deleteFileFromFirebase(bookUrlCopy);
+                bookFileUploadStatusCopy.textContent = 'Book file upload rolled back due to backend error.';
+            }
+            else {
+                alert("No book Url")
+            }
+        }
 
     //Firebase Upload Function
     //This function returns the download URL or null on failure/no file
@@ -221,51 +225,63 @@
         const bookFileUploadStatus = document.getElementById('bookFileUploadStatus');
         const coverImageUrlInput = document.getElementById('coverImageUrl');
         const bookFileUrlInput = document.getElementById('bookFileUrl');
+        const exisitngCoverImage = document.getElementById('exisitngCoverImage');
+            const existngBookFile = document.getElementById('existngBookFile');
+        let isCoverUploaded = false
+        let isBookUploaded = false
 
-        let coverUrlHold = ""
-        let bookUrlHold = ""
+
+        let coverUrlHold = exisitngCoverImage.src
+            let bookUrlHold = existngBookFile.getAttribute('href');
 
         // Clear previous status messages
         coverUploadStatus.textContent = '';
         bookFileUploadStatus.textContent = '';
-        coverImageUrlInput.value = '';
-        bookFileUrlInput.value = '';
 
         //Validate if files are selected
-        if (!coverImageFile) {
+        /*if (!coverImageFile || !bookFile) {
             alert('Please select a cover image file.');
             return;
         }
-        if (!bookFile) {
+        if () {
             alert('Please select a book file.');
             return;
-        }
+        }*/
 
         //Upload files to Firebase
         try {
-            // Display initial upload status
-            coverUploadStatus.textContent = 'Uploading cover image...';
-            bookFileUploadStatus.textContent = 'Uploading book file...';
-
-            const [coverUrl, bookUrl] = await Promise.all([
-                uploadFileToFirebase(coverImageFile, 'book_covers/', coverUploadStatus),
-                uploadFileToFirebase(bookFile, 'book_files/', bookFileUploadStatus)
-            ]);
-
-            //If any upload returned null or failed, the Promise.all would have rejected.
-            if (!coverUrl) {
-                alert('Cover image upload failed or was cancelled.');
-                return;
-            }
-            if (!bookUrl) {
-                alert('Book file upload failed or was cancelled.');
-                return;
+            if (coverImageFile) {
+                    coverUploadStatus.textContent = 'Uploading cover image...';
+                    const coverUrl = await uploadFileToFirebase(coverImageFile, 'book_covers/', coverUploadStatus);
+                    if (!coverUrl) {
+                        alert('Cover image upload failed or was cancelled.');
+                        return;
+                    }
+                    coverImageUrlInput.value = coverUrl;
+                    coverUrlHold = coverUrl;
+                    isCoverUploaded = true
             }
 
-            coverImageUrlInput.value = coverUrl; //Set hidden field with obtained URL
-            bookFileUrlInput.value = bookUrl;   //Set hidden field with obtained URL
-            coverUrlHold= coverUrl;//Set hold variable
-            bookUrlHold= bookUrl//Set hold variable
+            if (bookFile) {
+                // Display initial upload status
+
+                bookFileUploadStatus.textContent = 'Uploading book file...';
+
+                const bookUrl = await uploadFileToFirebase(bookFile, 'book_files/', bookFileUploadStatus);
+
+                //If any upload returned null or failed, the Promise.all would have rejected.
+
+                if (!bookUrl) {
+                    alert('Book file upload failed or was cancelled.');
+                    return;
+                }
+
+                //Set hidden field with obtained URL
+                bookFileUrlInput.value = bookUrl;   //Set hidden field with obtained URL
+                //Set hold variable
+                bookUrlHold = bookUrl//Set hold variable
+                isBookUploaded = true
+            }
 
         } catch (uploadError) {
             alert('File upload to Firebase failed.');
@@ -295,7 +311,7 @@
 
         // Handling of Api
         try {
-            const response = await fetch('/api/BookApi/add', {
+            const response = await fetch('/api/BookApi/edit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -306,25 +322,37 @@
 
             if (response.ok) {
                 const result = await response.json();
-                alert(result.Message || "Book added successfully!");
+                alert(result.Message || "Book edited successfully!");
                 form.reset(); // Clear the form fields
                 // Reset upload status messages and hidden URLs
                 coverUploadStatus.textContent = '';
                 bookFileUploadStatus.textContent = '';
                 coverImageUrlInput.value = '';
                 bookFileUrlInput.value = '';
+                
             } else {
                 const errorData = await response.json();
                 // Check for 'errors' property for validation messages from ASP.NET Core
                 alert(`Error: ${JSON.stringify(errorData.errors || errorData.Message || "An unknown error occurred on the server.")}`);
                 console.error('Backend error details:', errorData);
+                if(isCoverUploaded){
+                        await deleteCoverUrlFromError(coverUrlHold, coverUploadStatus);
+                }
+                if(isBookUploaded){
+                        await deleteBookUrlFromError(bookFileUploadStatus, bookUrlHold);
+                }
 
-                await deleteUrlFromError(coverUrlHold, coverUploadStatus,  bookFileUploadStatus,bookUrlHold);
+                
             }
         } catch (backendError) {
             console.error('Network or unexpected error during backend submission:', backendError);
             alert('An unexpected error occurred while saving book data. Please try again.');
-            await deleteUrlFromError(coverUrlHold, coverUploadStatus, bookFileUploadStatus, bookUrlHold);
+                if (isCoverUploaded) {
+                    await deleteCoverUrlFromError(coverUrlHold, coverUploadStatus);
+                }
+                if (isBookUploaded) {
+                    await deleteBookUrlFromError(bookFileUploadStatus, bookUrlHold);
+                }
         }
     });
-</script>-->
+</script>
