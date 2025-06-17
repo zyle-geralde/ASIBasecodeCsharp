@@ -15,6 +15,137 @@
 }
 
 
+@* <div class="edit-book-container">
+    <div class="admin-common-content-wrapper">
+        <div class="header-section">
+        <h1>Edit Book</h1>
+        <p>Enter details of the book here.</p>
+    </div>
+
+        <form id="editBookForm" asp-action="EditBook">
+            <input type="hidden" asp-for="BookId" />
+            <input type="hidden" id="coverImageUrl" name="CoverImage" asp-for="CoverImage">
+            <input type="hidden" id="bookFileUrl" name="BookFile" asp-for="BookFile">
+
+            <div class="edit-book-image-and-fields-section">
+                <div class="edit-book-cover-and-browse">
+                    <img src="@Model.CoverImage" id="existingCoverImage" class="edit-book-existing-cover-image" alt="Book Cover" />
+                    <input type="file" id="coverImageFile" accept="image/*" class="edit-book-file-input-hidden" aria-label="Upload Cover Image">
+                    <label for="coverImageFile" class="edit-book-browse-button">BROWSE</label>
+                    <p id="coverUploadStatus" class="edit-book-upload-status"></p>
+                </div>
+
+                <div class="edit-book-main-input-grid">
+                    <div class="edit-book-form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="Title" required asp-for="Title" class="edit-book-input">
+                    </div>
+                    <div class="edit-book-form-group">
+                        <label for="author">Author</label>
+                        <input type="text" id="author" name="Author" asp-for="Author" class="edit-book-input">
+                    </div>
+                    <div class="edit-book-form-group">
+                        <label for="isbn10">ISBN</label>
+                        <input type="text" id="isbn10" name="ISBN10" asp-for="ISBN10" class="edit-book-input">
+                    </div>
+                    <div class="edit-book-form-group">
+                        <label for="language">Language</label>
+                        <select id="language" name="Language" asp-for="Language" class="edit-book-select">
+                            <option value="">Select language</option>
+                            <option value="English">English</option>
+                            <option value="Filipino">Filipino</option>
+                            <option value="Spanish">Spanish</option>
+
+                        </select>
+                    </div>
+
+
+                    <div class="edit-book-form-group">
+                        <label for="isbn13">ISBN13:</label>
+                        <input type="text" id="isbnthitheen" name="ISBN13" asp-for="ISBN13" class="edit-book-input">
+                    </div>
+                    <div class="edit-book-form-group">
+                        <label for="subtitle">Subtitle:</label>
+                        <input type="text" id="subtitle" name="Subtitle" asp-for="Subtitle" class="edit-book-input">
+                    </div>
+                    <div class="edit-book-form-group">
+                        <label for="edition">Edition:</label>
+                        <input type="text" id="edition" name="Edition" asp-for="Edition" class="edit-book-input">
+                    </div>
+                    <div class="edit-book-form-group">
+                        <label for="seriesName">Series Name:</label>
+                        <input type="text" id="seriesName" name="SeriesName" asp-for="SeriesName" class="edit-book-input">
+                    </div>
+                    <div class="edit-book-form-group">
+                        <label for="seriesOrder">Series Order:</label>
+                        <input type="number" id="seriesOrder" name="SeriesOrder" asp-for="SeriesOrder" class="edit-book-input">
+                    </div>
+                    <div class="edit-book-form-group edit-book-full-width">
+                        <label for="seriesDescription">Series Description:</label>
+                        <textarea id="seriesDescription" name="SeriesDescription" asp-for="SeriesDescription" class="edit-book-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="edit-book-section-heading">Details</h3>
+            <div class="edit-book-details-grid">
+                <div class="edit-book-form-group edit-book-date-group">
+                    <label for="publicationDate">Published Date</label>
+                    <input type="date" id="publicationDate" name="PublicationDate" asp-for="PublicationDate" class="edit-book-input edit-book-date-input">
+
+                </div>
+                <div class="edit-book-form-group">
+                    <label for="numberOfPages">Pages</label>
+                    <input type="number" id="numberOfPages" name="NumberOfPages" asp-for="NumberOfPages" class="edit-book-input">
+                </div>
+                <div class="edit-book-form-group">
+                    <label for="secondaryLanguage">Language</label>
+                    <select id="secondaryLanguage" name="SecondaryLanguage" class="edit-book-select">
+                        <option value="">Select language</option>
+                        <option value="English">English</option>
+                        <option value="Filipino">Filipino</option>
+                        <option value="Spanish">Spanish</option>
+                    </select>
+                </div>
+                <div class="edit-book-form-group">
+                    <label for="publisher">Published by</label>
+                    <input type="text" id="publisher" name="Publisher" asp-for="Publisher" class="edit-book-input">
+                </div>
+
+
+                <div class="edit-book-form-group">
+                    <label for="publicationLocation">Publication Location:</label>
+                    <input type="text" id="publicationLocation" name="PublicationLocation" asp-for="PublicationLocation" class="edit-book-input">
+                </div>
+            </div>
+
+            <div class="edit-book-form-group edit-book-full-width edit-book-summary-group">
+                <label for="description">Summary</label>
+                <textarea id="description" name="Description" asp-for="Description" class="edit-book-textarea"></textarea>
+            </div>
+
+
+            <div class="edit-book-book-file-upload-section">
+                <h3 class="edit-book-section-heading">Book File Upload (e.g., PDF)</h3>
+                <a href="@Model.BookFile" target="_blank" id="existingBookFile" class="edit-book-existing-file-link">Open Book</a>
+                <div class="edit-book-form-group edit-book-full-width">
+                    <label for="bookFile">Select Book File:</label>
+                    <input type="file" id="bookFile" accept=".pdf,.epub" class="edit-book-file-input">
+                    <p id="bookFileUploadStatus" class="edit-book-upload-status" style="color: gray;"></p>
+                </div>
+            </div>
+
+            <div class="edit-book-button-group">
+            <button type="button" class="edit-book-cancel-button" onclick="location.href='/Book/ListBook';">CANCEL</button>
+
+                <button type="submit" class="edit-book-save-changes-button">SAVE CHANGES</button>
+            </div>
+        </form>
+    </div>
+    </div> *@
+
+
+
 <div class="add-book-container">
     <div class="header-section">
         <h1>Edit Book</h1>
