@@ -67,5 +67,6 @@ namespace ASI.Basecode.Services.ServiceModels
         [StringLength(100)]
         public string? Edition { get; set; }
         public string AdminId { get; set; }
+        public string? UpdatedByAdminId { get; set; }
     }
 }
