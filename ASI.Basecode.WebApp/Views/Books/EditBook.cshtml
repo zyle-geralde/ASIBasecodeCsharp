@@ -15,7 +15,7 @@
 }
 
 
-@* <div class="edit-book-container">
+<div class="edit-book-container">
     <div class="admin-common-content-wrapper">
         <div class="header-section">
         <h1>Edit Book</h1>
@@ -24,8 +24,8 @@
 
         <form id="editBookForm" asp-action="EditBook">
             <input type="hidden" asp-for="BookId" />
-            <input type="hidden" id="coverImageUrl" name="CoverImage" asp-for="CoverImage">
-            <input type="hidden" id="bookFileUrl" name="BookFile" asp-for="BookFile">
+            <input type="hidden" id="coverImageUrl" name="CoverImageUrl" asp-for="CoverImage">
+            <input type="hidden" id="bookFileUrl" name="BookFileUrl" asp-for="BookFile">
 
             <div class="edit-book-image-and-fields-section">
                 <div class="edit-book-cover-and-browse">
@@ -142,11 +142,11 @@
             </div>
         </form>
     </div>
-    </div> *@
+    </div>
 
 
 
-<div class="add-book-container">
+@* <div class="add-book-container">
     <div class="header-section">
         <h1>Edit Book</h1>
         <p>Enter details of the book here.</p>
@@ -234,7 +234,7 @@
 
         <button type="submit">Edit Book</button>
     </form>
-</div>
+</div> *@
 
 
 <script type="module">
@@ -365,7 +365,7 @@
     }
 
     //Form Submission Logic
-    document.getElementById('addBookForm').addEventListener('submit', async (event) => {
+    document.getElementById('editBookForm').addEventListener('submit', async (event) => {
         event.preventDefault(); //Prevent default form submission initially
 
         const form = event.target;
@@ -376,8 +376,8 @@
         const bookFileUploadStatus = document.getElementById('bookFileUploadStatus');
         const coverImageUrlInput = document.getElementById('coverImageUrl');
         const bookFileUrlInput = document.getElementById('bookFileUrl');
-        const exisitngCoverImage = document.getElementById('exisitngCoverImage');
-        const existngBookFile = document.getElementById('existngBookFile');
+        const existingCoverImage = document.getElementById('existingCoverImage');
+        const existingBookFile = document.getElementById('existingBookFile');
 
 
         //Indicated wether a new cover or book is uploaded
@@ -386,12 +386,12 @@
 
         //cover and book url added from add book
         //will be used to delete the previous url if a new one is added.
-        const coverImageFromAddBook = exisitngCoverImage.src
-        const bookFilFromAddBook = existngBookFile.getAttribute('href');
+        const coverImageFromAddBook = existingCoverImage.src
+        const bookFilFromAddBook = existingBookFile.getAttribute('href');
 
         //holds the current Url uploded
-        let coverUrlHold = exisitngCoverImage.src
-        let bookUrlHold = existngBookFile.getAttribute('href');
+        let coverUrlHold = existingCoverImage.src
+        let bookUrlHold = existingBookFile.getAttribute('href');
 
         // Clear previous status messages
         coverUploadStatus.textContent = '';
