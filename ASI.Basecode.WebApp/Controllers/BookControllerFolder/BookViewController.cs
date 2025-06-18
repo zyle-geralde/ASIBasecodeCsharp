@@ -7,6 +7,7 @@ using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Linq;
 
 
 namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
@@ -46,7 +47,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [AllowAnonymous]
         public async Task<IActionResult> EditBook(string bookId)
         {
-           Book book = await _bookService.GetBookById(bookId);
+           BookViewModel book = await _bookService.GetBookById(bookId);
            return View("~/Views/Books/EditBook.cshtml",book);
         }
 
@@ -55,7 +56,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [AllowAnonymous]
         public async Task<IActionResult> GetBook(string bookId)
         {
-            Book book = await _bookService.GetBookById(bookId);
+            BookViewModel book = await _bookService.GetBookById(bookId);
             return View("~/Views/Books/BookDetails.cshtml", book);
         }
 
@@ -80,6 +81,36 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             }
 
             return View("~/Views/Books/AddBook.cshtml", book);
+        }
+
+        [HttpPost]
+        [Route("Book/EditBook")]
+        [AllowAnonymous]
+        public async Task<IActionResult> EditBook(BookViewModel book)
+        {
+
+            Console.WriteLine("TItle");
+            Console.WriteLine(book.Title);
+            Console.WriteLine("Author");
+            Console.WriteLine(book.Author);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _bookService.EditBook(book);
+                    return Ok(new { Message = "Book Edited successfully!" });
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"Error updating book: {ex.Message}");
+                    return StatusCode(500, $"Error updating book: {ex.Message}");
+                }
+            }
+
+
+            //return bad request if ModelState is not valid
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            return BadRequest(new { errors = errors, Message = "Validation failed." });
         }
     }
 }

@@ -48,9 +48,7 @@ namespace ASI.Basecode.Services.Services
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
                 UploadDate = DateTime.UtcNow,
                 UpdatedDate = DateTime.UtcNow,
-                PublicationDate = !string.IsNullOrWhiteSpace(request.PublicationDate)
-                                  ? DateTime.ParseExact(request.PublicationDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-                                  : (DateTime?)null,
+                PublicationDate = request.PublicationDate,
 
                 // Handle comma-separated strings
                 Publisher = request.Publisher, // Store as string
@@ -79,9 +77,42 @@ namespace ASI.Basecode.Services.Services
             return await _bookRepository.GetAllBooks();
         }
 
-        public async Task<Book?> GetBookById(string bookId)
+        public async Task<BookViewModel?> GetBookById(string bookId)
         {
-            return await _bookRepository.GetBookById(bookId);
+            Book requestBook= await _bookRepository.GetBookById(bookId);
+            var book = new BookViewModel
+            {
+                BookId = requestBook.BookId,
+                Title = requestBook.Title,
+                Subtitle = requestBook.Subtitle,
+                Description = requestBook.Description,
+                NumberOfPages = requestBook.NumberOfPages,
+                Language = requestBook.Language,
+                SeriesName = requestBook.SeriesName,
+                SeriesDescription = requestBook.SeriesDescription,
+                SeriesOrder = requestBook.SeriesOrder,
+
+                // Firebase Storage URLs are directly mapped
+                CoverImageUrl = requestBook.CoverImage,
+                BookFileUrl = requestBook.BookFile,
+
+                // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
+                UpdatedDate = requestBook.UpdatedDate,
+                PublicationDate = requestBook.PublicationDate,
+
+
+                // Handle comma-separated strings
+                Publisher = requestBook.Publisher, // Store as string
+                PublicationLocation = requestBook.PublicationLocation, // Store as string
+                Author = requestBook.Author, // Store as string
+                ISBN10 = requestBook.ISBN10,
+                ISBN13 = requestBook.ISBN13,
+                Edition = requestBook.Edition,
+                AdminId = "admin1",
+                UpdatedByAdminId = "Logged Admin"
+            };
+            //return await _bookRepository.GetBookById(bookId);
+            return book;
         }
 
         public async Task EditBook(BookViewModel request)
@@ -105,9 +136,7 @@ namespace ASI.Basecode.Services.Services
 
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
                 UpdatedDate = DateTime.UtcNow,
-                PublicationDate = !string.IsNullOrWhiteSpace(request.PublicationDate)
-                                 ? DateTime.ParseExact(request.PublicationDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-                                 : (DateTime?)null,
+                PublicationDate = request.PublicationDate,
 
                 // Handle comma-separated strings
                 Publisher = request.Publisher, // Store as string
