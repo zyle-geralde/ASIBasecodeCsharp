@@ -26,6 +26,8 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly TokenProviderOptionsFactory _tokenProviderOptionsFactory;
         private readonly IConfiguration _appConfiguration;
         private readonly IUserService _userService;
+        private readonly IPersonProfileService _personProfileService;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -46,6 +48,7 @@ namespace ASI.Basecode.WebApp.Controllers
                             IConfiguration configuration,
                             IMapper mapper,
                             IUserService userService,
+                            IPersonProfileService profileService,
                             TokenValidationParametersFactory tokenValidationParametersFactory,
                             TokenProviderOptionsFactory tokenProviderOptionsFactory) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
@@ -55,6 +58,9 @@ namespace ASI.Basecode.WebApp.Controllers
             this._tokenValidationParametersFactory = tokenValidationParametersFactory;
             this._appConfiguration = configuration;
             this._userService = userService;
+            this._personProfileService = profileService;
+            this._mapper = mapper;
+
         }
 
         /// <summary>
@@ -118,11 +124,26 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Register(UserViewModel model)
+        public async Task<IActionResult> Register(UserViewModel model)
         {
             try
             {
-                _userService.AddUser(model);
+                var user = await _userService.AddUser(model);
+                var profile = new PersonProfile
+                {
+                    ProfileID = user.UserId,
+                    FirstName = model.Name,        // or model.FirstName if separate
+                    LastName = null,
+                    MiddleName = null,
+                    Suffix = null,
+                    Gender = null,
+                    BirthDate = null,
+                    Location = null,
+                    Role = "User",
+                    AboutMe = string.Empty
+                };
+                await _personProfileService.AddPersonProfile(profile);
+
                 return RedirectToAction("Login", "Account");
             }
             catch(InvalidDataException ex)
@@ -131,7 +152,8 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             catch(Exception ex)
             {
-                TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
+                TempData["ErrorMessage"] = ex;
+                //TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
             }
             return View();
         }
