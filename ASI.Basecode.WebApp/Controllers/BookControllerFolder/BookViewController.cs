@@ -79,7 +79,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 }
             }
 
-            return View(book);
+            return View("~/Views/Books/AddBook.cshtml", book);
         }
     }
 }

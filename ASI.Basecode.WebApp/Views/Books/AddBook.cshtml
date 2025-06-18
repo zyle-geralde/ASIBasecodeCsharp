@@ -591,13 +591,7 @@
                 return;
             }
             try {
-                // Get a reference to the file from the download URL
-                // Note: This relies on the download URL containing enough info to reconstruct the storage path.
-                // Firebase storage paths are typically like "gs://bucket/path/to/file.jpg"
-                // Or "https://firebasestorage.googleapis.com/.../path%2Fto%2Ffile.jpg?alt=media..."
-                // You might need to parse the path from the URL.
-                // A safer way is to store the actual 'path' when uploading and use that for deletion.
-                // For now, assuming ref(storage, fileUrl) works directly with the download URL.
+
                 const fileRef = ref(storage, fileUrl);
                 await deleteObject(fileRef);
                 console.log(`Successfully deleted file: ${fileUrl}`);
@@ -618,9 +612,9 @@
             // Generate New File Name
             const timestamp = new Date().getTime();
             const randomString = Math.random().toString(36).substring(2, 8);
-            const uniqueFileName = `${path}${timestamp}-${randomString}-${file.name}`; // Prepend path here for full path
+            const uniqueFileName = `${path}${timestamp}-${randomString}-${file.name}`; // Unique Path
 
-            const storageRef = ref(storage, uniqueFileName); // Use the full unique path
+            const storageRef = ref(storage, uniqueFileName); // Use full unique path
             const uploadTask = uploadBytesResumable(storageRef, file);
 
             return new Promise((resolve, reject) => {
@@ -649,13 +643,10 @@
             });
         }
 
-        // --- NEW MVC-STYLE SUBMISSION LOGIC ---
-        // We need to upload files and then let the form submit.
-        // This means we might temporarily disable the submit button,
-        // upload files, populate hidden fields, then re-enable and submit programmatically.
+
         document.getElementById('addBookForm').addEventListener('submit', async (event) => {
             // Prevent the default HTML form submission initially.
-            // We need to upload files to Firebase first.
+            
             event.preventDefault();
 
             const form = event.target;
@@ -668,15 +659,15 @@
             const coverImageUrlInput = document.getElementById('coverImageUrl');
             const bookFileUrlInput = document.getElementById('bookFileUrl');
 
-            // Save initial state for potential rollback if backend fails
+            //Save initial state for rollback if backend fails
             const originalCoverImageUrl = coverImageUrlInput.value;
             const originalBookFileUrl = bookFileUrlInput.value;
 
-            // Clear previous status messages (unless displaying existing files)
-            if (!coverImageFile) { // Only clear if no new file is chosen
+            // Clear previous status messages
+            if (!coverImageFile) { 
                 coverUploadStatus.textContent = 'Max file size: 1GB ...';
             }
-            if (!bookFile) { // Only clear if no new file is chosen
+            if (!bookFile) {
                 bookFileUploadStatus.textContent = 'Max file size: 1GB ...';
             }
 
@@ -713,28 +704,22 @@
                     } else {
                         throw new Error('Book file upload failed.');
                     }
-                } else if (bookFileUrlInput.value === "") { // Ensure a book file is present if required
+                } else if (bookFileUrlInput.value === "") { //Ensure a book file is present if required
                     alert('Please select a book file.');
                     submitButton.disabled = false;
                     submitButton.textContent = 'ADD BOOK';
                     return;
                 }
 
-                // If uploads are successful, allow the form to submit naturally
-                // This will trigger the MVC POST action
+                // If uploads are successful, submit form
+            
                 form.submit();
 
             } catch (error) {
                 console.error('Submission error:', error);
                 alert(`An error occurred during file upload: ${error.message}. Please try again.`);
 
-                // Rollback: If an upload failed, or if this is an "edit" scenario,
-                // consider deleting the newly uploaded files if the overall submission fails.
-                // This is a complex rollback. For a simple MVC form, we might just re-enable the button.
-                // For a more robust rollback, you'd need the actual Firebase paths (not just URLs) to delete.
-                // For now, let's just re-enable the button.
-
-                // If you *did* want to try to delete specifically the *newly uploaded* files:
+                // delete Uploaded files if server error occurs
                 if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
                     await deleteFileFromFirebase(uploadedCoverUrl);
                 }
