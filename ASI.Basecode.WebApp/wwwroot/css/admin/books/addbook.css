@@ -1,45 +1,42 @@
-﻿.main-content {
-    margin-top: 60px;
-    margin-left: 256px;
-    margin-right: auto;
-    flex-grow: 1;
-    padding: 0px;
-    overflow-y: auto;
-    overflow-x: auto;
-    min-width: 0;
-    box-sizing: border-box;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
+﻿
 
-.add-book-container {
-    background-color: #fff;
-    padding: 24px;
-    margin: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 0px;
-}
 
-.add-book-form-title {
+/*.add-book-container {
+   
+
+    flex: 1;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    padding: 25px;
+}
+*/
+/*.add-book-form-title {
     font-size: 30px;
     font-weight: 700;
     color: #374151;
     margin-bottom: 16px;
-}
+}*/
 
-.add-book-form-subtitle {
+/*.add-book-form-subtitle {
     font-size: 16px;
     color: #6B7280;
     margin-bottom: 32px;
-}
+}*/
+
+/*.content-wrapper {
+    flex: 1; 
+    padding: 3rem;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}*/
 
 .add-book-form-section-title {
     font-size: 20px;
     font-weight: 600;
-    color: #374151;
+    color: #647D7F;
     margin-top: 32px;
     margin-bottom: 16px;
 }
@@ -64,14 +61,15 @@
     margin-bottom: 0;
 }
 
-.add-book-form-label {
-    display: block;
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 4px;
-}
 
+/*input[type="text"], input[type="date"], input[type="number"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+*/
 .add-book-form-input,
 .add-book-form-textarea,
 .add-book-form-select {
@@ -84,9 +82,7 @@
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     font-size: 16px;
     line-height: 1.5;
-    color: #374151;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    color: #757575; 
     appearance: none;
     box-sizing: border-box;
 }
@@ -123,26 +119,36 @@
 }
 
 .add-book-browse-button {
-    margin-left: 12px;
-    padding: 8px 16px;
-    background-color: #5f7c78;
-    color: #fff;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
+    position: absolute;
+    right: 30px;
+    margin-top: 32px;
+    transform: translateY(-50%);
+    background: #647D7F;
+    color: white;
+    padding: 0.5rem 1.25rem;
     border: none;
-    flex-shrink: 0;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
 }
 
     .add-book-browse-button:hover {
-        background-color: #d1d5db;
+        background-color: #435c5e;
     }
 
 .add-book-upload-status {
     color: #6b7280;
     font-size: 12px;
     margin-top: 8px;
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
 }
+
+    .add-book-upload-status.error-message {
+        color: red; 
+    }
 
 
 .button-container {
@@ -209,4 +215,35 @@
     width: 20px;
     height: 20px;
 }
+
+.add-book-form-input[type="date"] {
+    cursor: pointer;
+}
+
+    .add-book-form-input[type="date"]::-webkit-calendar-picker-indicator {
+        /* Chrome, Safari, Edge*/
+        opacity: 1;
+        display: block;
+        cursor: pointer;
+        font-size: 1.5em;
+        color: #647D7F;
+        filter: invert(30%) sepia(10%) saturate(1000%) hue-rotate(180deg) brightness(90%) contrast(80%);
+    }
+
+    .add-book-form-input[type="date"]::-moz-calendar-picker-indicator {
+        /*Firefox */
+        opacity: 1;
+        display: block;
+        cursor: pointer;
+        font-size: 1.5em;
+        color: #647D7F;
+    }
+
+
+    .add-book-form-input[type="date"]::-ms-reveal {
+        /*EDGE - older version*/
+        display: none;
+    }
+
+
 
