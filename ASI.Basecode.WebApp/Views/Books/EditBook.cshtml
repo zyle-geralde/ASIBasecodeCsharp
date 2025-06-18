@@ -284,16 +284,6 @@
             const fileName = this.files[0] ? this.files[0].name : 'No file selected';
             document.getElementById('bookFileNameDisplay').value = fileName;
         });
-        
-        // document.getElementById('coverImageFile').addEventListener('change', function () {
-        //     const fileName = this.files[0] ? this.files[0].name : 'Text';
-        //     document.getElementById('coverFileNameDisplay').value = fileName;
-        // });
-
-        // document.getElementById('bookFile').addEventListener('change', function () {
-        //     const fileName = this.files[0] ? this.files[0].name : 'Text';
-        //     document.getElementById('bookFileNameDisplay').value = fileName;
-        // });
 
 
         // Your Firebase configuration
@@ -455,9 +445,9 @@
         });
 
         // Event listener for "OK" button in success modal to redirect
-        document.getElementById('okSuccessModal').addEventListener('click', () => {
+        /*document.getElementById('okSuccessModal').addEventListener('click', () => {
             window.location.href = "/Book/ListBook";
-        });
+        });*/
 
         if (successModalElement) {
             successModalElement.addEventListener('hidden.bs.modal', () => {
@@ -470,6 +460,7 @@
 
         // --- Form Submission Logic ---
         async function processFormSubmission() {
+            
             const form = editBookForm;
             const coverImageFile = document.getElementById('coverImageFile').files[0];
             const bookFile = document.getElementById('bookFile').files[0];
@@ -547,6 +538,7 @@
             }
 
             try {
+                console.log("Hello")
                 const response = await fetch('/api/BookApi/edit', {
                     method: 'POST',
                     headers: {
@@ -554,6 +546,7 @@
                     },
                     body: JSON.stringify(bookData)
                 });
+       
 
                 if (response.ok) {
                     if (successModal) {
@@ -597,6 +590,7 @@
                     }
                 }
             } catch (backendError) {
+                console.log("Hello Error")
                 console.error('Network or unexpected error during backend submission:', backendError);
                 alert('An unexpected error occurred while saving book data. Please try again.');
                 // Rollback newly uploaded files if network or unexpected error
