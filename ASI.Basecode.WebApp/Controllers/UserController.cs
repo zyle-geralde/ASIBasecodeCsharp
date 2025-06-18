@@ -29,6 +29,12 @@ namespace ASI.Basecode.WebApp.Controllers
             return View();
         }
 
+        [AllowAnonymous] //To be removed if the flow is finalized
+        public IActionResult ViewUser()
+        {
+            return View();
+        }
+
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
