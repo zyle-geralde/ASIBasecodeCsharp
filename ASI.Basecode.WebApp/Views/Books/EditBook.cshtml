@@ -720,7 +720,7 @@
                 // Reset success modal content in case it was used for an error previously
                 document.querySelector('#successModal .modal-title').textContent = 'Editted!';
                 document.querySelector('#successModal .modal-body p').textContent = 'Book Editted successfully!';
-                document.querySelector('#successModal .success-icon').innerHTML = '<i class="fas fa-check"></i>'; // Green check icon
+                document.querySelector('#successModal .success-icon').innerHTML = '<i class="fas fa-check"></i>'; 
                 successModal.show();
                 // Hide confirmation modal if it's still open
                 const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
@@ -729,7 +729,7 @@
                 }
 
                 // Set up a listener for when the success modal is hidden
-                document.getElementById('successModal').addEventListener('hidden.bs.modal', async () => { // <--- Changed this line to async
+                document.getElementById('successModal').addEventListener('hidden.bs.modal', async () => { 
                     form.reset(); // Clear the form fields
                     // Reset upload status messages and hidden URLs
                     coverUploadStatus.textContent = '';
@@ -752,7 +752,7 @@
                 const errorMessage = JSON.stringify(errorData.errors || errorData.Message || "An unknown error occurred on the server.");
                 document.querySelector('#successModal .modal-title').textContent = 'Error!';
                 document.querySelector('#successModal .modal-body p').textContent = `Failed to edit book: ${errorMessage}`;
-                document.querySelector('#successModal .success-icon').innerHTML = '<i class="fas fa-times" style="color: #dc3545;"></i>'; // Red X icon
+                document.querySelector('#successModal .success-icon').innerHTML = '<i class="fas fa-times" style="color: #dc3545;"></i>'; 
                 const successModal = new bootstrap.Modal(document.getElementById('successModal'));
                 successModal.show();
 
@@ -770,7 +770,7 @@
             // alert('An unexpected error occurred while saving book data. Please try again.');
             document.querySelector('#successModal .modal-title').textContent = 'Error!';
             document.querySelector('#successModal .modal-body p').textContent = 'An unexpected error occurred while saving book data. Please try again.';
-            document.querySelector('#successModal .success-icon').innerHTML = '<i class="fas fa-times" style="color: #dc3545;"></i>'; // Red X icon
+            document.querySelector('#successModal .success-icon').innerHTML = '<i class="fas fa-times" style="color: #dc3545;"></i>'; 
             const successModal = new bootstrap.Modal(document.getElementById('successModal'));
             successModal.show();
 
