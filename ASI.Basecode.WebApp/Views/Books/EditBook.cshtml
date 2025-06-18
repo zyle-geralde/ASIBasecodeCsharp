@@ -186,7 +186,7 @@
         <p>Enter details of the book here.</p>
     </div>
 
-    <form id="addBookForm" asp-action="EditBook" style="margin-left:400px;">
+    <form id="addBookForm" asp-action="EditBook">
         <input type="hidden" asp-for="BookId" />
         <div>
             <label for="title">Title:</label>
@@ -411,11 +411,10 @@
         }
 
         // --- Bootstrap Modal Initialization ---
-        // Get Bootstrap modal instances
+       
         const confirmationModalElement = document.getElementById('confirmationModal');
         const successModalElement = document.getElementById('successModal');
-        
-        // Ensure elements exist before creating Bootstrap Modal instances
+
         let confirmationModal;
         let successModal;
 
@@ -440,43 +439,30 @@
         let bookUrlHold;
         let initialCoverUrl;
         let initialBookFileUrl;
-        
-        // Get initial values from the Model. These are the *original* URLs of the files on the server.
-        // You need to ensure these are correctly rendered in your HTML for this to work.
-        // Example: <input type="hidden" id="coverImageUrl" name="CoverImageUrl" value="@Model.CoverImage">
-        // And for existingBookFile, if you have an <a> tag: <a href="@Model.BookFile" id="existingBookFile">...</a>
-        // If your @Model.CoverImage and @Model.BookFile are directly injected into the page, use them here.
-        initialCoverUrl = '@Model.CoverImage'; 
+
+     
+       
+        initialCoverUrl = '@Model.CoverImage';
         initialBookFileUrl = '@Model.BookFile';
 
 
-        // Event listener for the "SAVE CHANGES" button to show the confirmation modal
-        // This button now uses Bootstrap's data attributes for toggling the modal
-        // <button type="button" class="edit-book-save-changes-button" data-bs-toggle="modal" data-bs-target="#confirmationModal">SAVE CHANGES</button>
-
-        // Event listener for the "Save Changes" button *inside* the confirmation modal
-        // This is where the form submission should be triggered.
+        
         document.getElementById('confirmEditAction').addEventListener('click', async () => {
             if (confirmationModal) {
-                 confirmationModal.hide(); // Hide the confirmation modal immediately
+                confirmationModal.hide(); // Hide the confirmation modal immediately
             }
             await processFormSubmission(); // Proceed with form submission
         });
 
         // Event listener for "OK" button in success modal to redirect
-        // This button uses data-bs-dismiss="modal" in HTML, but we also want to redirect.
         document.getElementById('okSuccessModal').addEventListener('click', () => {
-            window.location.href = "/Book/ListBook"; // Redirect after OK is clicked
+            window.location.href = "/Book/ListBook";
         });
 
-        // Listen for Bootstrap's 'hidden.bs.modal' event on the success modal
-        // This ensures redirection happens if the modal is closed by pressing ESC or clicking backdrop
         if (successModalElement) {
             successModalElement.addEventListener('hidden.bs.modal', () => {
-                // Only redirect if the OK button wasn't explicitly clicked already
-                // (Though with window.location.href, the page will reload anyway, so this is mostly for robustness)
                 if (window.location.pathname !== "/Book/ListBook") {
-                     window.location.href = "/Book/ListBook";
+                    window.location.href = "/Book/ListBook";
                 }
             });
         }
@@ -551,15 +537,13 @@
             bookData.CoverImage = coverImageUrlInput.value;
             bookData.BookFile = bookFileUrlInput.value;
 
-            // Double-check URLs are populated (especially critical if no new files were selected but previous ones existed)
-            // Ensure `CoverImage` and `BookFile` in `bookData` are correctly set from the hidden inputs.
             if (!bookData.CoverImage) { // If no new cover, and old one was cleared, this is problematic
-                 console.warn("CoverImage URL is missing in bookData.");
-                 // You might want to handle this as an error or assume it's intentional deletion.
+                console.warn("CoverImage URL is missing in bookData.");
+
             }
             if (!bookData.BookFile) {
-                 console.warn("BookFile URL is missing in bookData.");
-                 // Similar handling
+                console.warn("BookFile URL is missing in bookData.");
+                
             }
 
             try {
@@ -572,7 +556,6 @@
                 });
 
                 if (response.ok) {
-                    // Success! Show the success modal.
                     if (successModal) {
                         successModal.show();
                     } else {
@@ -581,7 +564,7 @@
                         window.location.href = "/Book/ListBook";
                     }
 
-                    // Clear file inputs display (but keep hidden URLs for potential future use or to avoid re-uploading on subsequent edits)
+                    
                     document.getElementById('coverImageFile').value = '';
                     const coverFileNameDisplay = document.getElementById('coverFileNameDisplay');
                     if (coverFileNameDisplay) {
