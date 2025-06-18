@@ -32,15 +32,15 @@
                         <span asp-validation-for="GenreName" class="text-danger"></span>
                     </div>
                     <div class="add-book-form-group">
-                        <label for="subtitle">Subtitle</label>
+                        <label for="subtitle">Description</label>
                         <input type="text" id="subtitle" name="Subtitle" class="add-book-form-input" value="@Model?.GenreDescription">
                         <span asp-validation-for="GenreDescription" class="text-danger"></span>
                     </div>
                 </div>
 
-            <h3 class="add-book-form-section-title">Cover Image Upload</h3>
+            <h3 class="add-book-form-section-title">Genre Image Upload</h3>
             <div class="add-book-form-group add-book-form-grid-span-2">
-                <label for="coverImageFile">Select Cover Image</label>
+                <label for="coverImageFile">Select Genre Image</label>
                 <div class="add-book-file-upload-wrapper">
                     <input type="text" class="add-book-file-input-text" readonly id="coverFileNameDisplay" value="@Model?.GenreImageUrl">
                     <input type="file" id="coverImageFile" accept="image/*" name="CoverImageFile" style="display: none;" required>
@@ -61,53 +61,3 @@
             </form>
             </div>
         </div>
-
-        <div class="modal fade confirmation-modal" id="addBookConfirmationModal" tabindex="-1" aria-labelledby="addBookConfirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title" id="addBookConfirmationModalLabel">Add Book Confirmation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <p class="mb-4">Are you sure you want to add this book?</p>
-                <div class="d-flex justify-content-center gap-2">
-                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger px-4" id="confirmAddBookAction">Add Book</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade success-modal" id="addBookSuccessModal" tabindex="-1" aria-labelledby="addBookSuccessModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body text-center py-4">
-                <div class="success-icon mb-3">
-                    <i class="fas fa-check"></i>
-                </div>
-                <h5 class="modal-title mb-2">Added!</h5>
-                <p class="mb-4">Book added successfully!</p>
-                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" onclick="window.location.href='/Book/ListBook';">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="addBookErrorModal" tabindex="-1" aria-labelledby="addBookErrorModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addBookErrorModalLabel">Error</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p id="addBookErrorMessage"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
