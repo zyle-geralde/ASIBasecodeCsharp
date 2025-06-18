@@ -33,7 +33,7 @@
                     <img src="@Model.CoverImageUrl" id="existingCoverImage" class="edit-book-existing-cover-image" alt="Book Cover" />
                     <input type="file" id="coverImageFile" accept="image/*" class="edit-book-file-input-hidden" aria-label="Upload Cover Image">
                     <label for="coverImageFile" class="edit-book-browse-button">BROWSE</label>
-                    <input type="text" id="coverFileNameDisplay" class="edit-book-file-name-display" readonly placeholder="No file chosen">
+                    @* <input type="text" id="coverFileNameDisplay" class="edit-book-file-name-display" readonly placeholder="No file chosen"> *@
                     <p id="coverUploadStatus" class="edit-book-upload-status"></p>
                 </div>
 
@@ -133,7 +133,7 @@
                 <div class="edit-book-form-group edit-book-full-width">
                     <label for="bookFile">Select Book File:</label>
                     <input type="file" id="bookFile" accept=".pdf,.epub" class="edit-book-file-input">
-                    <input type="text" id="bookFileNameDisplay" class="edit-book-file-name-display" readonly placeholder="No file chosen">
+                    @* <input type="text" id="bookFileNameDisplay" class="edit-book-file-name-display" readonly placeholder="No file chosen"> *@
                     <p id="bookFileUploadStatus" class="edit-book-upload-status" style="color: gray;"></p>
                 </div>
             </div>
@@ -189,12 +189,12 @@
 
         document.getElementById('coverImageFile').addEventListener('change', function () {
             const fileName = this.files[0] ? this.files[0].name : 'No file selected';
-            document.getElementById('coverFileNameDisplay').value = fileName; 
+            // document.getElementById('coverFileNameDisplay').value = fileName; 
         });
 
         document.getElementById('bookFile').addEventListener('change', function () {
             const fileName = this.files[0] ? this.files[0].name : 'No file selected';
-            document.getElementById('bookFileNameDisplay').value = fileName;
+            // document.getElementById('bookFileNameDisplay').value = fileName;
         });
 
 

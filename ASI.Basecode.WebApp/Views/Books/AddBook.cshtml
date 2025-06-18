@@ -41,7 +41,6 @@
                         <label for="publicationDate">Publication Date</label>
                         <div class="add-book-date-input-wrapper">
                             <input type="date" id="publicationDate" name="PublicationDate" class="add-book-form-input" value="Model?.PublicationDate" />
-                           <!-- <svg class="add-book-date-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h.01M17 11h.01M7 15h.01M17 15h.01M12 18h.01M3 21h18a2 2 0 002-2V7a2 2 0 00-2-2H3a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> -->
                         </div>
                         <span asp-validation-for="PublicationDate" class="text-danger"></span>
                     </div>
@@ -149,7 +148,11 @@
                     <input type="file" id="coverImageFile" accept="image/*" name="CoverImageFile" style="display: none;" required>
                     <button type="button" class="add-book-browse-button" onclick="document.getElementById('coverImageFile').click();">BROWSE</button>
                 </div>
-                <p id="coverUploadStatus" class="add-book-upload-status">Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG</p>
+                @* <p id="coverUploadStatus" class="add-book-upload-status">Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG</p> *@
+                <p id="coverUploadStatus" class="add-book-upload-status">
+    <span class="file-size-info">Max file size: 1GB</span>
+    <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
+</p>
                 <input type="hidden" id="coverImageUrl" name="CoverImageUrl">
             </div>
 
@@ -161,7 +164,11 @@
                     <input type="file" id="bookFile" accept=".pdf,.epub" name="BookFile" style="display: none;" required>
                     <button type="button" class="add-book-browse-button" onclick="document.getElementById('bookFile').click();">BROWSE</button>
                 </div>
-                <p id="bookFileUploadStatus" class="add-book-upload-status">Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: PDF, EPUB.</p>
+                @* <p id="bookFileUploadStatus" class="add-book-upload-status">Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: PDF, EPUB.</p> *@
+                <p id="bookFileUploadStatus" class="add-book-upload-status">
+    <span class="file-size-info">Max file size: 1GB</span>
+    <span class="supported-formats-info">Supported formats: PDF, EPUB.</span>
+</p>
                 <input type="hidden" id="bookFileUrl" name="BookFileUrl">
             </div>
 
@@ -242,14 +249,22 @@
             const fileName = this.files[0] ? this.files[0].name : '';
             document.getElementById('coverFileNameDisplay').value = fileName;
             // Clear any previous error/status messages for this file
-            document.getElementById('coverUploadStatus').textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG';
+            // document.getElementById('coverUploadStatus').textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG';
+            const coverUploadStatus = document.getElementById('coverUploadStatus');
+            coverUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
+            coverUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: JPG, PNG, JPEG';
+            coverUploadStatus.classList.remove('error-message');
         });
 
         document.getElementById('bookFile').addEventListener('change', function () {
             const fileName = this.files[0] ? this.files[0].name : '';
             document.getElementById('bookFileNameDisplay').value = fileName;
             // Clear any previous error/status messages for this file
-            document.getElementById('bookFileUploadStatus').textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: PDF, EPUB.';
+            // document.getElementById('bookFileUploadStatus').textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: PDF, EPUB.';
+            const bookFileUploadStatus = document.getElementById('bookFileUploadStatus');
+            bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
+            bookFileUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: PDF, EPUB.';
+            bookFileUploadStatus.classList.remove('error-message');
         });
 
         // Your Firebase configuration (consider storing this in a more secure way, e.g., environment variables, server-side configuration)
@@ -353,21 +368,21 @@
             // --- Client-side validation for file inputs ---
             let isValid = true;
             if (!coverImageFile && !coverImageUrlInput.value) {
-                coverUploadStatus.textContent = 'Cover image is required.';
-                coverUploadStatus.style.color = 'red';
+                 coverUploadStatus.querySelector('.file-size-info').textContent = 'Cover image is required.';
+                coverUploadStatus.classList.add('error-message');
                 isValid = false;
             } else {
-                coverUploadStatus.textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG';
-                coverUploadStatus.style.color = '';
+                coverUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB'; // Reset to default
+        coverUploadStatus.classList.remove('error-message');
             }
 
             if (!bookFile && !bookFileUrlInput.value) {
-                bookFileUploadStatus.textContent = 'Book file is required.';
-                bookFileUploadStatus.style.color = 'red';
+                bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Book file is required.';
+        bookFileUploadStatus.classList.add('error-message');
                 isValid = false;
             } else {
-                bookFileUploadStatus.textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: PDF, EPUB.';
-                bookFileUploadStatus.style.color = '';
+                bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB'; // Reset to default
+        bookFileUploadStatus.classList.remove('error-message'); 
             }
 
             if (!isValid) {
@@ -480,8 +495,16 @@
             const originalBookFileUrl = bookFileUrlInput.value;
 
             // Clear previous status messages (reset to default)
-            coverUploadStatus.textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG';
-            bookFileUploadStatus.textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: PDF, EPUB.';
+            // coverUploadStatus.textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG';
+            // bookFileUploadStatus.textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: PDF, EPUB.';
+            coverUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
+            coverUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: JPG, PNG, JPEG';
+            coverUploadStatus.classList.remove('error-message');
+
+            bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
+            bookFileUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: PDF, EPUB.';
+            bookFileUploadStatus.classList.remove('error-message');
+
 
             // Disable submit button and change text
             submitButton.disabled = true;
@@ -493,8 +516,8 @@
             try {
                 // Handle Cover Image Upload
                 if (coverImageFile) {
-                    coverUploadStatus.textContent = 'Uploading cover image...';
-                    uploadedCoverUrl = await uploadFileToFirebase(coverImageFile, 'book_covers/', coverUploadStatus);
+                    coverUploadStatus.querySelector('.file-size-info').textContent = 'Uploading cover image...'; 
+                    uploadedCoverUrl = await uploadFileToFirebase(coverImageFile, 'book_covers/', coverUploadStatus.querySelector('.file-size-info'));
                     if (uploadedCoverUrl) {
                         coverImageUrlInput.value = uploadedCoverUrl;
                     } else {
@@ -504,8 +527,8 @@
 
                 // Handle Book File Upload
                 if (bookFile) {
-                    bookFileUploadStatus.textContent = 'Uploading book file...';
-                    uploadedBookUrl = await uploadFileToFirebase(bookFile, 'book_files/', bookFileUploadStatus);
+                    bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Uploading book file...';
+                    uploadedBookUrl = await uploadFileToFirebase(bookFile, 'book_files/', bookFileUploadStatus.querySelector('.file-size-info')); 
                     if (uploadedBookUrl) {
                         bookFileUrlInput.value = uploadedBookUrl;
                     } else {

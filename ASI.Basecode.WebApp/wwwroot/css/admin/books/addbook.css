@@ -141,7 +141,14 @@
     color: #6b7280;
     font-size: 12px;
     margin-top: 8px;
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
 }
+
+    .add-book-upload-status.error-message {
+        color: red; 
+    }
 
 
 .button-container {
