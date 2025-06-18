@@ -222,8 +222,8 @@ label {
 }
 
     .header-section h1 {
-        color: #647D7F;
-        font-size: 40px;
+        color: #3E4F4E !important;
+        font-size: 40px !important;
         margin-bottom: 0.5rem;
     }
 

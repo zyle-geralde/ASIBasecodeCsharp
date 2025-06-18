@@ -1,0 +1,222 @@
+﻿body {
+    background: #F7F4ED;
+}
+
+.container.profile-container {
+    max-width: 1400px;
+    margin: 100px auto;
+    padding: 0 24px;
+    align-content:center;
+}
+
+.header-section.h1 {
+    color: #495057;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.profile-main-row {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 32px;
+    align-items: stretch;
+}
+
+/* Profile Card Styles */
+.profile-card {
+    background: #495e53;
+    border-radius: 16px;
+    padding: clamp(24px, 5vw, 40px); /* Responsive padding */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    /*height: fit-content;*/
+    height: 100%; /* Changed from fit-content to 100% */
+    justify-content: center; /* Centers content vertically */
+}
+
+.profile-avatar {
+    width: clamp(120px, 15vw, 160px);
+    height: clamp(120px, 15vw, 160px);
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: clamp(16px, 3vw, 24px);
+}
+
+    .profile-avatar i {
+        font-size: clamp(60px, 7vw, 80px);
+        color: #495e53;
+    }
+
+.profile-name {
+    font-size: clamp(20px, 2.5vw, 24px);
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.profile-username {
+    font-size: clamp(14px, 1.5vw, 16px);
+    color: #ccc;
+    margin-bottom: clamp(16px, 1.5vw, 24px);
+}
+
+.profile-bio {
+    color: #e6e6e6;
+    font-size: clamp(14px, 1.5vw, 15px);
+    line-height: 1.5;
+    max-width: 90%; /* Prevent text from touching edges */
+    margin: 0 auto;
+}
+
+/* Info Cards Stack */
+.profile-info-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-content: space-between !important;
+    height: 100%; /* Ensures full height */
+}
+
+.info-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    height: 100%; /* Ensures cards fill their container */
+}
+
+.info-card::after first-child{
+    height: 100%;
+}
+
+.info-card-header {
+    background: #555350;
+    color: #fff;
+    padding: 16px 24px;
+    font-weight: 500;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .info-card-header .fa-pen {
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+.info-card-body {
+    padding: 24px;
+    
+    height: 100%; /* Makes the body fill the card */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Grid Layout for Info Fields */
+.info-fields-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.info-field-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 12px;
+}
+
+.info-label {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.info-value {
+    color: #212529;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Bottom Cards Row */
+.info-cards-bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+ /*   min-height: 226px;*/
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .profile-main-row {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-card {
+        max-width: 400px;
+        margin: 0 auto;
+        min-height: 400px; /* Minimum height on smaller screens */
+    }
+
+    .profile-avatar {
+        margin-bottom: 16px;
+    }
+
+    .profile-bio {
+        max-width: 80%;
+    }
+
+}
+
+@media (max-width: 768px) {
+    .info-fields-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .info-cards-bottom-row {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-card {
+        padding: 32px 24px;
+        min-height: 350px;
+    }
+
+    .profile-bio {
+        font-size: 14px;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .info-fields-row {
+        grid-template-columns: 1fr;
+    }
+
+    .container.profile-container {
+        padding: 0 16px;
+    }
+
+    .profile-card {
+        padding: 24px 20px;
+        min-height: 300px;
+    }
+
+    .container.profile-container {
+        padding: 0 16px;
+        margin: 60px auto; /* Reduced top margin on mobile */
+    }
+
+    .profile-avatar {
+        margin-bottom: 12px;
+    }
+
+    .profile-username {
+        margin-bottom: 16px;
+    }
+}
