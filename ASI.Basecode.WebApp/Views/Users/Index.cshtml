@@ -10,10 +10,16 @@
     ViewData["Title"] = "Users";
 }
 
-<h2>All Users</h2>
-<table class="table table-striped table-bordered">
+
+
+<table class="table table-bordered table-striped">
   <thead>
-    <!-- your headers -->
+    <tr>
+      <th>ID</th>
+      <th>UserId</th>
+      <th>Name</th>
+      <th style="width:140px;">Delete</th>
+    </tr>
   </thead>
   <tbody>
   @foreach (var u in Model)
@@ -21,32 +27,25 @@
     <tr>
       <td>@u.Id</td>
       <td>@u.UserId</td>
-      @* <td>@u.FirstName</td> *@
-      @* <td>@u.LastName</td> *@
-      @* <td>@u.Role</td> *@
       <td>
-        <a asp-action="Edit"
-           asp-route-id="@u.Id"
-           class="btn btn-sm btn-primary">
-          Edit
-        </a>
-
         <form asp-action="Delete"
               asp-route-id="@u.Id"
+              asp-controller="User"
               method="post"
               class="d-inline"
-              onsubmit="return confirm('Are you sure you want to delete this user?');">
-          @* antiforgery token *@
-          @Html.AntiForgeryToken()
-          <button type="submit" class="btn btn-sm btn-danger">
-            Delete
-          </button>
+              onsubmit="return confirm('Delete user @u.UserId ?');">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-sm btn-danger">
+                Delete
+            </button>
         </form>
       </td>
     </tr>
   }
   </tbody>
 </table>
+
+@*
 <div class="users-container p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -96,15 +95,6 @@
                                 <td> </td>
                                 <td> </td>
                                 <td> </td>
-                                @*<td>
-                                    <div class="user-avatar">
-                                        <div class="avatar-circle">@(u.FirstName?.Substring(0, 1).ToUpper() ?? "U")</div>
-                                    </div>
-                                </td>
-                                <td>@u.LastName</td>
-                                <td>@u.FirstName</td>
-                                <td>@u.UserId</td>
-                                <td>@u.Email</td>*@
                                 <td>
                                     <div class="action-buttons">
                                         <form asp-action="Delete" asp-route-id="@u.Id" method="post" class="d-inline"
@@ -172,4 +162,4 @@
             }, 100);
         }
     </script>
-}
+} *@

@@ -3,6 +3,7 @@ using ASI.Basecode.Data.Models;
 using Basecode.Data.Repositories;
 using System;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,13 +33,17 @@ namespace ASI.Basecode.Data.Repositories
             UnitOfWork.SaveChanges();
         }
 
-        public void DeleteUser(int id)
+        public async Task<User> GetUserById(int id)
         {
-            var user = this.GetDbSet<User>().Single(u => u.Id == id);
+            return await this.GetDbSet<User>().FirstOrDefaultAsync(u => u.Id == id);
+        }
+        public async Task DeleteUser(int id)
+        {
+            var user = await GetUserById(id);
             if (user == null) return;
 
             this.GetDbSet<User>().Remove(user);
-            UnitOfWork.SaveChanges();
+            await UnitOfWork.SaveChangesAsync();
         }
     }
 }
