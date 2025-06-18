@@ -35,7 +35,7 @@
                     <div class="add-book-form-group">
                         <label for="subtitle">Subtitle</label>
                         <input type="text" id="subtitle" name="Subtitle" class="add-book-form-input" value="@Model?.Subtitle">
-                        <span asp-validation-for="Subtitle" class="text-danger"></span>>
+                        <span asp-validation-for="Subtitle" class="text-danger"></span>
                     </div>
                     <div class="add-book-form-group">
                         <label for="publicationDate">Publication Date</label>
@@ -149,7 +149,7 @@
             <div class="add-book-form-group add-book-form-grid-span-2">
                 <label for="coverImageFile">Select Cover Image</label>
                 <div class="add-book-file-upload-wrapper">
-                    <input type="text" class="add-book-file-input-text" readonly id="coverFileNameDisplay" value="Model?.CoverImageUrl">
+                    <input type="text" class="add-book-file-input-text" readonly id="coverFileNameDisplay" value="@Model?.CoverImageUrl">
                     <input type="file" id="coverImageFile" accept="image/*" name="CoverImageFile" style="display: none;" required>
                     <button type="button" class="add-book-browse-button" onclick="document.getElementById('coverImageFile').click();">BROWSE</button>
                 </div>
@@ -161,7 +161,7 @@
             <div class="add-book-form-group add-book-form-grid-span-2">
                 <label for="bookFile">Select Book File</label>
                 <div class="add-book-file-upload-wrapper">
-                    <input type="text" class="add-book-file-input-text" readonly id="bookFileNameDisplay" value="Model?.BookFileUrl">
+                    <input type="text" class="add-book-file-input-text" readonly id="bookFileNameDisplay" value="@Model?.BookFileUrl">
                     <input type="file" id="bookFile" accept=".pdf,.epub" name="BookFile" style="display: none;" required>
                     <button type="button" class="add-book-browse-button" onclick="document.getElementById('bookFile').click();">BROWSE</button>
                 </div>
@@ -180,6 +180,17 @@
 @section scripts {
 
     <script type="module">
+        // date picker
+        const publicationDateInput = document.getElementById('publicationDate');
+        if (publicationDateInput) {
+            publicationDateInput.addEventListener('click', () => {
+                // Programmatically open the date picker
+                publicationDateInput.showPicker(); 
+            });
+        } else {
+            console.warn("Element with ID 'publicationDate' not found for date picker functionality.");
+        }
+
         // Display selected file names
         document.getElementById('coverImageFile').addEventListener('change', function () {
             const fileName = this.files[0] ? this.files[0].name : '';
