@@ -88,6 +88,11 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [AllowAnonymous]
         public async Task<IActionResult> EditBook(BookViewModel book)
         {
+
+            Console.WriteLine("TItle");
+            Console.WriteLine(book.Title);
+            Console.WriteLine("Author");
+            Console.WriteLine(book.Author);
             if (ModelState.IsValid)
             {
                 try
@@ -101,6 +106,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                     return StatusCode(500, $"Error updating book: {ex.Message}");
                 }
             }
+
 
             //return bad request if ModelState is not valid
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();

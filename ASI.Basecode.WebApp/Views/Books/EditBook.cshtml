@@ -2,6 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @model ASI.Basecode.Services.ServiceModels.BookViewModel;
+
 @{
     ViewData["Title"] = "EditBook";
     Layout = "_AdminSidebarLayout";
@@ -384,31 +385,36 @@
         const formData = new FormData(form);
 
         // Convert FormData to a plain JavaScript object
-        const bookData = {};
+        /*const bookData = {};
         for (const [key, value] of formData.entries()) {
-            if (key === 'NumberOfPages' || key === 'Likes' || key === 'AverageRating' || key == "SeriesOrder") {
+            if (key === 'PublicationDate') {
+                console.log("Pulication run")
+                bookData[key] = value === "" ? null : value;
+            }
+            else if (key === 'NumberOfPages' || key === 'Likes' || key === 'AverageRating' || key == "SeriesOrder") {
                 //Use the unary plus operator (+) to convert to number.
                 bookData[key] = +value || 0;
             } else {
                 bookData[key] = value;
             }
-        }
+        }*/
 
-        //Double-check URLs are populated
-        if (!bookData.CoverImageUrl || !bookData.BookFileUrl) {
-            alert('Internal error: File URLs not set after Firebase upload. Please try again.'); // You might want to use a modal here too for internal errors
-            return;
+        const publicationDateValue = formData.get('PublicationDate');
+
+        // Process number fields (NumberOfPages, Likes, AverageRating, SeriesOrder)
+        const numberFields = ['NumberOfPages', 'Likes', 'AverageRating', 'SeriesOrder'];
+        for (const fieldName of numberFields) {
+            const fieldValue = formData.get(fieldName);
+            if (fieldValue === "" || fieldValue === null) {
+                formData.set(fieldName, "0"); // Set it explicitly as the string "0"
+            }
         }
 
         // Handling of Api
         try {
-            const response = await fetch('/api/BookApi/edit', {
+            const response = await fetch('/Book/EditBook', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Add Authorization header if your backend API requires it. Needed if Admin Log In and Sign up will be implemented
-                },
-                body: JSON.stringify(bookData)
+                body: formData
             });
 
             if (response.ok) {

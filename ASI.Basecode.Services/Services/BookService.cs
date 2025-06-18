@@ -48,9 +48,7 @@ namespace ASI.Basecode.Services.Services
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
                 UploadDate = DateTime.UtcNow,
                 UpdatedDate = DateTime.UtcNow,
-                PublicationDate = !string.IsNullOrWhiteSpace(request.PublicationDate)
-                                  ? DateTime.ParseExact(request.PublicationDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-                                  : (DateTime?)null,
+                PublicationDate = request.PublicationDate,
 
                 // Handle comma-separated strings
                 Publisher = request.Publisher, // Store as string
@@ -100,9 +98,7 @@ namespace ASI.Basecode.Services.Services
 
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
                 UpdatedDate = requestBook.UpdatedDate,
-                PublicationDate = requestBook.PublicationDate.HasValue
-                    ? requestBook.PublicationDate.Value.ToString("yyyy-MM-dd")
-                    : null,
+                PublicationDate = requestBook.PublicationDate,
 
 
                 // Handle comma-separated strings
@@ -140,9 +136,7 @@ namespace ASI.Basecode.Services.Services
 
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
                 UpdatedDate = DateTime.UtcNow,
-                PublicationDate = !string.IsNullOrWhiteSpace(request.PublicationDate)
-                                 ? DateTime.ParseExact(request.PublicationDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-                                 : (DateTime?)null,
+                PublicationDate = request.PublicationDate,
 
                 // Handle comma-separated strings
                 Publisher = request.Publisher, // Store as string

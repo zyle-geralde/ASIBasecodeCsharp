@@ -26,10 +26,12 @@ namespace ASI.Basecode.Services.ServiceModels
         public DateTime? UpdatedDate { get; set; }
 
         [DataType(DataType.Date)]
-        public string? PublicationDate { get; set; }
+        public DateTime? PublicationDate { get; set; }
 
+        [StringLength(100)]
         public string? Publisher { get; set; }
 
+        [StringLength(100)]
         public string? PublicationLocation { get; set; }
 
         [StringLength(10000)]
@@ -40,8 +42,10 @@ namespace ASI.Basecode.Services.ServiceModels
         [StringLength(20)]
         public string? Language { get; set; }
 
+        [StringLength(1000)]
         public string? CoverImageUrl { get; set; }
 
+        [StringLength(1000)]
         public string? BookFileUrl { get; set; }
 
         [StringLength(100)]
@@ -54,6 +58,7 @@ namespace ASI.Basecode.Services.ServiceModels
 
         public float? AverageRating { get; set; }
 
+        [StringLength(100)]
         public string? Author { get; set; }
 
         public int? Likes { get; set; }
