@@ -27,10 +27,10 @@ namespace ASI.Basecode.Data.Repositories
             return this.GetDbSet<User>().Any(x => x.UserId == userId);
         }
 
-        public void AddUser(User user)
+        public async Task AddUser(User user)
         {
-            this.GetDbSet<User>().Add(user);
-            UnitOfWork.SaveChanges();
+            await this.GetDbSet<User>().AddAsync(user);
+            await UnitOfWork.SaveChangesAsync();
         }
 
         public async Task<User> GetUserById(int id)

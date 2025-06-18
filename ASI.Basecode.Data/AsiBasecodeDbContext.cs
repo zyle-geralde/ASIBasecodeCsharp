@@ -30,6 +30,13 @@ namespace ASI.Basecode.Data
         //Added
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Profile)
+                .WithOne(p => p.User)
+                .HasForeignKey<PersonProfile>(p => p.ProfileID)
+                .HasPrincipalKey<User>(u => u.UserId);
+
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasIndex(e => e.UserId, "UQ__Users__1788CC4D5F4A160F")

@@ -1,4 +1,5 @@
-﻿using ASI.Basecode.Data.Interfaces;
+﻿using ASI.Basecode.Data;
+using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
@@ -8,57 +9,65 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static ASI.Basecode.Resources.Constants.Enums;
-using System.Net.Mail;
 using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
+using static ASI.Basecode.Resources.Constants.Enums;
 
 namespace ASI.Basecode.Services.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _repository;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly IPersonProfileRepository _personProfileRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IUserRepository repository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IPersonProfileRepository personProfileRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
-            _repository = repository;
+            _userRepository = userRepository;
+            _personProfileRepository = personProfileRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public LoginResult AuthenticateUser(string userId, string password, ref User user)
         {
             user = new User();
             var passwordKey = PasswordManager.EncryptPassword(password);
-            user = _repository.GetUsers().Where(x => x.UserId == userId &&
+            user = _userRepository.GetUsers().Where(x => x.UserId == userId &&
                                                      x.Password == passwordKey).FirstOrDefault();
 
             return user != null ? LoginResult.Success : LoginResult.Failed;
         }
 
-        public void AddUser(UserViewModel model)
+        public async Task AddUser(UserViewModel model)
         {
             var user = new User();
-            if (!_repository.UserExists(model.UserId))
-            {
-                _mapper.Map(model, user);
-                user.Password = PasswordManager.EncryptPassword(model.Password);
-                user.CreatedTime = DateTime.Now;
-                user.UpdatedTime = DateTime.Now;
-                user.CreatedBy = System.Environment.UserName;
-                user.UpdatedBy = System.Environment.UserName;
 
-                _repository.AddUser(user);
-            }
-            else
+            _mapper.Map(model, user);
+            user.Password = PasswordManager.EncryptPassword(model.Password);
+            user.CreatedTime = DateTime.Now;
+            user.UpdatedTime = DateTime.Now;
+            user.CreatedBy = System.Environment.UserName;
+            user.UpdatedBy = System.Environment.UserName;
+
+            await _userRepository.AddUser(user);
+
+            var profile = new PersonProfile
             {
-                throw new InvalidDataException(Resources.Messages.Errors.UserExists);
-            }
+                ProfileID = user.UserId
+            };
+            await _personProfileRepository.AddProfile(profile);
+
+            await _unitOfWork.SaveChangesAsync();
+
         }
+
 
         public IEnumerable<User> GetAllUsers()
         {
-            var users = _repository
+            var users = _userRepository
                             .GetUsers()
                             .ToList();
 
@@ -71,14 +80,14 @@ namespace ASI.Basecode.Services.Services
 
         public async Task<bool> DeleteUser(int id)
         {
-            var user = await _repository.GetUserById(id);
+            var user = await _userRepository.GetUserById(id);
 
             if (user == null)
             {
                 return false;
             }
 
-            await _repository.DeleteUser(id);
+            await _userRepository.DeleteUser(id);
             return true;
         }
     }

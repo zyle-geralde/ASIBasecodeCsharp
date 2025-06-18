@@ -44,6 +44,7 @@ namespace ASI.Basecode.WebApp
 this._services.AddScoped<IUserRepository, UserRepository>();
             this._services.AddScoped<IBookRepository, BookRepository>();
             this._services.AddScoped<IReviewRepository, ReviewRepository>();
+            this._services.AddScoped<IPersonProfileRepository, PersonProfileRepository>();
 
             // Manager Class
             this._services.AddScoped<SignInManager>();

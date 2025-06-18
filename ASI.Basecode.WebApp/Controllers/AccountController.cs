@@ -118,20 +118,22 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Register(UserViewModel model)
+        public async Task<IActionResult> Register(UserViewModel model)
         {
             try
             {
-                _userService.AddUser(model);
+                await _userService.AddUser(model);
                 return RedirectToAction("Login", "Account");
             }
             catch(InvalidDataException ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
+                ModelState.AddModelError(nameof(model.UserId), ex.Message);
             }
             catch(Exception ex)
             {
                 TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
+                ModelState.AddModelError(nameof(model.UserId), ex.Message);
             }
             return View();
         }
