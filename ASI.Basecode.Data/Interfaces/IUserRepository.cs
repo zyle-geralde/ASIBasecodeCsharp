@@ -11,7 +11,7 @@ namespace ASI.Basecode.Data.Interfaces
     {
         IQueryable<User> GetUsers();
         bool UserExists(string userId);
-        void AddUser(User user);
+        Task AddUser(User user);
         Task<User> GetUserById(int Id);
         Task DeleteUser(int Id);
     }

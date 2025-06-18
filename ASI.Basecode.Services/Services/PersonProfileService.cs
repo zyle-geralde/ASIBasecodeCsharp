@@ -19,14 +19,20 @@ namespace ASI.Basecode.Services.Services
         private readonly IPersonProfileRepository _repository;
         private readonly IMapper _mapper;
 
-
+        public PersonProfileService(IPersonProfileRepository repository, IMapper mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
         public async Task AddPersonProfile(PersonProfile personProfile)
         {
-            var profile = new PersonProfile();
-            _mapper.Map(personProfile, profile);
-            await _repository.AddPersonProfile(profile);
 
+            if (personProfile == null)
+                throw new ArgumentNullException(nameof(personProfile));
+            if (string.IsNullOrWhiteSpace(personProfile.ProfileID))
+                throw new ArgumentException("ProfileID must be set", nameof(personProfile.ProfileID));
 
+            await _repository.AddPersonProfile(personProfile);
         }
         public async Task<bool> EditPersonProfile(PersonProfile personProfile)
         {

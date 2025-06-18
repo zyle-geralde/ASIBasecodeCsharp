@@ -10,7 +10,7 @@ namespace ASI.Basecode.Data.Interfaces
     public interface IPersonProfileRepository
     {
         Task AddPersonProfile(PersonProfile personProfile);
-        Task<bool> EditPersonProfile(PersonProfile personProfile);
+        Task EditPersonProfile(PersonProfile personProfile);
         Task<PersonProfile> GetPersonProfile(string username);
     }
 }

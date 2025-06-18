@@ -31,7 +31,6 @@ namespace ASI.Basecode.Data.Repositories
             PersonProfile existingProfile = await GetPersonProfile(personProfile.ProfileID);
             if (existingProfile == null) return;
             existingProfile.FirstName = personProfile.FirstName;
-            existingProfile.LastName = personProfile.LastName;
             existingProfile.MiddleName = personProfile.MiddleName;
             existingProfile.LastName = personProfile.LastName;
             existingProfile.Suffix = personProfile.Suffix;
@@ -43,5 +42,7 @@ namespace ASI.Basecode.Data.Repositories
             existingProfile.AboutMe = personProfile.AboutMe;
             await UnitOfWork.SaveChangesAsync();
         }
+
+        
     }
 }
