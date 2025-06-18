@@ -9,6 +9,6 @@ namespace ASI.Basecode.Services.Interfaces
 {
     public interface IBookGenreService
     {
-        Task AddBook(BookViewModel book_genre);
+        Task AddGenre(BookGenreViewModel book_genre);
     }
 }

@@ -1,4 +1,5 @@
-﻿using ASI.Basecode.Data.Models;
+﻿using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
 using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
@@ -12,8 +13,8 @@ namespace ASI.Basecode.Services.Services
 {
     public class BookGenreService:IBookGenreService
     {
-        private readonly BookGenreRepository BookGenreRepository;
-        public BookGenreService(BookGenreRepository book_genre_repositry) {
+        private readonly IBookGenreRepository BookGenreRepository;
+        public BookGenreService(IBookGenreRepository book_genre_repositry) {
             BookGenreRepository = book_genre_repositry;
         }
 

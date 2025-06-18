@@ -19,7 +19,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
         public IActionResult AddGenre()
         {
-            return View("~Views/BookGenres/AddGenre");
+            return View("~/Views/BookGenres/AddGenre.cshtml");
         }
     }
 }
