@@ -73,7 +73,24 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             }
         }
 
+        [HttpPost("delete")]
+        [AllowAnonymous]
+        public async Task<IActionResult> DeleteBook(string bookId)
+        {
+            try
+            {
+                await _bookService.DeletBook(bookId);
+                return Ok(new { Message = "Book Deleted successfully!" });
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
-       
     }
 }

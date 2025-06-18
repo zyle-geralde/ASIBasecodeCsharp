@@ -2,6 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
+@*
 @{
     ViewData["Title"] = "Add New Book";
     Layout = "_AdminSidebarLayout";
@@ -368,3 +369,382 @@
         }
     });
 </script>
+*@
+
+@model ASI.Basecode.Services.ServiceModels.BookViewModel
+
+@{
+    ViewData["Title"] = "Add New Book";
+    Layout = "_AdminSidebarLayout";
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/css/admin/addbook.css" asp-append-version="true" />
+    <style>
+        /* Optional: Add some basic error styling */
+        .validation-summary-errors {
+            color: #dc3545; /* Red */
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .text-danger {
+            color: #dc3545;
+            font-size: 0.85em;
+            display: block;
+            margin-top: 5px;
+        }
+    </style>
+}
+
+<div class="add-book-container">
+    <h1 class="add-book-form-title">Add New Book</h1>
+    <p class="add-book-form-subtitle">Enter details of the new book here.</p>
+
+    @* Display validation summary errors *@
+    <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+    @* FORM SUBMISSION CHANGE: Use asp-action and asp-controller *@
+    <form asp-action="AddBook" asp-controller="Book" method="post" enctype="multipart/form-data" id="addBookForm">
+
+        <div class="add-book-form-grid">
+            <div class="add-book-form-group">
+                <label for="title" class="add-book-form-label">Title:</label>
+                <input type="text" id="title" name="Title" class="add-book-form-input" required value="@Model?.Title" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="add-book-form-group">
+                <label for="subtitle" class="add-book-form-label">Subtitle:</label>
+                <input type="text" id="subtitle" name="Subtitle" class="add-book-form-input" value="@Model?.Subtitle">
+                <span asp-validation-for="Subtitle" class="text-danger"></span>
+            </div>
+            <div class="add-book-form-group">
+                <label for="publicationDate" class="add-book-form-label">Publication Date:</label>
+                <div class="add-book-date-input-wrapper">
+                    <input type="date" id="publicationDate" name="PublicationDate" class="add-book-form-input" value="Model?.PublicationDate">
+                    <svg class="add-book-date-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h.01M17 11h.01M7 15h.01M17 15h.01M12 18h.01M3 21h18a2 2 0 002-2V7a2 2 0 00-2-2H3a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <span asp-validation-for="PublicationDate" class="text-danger"></span>
+            </div>
+            <div class="add-book-form-group">
+                <label for="publisher" class="add-book-form-label">Publisher:</label>
+                <input type="text" id="publisher" name="Publisher" class="add-book-form-input" value="@Model?.Publisher">
+                <span asp-validation-for="Publisher" class="text-danger"></span>
+            </div>
+            <div class="add-book-form-group">
+                <label for="publicationLocation" class="add-book-form-label">Publication Location:</label>
+                <input type="text" id="publicationLocation" name="PublicationLocation" class="add-book-form-input" value="@Model?.PublicationLocation">
+                <span asp-validation-for="PublicationLocation" class="text-danger"></span>
+            </div>
+            <div class="add-book-form-group">
+                <label for="description" class="add-book-form-label">Description:</label>
+                <textarea id="description" name="Description" class="add-book-form-textarea">@Model?.Description</textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="add-book-form-group">
+                <label for="numberOfPages" class="add-book-form-label">Number of Pages:</label>
+                <input type="number" id="numberOfPages" name="NumberOfPages" class="add-book-form-input" value="@Model?.NumberOfPages">
+                <span asp-validation-for="NumberOfPages" class="text-danger"></span>
+            </div>
+            <div class="add-book-form-group">
+                <label for="language" class="add-book-form-label">Language:</label>
+                <input type="text" id="language" name="Language" class="add-book-form-input" value="@Model?.Language">
+                <span asp-validation-for="Language" class="text-danger"></span>
+            </div>
+            <div class="add-book-form-group">
+                <label for="seriesName" class="add-book-form-label">Series Name:</label>
+                <input type="text" id="seriesName" name="SeriesName" class="add-book-form-input" value="@Model?.SeriesName">
+                <span asp-validation-for="SeriesName" class="text-danger"></span>
+            </div>
+            <div class="add-book-form-group">
+                <label for="seriesOrder" class="add-book-form-label">Series Order:</label>
+                <input type="number" id="seriesOrder" name="SeriesOrder" class="add-book-form-input" value="@Model?.SeriesOrder">
+                <span asp-validation-for="SeriesOrder" class="text-danger"></span>
+            </div>
+            <div class="add-book-form-group">
+                <label for="seriesDescription" class="add-book-form-label">Series Description:</label>
+                <textarea id="seriesDescription" name="SeriesDescription" class="add-book-form-textarea">@Model?.SeriesDescription</textarea>
+                <span asp-validation-for="SeriesDescription" class="text-danger"></span>
+            </div>
+            <div class="add-book-form-group add-book-form-grid-span-2">
+                <label for="author" class="add-book-form-label">Author (comma-separated):</label>
+                <input type="text" id="author" name="Author" class="add-book-form-input" value="@Model?.Author">
+                <span asp-validation-for="Author" class="text-danger"></span>
+            </div>
+        </div>
+
+        <h3 class="add-book-form-section-title">Categorization</h3>
+        <div class="add-book-form-grid">
+            <div class="add-book-form-group">
+                <label for="genre" class="add-book-form-label">Genre:</label>
+                <select id="genre" name="Genre" class="add-book-form-select">
+                    <option value="">Select Genre</option>
+                    <option value="Fiction" >Fiction</option>
+                    <option value="Fantasy" >Fantasy</option>
+                    <option value="Science Fiction" >Science Fiction</option>
+                    <option value="Thriller" >Thriller</option>
+                    <option value="Mystery" >Mystery</option>
+                    <option value="Biography" >Biography</option>
+                    <option value="History">History</option>
+                </select>
+            </div>
+            <div class="add-book-form-group">
+                <label for="subgenre" class="add-book-form-label">Subgenre (comma-separated):</label>
+                <input type="text" id="subgenre" name="Subgenre" class="add-book-form-input" placeholder="e.g., Contemporary, Philosophical Fiction">
+            </div>
+            <div class="add-book-form-group">
+                <label for="audience" class="add-book-form-label">Audience:</label>
+                <select id="audience" name="Audience" class="add-book-form-select">
+                    <option value="">Select Audience</option>
+                    <option value="Adult">Adult</option>
+                    <option value="Young Adult">Young Adult</option>
+                    <option value="Children">Children</option>
+                </select>
+            </div>
+            <div class="add-book-form-group">
+                <label for="isbn10" class="add-book-form-label">ISBN10:</label>
+                <input type="text" id="isbn10" name="ISBN10" class="add-book-form-input" value="@Model?.ISBN10">
+                <span asp-validation-for="ISBN10" class="text-danger"></span>
+            </div>
+            <div class="add-book-form-group"> 
+                <label for="isbn13" class="add-book-form-label">ISBN13:</label>
+                <input type="text" id="isbn13" name="ISBN13" class="add-book-form-input" value="@Model?.ISBN13">
+                <span asp-validation-for="ISBN13" class="text-danger"></span>
+            </div>
+            <div class="add-book-form-group"> 
+                <label for="edition" class="add-book-form-label">Edition:</label>
+                <input type="text" id="edition" name="Edition" class="add-book-form-input" value="@Model?.Edition">
+                <span asp-validation-for="Edition" class="text-danger"></span>
+            </div>
+        </div>
+
+        <h3 class="add-book-form-section-title">Cover Image Upload</h3>
+        <div class="add-book-form-group add-book-form-grid-span-2">
+            <label for="coverImageFile" class="add-book-form-label">Select Cover Image:</label>
+            <div class="add-book-file-upload-wrapper">
+                <input type="text" class="add-book-file-input-text" readonly id="coverFileNameDisplay" value="Model?.CoverImageUrl">
+                <input type="file" id="coverImageFile" accept="image/*" name="CoverImageFile" style="display: none;" required>
+                <button type="button" class="add-book-browse-button" onclick="document.getElementById('coverImageFile').click();">BROWSE</button>
+            </div>
+            <p id="coverUploadStatus" class="add-book-upload-status">Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG</p>
+            <input type="hidden" id="coverImageUrl" name="CoverImageUrl">
+            <span asp-validation-for="CoverImageUrl" class="text-danger"></span>
+        </div>
+
+        <h3 class="add-book-form-section-title">Book File Upload (e.g., PDF)</h3>
+        <div class="add-book-form-group add-book-form-grid-span-2">
+            <label for="bookFile" class="add-book-form-label">Select Book File:</label>
+            <div class="add-book-file-upload-wrapper">
+                <input type="text" class="add-book-file-input-text" readonly id="bookFileNameDisplay" value="Model?.BookFileUrl">
+                <input type="file" id="bookFile" accept=".pdf,.epub" name="BookFile" style="display: none;" required>
+                <button type="button" class="add-book-browse-button" onclick="document.getElementById('bookFile').click();">BROWSE</button>
+            </div>
+            <p id="bookFileUploadStatus" class="add-book-upload-status">Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: PDF, EPUB.</p>
+            <span asp-validation-for="BookFileUrl" class="text-danger"></span>
+            <input type="hidden" id="bookFileUrl" name="BookFileUrl">
+        </div>
+
+        <div class="button-container">
+            <button type="button" class="cancel-button" onclick="location.href='/Book/ListBook';">CANCEL</button>
+            <button type="submit" class="add-book-submit-button">ADD BOOK</button> @* Changed type to submit *@
+        </div>
+    </form>
+</div>
+
+@section scripts {
+
+    <script type="module">
+        // Display selected file names
+        document.getElementById('coverImageFile').addEventListener('change', function () {
+            const fileName = this.files[0] ? this.files[0].name : '';
+            document.getElementById('coverFileNameDisplay').value = fileName;
+            // Clear any previous error/status messages for this file
+            document.getElementById('coverUploadStatus').textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG';
+        });
+
+        document.getElementById('bookFile').addEventListener('change', function () {
+            const fileName = this.files[0] ? this.files[0].name : '';
+            document.getElementById('bookFileNameDisplay').value = fileName;
+            // Clear any previous error/status messages for this file
+            document.getElementById('bookFileUploadStatus').textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: PDF, EPUB.';
+        });
+
+        // Your Firebase configuration (consider storing this in a more secure way, e.g., environment variables, server-side configuration)
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4CTMSbgGQN_yLn9lEZlswbZ_2A2Xhl0k",
+            authDomain: "basabuzz-ca8fe.firebaseapp.com",
+            projectId: "basabuzz-ca8fe",
+            storageBucket: "basabuzz-ca8fe.firebasestorage.app",
+            messagingSenderId: "206533484485",
+            appId: "1:206533484485:web:2c71a06a17d5244efe75ac"
+        };
+
+        // Initialize Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+
+        async function deleteFileFromFirebase(fileUrl) {
+            if (!fileUrl) {
+                console.warn("Attempted to delete null or empty file URL.");
+                return;
+            }
+            try {
+                // Get a reference to the file from the download URL
+                // Note: This relies on the download URL containing enough info to reconstruct the storage path.
+                // Firebase storage paths are typically like "gs://bucket/path/to/file.jpg"
+                // Or "https://firebasestorage.googleapis.com/.../path%2Fto%2Ffile.jpg?alt=media..."
+                // You might need to parse the path from the URL.
+                // A safer way is to store the actual 'path' when uploading and use that for deletion.
+                // For now, assuming ref(storage, fileUrl) works directly with the download URL.
+                const fileRef = ref(storage, fileUrl);
+                await deleteObject(fileRef);
+                console.log(`Successfully deleted file: ${fileUrl}`);
+            } catch (error) {
+                alert(`Failed to delete file ${fileUrl}: ${error.message}`);
+                console.error(`Failed to delete file ${fileUrl}:`, error);
+            }
+        }
+
+        // Firebase Upload Function
+        // This function returns the download URL or null on failure/no file
+        async function uploadFileToFirebase(file, path, statusElement) {
+            if (!file) {
+                statusElement.textContent = 'No file selected.';
+                return null; // Indicates no file was provided
+            }
+
+            // Generate New File Name
+            const timestamp = new Date().getTime();
+            const randomString = Math.random().toString(36).substring(2, 8);
+            const uniqueFileName = `${path}${timestamp}-${randomString}-${file.name}`; // Prepend path here for full path
+
+            const storageRef = ref(storage, uniqueFileName); // Use the full unique path
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            return new Promise((resolve, reject) => {
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        statusElement.textContent = `Upload is ${progress.toFixed(2)}% done`;
+                    },
+                    (error) => {
+                        statusElement.textContent = `Upload failed: ${error.message}`;
+                        console.error("Upload error:", error);
+                        reject(error); // Reject the promise on upload error
+                    },
+                    async () => {
+                        try {
+                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            statusElement.textContent = 'Upload successful!';
+                            resolve(downloadURL); // Resolve with the download URL
+                        } catch (error) {
+                            statusElement.textContent = `Failed to get download URL: ${error.message}`;
+                            console.error("Get Download URL error:", error);
+                            reject(error); // Reject the promise if getting URL fails
+                        }
+                    }
+                );
+            });
+        }
+
+        // --- NEW MVC-STYLE SUBMISSION LOGIC ---
+        // We need to upload files and then let the form submit.
+        // This means we might temporarily disable the submit button,
+        // upload files, populate hidden fields, then re-enable and submit programmatically.
+        document.getElementById('addBookForm').addEventListener('submit', async (event) => {
+            // Prevent the default HTML form submission initially.
+            // We need to upload files to Firebase first.
+            event.preventDefault();
+
+            const form = event.target;
+            const submitButton = form.querySelector('.add-book-submit-button');
+            const coverImageFile = document.getElementById('coverImageFile').files[0];
+            const bookFile = document.getElementById('bookFile').files[0];
+
+            const coverUploadStatus = document.getElementById('coverUploadStatus');
+            const bookFileUploadStatus = document.getElementById('bookFileUploadStatus');
+            const coverImageUrlInput = document.getElementById('coverImageUrl');
+            const bookFileUrlInput = document.getElementById('bookFileUrl');
+
+            // Save initial state for potential rollback if backend fails
+            const originalCoverImageUrl = coverImageUrlInput.value;
+            const originalBookFileUrl = bookFileUrlInput.value;
+
+            // Clear previous status messages (unless displaying existing files)
+            if (!coverImageFile) { // Only clear if no new file is chosen
+                coverUploadStatus.textContent = 'Max file size: 1GB ...';
+            }
+            if (!bookFile) { // Only clear if no new file is chosen
+                bookFileUploadStatus.textContent = 'Max file size: 1GB ...';
+            }
+
+            // Disable submit button to prevent double submission
+            submitButton.disabled = true;
+            submitButton.textContent = 'Processing...';
+
+            let uploadedCoverUrl = null;
+            let uploadedBookUrl = null;
+
+            try {
+                // Handle Cover Image Upload
+                if (coverImageFile) {
+                    coverUploadStatus.textContent = 'Uploading cover image...';
+                    uploadedCoverUrl = await uploadFileToFirebase(coverImageFile, 'book_covers/', coverUploadStatus);
+                    if (uploadedCoverUrl) {
+                        coverImageUrlInput.value = uploadedCoverUrl;
+                    } else {
+                        throw new Error('Cover image upload failed.');
+                    }
+                } else if (coverImageUrlInput.value === "") { // Ensure a cover image is present if required
+                    alert('Please select a cover image file.');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'ADD BOOK';
+                    return;
+                }
+
+                // Handle Book File Upload
+                if (bookFile) {
+                    bookFileUploadStatus.textContent = 'Uploading book file...';
+                    uploadedBookUrl = await uploadFileToFirebase(bookFile, 'book_files/', bookFileUploadStatus);
+                    if (uploadedBookUrl) {
+                        bookFileUrlInput.value = uploadedBookUrl;
+                    } else {
+                        throw new Error('Book file upload failed.');
+                    }
+                } else if (bookFileUrlInput.value === "") { // Ensure a book file is present if required
+                    alert('Please select a book file.');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'ADD BOOK';
+                    return;
+                }
+
+                // If uploads are successful, allow the form to submit naturally
+                // This will trigger the MVC POST action
+                form.submit();
+
+            } catch (error) {
+                console.error('Submission error:', error);
+                alert(`An error occurred during file upload: ${error.message}. Please try again.`);
+
+                // Rollback: If an upload failed, or if this is an "edit" scenario,
+                // consider deleting the newly uploaded files if the overall submission fails.
+                // This is a complex rollback. For a simple MVC form, we might just re-enable the button.
+                // For a more robust rollback, you'd need the actual Firebase paths (not just URLs) to delete.
+                // For now, let's just re-enable the button.
+
+                // If you *did* want to try to delete specifically the *newly uploaded* files:
+                if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
+                    await deleteFileFromFirebase(uploadedCoverUrl);
+                }
+                if (uploadedBookUrl && uploadedBookUrl !== originalBookFileUrl) {
+                    await deleteFileFromFirebase(uploadedBookUrl);
+                }
+
+                submitButton.disabled = false;
+                submitButton.textContent = 'ADD BOOK';
+            }
+        });
+    </script>
+}

@@ -16,5 +16,6 @@ namespace ASI.Basecode.Data.Interfaces
 
         Task EditBook(Book book);
 
+        Task DeleteBook(string bookId);
     }
 }

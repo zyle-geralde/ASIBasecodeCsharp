@@ -37,7 +37,7 @@ namespace ASI.Basecode.Data.Repositories
         {
             Book existingBook = await GetBookById(book.BookId);
 
-
+            //Transfer to Service
             existingBook.Title = book.Title;
             existingBook.Subtitle = book.Subtitle;
             existingBook.Author = book.Author;
@@ -56,7 +56,7 @@ namespace ASI.Basecode.Data.Repositories
             existingBook.Edition = book.Edition;
             existingBook.CoverImage = book.CoverImage;
             existingBook.BookFile = book.BookFile;
-            existingBook.UpdatedByAdminId = book.UpdatedByAdminId;
+            existingBook.UpdatedByAdminId = book.UpdatedByAdminId;//change to Updated
 
 
             await _dbContext.SaveChangesAsync();
