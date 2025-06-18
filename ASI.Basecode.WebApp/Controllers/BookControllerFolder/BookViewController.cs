@@ -8,7 +8,7 @@ using ASI.Basecode.Services.ServiceModels;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
-
+using ASI.Basecode.WebApp.Payload.BooksPayload;
 
 namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 {
@@ -88,11 +88,6 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [AllowAnonymous]
         public async Task<IActionResult> EditBook(BookViewModel book)
         {
-
-            Console.WriteLine("TItle");
-            Console.WriteLine(book.Title);
-            Console.WriteLine("Author");
-            Console.WriteLine(book.Author);
             if (ModelState.IsValid)
             {
                 try
@@ -111,6 +106,32 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             //return bad request if ModelState is not valid
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
             return BadRequest(new { errors = errors, Message = "Validation failed." });
+        }
+
+        [HttpPost]
+        [Route("Book/Delete")]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> DeleteBook([FromBody] DeleteBookPayload book)
+        {
+            if(book == null)
+            {
+                return BadRequest(new { Message = "No data has been passed" });
+            }
+
+            try
+            {
+                await _bookService.DeletBook(book.BookId);
+                return Ok(new { Message = "Book Deleted successfully!" });
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }
