@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
+using Microsoft.AspNetCore.Http;
+using System;
+
 
 namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 {
@@ -54,6 +57,29 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         {
             Book book = await _bookService.GetBookById(bookId);
             return View("~/Views/Books/BookDetails.cshtml", book);
+        }
+
+        [HttpPost]
+        [Route("Book/AddBook")]
+        [AllowAnonymous]
+        public async Task<IActionResult> AddBook(BookViewModel book)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _bookService.AddBook(book);
+
+                    TempData["SuccessMessage"] = "Book added successfully!";
+                    return RedirectToAction("ListBook"); 
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An unexpected error occurred: " + ex.Message);
+                }
+            }
+
+            return View("~/Views/Books/AddBook.cshtml", book);
         }
     }
 }

@@ -15,5 +15,7 @@ namespace ASI.Basecode.Services.Interfaces
         Task<Book?> GetBookById(string bookId);
 
         Task EditBook(BookViewModel request);
+
+        Task DeletBook(string bookId);
     }
 }

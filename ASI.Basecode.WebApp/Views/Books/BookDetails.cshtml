@@ -3,19 +3,21 @@
 *@
 @model ASI.Basecode.Data.Models.Book
 @{
+    ViewData["Title"] = "BookDetails";
+    Layout = "_AdminSidebarLayout";
 }
 
 <div class="book-details-container">
     @if (Model != null)
     {
-        <div class="book-cover-section" style="margin-top:200px">
+        <div class="book-cover-section" style="margin-top:200px; margin-left:400px;">
             <h1 class="book-title">@Html.DisplayFor(model => model.Title)</h1>
 
                 <h2 class="book-subtitle">@Html.DisplayFor(model => model.Subtitle)</h2>
             
 
 
-                <img src="@Model.CoverImage" alt="Book Cover" class="book-cover" />
+                <img src="@Model.CoverImage" alt="Book Cover" class="book-cover" style="height:200px; width:200px;"/>
 
 
 
@@ -25,7 +27,7 @@
             
         </div>
 
-        <div class="book-info-section">
+        <div class="book-info-section" style="margin-left:400px;">
             <div class="detail-group">
                 <span class="detail-label">Book ID:</span>
                 <span class="detail-value">@Html.DisplayFor(model => model.BookId)</span>

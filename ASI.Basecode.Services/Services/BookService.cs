@@ -26,6 +26,7 @@ namespace ASI.Basecode.Services.Services
             //example:if (string.IsNullOrWhiteSpace(book.Title)) throw new ArgumentException("Book title cannot be empty.");
 
             // Map DTO to actual Book model
+            //Change to mapper
             var book = new Book
             {
                 BookId = Guid.NewGuid().ToString(),
@@ -64,7 +65,8 @@ namespace ASI.Basecode.Services.Services
 
             try
             {
-                await _bookRepository.AddBook(book); 
+                await _bookRepository.AddBook(book);
+                
             }
             catch (Exception ex)
             {
@@ -84,6 +86,7 @@ namespace ASI.Basecode.Services.Services
 
         public async Task EditBook(BookViewModel request)
         {
+            //Change to mapper
             var book = new Book
             {
                 BookId = request.BookId,
@@ -126,6 +129,20 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ApplicationException($"Failed to Edit book: {ex.Message}", ex);
             }
+        }
+
+        public async Task DeletBook(string bookId)
+        {
+
+            try
+            {
+                await _bookRepository.DeleteBook(bookId);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to Delete book: {ex.Message}", ex);
+            }
+            
         }
 
     }
