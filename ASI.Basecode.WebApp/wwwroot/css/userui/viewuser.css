@@ -341,3 +341,34 @@
     background-color: #fff !important;
     cursor: default;
 }
+
+
+/*----- Password Toggle styles ------*/
+/* Password toggle button styles */
+.password-toggle {
+    border-color: #ced4da;
+    color: #6c757d;
+}
+
+    .password-toggle:hover {
+        background-color: #f8f9fa;
+        color: #495057;
+        border-color: #ced4da;
+    }
+
+    .password-toggle:focus {
+        box-shadow: none;
+        border-color: #ced4da;
+    }
+
+.input-group > .form-control:focus ~ .password-toggle {
+    border-color: #495e53;
+}
+
+.password-toggle i {
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
