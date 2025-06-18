@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ASI.Basecode.Services.ServiceModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace ASI.Basecode.Services.Interfaces
 {
     public interface IBookGenreService
     {
-        Task AddBook();
+        Task AddBook(BookViewModel book_genre);
     }
 }

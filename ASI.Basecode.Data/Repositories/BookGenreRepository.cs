@@ -11,10 +11,10 @@ namespace ASI.Basecode.Data.Repositories
 {
     public class BookGenreRepository:IBookGenreRepository
     {
-        private readonly AsiBasecodeDBContext _dbContext;
-        public BookGenreRepository(AsiBasecodeDBContext dbContext)
+        private readonly AsiBasecodeDBContext DbContext;
+        public BookGenreRepository(AsiBasecodeDBContext db_context)
         {
-            _dbContext = dbContext;
+            DbContext = db_context;
         }
 
         public async Task AddGenre(BookGenre book_genre)
@@ -26,8 +26,8 @@ namespace ASI.Basecode.Data.Repositories
 
             try
             {
-                await _dbContext.BookGenres.AddAsync(book_genre);
-                await _dbContext.SaveChangesAsync();
+                await DbContext.BookGenres.AddAsync(book_genre);
+                await DbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
