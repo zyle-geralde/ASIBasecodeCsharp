@@ -9,7 +9,7 @@ namespace ASI.Basecode.Services.Interfaces
     public interface IUserService
     {
         LoginResult AuthenticateUser(string userid, string password, ref User user);
-        void AddUser(UserViewModel model);
+        Task<User> AddUser(UserViewModel model);
         IEnumerable<User> GetAllUsers();
         Task<bool> DeleteUser(int id);
     }
