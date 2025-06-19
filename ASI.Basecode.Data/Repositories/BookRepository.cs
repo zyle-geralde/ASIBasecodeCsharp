@@ -70,5 +70,17 @@ namespace ASI.Basecode.Data.Repositories
             
         }
 
+        public async Task<List<BookGenre>> GetAllGenres()
+        {
+            try
+            {
+                return await _dbContext.BookGenres.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

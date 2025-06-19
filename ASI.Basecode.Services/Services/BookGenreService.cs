@@ -14,7 +14,8 @@ namespace ASI.Basecode.Services.Services
     public class BookGenreService:IBookGenreService
     {
         private readonly IBookGenreRepository BookGenreRepository;
-        public BookGenreService(IBookGenreRepository book_genre_repositry) {
+        public BookGenreService(IBookGenreRepository book_genre_repositry) 
+        {
             BookGenreRepository = book_genre_repositry;
         }
 
@@ -29,14 +30,22 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ArgumentException("Genre name cannot be null or empty");
             }
-            if (string.IsNullOrEmpty(book_genre.GenreDescription))
+
+
+            bool check_user_exist = await BookGenreRepository.CheckGenreExist(book_genre.GenreName);
+
+            if (check_user_exist)
             {
-                throw new ArgumentException("Genre Desription cannot be null or empty");
+                throw new ArgumentException("Genre Name already exist");
             }
-            var mapped_book_genre = new BookGenre {
+            
+
+            var mapped_book_genre = new BookGenre 
+            {
                 BookGenreId = Guid.NewGuid().ToString(),
                 GenreName = book_genre.GenreName,
                 GenreDescription = book_genre.GenreDescription,
+                GenreImageUrl = book_genre.GenreImageUrl,
                 AdminId = "admin1",
                 UpdatedByAdminId = "admin1",
                 UpdatedDate = DateTime.Now,
@@ -49,6 +58,91 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex) {
                 throw new ApplicationException($"Failed to add book genre", ex);
+            }
+        }
+
+        public async Task<List<BookGenreViewModel>> GetAllGenres()
+        {
+            try
+            {
+                List<BookGenre> book_genre_list = await BookGenreRepository.GetAllGenres();
+
+
+                if(book_genre_list == null || !book_genre_list.Any())
+                {
+                    return new List<BookGenreViewModel>();
+                }
+
+                //Mapping
+                List<BookGenreViewModel> view_model_list = book_genre_list.Select(book_genre_element => new BookGenreViewModel
+                {
+                    BookGenreId = book_genre_element.BookGenreId,
+                    GenreName = book_genre_element.GenreName,
+                    GenreDescription = book_genre_element.GenreDescription,
+                    GenreImageUrl = book_genre_element.GenreImageUrl,
+                    AdminId = book_genre_element.AdminId,
+                    UpdatedDate = book_genre_element.UpdatedDate,
+                    UploadDate = book_genre_element.UploadDate,
+                    UpdatedByAdminId = book_genre_element.UpdatedByAdminId
+                }).ToList();
+
+
+                return view_model_list;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to retrieve book genres.", ex);
+            }
+        }
+
+        public async Task<BookGenreViewModel> GetBookGenreById(string genre_id)
+        {
+
+            if (string.IsNullOrEmpty(genre_id))
+            {
+                throw new ArgumentNullException(nameof(genre_id), "Book Genre should not be null");
+            }
+
+            try
+            {
+                BookGenre retreived_genre = await BookGenreRepository.GetBookGenreById(genre_id);
+
+                BookGenreViewModel mapped_genre = new BookGenreViewModel
+                {
+                    BookGenreId = retreived_genre.BookGenreId,
+                    GenreName = retreived_genre.GenreName,
+                    GenreDescription = retreived_genre.GenreDescription,
+                    GenreImageUrl = retreived_genre.GenreImageUrl,
+                };
+
+                return mapped_genre;
+            }
+            catch(Exception ex)
+            {
+                throw new ApplicationException("Failed to retrieve book genre by id.", ex);
+            }
+        }
+
+        public async Task EditGenre(BookGenreViewModel book_genre)
+        {
+            if(book_genre == null)
+            {
+                throw new ArgumentNullException(nameof(book_genre), "Book Genre should not be null");
+            }
+            try
+            {
+                BookGenre existing_genre = await BookGenreRepository.GetBookGenreById(book_genre.BookGenreId);
+
+                existing_genre.GenreName = book_genre.GenreName;
+                existing_genre.GenreDescription = book_genre.GenreDescription;
+                existing_genre.GenreImageUrl = book_genre.GenreImageUrl;
+                existing_genre.UpdatedDate = DateTime.UtcNow;
+
+                await BookGenreRepository.EditGenre();
+            }
+            catch(Exception ex)
+            {
+                throw new ApplicationException("Failed to edit book genre by id.", ex);
             }
         }
     }
