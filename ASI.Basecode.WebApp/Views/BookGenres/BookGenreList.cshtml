@@ -101,7 +101,7 @@
     }
 </div>
 
-@*
+
 @section Scripts {
     <script type = "module">
         // Your Firebase configuration
@@ -225,8 +225,8 @@
 
         //Adding click event listener for each delete button
         //Grab the bookId cover Url and Book Url from which the trash button was clicked
-        show_delete_modal.forEach(button => {
-            button.addEventListener("click", function (event) {
+        show_delete_modal.forEach(button =>  {
+            button.addEventListener("click", async function (event) {
 
 
                 const hold_genre_id = this.dataset.genreId
@@ -267,4 +267,4 @@
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-}*@
+}
