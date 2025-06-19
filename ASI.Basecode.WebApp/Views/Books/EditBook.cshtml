@@ -61,10 +61,11 @@
                         </select>
                     </div>
                     <div class="add-book-form-group">
+                        @*-------Gender-------*@
                         <label for="genre">Genre</label>
                         <select id="genre" name="GenreSelect" class="add-book-form-select" multiple>
                         </select>
-                        <input type="hidden" id="concatenatedGenre" name="GenreList" value="@Model?.GenreList" />
+                        <input type="text" id="concatenatedGenre" name="GenreList" value="@Model?.GenreList" />
                     </div>
 
 
@@ -213,11 +214,20 @@
                 default_option.textContent = "Select Genre"
                 genreSelect.appendChild(default_option)
 
+                //convert genrelist from commaseparated string to a list
+                const commaSeparatedGenre = concatenatedGenreInput.value;
+                const genreArray = commaSeparatedGenre.split(',').map(item => item.trim().toLowerCase()).filter(item => item !== '');
+                console.log(genreArray)
+
                 //Add elements of the genre_list to the select tag
                 genre_list.forEach(genre_name => {
                     const option = document.createElement('option');
                     option.value = genre_name;
                     option.textContent = genre_name;
+
+                    if (genreArray.includes(genre_name.toLowerCase())) {
+                        option.selected = true;
+                    }
 
                     genreSelect.appendChild(option);
                 })

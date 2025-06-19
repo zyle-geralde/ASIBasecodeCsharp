@@ -56,6 +56,7 @@ namespace ASI.Basecode.Data.Repositories
             existingBook.Edition = book.Edition;
             existingBook.CoverImage = book.CoverImage;
             existingBook.BookFile = book.BookFile;
+            existingBook.GenreList = book.GenreList;
             existingBook.UpdatedByAdminId = book.UpdatedByAdminId;//change to Updated
 
 

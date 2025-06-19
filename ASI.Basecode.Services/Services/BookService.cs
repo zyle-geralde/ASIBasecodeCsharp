@@ -93,6 +93,7 @@ namespace ASI.Basecode.Services.Services
                 SeriesName = requestBook.SeriesName,
                 SeriesDescription = requestBook.SeriesDescription,
                 SeriesOrder = requestBook.SeriesOrder,
+                GenreList= requestBook.GenreList,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImageUrl = requestBook.CoverImage,
@@ -131,6 +132,7 @@ namespace ASI.Basecode.Services.Services
                 SeriesName = request.SeriesName,
                 SeriesDescription = request.SeriesDescription,
                 SeriesOrder = request.SeriesOrder,
+                GenreList = request.GenreList,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImage = request.CoverImageUrl,
