@@ -17,9 +17,11 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
     {
 
         private readonly IBookService _bookService;
-        public BookViewController(IBookService bookService)
+        private readonly IReviewService _reviewService;
+        public BookViewController(IBookService bookService, IReviewService reviewService)
         {
             _bookService = bookService;
+            _reviewService = reviewService;
         }
 
 
@@ -57,7 +59,49 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         public async Task<IActionResult> GetBook(string bookId)
         {
             BookViewModel book = await _bookService.GetBookById(bookId);
-            return View("~/Views/Books/BookDetails.cshtml", book);
+            if(book == null)
+            {
+                return NotFound();
+            }
+
+            var reviews= await _reviewService.GetReviewsByBookId(bookId);
+            var bookDetails = new BookViewModel
+            {
+                BookId = book.BookId,
+                Title = book.Title,
+                Subtitle = book.Subtitle,
+                UploadDate = book.UploadDate,
+                UpdatedDate = book.UpdatedDate,
+                PublicationDate = book.PublicationDate,
+                Publisher = book.Publisher,
+                PublicationLocation = book.PublicationLocation,
+                Description = book.Description,
+                NumberOfPages = book.NumberOfPages,
+                Language = book.Language,
+                CoverImageUrl = book.CoverImageUrl,
+                BookFileUrl = book.BookFileUrl,
+                SeriesName = book.SeriesName,
+                SeriesOrder = book.SeriesOrder,
+                SeriesDescription = book.SeriesDescription,
+                AverageRating = book.AverageRating,
+                Author = book.Author,
+                Likes = book.Likes,
+                ISBN10 = book.ISBN10,
+                ISBN13 = book.ISBN13,
+                Edition = book.Edition,
+                Reviews = reviews
+                            .Select(r => new ReviewViewModel
+                            {
+                                ReviewId = r.UserId,
+                                Rating = r.Rating,
+                                Comment = r.Comment,
+                                UploadDate = r.UploadDate
+                            })
+                            .ToList()
+            };
+
+
+            return View("~/Views/Books/BookDetails.cshtml", bookDetails);
         }
 
         [HttpPost]

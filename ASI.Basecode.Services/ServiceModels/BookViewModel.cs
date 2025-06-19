@@ -73,5 +73,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public string? Edition { get; set; }
         public string AdminId { get; set; }
         public string? UpdatedByAdminId { get; set; }
+        public List<ReviewViewModel> Reviews { get; set; } = new();
     }
 }
