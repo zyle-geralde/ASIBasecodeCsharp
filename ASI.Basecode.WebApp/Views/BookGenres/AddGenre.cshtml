@@ -46,8 +46,8 @@
                     <input type="file" id="genreImageFile" accept="image/*" name="GenreImageFile" style="display: none;" required>
                     <button type="button" class="add-book-browse-button" onclick="document.getElementById('genreImageFile').click();">BROWSE</button>
                 </div>
-                @* <p id="coverUploadStatus" class="add-book-upload-status">Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG</p> *@
-                <p id="genreImageUploadStatus" class="add-book-upload-status">
+                <p id="genreImageUploadStatus" class="add-book-upload-status"></p> 
+                <p id="genreImageUploadSpecifications" class="add-book-upload-status">
                     <span class="file-size-info">Max file size: 1GB</span>
                     <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                 </p>
@@ -217,8 +217,8 @@
             let uploadedGenreImageUrl = null;
             //Uploading to Database
             if (genreImageFile) {
-                genreImageUploadStatus.querySelector('.file-size-info').textContent = 'Uploading cover image...';
-                uploadedGenreImageUrl = await uploadFileToFirebase(genreImageFile, 'genre_covers/', genreImageUploadStatus.querySelector('.file-size-info'));
+                genreImageUploadStatus.textContent = 'Uploading cover image...';
+                uploadedGenreImageUrl = await uploadFileToFirebase(genreImageFile, 'genre_covers/', genreImageUploadStatus);
                 if (uploadedGenreImageUrl) {
                     genreImageUrl.value = uploadedGenreImageUrl;
                 } else {
