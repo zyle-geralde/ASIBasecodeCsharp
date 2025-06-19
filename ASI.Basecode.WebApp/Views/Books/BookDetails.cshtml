@@ -135,6 +135,17 @@
                 </div>
             <div class="book-reviews-section" style="margin-left: 400px; margin-top: 50px;">
     <h3>Reviews</h3>
+    @if (!Model.HasReviewed && User.Identity.IsAuthenticated)
+    {
+        <div class="mt-4">
+          <a class="btn btn-primary"
+             asp-controller="Review"
+             asp-action="Add"
+             asp-route-bookId="@Model.BookId">
+            Leave a Review
+          </a>
+        </div>
+    }
 
     @if (Model.Reviews != null && Model.Reviews.Any())
     {

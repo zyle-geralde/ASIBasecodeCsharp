@@ -1,14 +1,15 @@
 ﻿using ASI.Basecode.Data.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Linq;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 {
@@ -54,7 +55,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         }
 
         [HttpGet]
-        [Route("Book/BookDetails/{bookId}")]
+        [Route("Book/BookDetails/{bookId}", Name="BookDetails")]
         [AllowAnonymous]
         public async Task<IActionResult> GetBook(string bookId)
         {
@@ -65,6 +66,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             }
 
             var reviews= await _reviewService.GetReviewsByBookId(bookId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            bool hasReviewed = reviews.Any(r => r.UserId == userId);
             var bookDetails = new BookViewModel
             {
                 BookId = book.BookId,
@@ -89,6 +92,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 ISBN10 = book.ISBN10,
                 ISBN13 = book.ISBN13,
                 Edition = book.Edition,
+                HasReviewed = hasReviewed,
                 Reviews = reviews
                             .Select(r => new ReviewViewModel
                             {

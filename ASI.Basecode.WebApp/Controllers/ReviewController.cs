@@ -22,8 +22,12 @@ namespace ASI.Basecode.WebApp.Controllers
             return View("~/Views/Reviews/Index.cshtml", model);
         }
 
-        public IActionResult Add()
+        public IActionResult Add(string? bookId)
         {
+            var vm = new ReviewViewModel
+            {
+                BookId = bookId
+            };
             return View("~/Views/Reviews/Add.cshtml");
         }
 
@@ -34,7 +38,10 @@ namespace ASI.Basecode.WebApp.Controllers
             if (ModelState.IsValid)
             {
                 await _reviewService.AddReview(reviewModel);
-                return RedirectToAction("Index");
+                return RedirectToRoute(
+                       routeName: "BookDetails",
+                       routeValues: new { bookId = reviewModel.BookId }
+                   );
             }
             return View("~/Views/Reviews/Add.cshtml", reviewModel);
         }
