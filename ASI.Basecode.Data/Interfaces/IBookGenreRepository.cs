@@ -14,5 +14,7 @@ namespace ASI.Basecode.Data.Interfaces
         Task<bool> CheckGenreExist(string genre_name);
 
         Task<List<BookGenre>> GetAllGenres();
+
+        Task<BookGenre> GetBookGenreById(string genre_id);
     }
 }

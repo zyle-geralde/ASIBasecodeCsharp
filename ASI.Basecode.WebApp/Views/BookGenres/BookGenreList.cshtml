@@ -62,21 +62,21 @@
                 <td style="display:none" id="book-id"></td>
                 <td style="display:none" id="cover-url"></td>
                 <td style="display:none" id="book-url"></td>
-                    @foreach (var book in Model)
+                    @foreach (var genre in Model)
                     {
                     <tr>
                         <td>
-                                @if (!string.IsNullOrWhiteSpace(book.GenreImageUrl))
+                                @if (!string.IsNullOrWhiteSpace(genre.GenreImageUrl))
                                 {
-                                <img src="@book.GenreImageUrl" alt="Cover Image" class="cover-image" />
+                                <img src="@genre.GenreImageUrl" alt="Cover Image" class="cover-image" />
                                 }
                                 else
                                 {
                                 <span>No Image</span>
                                 }
                         </td>
-                        <td>@book.GenreName</td>
-                        <td>@book.GenreDescription</td>
+                        <td>@genre.GenreName</td>
+                        <td>@genre.GenreDescription</td>
                         <td>
                             <div class="d-flex gap-2">
                                 <a href="" class="action-icon-button text-secondary">

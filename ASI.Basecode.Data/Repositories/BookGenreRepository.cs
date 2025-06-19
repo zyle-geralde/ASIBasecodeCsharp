@@ -46,5 +46,18 @@ namespace ASI.Basecode.Data.Repositories
                 throw;
             }
         }
+
+        public async Task<BookGenre> GetBookGenreById(string genre_id)
+        {
+            try
+            {
+                return await DbContext.BookGenres.FirstOrDefaultAsync(genre => genre.BookGenreId == genre_id);
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+            
+        }
     }
 }
