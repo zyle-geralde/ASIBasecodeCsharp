@@ -33,7 +33,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         }
 
         [HttpGet]
-        [Route("Book/GetGenred")]
+        [Route("Book/GetGenre")]
         [AllowAnonymous]
         public async Task<IActionResult> GetAllGenres()
         {
