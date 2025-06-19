@@ -14,7 +14,8 @@ namespace ASI.Basecode.Services.Services
     public class BookGenreService:IBookGenreService
     {
         private readonly IBookGenreRepository BookGenreRepository;
-        public BookGenreService(IBookGenreRepository book_genre_repositry) {
+        public BookGenreService(IBookGenreRepository book_genre_repositry) 
+        {
             BookGenreRepository = book_genre_repositry;
         }
 
@@ -39,7 +40,8 @@ namespace ASI.Basecode.Services.Services
             }
             
 
-            var mapped_book_genre = new BookGenre {
+            var mapped_book_genre = new BookGenre 
+            {
                 BookGenreId = Guid.NewGuid().ToString(),
                 GenreName = book_genre.GenreName,
                 GenreDescription = book_genre.GenreDescription,
@@ -74,6 +76,7 @@ namespace ASI.Basecode.Services.Services
                 //Mapping
                 List<BookGenreViewModel> view_model_list = book_genre_list.Select(book_genre_element => new BookGenreViewModel
                 {
+                    BookGenreId = book_genre_element.BookGenreId,
                     GenreName = book_genre_element.GenreName,
                     GenreDescription = book_genre_element.GenreDescription,
                     GenreImageUrl = book_genre_element.GenreImageUrl,
@@ -90,6 +93,38 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ApplicationException("Failed to retrieve book genres.", ex);
             }
+        }
+
+        public async Task<BookGenreViewModel> GetBookGenreById(string genre_id)
+        {
+
+            if (string.IsNullOrEmpty(genre_id))
+            {
+                throw new ArgumentNullException(nameof(genre_id), "Book Genre should not be null");
+            }
+
+            try
+            {
+                BookGenre retreived_genre = await BookGenreRepository.GetBookGenreById(genre_id);
+
+                BookGenreViewModel mapped_genre = new BookGenreViewModel
+                {
+                    BookGenreId = retreived_genre.BookGenreId,
+                    GenreName = retreived_genre.GenreName,
+                    GenreDescription = retreived_genre.GenreDescription,
+                    GenreImageUrl = retreived_genre.GenreImageUrl,
+                };
+
+                return mapped_genre;
+            }
+            catch(Exception ex)
+            {
+                throw new ApplicationException("Failed to retrieve book genre by id.", ex);
+            }
+
+
+
+
         }
     }
 }

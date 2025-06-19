@@ -81,5 +81,30 @@ namespace ASI.Basecode.WebApp.Controllers
                 return StatusCode(500, new { Message = ex.Message });
             }
         }
+
+        [HttpGet]
+        [Route("BookGenre/EditGenre/{genre_id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetBookGenreById(string genre_id)
+        {
+            try
+            {
+                BookGenreViewModel retreived_genre = await BookGenreService.GetBookGenreById(genre_id);
+
+                return View("~/Views/BookGenres/EditGenre.cshtml", retreived_genre);
+            }
+            catch(ArgumentNullException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = ex.Message });
+            }
+        }
     }
 }

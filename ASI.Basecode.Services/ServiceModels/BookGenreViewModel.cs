@@ -12,6 +12,8 @@ namespace ASI.Basecode.Services.ServiceModels
         [Required]
         [StringLength(200)]
         public string GenreName { get; set; }
+        public string? BookGenreId { get; set; }
+
         [StringLength(500)]
         public string? GenreDescription { get; set; }
 
