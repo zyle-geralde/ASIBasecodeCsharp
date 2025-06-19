@@ -22,8 +22,6 @@
             <div class="profile-username">@(Model?.UserId ?? "")</div>
             <div class="profile-bio">
                 @(Model?.AboutMe ?? "No bio available")
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.
             </div>
         </div>
 
@@ -37,27 +35,30 @@
                     <div class="info-fields-row">
                         <div class="info-field-col">
                             <div class="info-label">First Name</div>
-                            <div class="info-value">Maria</div>
+                            <div class="info-value">@Model.FirstName</div>
                         </div>
                         <div class="info-field-col">
                             <div class="info-label">Middle Name</div>
-                            <div class="info-value">Reyes</div>
+                            <div class="info-value">@Model.MiddleName</div>
                         </div>
                         <div class="info-field-col">
                             <div class="info-label">Last Name</div>
-                            <div class="info-value">Garcia</div>
+                            <div class="info-value">@Model.LastName</div>
                         </div>
                         <div class="info-field-col">
                             <div class="info-label">Birthdate</div>
-                            <div class="info-value">06/09/2000</div>
-                        </div>
+                            <div class="info-value">
+                              @( Model.Birthdate
+                                   ?.ToString("MM/dd/yyyy")
+                                 ?? "MM/DD/YYYY" )
+                            </div>                        </div>
                         <div class="info-field-col">
                             <div class="info-label">Gender</div>
-                            <div class="info-value">Female</div>
+                            <div class="info-value">@Model.Gender</div>
                         </div>
                         <div class="info-field-col">
                             <div class="info-label">Location</div>
-                            <div class="info-value">43 P Lopez, Cebu City</div>
+                            <div class="info-value">@Model.Location</div>
                         </div>
                     </div>
                 </div>
@@ -111,41 +112,54 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-0">
-                <form id="personalInfoForm">
+                <form id="personalInfoForm" asp-action="Edit" asp-controller="PersonProfile" method="post">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="UserId" type="hidden" />
                     <div class="mb-3">
-                        <label for="firstName" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="firstName" placeholder="Text">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label for="middleName" class="form-label">Middle Name</label>
-                        <input type="text" class="form-control" id="middleName" placeholder="Text">
+                        <label asp-for="MiddleName" class="form-label"></label>
+                        <input asp-for="MiddleName" class="form-control" />
+                        <span asp-validation-for="MiddleName" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label for="lastName" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="lastName" placeholder="Text">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="birthdate" class="form-label">Birthdate</label>
+                            <label for="birthdate" class="form-label">Birthdate</label>                           
                             <div class="input-group date">
-                                <input type="text" class="form-control" id="birthdate" placeholder="MM/DD/YYYY">
+                                <input asp-for="Birthdate" type="text" class="form-control" id="birthdate" placeholder="MM/DD/YYYY">
                                 <button type="button" class="input-group-text" id="calendarButton">
                                     <i class="fas fa-calendar"></i>
                                 </button>
                             </div>
+                        <span asp-validation-for="Birthdate" class="text-danger"></span>
                         </div>
                         <div class="col">
-                            <label for="gender" class="form-label">Gender</label>
-                            <select class="form-select" id="gender">
-                                <option selected disabled>Select gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
+                            <label asp-for="Gender" class="form-label"></label>
+                            <select asp-for="Gender" class="form-select">
+                                <option value="">Select gender</option>
+                                <option value="male" selected="@(Model.Gender=="male")">Male</option>
+                                <option value="female" selected="@(Model.Gender=="female")">Female</option>
                             </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="mb-4">
-                        <label for="location" class="form-label">Location</label>
-                        <input type="text" class="form-control" id="location" placeholder="Text">
+                        <label asp-for="Location" class="form-label">Location</label>
+                        <input asp-for="Location" type="text" class="form-control" id="location" placeholder="Text">
+                        <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="AboutMe" class="form-label">About Me</label>
+                        <input asp-for="AboutMe" type="text" class="form-control" id="aboutme" placeholder="Text">
+                        <span asp-validation-for="AboutMe" class="text-danger"></span>
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
