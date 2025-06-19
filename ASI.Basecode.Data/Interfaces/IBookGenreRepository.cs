@@ -16,5 +16,7 @@ namespace ASI.Basecode.Data.Interfaces
         Task<List<BookGenre>> GetAllGenres();
 
         Task<BookGenre> GetBookGenreById(string genre_id);
+
+        Task EditGenre();
     }
 }

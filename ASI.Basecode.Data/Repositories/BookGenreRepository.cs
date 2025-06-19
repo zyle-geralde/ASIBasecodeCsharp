@@ -59,5 +59,16 @@ namespace ASI.Basecode.Data.Repositories
             }
             
         }
+
+        public async Task EditGenre()
+        {
+            try
+            {
+                await DbContext.SaveChangesAsync();
+            }
+            catch(Exception ex){
+                throw;
+            }
+        }
     }
 }
