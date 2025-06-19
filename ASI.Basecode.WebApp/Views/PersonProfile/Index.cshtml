@@ -15,9 +15,20 @@
     <h1 class="header-section h1">My Profile</h1>
     <div class="profile-main-row">
         <div class="profile-card">
-            <div class="profile-avatar">
-                <i class="fas fa-user"></i>
-            </div>
+        <div class="profile-avatar">
+            @if (!string.IsNullOrEmpty(Model?.ProfilePicture))
+            {
+                <img id="avatarImg"
+                        src="@(Model.ProfilePicture)"
+                        alt="Profile picture"
+                        class="w-100 h-100 rounded-circle object-fit-cover" />
+            }
+            else
+            {
+                <i class="fas fa-user fa-5x text-secondary"></i>
+            }
+
+        </div>
             <div class="profile-name">@(Model?.FirstName ?? "") @(Model?.LastName ?? "")</div>
             <div class="profile-username">@(Model?.UserId ?? "")</div>
             <div class="profile-bio">
@@ -161,6 +172,23 @@
                         <input asp-for="AboutMe" type="text" class="form-control" id="aboutme" placeholder="Text">
                         <span asp-validation-for="AboutMe" class="text-danger"></span>
                     </div>
+                    <h3 class="add-book-form-section-title">Cover Image Upload</h3>
+                    <div class="">
+                        <label for="profilePicture">Select Cover Image</label>
+                        <div class="add-book-file-upload-wrapper">
+                            <input type="text" class="add-book-file-input-text" readonly id="profilePictureNameDisplay" value="@Model?.ProfilePicture">
+                            <input type="file" id="profilePicture" accept="image/*" name="profilePicture" style="display: none;" required>
+                            <button type="button" onclick="document.getElementById('profilePicture').click();">BROWSE</button>
+                        </div>
+
+                        <p id="profilePictureUploadStatus" class="add-profile-pic-upload-status">
+                            <span class="file-size-info">Max file size: 1GB</span>
+                            <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
+                        </p>
+                         <input asp-for="ProfilePicture" type="hidden" id="ProfilePictureHidden">
+
+                        @* <input type="hidden" id="ProfilePicture" name="ProfilePicture"> *@
+                    </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
                     </div>
@@ -295,4 +323,122 @@
             });
         });
     </script>
+
+       <script type="module">
+            document.getElementById('profilePicture').addEventListener('change', function () {
+            const fileName = this.files[0] ? this.files[0].name : '';
+            document.getElementById('profilePictureNameDisplay').value = fileName;
+            // Clear any previous error/status messages for this file
+            // document.getElementById('coverUploadStatus').textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG';
+            const profilePictureUploadStatus = document.getElementById('profilePictureUploadStatus');
+           profilePictureUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
+           profilePictureUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: JPG, PNG, JPEG';
+           profilePictureUploadStatus.classList.remove('error-message');
+        });
+
+        document.getElementById('profilePicture').addEventListener('change', function () {
+            const fileName = this.files[0] ? this.files[0].name : 'No file selected';
+            // document.getElementById('coverFileNameDisplay').value = fileName; 
+        });
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4CTMSbgGQN_yLn9lEZlswbZ_2A2Xhl0k",
+            authDomain: "basabuzz-ca8fe.firebaseapp.com",
+            projectId: "basabuzz-ca8fe",
+            storageBucket: "basabuzz-ca8fe.firebasestorage.app",
+            messagingSenderId: "206533484485",
+            appId: "1:206533484485:web:2c71a06a17d5244efe75ac"
+        };
+        
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+
+        async function deleteFileFromFirebase(fileUrl) {
+            if (!fileUrl) {
+                console.warn("Attempted to delete null or empty file URL.");
+                return;
+            }
+            try {
+
+                const fileRef = ref(storage, fileUrl);
+                await deleteObject(fileRef);
+                console.log(`Successfully deleted file: ${fileUrl}`);
+            } catch (error) {
+                alert(`Failed to delete file ${fileUrl}: ${error.message}`);
+                console.error(`Failed to delete file ${fileUrl}:`, error);
+            }
+        }
+
+
+
+        // Firebase Upload Function
+        // This function returns the download URL or null on failure/no file
+        async function uploadFileToFirebase(file, path, statusElement) {
+            if (!file) {
+                statusElement.textContent = 'No file selected.';
+                return null; // Indicates no file was provided
+            }
+
+            // Generate New File Namef
+            const timestamp = new Date().getTime();
+            const randomString = Math.random().toString(36).substring(2, 8);
+            const uniqueFileName = `${path}${timestamp}-${randomString}-${file.name}`; // Unique Path
+
+            const storageRef = ref(storage, uniqueFileName); // Use full unique path
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            return new Promise((resolve, reject) => {
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        statusElement.querySelector('.file-size-info').textContent = `Upload is ${progress.toFixed(2)}% done`;
+                    },
+                    (error) => {
+                        statusElement.textContent = `Upload failed: ${error.message}`;
+                        console.error("Upload error:", error);
+                        reject(error); // Reject the promise on upload error
+                    },
+                    async () => {
+                        try {
+                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            statusElement.textContent = 'Upload successful!';
+                            resolve(downloadURL); // Resolve with the download URL
+                        } catch (error) {
+                            statusElement.textContent = `Failed to get download URL: ${error.message}`;
+                            console.error("Get Download URL error:", error);
+                            reject(error); // Reject the promise if getting URL fails
+                        }
+                    }
+                );
+            });
+        }
+
+  const picker      = document.getElementById('profilePicture');
+  const displayName = document.getElementById('profilePictureNameDisplay');
+  const statusEl    = document.getElementById('profilePictureUploadStatus');
+  const hiddenInput = document.getElementById('ProfilePicture');
+
+  picker.addEventListener('change', async () => {
+    const file = picker.files[0];
+    if (!file) return;
+
+    displayName.value = file.name;
+    statusEl.querySelector('.file-size-info').textContent = 'Uploading…';
+
+    try {
+      const downloadURL = await uploadFileToFirebase(file, 'profile-images/', statusEl);
+      statusEl.querySelector('.file-size-info').textContent = 'Upload successful!';
+      hiddenInput.value = downloadURL;
+    } catch (err) {
+      console.error(err);
+      statusEl.querySelector('.file-size-info').textContent = 'Upload failed';
+    }})
+
+
+
+        </script>/>
 }
+

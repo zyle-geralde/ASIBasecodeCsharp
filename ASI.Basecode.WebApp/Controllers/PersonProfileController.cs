@@ -64,6 +64,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 Birthdate = profile.BirthDate,
                 Gender = profile.Gender,
                 Location = profile.Location,
+                ProfilePicture = profile.ProfilePicture
             };
 
             return View(vm);
@@ -73,8 +74,8 @@ namespace ASI.Basecode.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(PersonProfileViewModel model)
         {
-            if(!ModelState.IsValid)
-                return View("~/Views/PersonProfile/Edit.cshtml", model);
+            //if(!ModelState.IsValid)
+            //    return View("~/Views/PersonProfile/Edit.cshtml", model);
 
             var updated = await _personProfileService.EditPersonProfile(model);
             if (!updated)

@@ -16,6 +16,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public DateTime? Birthdate { get; set; }
         public string Gender { get; set; }
         public string Location { get; set; }
+        public string ProfilePicture { get; set; }
 
     }
 }
