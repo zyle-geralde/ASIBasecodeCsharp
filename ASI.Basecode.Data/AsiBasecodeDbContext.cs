@@ -27,6 +27,10 @@ namespace ASI.Basecode.Data
         public virtual DbSet<Reply> Replies { get; set; }
         public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<PersonProfile> PersonProfiles{get;set;}
+        public virtual DbSet<Author> Authors { get; set; }
+
+        public virtual DbSet<BookAuthorBridge> BookAuthorBridges { get; set; }
+        public virtual DbSet<Language> Languages { get; set; }
         //Added
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -134,14 +134,21 @@
 }
 
     .add-book-browse-button:hover {
-        background-color: #d1d5db;
+        background-color: #435c5e;
     }
 
 .add-book-upload-status {
     color: #6b7280;
     font-size: 12px;
     margin-top: 8px;
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
 }
+
+    .add-book-upload-status.error-message {
+        color: red; 
+    }
 
 
 .button-container {
@@ -208,4 +215,35 @@
     width: 20px;
     height: 20px;
 }
+
+.add-book-form-input[type="date"] {
+    cursor: pointer;
+}
+
+    .add-book-form-input[type="date"]::-webkit-calendar-picker-indicator {
+        /* Chrome, Safari, Edge*/
+        opacity: 1;
+        display: block;
+        cursor: pointer;
+        font-size: 1.5em;
+        color: #647D7F;
+        filter: invert(30%) sepia(10%) saturate(1000%) hue-rotate(180deg) brightness(90%) contrast(80%);
+    }
+
+    .add-book-form-input[type="date"]::-moz-calendar-picker-indicator {
+        /*Firefox */
+        opacity: 1;
+        display: block;
+        cursor: pointer;
+        font-size: 1.5em;
+        color: #647D7F;
+    }
+
+
+    .add-book-form-input[type="date"]::-ms-reveal {
+        /*EDGE - older version*/
+        display: none;
+    }
+
+
 

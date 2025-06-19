@@ -4,6 +4,7 @@ using ASI.Basecode.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASI.Basecode.Data.Migrations
 {
     [DbContext(typeof(AsiBasecodeDBContext))]
-    partial class AsiBasecodeDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250618220936_Add_Genre_Image_Url")]
+    partial class Add_Genre_Image_Url
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,37 +47,6 @@ namespace ASI.Basecode.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Admins");
-                });
-
-            modelBuilder.Entity("ASI.Basecode.Data.Models.Author", b =>
-                {
-                    b.Property<string>("AuthorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AdminId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuthorDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuthorImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuthorName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedByAdminId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UploadDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("AuthorId");
-
-                    b.ToTable("Authors");
                 });
 
             modelBuilder.Entity("ASI.Basecode.Data.Models.Book", b =>
@@ -157,22 +128,6 @@ namespace ASI.Basecode.Data.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("ASI.Basecode.Data.Models.BookAuthorBridge", b =>
-                {
-                    b.Property<string>("BookAuthorBridgeId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AuthorId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BookId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("BookAuthorBridgeId");
-
-                    b.ToTable("BookAuthorBridges");
-                });
-
             modelBuilder.Entity("ASI.Basecode.Data.Models.BookGenre", b =>
                 {
                     b.Property<string>("BookGenreId")
@@ -218,31 +173,6 @@ namespace ASI.Basecode.Data.Migrations
                     b.HasKey("BookGenreBridgeId");
 
                     b.ToTable("BookGenreBridges");
-                });
-
-            modelBuilder.Entity("ASI.Basecode.Data.Models.Language", b =>
-                {
-                    b.Property<string>("LanguageId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AdminId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LanguageName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedByAdminId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UploadDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("LanguageId");
-
-                    b.ToTable("Languages");
                 });
 
             modelBuilder.Entity("ASI.Basecode.Data.Models.PersonProfile", b =>

@@ -5,18 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ASI.Basecode.Data.Models
+namespace ASI.Basecode.Services.ServiceModels
 {
-    public class BookGenre
+    public class BookGenreViewModel
     {
-        [Key]
-        public string BookGenreId { get; set; }
+        [Required]
+        [StringLength(200)]
         public string GenreName { get; set; }
+        [StringLength(500)]
         public string? GenreDescription { get; set; }
+
+        [Required]
+        [StringLength(1000)]
         public string? GenreImageUrl { get; set; }
-        public string AdminId { get; set; }
-        public DateTime? UploadDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-        public string? UpdatedByAdminId { get; set; }
     }
 }

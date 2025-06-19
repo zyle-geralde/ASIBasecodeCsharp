@@ -1,10 +1,9 @@
 ﻿using ASI.Basecode.Data.Classes;
 using System;
-using System.Collections.Generic;
 
 namespace ASI.Basecode.Data.Models
 {
-    public partial class User:Person
+    public partial class User : Person
     {
         public int Id { get; set; }
         public string UserId { get; set; }

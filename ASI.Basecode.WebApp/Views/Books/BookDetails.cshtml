@@ -1,31 +1,33 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model ASI.Basecode.Data.Models.Book
+@model ASI.Basecode.Services.ServiceModels.BookViewModel;
 @{
+    ViewData["Title"] = "BookDetails";
+    Layout = "_AdminSidebarLayout";
 }
 
 <div class="book-details-container">
     @if (Model != null)
     {
-        <div class="book-cover-section" style="margin-top:200px">
+        <div class="book-cover-section" style="margin-top:200px; margin-left:400px;">
             <h1 class="book-title">@Html.DisplayFor(model => model.Title)</h1>
 
                 <h2 class="book-subtitle">@Html.DisplayFor(model => model.Subtitle)</h2>
             
 
 
-                <img src="@Model.CoverImage" alt="Book Cover" class="book-cover" />
+                <img src="@Model.CoverImageUrl" alt="Book Cover" class="book-cover" style="height:200px; width:200px;"/>
 
 
 
                 <div style="margin-top: 15px;">
-                    <a href="@Model.BookFile" target="_blank" class="detail-value">View Book File</a>
+                    <a href="@Model.BookFileUrl" target="_blank" class="detail-value">View Book File</a>
                 </div>
             
         </div>
 
-        <div class="book-info-section">
+        <div class="book-info-section" style="margin-left:400px;">
             <div class="detail-group">
                 <span class="detail-label">Book ID:</span>
                 <span class="detail-value">@Html.DisplayFor(model => model.BookId)</span>
@@ -45,7 +47,7 @@
 
             <div class="detail-group">
                 <span class="detail-label">Publication Date:</span>
-                <span class="detail-value">@Model.PublicationDate?.ToString("MMMM dd, yyyy")</span>
+                <span class="detail-value">@Model.PublicationDate</span>
             </div>
 
             <div class="detail-group">
@@ -113,7 +115,7 @@
 
             <div class="detail-group">
                 <span class="detail-label">Upload Date:</span>
-                <span class="detail-value">@Model.UploadDate?.ToString("MMMM dd, yyyy hh:mm tt")</span>
+                <span class="detail-value">@Model.UploadDate</span>
             </div>
 
             <div class="detail-group">

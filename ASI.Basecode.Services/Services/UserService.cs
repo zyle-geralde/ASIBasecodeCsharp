@@ -36,19 +36,22 @@ namespace ASI.Basecode.Services.Services
             return user != null ? LoginResult.Success : LoginResult.Failed;
         }
 
-        public void AddUser(UserViewModel model)
+        public async Task<User> AddUser(UserViewModel model)
         {
             var user = new User();
             if (!_repository.UserExists(model.UserId))
             {
-                _mapper.Map(model, user);
+                user.UserId = model.UserId;
+                user.Name = model.Name;
                 user.Password = PasswordManager.EncryptPassword(model.Password);
                 user.CreatedTime = DateTime.Now;
                 user.UpdatedTime = DateTime.Now;
                 user.CreatedBy = System.Environment.UserName;
                 user.UpdatedBy = System.Environment.UserName;
+                user.AdminId = "test";
 
-                _repository.AddUser(user);
+                await _repository.AddUser(user);
+                return user;
             }
             else
             {
