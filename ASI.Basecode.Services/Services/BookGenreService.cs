@@ -121,10 +121,6 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ApplicationException("Failed to retrieve book genre by id.", ex);
             }
-
-
-
-
         }
     }
 }
