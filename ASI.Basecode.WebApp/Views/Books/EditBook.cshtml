@@ -60,6 +60,12 @@
 
                         </select>
                     </div>
+                    <div class="add-book-form-group">
+                        <label for="genre">Genre</label>
+                        <select id="genre" name="GenreSelect" class="add-book-form-select" multiple>
+                        </select>
+                        <input type="hidden" id="concatenatedGenre" name="GenreList" value="@Model?.GenreList" />
+                    </div>
 
 
                     <div class="edit-book-form-group">
@@ -186,6 +192,51 @@
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
+
+        const genreSelect = document.getElementById('genre');
+        const concatenatedGenreInput = document.getElementById('concatenatedGenre');
+
+        //Setting Up Genres
+        try {
+            const response = await fetch('/Book/GetGenre', {
+                method: 'GET'
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                const genre_list = result.message
+                console.log(genre_list)
+
+                // Add a default "Select Genre" option
+                const default_option = document.createElement('option');
+                default_option.value = ""
+                default_option.textContent = "Select Genre"
+                genreSelect.appendChild(default_option)
+
+                //Add elements of the genre_list to the select tag
+                genre_list.forEach(genre_name => {
+                    const option = document.createElement('option');
+                    option.value = genre_name;
+                    option.textContent = genre_name;
+
+                    genreSelect.appendChild(option);
+                })
+            } else {
+                alert("Server error")
+            }
+        } catch (backendError) {
+            alert("Unexpected Error Occured")
+        }
+
+        function updateConcatenatedGenre() {
+            const selectedOptions = Array.from(genreSelect.options).filter(option => option.selected);
+            const selectedGenres = selectedOptions.map(option => option.value);
+            concatenatedGenreInput.value = selectedGenres.join(',');
+        }
+
+        //Listener - call updateConcatinedtGenre everytime the selected genre changes
+        genreSelect.addEventListener('change', updateConcatenatedGenre);
+
 
         document.getElementById('coverImageFile').addEventListener('change', function () {
             const fileName = this.files[0] ? this.files[0].name : 'No file selected';
@@ -380,6 +431,10 @@
             console.error('Firebase upload error during form submission:', uploadError);
             return;
         }
+
+        
+        //Concatinate genrelist then update on and input field
+        updateConcatenatedGenre()
 
         // Proceed with form data submission to backend
         const formData = new FormData(form);
