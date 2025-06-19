@@ -1,31 +1,17 @@
-﻿.add-user-container {
-    flex: 1;
-    background-color: #f5f5f5;
-    min-height: 100vh;
-    display: flex;
-    padding: 25px;
-}
-
+﻿
 .edit-user-container,
-.add-user-container {
+.add-user-container 
+{
     transition: margin-left 0.3s ease-in-out;
 }
 
-/*.content-wrapper {
-    flex: 1;*/ /* Make content wrapper fill the container */
-    /*padding: 3rem;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}*/
-
-/*----------------wala ni sa common ang padding---------------*/
-.admin-common-content-wrapper {
+.admin-common-content-wrapper 
+{
     padding: 3rem; 
 }
 
-.add-user-form {
+.add-user-form 
+{
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
@@ -35,7 +21,8 @@
     height: 100%;
 }
 
-.form-content {
+.form-content 
+{
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -43,29 +30,24 @@
     margin-bottom: auto;
 }
 
-.form-row {
+.form-row 
+{
     display: flex;
     gap: 3rem; 
     margin-bottom: 2rem; 
 }
 
-.form-group {
+.form-group 
+{
     flex: 1;
     min-width: 0; 
     display: flex;
     flex-direction: column;
 }
-/* naa sa common
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #647D7F;
-    font-size: 14px;
-    font-weight: 500;
-}*/
 
 input[type="text"],
-input[type="email"] {
+input[type="email"] 
+{
     width: 100%;
     padding: 0.5rem; 
     border: 1px solid #ddd;
@@ -73,13 +55,15 @@ input[type="email"] {
     font-size: 14px;
 }
 
-.upload-section {
+.upload-section 
+{
     margin-bottom: 1rem;
     align-self: start;
     width: 50%;
 }
 
-.upload-input {
+.upload-input 
+{
     position: relative;
     margin-bottom: 0.5rem;
     display: flex;
@@ -88,7 +72,8 @@ input[type="email"] {
     
 }
 
-.file-display {
+.file-display 
+{
     flex: 1;
     padding: 0.75rem;
     border: 1px solid #ddd;
@@ -98,7 +83,8 @@ input[type="email"] {
     background: #fff;
 }
 
-input[type="file"] {
+input[type="file"] 
+{
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #ddd;
@@ -106,7 +92,8 @@ input[type="file"] {
     font-size: 14px;
 }
 
-.browse-btn {
+.browse-btn 
+{
     position: absolute;
     right: 5px;
     top: 50%;
@@ -121,7 +108,8 @@ input[type="file"] {
     white-space: nowrap;
 }
 
-.file-instructions {
+.file-instructions 
+{
     display: flex;
     flex-direction: column;
     font-size: 0.875rem;
@@ -129,7 +117,8 @@ input[type="file"] {
     margin-top: 0.5rem;
 }
 
-.file-info {
+.file-info 
+{
     display: flex;
     flex-direction: row;
     gap: 0.15rem; 
@@ -137,12 +126,14 @@ input[type="file"] {
     margin-bottom: 0.5rem; 
 }
 
-.file-info small {
+.file-info small 
+{
     color: #666;
     font-size: 12px;
 }
 
-.button-group {
+.button-group 
+{
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
@@ -150,7 +141,8 @@ input[type="file"] {
     padding-bottom: 0; 
 }
 
-.cancel-btn {
+.cancel-btn 
+{
     padding: 0.50rem 1.5rem;
     background: #fff;
     border: 1px solid #ddd;
@@ -160,7 +152,8 @@ input[type="file"] {
     cursor: pointer;
 }
 
-.submit-btn {
+.submit-btn 
+{
     padding: 0.50rem 1.5rem;
     background: #647D7F;
     border: none;
@@ -170,26 +163,32 @@ input[type="file"] {
     cursor: pointer;
 }
 
-@media (max-width: 785px) {
-    .form-row {
+@media (max-width: 785px) 
+{
+    .form-row 
+    {
         flex-direction: column;
         gap: 1rem;
     }
 
-    .content-wrapper {
+    .content-wrapper 
+    {
         padding: 1.5rem;
     }
 
-    .button-group {
+    .button-group 
+    {
         flex-direction: column;
     }
 
-    .button-group button {
+    .button-group button 
+    {
         width: 100%;
     }
 
     .edit-user-container,
-    .add-user-container {
+    .add-user-container 
+    {
         margin-left: 0;
         padding: 1rem;
     }

@@ -1,5 +1,6 @@
 ﻿/*------------------------------------- Body --------------------------------------*/
-body {
+body 
+{
     margin: 0;
     margin: 0;
     padding: 0;
@@ -7,9 +8,9 @@ body {
     background-color: #f5f5f5;
 }
 
-
 /*---------------------------- Admin Common Container ------------------------------*/
-.admin-common-container {
+.admin-common-container 
+{
     flex: 1;
     background-color: #f5f5f5;
     min-height: 100vh;
@@ -17,7 +18,8 @@ body {
     padding: 25px;
 }
 
-.admin-common-content-wrapper {
+.admin-common-content-wrapper 
+{
     flex: 1;
     width: 100%;
     height: 100%;
@@ -26,7 +28,8 @@ body {
 }
 
 /*------------------------------ Label -----------------------------*/
-label {
+label 
+{
     display: block;
     color: #647D7F;
     font-size: 14px;
@@ -36,49 +39,57 @@ label {
 
 /*------------------------------ Confirmation Modal -----------------------------*/
 
-.confirmation-modal .modal-content {
+.confirmation-modal .modal-content 
+{
     border-radius: 16px;
     background-color: #ffffff;
     border: none;
     width: 400px;
 }
 
-.confirmation-modal .modal-header {
+.confirmation-modal .modal-header 
+{
     padding: 1rem 1.2rem 0.8rem;
     background-color: #F2EDE5;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
 }
 
-.confirmation-modal .modal-title {
+.confirmation-modal .modal-title 
+{
     font-weight: 550;
     color: #333;
     font-size: 17px !important;
 }
 
-.confirmation-modal .modal-body {
+.confirmation-modal .modal-body 
+{
     padding: 1.5rem 1rem;
 }
 
-.confirmation-modal .btn-secondary {
+.confirmation-modal .btn-secondary 
+{
     background-color: #E6E6E6 !important;
     border: none;
     color: #333;
     min-width: 100px;
 }
 
-    .confirmation-modal .btn-secondary:hover {
+    .confirmation-modal .btn-secondary:hover 
+    {
         background-color: #d4d6d7;
     }
 
-.confirmation-modal .btn-danger {
+.confirmation-modal .btn-danger 
+{
     background-color: #FF4747;
     border: none;
     min-width: 100px;
     height: 35px;
 }
 
-.confirmation-modal .btn-danger-2 {
+.confirmation-modal .btn-danger-2 
+{
     background-color: #A37B5D;
     border: none;
     min-width: 100px;
@@ -86,34 +97,40 @@ label {
     color: #fff;
 }
 
-    .confirmation-modal .btn-danger:hover {
+    .confirmation-modal .btn-danger:hover 
+    {
         background-color: #ff3333;
     }
 
-.confirmation-modal .modal-body p {
+.confirmation-modal .modal-body p 
+{
     color: #333;
     font-size: 15px !important;
     font-weight: 500 !important;
 }
 
-.confirmation-modal .modal-body p2 {
+.confirmation-modal .modal-body p2 
+{
     color: #333;
     font-size: 10px !important;
     font-weight: 500;
 }
 
-.btn-close {
+.btn-close 
+{
     opacity: 0.5;
     padding-right: 20px !important;
 }
 
-    .btn-close:hover {
+    .btn-close:hover 
+    {
         opacity: 0.75;
     }
 
 /*------------------------------ Success Modal -----------------------------*/
 
-.success-modal .modal-content {
+.success-modal .modal-content 
+{
     border-radius: 12px;
     background-color: #f5f2ef;
     border: none;
@@ -121,11 +138,13 @@ label {
     margin: 0 auto;
 }
 
-.success-modal .modal-body {
+.success-modal .modal-body 
+{
     padding: 2rem;
 }
 
-.success-icon {
+.success-icon 
+{
     width: 60px;
     height: 60px;
     background-color: #647D7F;
@@ -136,29 +155,34 @@ label {
     margin: 0 auto;
 }
 
-    .success-icon i {
+    .success-icon i
+    {
         color: white;
         font-size: 24px;
     }
 
-.success-modal .modal-title {
+.success-modal .modal-title 
+{
     color: #333;
     font-weight: 600;
 }
 
-.success-modal p {
+.success-modal p 
+{
     color: #666;
     font-size: 14px !important;
 }
 
-.success-modal .btn-secondary {
+.success-modal .btn-secondary 
+{
     background-color: #647D7F;
     border: none;
     color: white;
     min-width: 100px;
 }
 
-    .success-modal .btn-secondary:hover {
+    .success-modal .btn-secondary:hover 
+    {
         background-color: #4f6466;
     }
 
@@ -217,7 +241,8 @@ label {
 
 
 /*------------------------------ Search Field -----------------------------*/
-.search-filter-container {
+.search-filter-container 
+{
     display: flex !important;
     gap: 10px !important;
     margin-bottom: 24px !important;
@@ -227,7 +252,8 @@ label {
 }
 
 
-.search-field {
+.search-field 
+{
     flex-grow: 1 !important;
     padding: 8px 12px !important;
     border: 1px solid #d1d5db !important;
@@ -241,13 +267,15 @@ label {
     width: 100% !important;
 }
 
-    .search-field:focus {
+    .search-field:focus 
+    {
         outline: none !important;
         border-color: #4f46e5 !important;
         box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5) !important;
     }
 
-.search-icon {
+.search-icon 
+{
     position: absolute !important;
     left: 12px !important;
     top: 50% !important;
@@ -258,36 +286,42 @@ label {
 
 /*------------------------------ Sort and Filter Button -----------------------------*/
 
-.btn-outline-secondary {
+.btn-outline-secondary 
+{
     max-width: 150px;
     color: #647d7f;
     border-color: gray;
     border-color: #d0d0d1;
 }
 
-    .btn-outline-secondary:hover {
+    .btn-outline-secondary:hover 
+    {
         background-color: #a7b8b9;
         border-color: #a7b8b9;
     }
 
 /*------------------------------ Header Section Pages (Add, Edit, List) and Header Section Button -----------------------------*/
-.header-section {
+.header-section 
+{
     margin-bottom: 1rem;
 }
 
-    .header-section h1 {
-        color: #647D7F;
-        font-size: 40px;
+    .header-section h1 
+    {
+        color: #3E4F4E !important;
+        font-size: 40px !important;
         margin-bottom: 0.5rem;
     }
 
-    .header-section p {
+    .header-section p 
+    {
         color: #666;
         font-size: 16px;
     }
 
 /*---------------- Header Section Button ---------------*/
-.btn-secondary {
+.btn-secondary 
+{
     background-color: #647D7F !important;
     color: #fff;
 }
