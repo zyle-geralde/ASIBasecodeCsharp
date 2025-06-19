@@ -21,12 +21,12 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous] //To be removed if the flow is finalized
         public IActionResult AddUser()
         {
-            return View();
+            return View("~/Views/Users/AddUser.cshtml");
         }
         [AllowAnonymous] //To be removed if the flow is finalized
         public IActionResult EditUser()
         {
-            return View();
+            return View("~/Views/Users/EditUser.cshtml");
         }
 
 
