@@ -61,11 +61,10 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
-        public async Task<List<BookGenreViewModel>> GetAllGenres()
+        public async Task<List<BookGenreViewModel>> GetAllGenreList()
         {
-            try
-            {
-                List<BookGenre> book_genre_list = await BookGenreRepository.GetAllGenres();
+            
+                List<BookGenre> book_genre_list = await BookGenreRepository.GetAllGenreList();
 
 
                 if(book_genre_list == null || !book_genre_list.Any())
@@ -88,11 +87,7 @@ namespace ASI.Basecode.Services.Services
 
 
                 return view_model_list;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Failed to retrieve book genres.", ex);
-            }
+
         }
 
         public async Task<BookGenreViewModel> GetBookGenreById(string genre_id)
@@ -144,6 +139,20 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ApplicationException("Failed to edit book genre by id.", ex);
             }
+        }
+
+        public async Task DeleteGenre(string genre_id)
+        {
+
+            try
+            {
+                await BookGenreRepository.DeleteGenre(genre_id);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to Delete book: {ex.Message}", ex);
+            }
+
         }
     }
 }

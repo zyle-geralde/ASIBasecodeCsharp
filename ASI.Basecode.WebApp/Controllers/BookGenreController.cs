@@ -1,6 +1,9 @@
 ﻿using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.Services.Services;
+using ASI.Basecode.WebApp.Payload.BookGenrePayload;
+using ASI.Basecode.WebApp.Payload.BooksPayload;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -68,7 +71,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
-                List<BookGenreViewModel> book_genre_list = await BookGenreService.GetAllGenres();
+                List<BookGenreViewModel> book_genre_list = await BookGenreService.GetAllGenreList();
 
                 return View("~/Views/BookGenres/BookGenreList.cshtml", book_genre_list);
             }
@@ -137,6 +140,33 @@ namespace ASI.Basecode.WebApp.Controllers
 
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
             return BadRequest(new { errors = errors, Message = "Validation failed." });
+        }
+
+
+        [HttpPost]
+        [Route("BookGenre/DeleteGenre")]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> DeleteBook([FromBody] DeleteGenrePayload genre)
+        {
+            if (genre == null)
+            {
+                return BadRequest(new { Message = "No data has been passed" });
+            }
+
+            try
+            {
+                await BookGenreService.DeleteGenre(genre.BookGenreId);
+                return Ok(new { Message = "Genre Deleted successfully!" });
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
     }

@@ -11,9 +11,11 @@ namespace ASI.Basecode.Services.Interfaces
     public interface IBookGenreService
     {
         Task AddGenre(BookGenreViewModel book_genre);
-        Task<List<BookGenreViewModel>> GetAllGenres();
+        Task<List<BookGenreViewModel>> GetAllGenreList(); 
 
         Task<BookGenreViewModel> GetBookGenreById(string genre_id);
         Task EditGenre(BookGenreViewModel book_genre);
+
+        Task DeleteGenre(string genre_id);
     }
 }
