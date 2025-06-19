@@ -46,6 +46,8 @@
         </div>
     </div>
 
+    <p class="no-search-results-message" style="display: none;">No books found matching your search criteria.</p>
+
     @if (Model != null && Model.Any())
     {
         <div class="table-responsive">
@@ -68,9 +70,9 @@
                 </tr>
             </thead>
             <tbody>
-                <td style="display:none" id="book-id"></td>
+                @* <td style="display:none" id="book-id"></td>
                 <td style="display:none" id="cover-url"></td>
-                <td style="display:none" id="book-url"></td>
+                <td style="display:none" id="book-url"></td> *@
                 @foreach (var book in Model)
                 {
                     <tr>
@@ -276,15 +278,15 @@
 
 
         // dynamic status modal
-        function showStatusModal(message, type = 'Success') { // Changed
+        function showStatusModal(message, type = 'Success') { 
             var deleteModalElement = document.getElementById('deleteModal');
             var deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
             if (deleteModal) {
                 deleteModal.hide();
             }
 
-            const statusModalTitle = document.getElementById('statusModalLabel'); // Changed
-            const statusModalMessage = document.getElementById('statusModalMessage');  // Changed
+            const statusModalTitle = document.getElementById('statusModalLabel'); 
+            const statusModalMessage = document.getElementById('statusModalMessage');  
 
             if (statusModalTitle) {
                 statusModalTitle.textContent = type;
@@ -321,22 +323,28 @@
         }
 
         const show_delete_modal = document.querySelectorAll("#delete-modal-button");
-        const get_book_id = document.getElementById("book-id")
-         const get_cover_url = document.getElementById("cover-url")
-        const get_book_url = document.getElementById("book-url")
+        // const get_book_id = document.getElementById("book-id")
+        //  const get_cover_url = document.getElementById("cover-url")
+        // const get_book_url = document.getElementById("book-url")
+
+        let currentBookIdToDelete = null;
+        let currentCoverUrlToDelete = null;
+        let currentBookUrlToDelete = null;
 
         //Adding click event listener for each delete button
         //Grab the bookId cover Url and Book Url from which the trash button was clicked
         show_delete_modal.forEach(button => {
             button.addEventListener("click", function (event) {
+                currentBookIdToDelete = this.dataset.bookId;
+                currentCoverUrlToDelete = this.dataset.coverUrl;
+                currentBookUrlToDelete = this.dataset.bookUrl;
 
-
-                const hold_book_id = this.dataset.bookId
-                const hold_cover_url = this.dataset.coverUrl
-                const hold_book_url = this.dataset.bookUrl
-                get_book_id.textContent = hold_book_id
-                get_cover_url.textContent = hold_cover_url
-                get_book_url.textContent = hold_book_url
+                // const hold_book_id = this.dataset.bookId
+                // const hold_cover_url = this.dataset.coverUrl
+                // const hold_book_url = this.dataset.bookUrl
+                // get_book_id.textContent = hold_book_id
+                // get_cover_url.textContent = hold_cover_url
+                // get_book_url.textContent = hold_book_url
 
             })
         })
@@ -351,7 +359,8 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ BookId: get_book_id.textContent })
+                    // body: JSON.stringify({ BookId: get_book_id.textContent })
+                    body: JSON.stringify({ BookId: currentBookIdToDelete })
                 })
 
                 if (response.ok) 
@@ -361,11 +370,13 @@
                     showStatusModal(result.message || "Book deleted successfully!", 'Success');
                     if(get_cover_url.textContent !== null || get_cover_url.textConent !== "")
                     {
-                        await deleteCoverUrl(get_cover_url.textContent);
+                        // await deleteCoverUrl(get_cover_url.textContent);
+                        await deleteCoverUrl(currentCoverUrlToDelete);
                     }
 
                     if (get_book_url.textContent !== null || get_book_url.textContent !== "") {
-                        await deleteBookUrl(get_book_url.textContent)
+                        // await deleteBookUrl(get_book_url.textContent)
+                        await deleteBookUrl(currentBookUrlToDelete)
                     }
 
                     setTimeout(() => {
@@ -386,6 +397,100 @@
             }
         })
 
+
+        // dynamic search functionality
+        const searchInput = document.getElementById('searchInput');
+        const dataTable = document.querySelector('.data-table');
+        const tableRows = document.querySelectorAll('.data-table tbody tr');
+        const emptyMessage = document.querySelector('.empty-message'); 
+        const noSearchResultsMessage = document.querySelector('.no-search-results-message'); 
+
+
+        if (emptyMessage) {
+            if (tableRows.length === 0) {
+                emptyMessage.style.display = 'block';
+                if (dataTable) dataTable.style.display = 'none'; 
+            } else {
+                emptyMessage.style.display = 'none';
+            }
+        }
+        if (noSearchResultsMessage) {
+            noSearchResultsMessage.style.display = 'none'; 
+        }
+
+
+        searchInput.addEventListener('keyup', function () {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+
+            // revert to original state, if clear search bar is clear
+            if (searchTerm === '') {
+                tableRows.forEach(row => row.style.display = ''); 
+                if (noSearchResultsMessage) noSearchResultsMessage.style.display = 'none'; 
+                if (emptyMessage) {
+                    if (tableRows.length === 0) {
+                        emptyMessage.style.display = 'block';
+                        if (dataTable) dataTable.style.display = 'none';
+                    } else {
+                        emptyMessage.style.display = 'none';
+                        if (dataTable) dataTable.style.display = ''; 
+                    }
+                } else { /
+                    if (dataTable) dataTable.style.display = ''; 
+                }
+                return;
+            }
+
+            let hasVisibleRows = false;
+            tableRows.forEach(row => {
+                let rowVisible = false;
+                const cells = row.querySelectorAll('td');
+
+                for (let i = 0; i < cells.length; i++) {
+                    if (i === cells.length - 1) {
+                        continue;
+                    }
+                    if (i === 0) {
+                        const imgElement = cells[i].querySelector('img');
+                        const spanElement = cells[i].querySelector('span');
+                        let cellText = '';
+                        if (imgElement && imgElement.alt) {
+                            cellText = imgElement.alt.toLowerCase();
+                        } else if (spanElement) {
+                            cellText = spanElement.textContent.toLowerCase();
+                        }
+                        if (cellText.includes(searchTerm)) {
+                            rowVisible = true;
+                            break;
+                        }
+                        continue;
+                    }
+
+                    const cellText = cells[i].textContent.toLowerCase().trim();
+                    if (cellText.includes(searchTerm)) {
+                        rowVisible = true;
+                        break;
+                    }
+                }
+
+                if (rowVisible) {
+                    row.style.display = '';
+                    hasVisibleRows = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            
+            if (hasVisibleRows) {
+                if (noSearchResultsMessage) noSearchResultsMessage.style.display = 'none'; 
+                if (dataTable) dataTable.style.display = ''; 
+                if (emptyMessage) emptyMessage.style.display = 'none'; 
+            } else {
+                if (noSearchResultsMessage) noSearchResultsMessage.style.display = 'block'; 
+                if (dataTable) dataTable.style.display = 'none';
+                if (emptyMessage) emptyMessage.style.display = 'none'; 
+            }
+        });
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
