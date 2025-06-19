@@ -1,4 +1,5 @@
-.gradient-custom-2 {
+.gradient-custom-2 
+{
     /* fallback for old browsers */
     background: #ff0000; /* Red */
     /* Chrome 10-25, Safari 5.1-6 */
@@ -7,22 +8,28 @@
     background: linear-gradient(to right, #ff0000, #000000); /* Red, Black */
 }
 
-.login-btn {
+.login-btn 
+{
     width: 180px;
 }
 
-.register-box {
+.register-box 
+{
     width: 600px;
 }
 
-@media (min-width: 768px) {
-    .gradient-form {
+@media (min-width: 768px) 
+{
+    .gradient-form 
+    {
         height: 100vh !important;
     }
 }
 
-@media (min-width: 769px) {
-    .gradient-custom-2 {
+@media (min-width: 769px) 
+{
+    .gradient-custom-2 
+    {
         border-top-right-radius: .3rem;
         border-bottom-right-radius: .3rem;
     }

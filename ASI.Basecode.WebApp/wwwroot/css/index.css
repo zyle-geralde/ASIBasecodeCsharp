@@ -1,6 +1,7 @@
 ﻿
 
-body {
+body 
+{
     background-color: #F7F4ED;
     color: #3E4F4E;
     margin: 0;
@@ -8,7 +9,8 @@ body {
     line-height: 1.5;
 }
 
-.container {
+.container 
+{
     max-width: 1440px;
     margin-left: auto;
     margin-right: auto;
@@ -17,7 +19,8 @@ body {
     padding-top: 60px;
 }
 
-.main-grid {
+.main-grid 
+{
     display: grid;
     grid-template-columns: 60% 40%;
     gap: 32px;
@@ -26,7 +29,8 @@ body {
 
 
 /* Section Cards */
-.section-card-genre {
+.section-card-genre 
+{
     background-color: #F7F3E3;
     padding: 23px;
     border: 1.5px solid #DCD7C9;
@@ -36,7 +40,8 @@ body {
     width: auto;
 }
 
-.section-card {
+.section-card 
+{
     background-color: #F7F4ED;
     padding: 23px;
     border: 1.5px solid #DCD7C9;
@@ -44,38 +49,45 @@ body {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-    .section-card h2 {
+    .section-card h2 
+    {
         font-size: 24px;
         font-weight: 600;
         margin-bottom: 8px;
     }
 
-    .section-card p {
+    .section-card p 
+    {
         color: #4b5563;
         margin-bottom: 24px;
     }
 
 
 /* Genre Cards */
-.category-scroll-container::-webkit-scrollbar {
+.category-scroll-container::-webkit-scrollbar 
+{
     height: 8px;
 }
 
-.category-scroll-container::-webkit-scrollbar-track {
+.category-scroll-container::-webkit-scrollbar-track 
+{
     background: #e0e0e0;
     border-radius: 10px;
 }
 
-.category-scroll-container::-webkit-scrollbar-thumb {
+.category-scroll-container::-webkit-scrollbar-thumb 
+{
     background: #a0a0a0;
     border-radius: 10px;
 }
 
-    .category-scroll-container::-webkit-scrollbar-thumb:hover {
+    .category-scroll-container::-webkit-scrollbar-thumb:hover 
+    {
         background: #888;
     }
 
-.category-card {
+.category-card 
+{
     flex: none;
     width: 192px;
     height: 192px;
@@ -87,13 +99,15 @@ body {
     flex-shrink: 0;
 }
 
-    .category-card img {
+    .category-card img 
+    {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-.category-card-overlay {
+.category-card-overlay 
+{
     position: absolute;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.4);
@@ -103,30 +117,35 @@ body {
     padding: 16px;
 }
 
-    .category-card-overlay span {
+    .category-card-overlay span 
+    {
         color: #ffffff;
         font-size: 18px;
         font-weight: 700;
     }
 
 /* Book Cards */
-.book-list-header {
+.book-list-header 
+{
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
 }
 
-    .book-list-header a {
+    .book-list-header a 
+    {
         color: #2563eb;
         text-decoration: none;
     }
 
-        .book-list-header a:hover {
+        .book-list-header a:hover 
+        {
             text-decoration: underline;
         }
 
-.book-card {
+.book-card 
+{
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -138,7 +157,8 @@ body {
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-    .book-card img {
+    .book-card img 
+    {
         width: 96px;
         height: 144px;
         object-fit: cover;
@@ -147,23 +167,27 @@ body {
         flex-shrink: 0;
     }
 
-.book-card-content {
+.book-card-content 
+{
     flex-grow: 1;
 }
 
-    .book-card-content h3 {
+    .book-card-content h3 
+    {
         font-size: 20px;
         font-weight: 500;
         color: #1f2937;
     }
 
-    .book-card-content .author {
+    .book-card-content .author 
+    {
         color: #4b5563;
         font-size: 14px;
         margin-bottom: 8px;
     }
 
-    .book-card-content .description {
+    .book-card-content .description 
+    {
         color: #374151;
         font-size: 14px;
         margin-bottom: 12px;
@@ -173,97 +197,115 @@ body {
         overflow: hidden;
     }
 
-.star-rating {
+.star-rating 
+{
     display: flex;
     align-items: center;
     margin-bottom: 8px;
 }
 
-    .star-rating .stars {
+    .star-rating .stars 
+    {
         color: #fbbf24;
         display: flex;
     }
 
-        .star-rating .stars svg {
+        .star-rating .stars svg 
+        {
             width: 16px;
             height: 16px;
             fill: currentColor;
         }
 
-            .star-rating .stars svg.empty-star {
+            .star-rating .stars svg.empty-star 
+            {
                 color: #d1d5db;
             }
 
-    .star-rating .rating-text {
+    .star-rating .rating-text 
+    {
         color: #6b7280;
         font-size: 14px;
         margin-left: 8px;
     }
 
-.genre-tags {
+.genre-tags 
+{
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
 
-.genre-tag {
+.genre-tag 
+{
     padding: 4px 12px;
     font-size: 12px;
     font-weight: 600;
     border-radius: 9999px;
 }
 
-    .genre-tag.fiction {
+    .genre-tag.fiction 
+    {
         background-color: #dbeafe;
         color: #1e40af;
     }
 
-    .genre-tag.horror {
+    .genre-tag.horror 
+    {
         background-color: #fee2e2;
         color: #991b1b;
     }
 
-    .genre-tag.coming-of-age {
+    .genre-tag.coming-of-age 
+    {
         background-color: #dcfce7;
         color: #166534;
     }
 
-    .genre-tag.thriller {
+    .genre-tag.thriller 
+    {
         background-color: #ede9fe;
         color: #6d28d9;
     }
 
-    .genre-tag.mystery {
+    .genre-tag.mystery 
+    {
         background-color: #fef9c3;
         color: #a16207;
     }
 
-    .genre-tag.sci-fi {
+    .genre-tag.sci-fi 
+    {
         background-color: #e0e7ff;
         color: #3730a3;
     }
 
-    .genre-tag.adventure {
+    .genre-tag.adventure 
+    {
         background-color: #ecfccb;
         color: #4d7c0f;
     }
-    .genre-tag.fantasy {
+    .genre-tag.fantasy 
+    {
         background-color: #37e837;
         color: #4d7c0f;
     }
 
-    .genre-tag.romance {
+    .genre-tag.romance 
+    {
         background-color: #ded404;
         color: #4d7c0f;
     }
 
-    .genre-tag.philosophy {
+    .genre-tag.philosophy 
+    {
         background-color: #f0970e;
         color: #4d7c0f;
     }
 
 /* Right Column - Featured Reads */
-.featured-column {
+.featured-column 
+{
     background-color: #3E4F4E;
     padding: 24px;
     border-radius: 14px;
@@ -277,22 +319,26 @@ body {
     height: auto;
 }
 
-    .featured-column h2 {
+    .featured-column h2 
+    {
         font-size: 24px;
         font-weight: 600;
     }
 
-    .featured-column a {
+    .featured-column a
+    {
         color: #93c5fd;
         text-decoration: none;
     }
 
-        .featured-column a:hover {
+        .featured-column a:hover 
+        {
             text-decoration: underline;
         }
 
 /* Featured Book Card */
-.featured-book-card {
+.featured-book-card 
+{
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -305,7 +351,8 @@ body {
     width: 100%;
 }
 
-    .featured-book-card img {
+    .featured-book-card img 
+    {
         width: 96px;
         height: 144px;
         object-fit: cover;
@@ -314,23 +361,27 @@ body {
         flex-shrink: 0;
     }
 
-.featured-book-card-content {
+.featured-book-card-content 
+{
     flex-grow: 1;
 }
 
-    .featured-book-card-content h3 {
+    .featured-book-card-content h3 
+    {
         font-size: 20px;
         font-weight: 500;
         color: #ffffff;
     }
 
-    .featured-book-card-content .author {
+    .featured-book-card-content .author 
+    {
         color: #d1d5db;
         font-size: 14px;
         margin-bottom: 8px;
     }
 
-    .featured-book-card-content .description {
+    .featured-book-card-content .description 
+    {
         color: #9ca3af;
         font-size: 14px;
         margin-bottom: 12px;
@@ -340,11 +391,13 @@ body {
         overflow: hidden;
     }
 
-.featured-star-rating .stars svg.empty-star {
+.featured-star-rating .stars svg.empty-star 
+{
     color: #6b7280;
 }
 
-.featured-genre-tag {
+.featured-genre-tag 
+{
     padding: 4px 12px;
     font-size: 12px;
     font-weight: 600;
@@ -353,75 +406,92 @@ body {
 }
 
 
-    .featured-genre-tag.fiction {
+    .featured-genre-tag.fiction 
+    {
         background-color: #2563eb;
     }
 
-    .featured-genre-tag.horror {
+    .featured-genre-tag.horror 
+    {
         background-color: #dc2626;
     }
 
-    .featured-genre-tag.coming-of-age {
+    .featured-genre-tag.coming-of-age 
+    {
         background-color: #16a34a;
     }
 
-    .featured-genre-tag.thriller {
+    .featured-genre-tag.thriller 
+    {
         background-color: #7e22ce;
     }
 
-    .featured-genre-tag.mystery {
+    .featured-genre-tag.mystery 
+    {
         background-color: #d97706;
     }
 
-    .featured-genre-tag.sci-fi {
+    .featured-genre-tag.sci-fi
+    {
         background-color: #4f46e5;
     }
 
-    .featured-genre-tag.adventure {
+    .featured-genre-tag.adventure 
+    {
         background-color: #84cc16;
     }
 
-.featured-reads-container::-webkit-scrollbar {
+.featured-reads-container::-webkit-scrollbar 
+{
     height: 8px;
 }
 
-.featured-reads-container::-webkit-scrollbar-track {
+.featured-reads-container::-webkit-scrollbar-track 
+{
     background: #4b5563;
     border-radius: 10px;
 }
 
-.featured-reads-container::-webkit-scrollbar-thumb {
+.featured-reads-container::-webkit-scrollbar-thumb 
+{
     background: #6b7280;
     border-radius: 10px;
 }
 
-    .featured-reads-container::-webkit-scrollbar-thumb:hover {
+    .featured-reads-container::-webkit-scrollbar-thumb:hover 
+    {
         background: #9ca3af;
     }
 
 
-@media (min-width: 768px) {
-    .main-grid {
+@media (min-width: 768px) 
+{
+    .main-grid
+    {
         grid-template-columns: 60% 40%;
     }
 
-    .left-column {
+    .left-column 
+    {
         display: flex;
         flex-direction: column;
         gap: 32px;
     }
 
-    .book-card {
+    .book-card 
+    {
         flex-direction: row;
         align-items: flex-start;
     }
 
-        .book-card img {
+        .book-card img 
+        {
             width: 128px;
             height: 192px;
         }
 
-    .featured-reads-container {
+    .featured-reads-container 
+    {
         overflow-x: auto;
         display: flex;
         gap: 16px;
@@ -429,12 +499,14 @@ body {
         max-width: 100%;
     }
 
-    .featured-book-card {
+    .featured-book-card 
+    {
         flex-direction: row;
         align-items: flex-start;
     }
 
-    .category-scroll-container {
+    .category-scroll-container 
+    {
         display: flex;
         flex-wrap: nowrap;
         gap: 16px;
@@ -443,12 +515,15 @@ body {
     }
 }
 
-@media (min-width: 1024px) {
-    .container-dashboard {
+@media (min-width: 1024px) 
+{
+    .container-dashboard 
+    {
         padding: 32px;
     }
 
-    .main-grid {
+    .main-grid 
+    {
         grid-template-columns: 60% 40%;
     }
 }
