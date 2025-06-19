@@ -40,6 +40,7 @@ namespace ASI.Basecode.Services.Services
                 SeriesOrder = request.SeriesOrder,
                 AverageRating = 0,
                 Likes = 0,
+                GenreList = request.GenreList,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImage = request.CoverImageUrl,

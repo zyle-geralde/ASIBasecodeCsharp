@@ -99,7 +99,7 @@
                 <div class="add-book-form-grid">
                     <div class="add-book-form-group">
                         <label for="genre">Genre</label>
-                        <select id="genre" name="Genre" class="add-book-form-select" multiple>
+                        <select id="genre" name="GenreSelect" class="add-book-form-select" multiple>
                             <option value="Fiction">Fiction</option>
                             <option value="Fantasy">Fantasy</option>
                             <option value="Science Fiction">Science Fiction</option>
@@ -108,6 +108,7 @@
                             <option value="Biography">Biography</option>
                             <option value="History">History</option>
                         </select>
+                        <input type="hidden" id="concatenatedGenre" name="GenreList" value="@Model?.GenreList" />
                     </div>
                     <div class="add-book-form-group">
                         <label for="subgenre">Subgenre (comma-separated)</label>
@@ -341,6 +342,18 @@
             });
         }
 
+        //Turn multiple selected genres into a string separated by comma
+        const genreSelect = document.getElementById('genre');
+        const concatenatedGenreInput = document.getElementById('concatenatedGenre');
+        function updateConcatenatedGenre() {
+            const selectedOptions = Array.from(genreSelect.options).filter(option => option.selected);
+            const selectedGenres = selectedOptions.map(option => option.value);
+            concatenatedGenreInput.value = selectedGenres.join(',');
+        }
+
+        //Listener - call updateConcatinedtGenre everytime the selected genre changes
+         genreSelect.addEventListener('change', updateConcatenatedGenre);
+
 
         const addBookConfirmationModal = new bootstrap.Modal(document.getElementById('addBookConfirmationModal'));
         const addBookSuccessModal = new bootstrap.Modal(document.getElementById('addBookSuccessModal'));
@@ -353,6 +366,9 @@
             
             event.preventDefault();
 
+            
+
+            
             const form = event.target;
             const submitButton = form.querySelector('.add-book-submit-button');
             const coverImageFile = document.getElementById('coverImageFile').files[0];
@@ -534,7 +550,7 @@
                         throw new Error('Book file upload failed.');
                     }
                 }
-
+                updateConcatenatedGenre();
 
                 const formData = new FormData(form); 
 
