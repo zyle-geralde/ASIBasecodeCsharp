@@ -45,7 +45,7 @@ namespace ASI.Basecode.Services.Services
 
             await _reviewRepository.AddReview(review);
         }
-        
+
         public async Task<List<Review>> GetAllReviews()
         {
             return await _reviewRepository.GetAllReviews();
@@ -73,7 +73,7 @@ namespace ASI.Basecode.Services.Services
             {
                 return false;
             }
-            
+
             await _reviewRepository.DeleteReview(reviewId);
             return true;
 
@@ -99,6 +99,16 @@ namespace ASI.Basecode.Services.Services
 
             await _reviewRepository.UpdateReview(existing);
             return true;
+        }
+
+        public async Task<List<Review>> GetReviewsByBookId(string bookId)
+        {
+            if (string.IsNullOrEmpty(bookId))
+            {
+                throw new ArgumentException("No book id provided", nameof(bookId));
+            }
+            var reviews = await _reviewRepository.GetReviewsByBookId(bookId);
+            return reviews.ToList();
         }
     }
 }
