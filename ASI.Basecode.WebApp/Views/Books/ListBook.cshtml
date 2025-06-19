@@ -139,15 +139,15 @@
     </div>
 </div>
 
-<div class="modal fade success-modal" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+<div class="modal fade status-modal" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body text-center py-4">
-                <div class="success-icon mb-3">
+                <div class="status-icon mb-3">
                     <i class="fas fa-check"></i>
                 </div>
-                <h5 class="modal-title mb-2">Success!</h5> 
-                <p class="mb-4" id="successModalMessage">Item deleted successfully!</p> 
+                <h5 class="modal-title mb-2" id="statusModalLabel">Success!</h5>
+                <p class="mb-4" id="statusModalMessage">Item deleted successfully!</p>
                 <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">OK</button>
             </div>
         </div>
@@ -198,7 +198,7 @@
                 coverUploadStatusCopy.textContent = 'Cover image upload rolled back due to backend error.';
             }
             else {
-                showSuccessModal("Warning: No cover URL provided for rollback.", 'Warning');
+                showStatusModal("Warning: No cover URL provided for rollback.", 'Warning');
             }
         }
 
@@ -208,7 +208,7 @@
                 bookFileUploadStatusCopy.textContent = 'Book file upload rolled back due to backend error.';
             }
             else {
-                showSuccessModal("Warning: No book URL provided for rollback.", 'Warning');
+                showStatusModal("Warning: No book URL provided for rollback.", 'Warning');
             }
         }
 
@@ -217,7 +217,7 @@
                 await deleteFileFromFirebase(coverUrlCopy);
             }
             else {
-                showSuccessModal("Warning: No cover URL provided.", 'Warning');
+                showStatusModal("Warning: No cover URL provided.", 'Warning');
             }
         }
 
@@ -226,7 +226,7 @@
                 await deleteFileFromFirebase(bookUrlCopy);
             }
             else {
-                showSuccessModal("Warning: No book URL provided.", 'Warning');
+                showStatusModal("Warning: No book URL provided.", 'Warning');
             }
         }
 
@@ -275,48 +275,48 @@
         }
 
 
-        // dynamic success modal 
-        function showSuccessModal(message, type = 'Success') { 
+        // dynamic status modal
+        function showStatusModal(message, type = 'Success') { // Changed
             var deleteModalElement = document.getElementById('deleteModal');
             var deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
             if (deleteModal) {
                 deleteModal.hide();
             }
 
-            const successModalTitle = document.getElementById('successModalLabel');
-            const successModalMessage = document.getElementById('successModalMessage'); 
+            const statusModalTitle = document.getElementById('statusModalLabel'); // Changed
+            const statusModalMessage = document.getElementById('statusModalMessage');  // Changed
 
-            if (successModalTitle) {
-                successModalTitle.textContent = type; 
+            if (statusModalTitle) {
+                statusModalTitle.textContent = type;
             }
-            if (successModalMessage) {
-                successModalMessage.textContent = message;
+            if (statusModalMessage) {
+                statusModalMessage.textContent = message;
             }
 
             // Change icon based on type
-            const successIcon = document.querySelector('#successModal .success-icon i');
-            if (successIcon) {
-                successIcon.classList.remove('fa-check', 'fa-times', 'fa-exclamation-triangle'); 
+            const statusIcon = document.querySelector('#statusModal .status-icon i'); 
+            if (statusIcon) {
+                statusIcon.classList.remove('fa-check', 'fa-times', 'fa-exclamation-triangle');
                 if (type === 'Success') {
-                    successIcon.classList.add('fa-check');
-                    successIcon.style.color = '#28a745'; /
+                    statusIcon.classList.add('fa-check');
+                    statusIcon.style.color = '#28a745';
                 } else if (type === 'Error') {
-                    successIcon.classList.add('fa-times');
-                    successIcon.style.color = '#dc3545'; 
+                    statusIcon.classList.add('fa-times');
+                    statusIcon.style.color = '#dc3545';
                 } else if (type === 'Warning') {
-                    successIcon.classList.add('fa-exclamation-triangle');
-                    successIcon.style.color = '#ffc107'; 
+                    statusIcon.classList.add('fa-exclamation-triangle');
+                    statusIcon.style.color = '#ffc107';
                 } else {
-                    successIcon.classList.add('fa-check'); 
-                    successIcon.style.color = '#28a745';
+                    statusIcon.classList.add('fa-check');
+                    statusIcon.style.color = '#28a745';
                 }
             }
 
 
             setTimeout(function () {
-                var successModalElement = document.getElementById('successModal');
-                var successModal = new bootstrap.Modal(successModalElement);
-                successModal.show();
+                var statusModalElement = document.getElementById('statusModal'); 
+                var statusModal = new bootstrap.Modal(statusModalElement);
+                statusModal.show();
             }, 100);
         }
 
@@ -358,30 +358,30 @@
                 {
                     const result = await response.json()
                     // alert(`${result.message}`)
-                    showSuccessModal(result.message || "Book deleted successfully!", 'Success');
+                    showStatusModal(result.message || "Book deleted successfully!", 'Success');
                     if(get_cover_url.textContent !== null || get_cover_url.textConent !== "")
                     {
                         await deleteCoverUrl(get_cover_url.textContent);
                     }
 
-                    if (get_book_url.textContent !== null || get_book_url.textConent !== "") {
+                    if (get_book_url.textContent !== null || get_book_url.textContent !== "") {
                         await deleteBookUrl(get_book_url.textContent)
                     }
 
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1500);
-                    // window.location.reload()
+                    }, 500);
+
                 }
                 else{
                     // alert(`Error: ${result.message}`)
                     const errorResult = await response.json();
-                    showSuccessModal(`Error: ${errorResult.message}`, 'Error');
+                    showStatusModal(`Error: ${errorResult.message}`, 'Error');
                 }
             }
             catch(error){
                 // alert(`Error: An unexpected error occurred while deleting book data. Please try again.`)
-                showSuccessModal(`Error: An unexpected error occurred while deleting book data. Please try again.`, 'Error');
+                showStatusModal(`Error: An unexpected error occurred while deleting book data. Please try again.`, 'Error');
                 console.error("Fetch error:", error);
             }
         })
