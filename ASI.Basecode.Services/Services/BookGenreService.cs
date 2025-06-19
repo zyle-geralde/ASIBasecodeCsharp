@@ -29,14 +29,21 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ArgumentException("Genre name cannot be null or empty");
             }
-            if (string.IsNullOrEmpty(book_genre.GenreDescription))
+
+
+            bool check_user_exist = await BookGenreRepository.CheckGenreExist(book_genre.GenreName);
+
+            if (check_user_exist)
             {
-                throw new ArgumentException("Genre Desription cannot be null or empty");
+                throw new ArgumentException("Genre Name already exist");
             }
+            
+
             var mapped_book_genre = new BookGenre {
                 BookGenreId = Guid.NewGuid().ToString(),
                 GenreName = book_genre.GenreName,
                 GenreDescription = book_genre.GenreDescription,
+                GenreImageUrl = book_genre.GenreImageUrl,
                 AdminId = "admin1",
                 UpdatedByAdminId = "admin1",
                 UpdatedDate = DateTime.Now,

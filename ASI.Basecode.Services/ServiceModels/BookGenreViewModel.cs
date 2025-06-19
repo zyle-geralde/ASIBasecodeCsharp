@@ -15,7 +15,6 @@ namespace ASI.Basecode.Services.ServiceModels
         [StringLength(500)]
         public string? GenreDescription { get; set; }
 
-        [Required]
         [StringLength(1000)]
         public string? GenreImageUrl { get; set; }
     }

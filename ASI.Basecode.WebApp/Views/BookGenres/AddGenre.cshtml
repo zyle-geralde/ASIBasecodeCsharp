@@ -24,16 +24,16 @@
             <!-- Display validation summary errors -->
             <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
 
-            <form asp-action="AddGenre" asp-controller="BookGenre" method="post" enctype="multipart/form-data" id="addBookGenreForm">
+            <form asp-action="AddGenre" method="post" id="addBookGenreForm">
                 <div class="add-book-form-grid">
                     <div class="add-book-form-group">
                         <label for="title">Name</label>
-                        <input type="text" id="title" name="Title" class="add-book-form-input" value="@Model?.GenreName" required>
+                    <input type="text" id="genrename" name="GenreName" class="add-book-form-input" value="@Model?.GenreName" required>
                         <span asp-validation-for="GenreName" class="text-danger"></span>
                     </div>
                     <div class="add-book-form-group">
                         <label for="subtitle">Description</label>
-                        <input type="text" id="subtitle" name="Subtitle" class="add-book-form-input" value="@Model?.GenreDescription">
+                    <input type="text" id="genredescription" name="GenreDescription" class="add-book-form-input" value="@Model?.GenreDescription">
                         <span asp-validation-for="GenreDescription" class="text-danger"></span>
                     </div>
                 </div>
@@ -42,22 +42,222 @@
             <div class="add-book-form-group add-book-form-grid-span-2">
                 <label for="coverImageFile">Select Genre Image</label>
                 <div class="add-book-file-upload-wrapper">
-                    <input type="text" class="add-book-file-input-text" readonly id="coverFileNameDisplay" value="@Model?.GenreImageUrl">
-                    <input type="file" id="coverImageFile" accept="image/*" name="CoverImageFile" style="display: none;" required>
-                    <button type="button" class="add-book-browse-button" onclick="document.getElementById('coverImageFile').click();">BROWSE</button>
+                    <input type="text" class="add-book-file-input-text" readonly id="generImageFileNameDisplay" value="@Model?.GenreImageUrl">
+                    <input type="file" id="genreImageFile" accept="image/*" name="GenreImageFile" style="display: none;" required>
+                    <button type="button" class="add-book-browse-button" onclick="document.getElementById('genreImageFile').click();">BROWSE</button>
                 </div>
                 @* <p id="coverUploadStatus" class="add-book-upload-status">Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG</p> *@
-                <p id="coverUploadStatus" class="add-book-upload-status">
+                <p id="genreImageUploadStatus" class="add-book-upload-status">
                     <span class="file-size-info">Max file size: 1GB</span>
                     <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                 </p>
-                <input type="hidden" id="coverImageUrl" name="CoverImageUrl">
+                <input type="hidden" id="genreImageUrl" name="GenreImageUrl">
             </div>
 
             <div class="button-container">
-                <button type="button" class="cancel-button" onclick="location.href='/Book/ListBook';">CANCEL</button>
-                <button type="submit" class="add-book-submit-button">ADD BOOK</button>
+                <button type="button" class="cancel-button" onclick="location.href='';">CANCEL</button>
+                <button type="button" class="add-book-submit-button" id="addGenreButton">ADD GENRE</button>
             </div>
             </form>
             </div>
         </div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+
+        //Setting up the file
+        document.getElementById('genreImageFile').addEventListener('change', function () {
+            const fileName = this.files[0] ? this.files[0].name : 'No file selected';
+            document.getElementById('generImageFileNameDisplay').value = fileName;
+        });
+
+        // Your Firebase configuration
+        //Transfer this secretes into AnalyserNode env or file, and include it in gitignore.
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4CTMSbgGQN_yLn9lEZlswbZ_2A2Xhl0k",
+            authDomain: "basabuzz-ca8fe.firebaseapp.com",
+            projectId: "basabuzz-ca8fe",
+            storageBucket: "basabuzz-ca8fe.firebasestorage.app",
+            messagingSenderId: "206533484485",
+            appId: "1:206533484485:web:2c71a06a17d5244efe75ac"
+        };
+
+        // Initialize Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+
+        async function deleteFileFromFirebase(fileUrl) {
+            if (!fileUrl) {
+                console.warn("Attempted to delete null or empty file URL.");
+                return;
+            }
+            try {
+                //Get a reference to the file from the download URL
+                const fileRef = ref(storage, fileUrl);
+                await deleteObject(fileRef);
+                console.log(`Successfully deleted file: ${fileUrl}`);
+            } catch (error) {
+                alert(`Failed to delete file ${fileUrl}:`, error)
+                console.error(`Failed to delete file ${fileUrl}:`, error);
+            }
+        }
+
+        async function deleteCoverUrlFromError(coverUrlCopy, coverUploadStatusCopy) {
+            if (coverUrlCopy) {
+                await deleteFileFromFirebase(coverUrlCopy);
+                coverUploadStatusCopy.textContent = 'Cover image upload rolled back due to backend error.';
+            }
+            else {
+                alert("No cover Url")
+            }
+        }
+
+        async function deleteBookUrlFromError(bookFileUploadStatusCopy, bookUrlCopy) {
+            if (bookUrlCopy) {
+                await deleteFileFromFirebase(bookUrlCopy);
+                bookFileUploadStatusCopy.textContent = 'Book file upload rolled back due to backend error.';
+            }
+            else {
+                alert("No book Url")
+            }
+        }
+
+        async function deleteCoverUrl(coverUrlCopy) {
+            if (coverUrlCopy) {
+                await deleteFileFromFirebase(coverUrlCopy);
+            }
+            else {
+                alert("No cover Url")
+            }
+        }
+
+        async function deleteBookUrl(bookUrlCopy) {
+            if (bookUrlCopy) {
+                await deleteFileFromFirebase(bookUrlCopy);
+            }
+            else {
+                alert("No book Url")
+            }
+        }
+
+        //Firebase Upload Function
+        //This function returns the download URL or null on failure/no file
+        async function uploadFileToFirebase(file, path, statusElement) {
+            if (!file) {
+                statusElement.textContent = 'No file selected.';
+                return null; //Indicates no file was provided
+            }
+
+            //Generate New File Name
+            const timestamp = new Date().getTime();
+            const randomString = Math.random().toString(36).substring(2, 8);
+            const uniqueFileName = `${timestamp}-${randomString}-${file.name}`;
+
+            const storageRef = ref(storage, path + uniqueFileName);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            return new Promise((resolve, reject) => {
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        statusElement.textContent = `Upload is ${progress.toFixed(2)}% done`;
+                    },
+                    (error) => {
+                        statusElement.textContent = `Upload failed: ${error.message}`;
+                        console.error("Upload error:", error);
+                        reject(error); //Reject the promise on upload error
+                    },
+                    async () => {
+                        try {
+                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            statusElement.textContent = 'Upload successful!';
+                            resolve(downloadURL); //Resolve with the download URL
+                        } catch (error) {
+                            statusElement.textContent = `Failed to get download URL: ${error.message}`;
+                            console.error("Get Download URL error:", error);
+                            reject(error); //Reject the promise if getting URL fails
+                        }
+                    }
+                );
+            });
+        }
+
+        //trigger add genre button
+        document.getElementById('addGenreButton').addEventListener('click', async (event) => {
+            event.preventDefault();//Prevent default submission
+
+            const form = document.getElementById('addBookGenreForm');
+            const genreImageFile = document.getElementById('genreImageFile').files[0];
+
+            const genreImageUploadStatus = document.getElementById('genreImageUploadStatus');
+            const genreImageUrl = document.getElementById('genreImageUrl');
+
+            let hold_current_url = ""
+
+            //Check for validity in the form such as required, max length etc
+            let isFormValidNatively = form.checkValidity();
+
+            //Manually check validity of File uploads
+            let isFileValid = true;
+            if (!genreImageFile) {
+                isFileValid = false;
+                isFormValidNatively = false;
+            }
+
+            if (!isFormValidNatively || !isFileValid) {
+                //show pop-ups ex. required pop-up message etc.
+                form.reportValidity();
+                return;
+            }
+
+            let uploadedGenreImageUrl = null;
+            //Uploading to Database
+            if (genreImageFile) {
+                genreImageUploadStatus.querySelector('.file-size-info').textContent = 'Uploading cover image...';
+                uploadedGenreImageUrl = await uploadFileToFirebase(genreImageFile, 'genre_covers/', genreImageUploadStatus.querySelector('.file-size-info'));
+                if (uploadedGenreImageUrl) {
+                    genreImageUrl.value = uploadedGenreImageUrl;
+                } else {
+                    throw new Error('Cover image upload failed.');
+                }
+            }
+            
+
+
+            //Prepering form data for submission
+            const formData = new FormData(form);
+
+            //fetch form data to the Controller
+            try{
+                const response = await fetch("/BookGenre/AddGenre",{
+                    method:"POST",
+                    body: formData
+                })
+
+                //Successful response
+                if (response.ok) {
+                    const result = await response.json()
+                    alert(result.message)
+                    window.location.reload()
+                }
+                else {
+                    deleteCoverUrlFromError(uploadedGenreImageUrl, genreImageUploadStatus)
+                    const errorData = await response.json();
+
+                    const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
+                    alert(errorMessage) 
+                }
+            }catch(error){
+                deleteCoverUrlFromError(uploadedGenreImageUrl, genreImageUploadStatus)
+                alert('Network or unexpected error during backend submission:', error)
+            }
+
+        })
+
+
+    </script>
+}
