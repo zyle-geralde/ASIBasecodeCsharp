@@ -58,5 +58,38 @@ namespace ASI.Basecode.Services.Services
                 throw new ApplicationException($"Failed to add book genre", ex);
             }
         }
+
+        public async Task<List<BookGenreViewModel>> GetAllGenres()
+        {
+            try
+            {
+                List<BookGenre> book_genre_list = await BookGenreRepository.GetAllGenres();
+
+
+                if(book_genre_list == null || !book_genre_list.Any())
+                {
+                    return new List<BookGenreViewModel>();
+                }
+
+                //Mapping
+                List<BookGenreViewModel> view_model_list = book_genre_list.Select(book_genre_element => new BookGenreViewModel
+                {
+                    GenreName = book_genre_element.GenreName,
+                    GenreDescription = book_genre_element.GenreDescription,
+                    GenreImageUrl = book_genre_element.GenreImageUrl,
+                    AdminId = book_genre_element.AdminId,
+                    UpdatedDate = book_genre_element.UpdatedDate,
+                    UploadDate = book_genre_element.UploadDate,
+                    UpdatedByAdminId = book_genre_element.UpdatedByAdminId
+                }).ToList();
+
+
+                return view_model_list;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to retrieve book genres.", ex);
+            }
+        }
     }
 }
