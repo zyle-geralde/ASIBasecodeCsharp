@@ -1,8 +1,10 @@
-﻿using ASI.Basecode.Services.Interfaces;
+﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -58,6 +60,26 @@ namespace ASI.Basecode.WebApp.Controllers
             return BadRequest(new { errors = errors, Message = "Validation failed." });
 
 
+        }
+        [HttpGet]
+        [Route("BookGenre/ListGenre")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllBookGenres()
+        {
+            try
+            {
+                List<BookGenreViewModel> book_genre_list = await BookGenreService.GetAllGenres();
+
+                return View("~/Views/BookGenres/BookGenreList.cshtml", book_genre_list);
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { Message = ex.Message });
+            }
         }
     }
 }

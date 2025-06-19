@@ -22,5 +22,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public DateTime? UploadDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string? UpdatedByAdminId { get; set; }
+
     }
 }
