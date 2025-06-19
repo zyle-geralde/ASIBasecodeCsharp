@@ -37,6 +37,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 Birthdate = profile.BirthDate,
                 Gender = profile.Gender,
                 Location = profile.Location,
+                ProfilePicture = profile.ProfilePicture
             };
 
             return View(vm);
