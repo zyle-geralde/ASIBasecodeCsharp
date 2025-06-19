@@ -122,5 +122,27 @@ namespace ASI.Basecode.Services.Services
                 throw new ApplicationException("Failed to retrieve book genre by id.", ex);
             }
         }
+
+        public async Task EditGenre(BookGenreViewModel book_genre)
+        {
+            if(book_genre == null)
+            {
+                throw new ArgumentNullException(nameof(book_genre), "Book Genre should not be null");
+            }
+            try
+            {
+                BookGenre existing_genre = await BookGenreRepository.GetBookGenreById(book_genre.BookGenreId);
+
+                existing_genre.GenreName = book_genre.GenreName;
+                existing_genre.GenreDescription = book_genre.GenreDescription;
+                existing_genre.GenreImageUrl = book_genre.GenreImageUrl;
+
+                await BookGenreRepository.EditGenre();
+            }
+            catch(Exception ex)
+            {
+                throw new ApplicationException("Failed to edit book genre by id.", ex);
+            }
+        }
     }
 }

@@ -106,5 +106,38 @@ namespace ASI.Basecode.WebApp.Controllers
                 return StatusCode(500, new { Message = ex.Message });
             }
         }
+
+        [HttpPost]
+        [Route("BookGenre/EditGenre")]
+        [AllowAnonymous]
+        public async Task<IActionResult> EditGenre(BookGenreViewModel book_genre)
+        {
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await BookGenreService.EditGenre(book_genre);
+                    return Ok(new { Message = "Genre Successfully edited" });
+                }
+                catch (ArgumentException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+                catch (ApplicationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+
+            }
+
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            return BadRequest(new { errors = errors, Message = "Validation failed." });
+        }
+
     }
 }
