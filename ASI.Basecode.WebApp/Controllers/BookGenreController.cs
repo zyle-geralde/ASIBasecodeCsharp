@@ -169,5 +169,28 @@ namespace ASI.Basecode.WebApp.Controllers
             }
         }
 
+
+        [HttpGet]
+        [Route("BookGenre/GenreView/{genre_name}")]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> GetBooksByGenre(string genre_name)
+        {
+            try
+            {
+                List<BookViewModel> retreived_books_by_genre = await BookGenreService.GetBooksByGenre(genre_name);
+
+                return View("~/Views/BookGenres/GenreView.cshtml", retreived_books_by_genre);
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = ex.Message });
+            }
+        }
+
     }
 }
