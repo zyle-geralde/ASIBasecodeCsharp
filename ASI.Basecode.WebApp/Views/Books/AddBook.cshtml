@@ -99,16 +99,10 @@
                 <div class="add-book-form-grid">
                     <div class="add-book-form-group">
                         <label for="genre">Genre</label>
-                        <select id="genre" name="Genre" class="add-book-form-select">
-                            <option value="">Select Genre</option>
-                            <option value="Fiction">Fiction</option>
-                            <option value="Fantasy">Fantasy</option>
-                            <option value="Science Fiction">Science Fiction</option>
-                            <option value="Thriller">Thriller</option>
-                            <option value="Mystery">Mystery</option>
-                            <option value="Biography">Biography</option>
-                            <option value="History">History</option>
+                        <select id="genre" name="GenreSelect" class="add-book-form-select" multiple>
+
                         </select>
+                        <input type="hidden" id="concatenatedGenre" name="GenreList" value="@Model?.GenreList" />
                     </div>
                     <div class="add-book-form-group">
                         <label for="subgenre">Subgenre (comma-separated)</label>
@@ -233,6 +227,41 @@
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
+        const genreSelect = document.getElementById('genre');
+        const concatenatedGenreInput = document.getElementById('concatenatedGenre');
+
+        //Setting Up Genres
+         try {
+            const response = await fetch('/Book/GetGenre', {
+                method: 'GET'
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                const genre_list = result.message
+                console.log(genre_list)
+
+                // Add a default "Select Genre" option 
+                const default_option = document.createElement('option');
+                default_option.value = ""
+                default_option.textContent = "Select Genre"
+                genreSelect.appendChild(default_option)
+
+                //Add elements of the genre_list to the select tag
+                genre_list.forEach(genre_name => {
+                    const option = document.createElement('option');
+                    option.value = genre_name;
+                    option.textContent = genre_name;
+
+                    genreSelect.appendChild(option);
+                })
+            } else {
+                alert("Server error")
+            }
+        } catch (backendError) {
+            alert("Unexpected Error Occured")
+        }
+
         // date picker
         const publicationDateInput = document.getElementById('publicationDate');
         if (publicationDateInput) {
@@ -342,6 +371,17 @@
             });
         }
 
+        //Turn multiple selected genres into a string separated by comma
+
+        function updateConcatenatedGenre() {
+            const selectedOptions = Array.from(genreSelect.options).filter(option => option.selected);
+            const selectedGenres = selectedOptions.map(option => option.value);
+            concatenatedGenreInput.value = selectedGenres.join(',');
+        }
+
+        //Listener - call updateConcatinedtGenre everytime the selected genre changes
+         genreSelect.addEventListener('change', updateConcatenatedGenre);
+
 
         const addBookConfirmationModal = new bootstrap.Modal(document.getElementById('addBookConfirmationModal'));
         const addBookSuccessModal = new bootstrap.Modal(document.getElementById('addBookSuccessModal'));
@@ -353,7 +393,7 @@
             // Prevent the default HTML form submission initially.
             
             event.preventDefault();
-
+            
             const form = event.target;
             const submitButton = form.querySelector('.add-book-submit-button');
             const coverImageFile = document.getElementById('coverImageFile').files[0];
@@ -535,7 +575,7 @@
                         throw new Error('Book file upload failed.');
                     }
                 }
-
+                updateConcatenatedGenre();
 
                 const formData = new FormData(form); 
 

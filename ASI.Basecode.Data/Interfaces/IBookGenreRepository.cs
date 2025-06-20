@@ -10,5 +10,13 @@ namespace ASI.Basecode.Data.Interfaces
     public interface IBookGenreRepository
     {
         Task AddGenre(BookGenre book_genre);
+
+        Task<bool> CheckGenreExist(string genre_name);
+
+        Task<List<BookGenre>> GetAllGenres();
+
+        Task<BookGenre> GetBookGenreById(string genre_id);
+
+        Task EditGenre();
     }
 }

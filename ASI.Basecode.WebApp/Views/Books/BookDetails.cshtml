@@ -55,9 +55,10 @@
                 }
             </div>
         </div>
-        
 
-        @* ---------------------------the rest of the details-------------------------------- *@
+       
+
+    @* ---------------------------the rest of the details-------------------------------- *@
         <div class="book-details-container content-card p-4">
             <div class="book-info-section">
                 @if (!string.IsNullOrWhiteSpace(Model.Subtitle))
@@ -179,19 +180,53 @@
                     <span class="detail-value">@Html.DisplayFor(model => model.UpdatedByAdminId)</span>
                 </div>
             }
+
+            
+
+            <div class="book-reviews-section mt-4">
+                <h2>Reviews</h2>
+                @if (!Model.HasReviewed && User.Identity.IsAuthenticated)
+                {
+                    <div class="mb-4">
+                        <a class="btn btn-primary"
+                           asp-controller="Review"
+                           asp-action="Add"
+                           asp-route-bookId="@Model.BookId">
+                            Leave a Review
+                        </a>
+                    </div>
+                }
+
+                @if (Model.Reviews != null && Model.Reviews.Any())
+                {
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <div class="review-box border p-3 mb-3 rounded bg-light">
+                            <div><strong>Reviewer:</strong> @review.UserId</div>
+                            <div><strong>Rating:</strong> @review.Rating / 5</div>
+                            <div><strong>Comments:</strong></div>
+                            <div class="review-comments">@review.Comment</div>
+                            <div class="text-muted small">Posted on: @review.UploadDate</div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">No reviews available for this book.</p>
+                }
+            </div>
+        </div>
         </div>
     }
+
     else
     {
         <p>Book details could not be loaded. Please ensure a valid Book ID was provided.</p>
     }
 </div>
 
-
-
 @section scripts {
     <script>
-        
         function renderStars(rating, targetElementId) {
             const container = document.getElementById(targetElementId);
             if (!container) {
@@ -214,19 +249,19 @@
             const normalizedRating = Math.max(0, Math.min(maxStars, parseFloat(rating) || 0));
 
             const fullStars = Math.floor(normalizedRating);
-            const hasHalfStar = normalizedRating % 1 >= 0.5; 
+            const hasHalfStar = normalizedRating % 1 >= 0.5;
 
-            // ull stars
+            // Full stars
             for (let i = 0; i < fullStars; i++) {
                 starsHtml += '<i class="fas fa-star"></i>';
             }
 
-            // half star 
+            // Half star
             if (hasHalfStar) {
                 starsHtml += '<i class="fas fa-star-half-alt"></i>';
             }
 
-            // empty stars
+            // Empty stars
             const emptyStars = maxStars - fullStars - (hasHalfStar ? 1 : 0);
             for (let i = 0; i < emptyStars; i++) {
                 starsHtml += '<i class="far fa-star"></i>';
@@ -235,7 +270,7 @@
             if (ratingTextSpan) {
                 ratingTextSpan.insertAdjacentHTML('beforebegin', starsHtml);
             } else {
-                container.innerHTML = starsHtml + container.innerHTML; 
+                container.innerHTML = starsHtml + container.innerHTML;
             }
         }
 

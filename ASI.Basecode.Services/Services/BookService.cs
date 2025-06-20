@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using System;
@@ -40,6 +41,7 @@ namespace ASI.Basecode.Services.Services
                 SeriesOrder = request.SeriesOrder,
                 AverageRating = 0,
                 Likes = 0,
+                GenreList = request.GenreList,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImage = request.CoverImageUrl,
@@ -172,6 +174,29 @@ namespace ASI.Basecode.Services.Services
                 throw new ApplicationException($"Failed to Delete book: {ex.Message}", ex);
             }
             
+        }
+
+        public async Task<List<string>> GetAllGenres()
+        {
+            try
+            {
+                List<BookGenre> book_genre_list = await _bookRepository.GetAllGenres();
+
+
+                if (book_genre_list == null || !book_genre_list.Any())
+                {
+                    return new List<string>();
+                }
+
+                //Mapping
+                List<string> view_model_list = book_genre_list.Select(book_genre_element => book_genre_element.GenreName).ToList();
+
+                return view_model_list;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to retrieve book genres.", ex);
+            }
         }
 
     }

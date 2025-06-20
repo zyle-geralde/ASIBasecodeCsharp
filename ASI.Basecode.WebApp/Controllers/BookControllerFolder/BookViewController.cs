@@ -32,6 +32,23 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             return View("~/Views/Books/AddBook.cshtml");
         }
 
+        [HttpGet]
+        [Route("Book/GetGenre")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllGenres()
+        {
+            try
+            {
+                List<string> all_genres = await _bookService.GetAllGenres();
+
+                return Ok(new { Message = all_genres });
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, $"Failed to get all Genres: {ex.Message}");
+            }
+        }
+
 
         [HttpGet]
         [Route("Book/ListBook")]

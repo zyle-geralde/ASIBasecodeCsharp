@@ -186,6 +186,60 @@ label
         background-color: #4f6466;
     }
 
+
+/*------------------------------ Status Modal -----------------------------*/
+
+.status-modal .modal-content {
+    border-radius: 12px;
+    background-color: #f5f2ef;
+    border: none;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.status-modal .modal-body {
+    padding: 2rem;
+}
+
+.status-icon { 
+    width: 60px;
+    height: 60px;
+    background-color: #647D7F;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+    .status-icon i {
+        color: white;
+        font-size: 24px;
+    }
+
+.status-modal .modal-title {
+    color: #333;
+    font-weight: 600;
+}
+
+.status-modal p {
+    color: #666;
+    font-size: 14px !important;
+}
+
+.status-modal .btn-secondary {
+    background-color: #647D7F;
+    border: none;
+    color: white;
+    min-width: 100px;
+}
+
+    .status-modal .btn-secondary:hover {
+        background-color: #4f6466;
+    }
+
+
+
 /*------------------------------ Search Field -----------------------------*/
 .search-filter-container 
 {
