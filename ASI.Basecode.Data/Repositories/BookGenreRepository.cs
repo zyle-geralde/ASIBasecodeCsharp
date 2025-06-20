@@ -108,7 +108,7 @@ namespace ASI.Basecode.Data.Repositories
         {
             try
             {
-                return await DbContext.BookGenres.FirstOrDefaultAsync(genre => genre.GenreName == genre_name);
+                return await DbContext.BookGenres.FirstOrDefaultAsync(genre => genre.BookGenreId == genre_name);
             }
             catch (Exception ex)
             {

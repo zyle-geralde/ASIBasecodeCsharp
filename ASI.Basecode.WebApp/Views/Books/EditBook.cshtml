@@ -220,12 +220,16 @@
                 console.log(genreArray)
 
                 //Add elements of the genre_list to the select tag
-                genre_list.forEach(genre_name => {
-                    const option = document.createElement('option');
-                    option.value = genre_name;
-                    option.textContent = genre_name;
+                genre_list.forEach(genre_name_id => {
+                    const parts = genre_name_id.split(',');
+                    console.log("Hello")
+                    console.log(genre_name_id)
 
-                    if (genreArray.includes(genre_name.toLowerCase())) {
+                    const option = document.createElement('option');
+                    option.value = parts[1].trim();
+                    option.textContent = parts[0].trim();
+
+                    if (genreArray.includes(parts[1].trim().toLowerCase())) {
                         option.selected = true;
                     }
 

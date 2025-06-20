@@ -191,7 +191,7 @@ namespace ASI.Basecode.Services.Services
                 }
 
                 //Mapping
-                List<string> view_model_list = book_genre_list.Select(book_genre_element => book_genre_element.GenreName).ToList();
+                List<string> view_model_list = book_genre_list.Select(book_genre_element => book_genre_element.GenreName+','+ book_genre_element.BookGenreId).ToList();
 
                 return view_model_list;
             }

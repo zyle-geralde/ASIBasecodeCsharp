@@ -30,6 +30,10 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ArgumentException("Genre name cannot be null or empty");
             }
+            if (book_genre.GenreName.Contains(','))
+            {
+                throw new ArgumentException("Genre name cannot contain commas.");
+            }
 
 
             bool check_user_exist = await BookGenreRepository.CheckGenreExist(book_genre.GenreName);
