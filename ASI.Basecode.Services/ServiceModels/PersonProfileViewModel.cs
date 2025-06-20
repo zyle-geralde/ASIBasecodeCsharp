@@ -17,6 +17,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public string Gender { get; set; }
         public string Location { get; set; }
         public string ProfilePicture { get; set; }
+        public List<ReviewViewModel> Reviews { get; set; } = new();
 
     }
 }

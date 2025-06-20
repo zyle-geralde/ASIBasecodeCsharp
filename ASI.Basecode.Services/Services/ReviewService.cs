@@ -3,9 +3,11 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -108,6 +110,16 @@ namespace ASI.Basecode.Services.Services
                 throw new ArgumentException("No book id provided", nameof(bookId));
             }
             var reviews = await _reviewRepository.GetReviewsByBookId(bookId);
+            return reviews.ToList();
+        }
+
+        public async Task<List<Review>> GetReviewByUser(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new ArgumentException("No user ID provided");
+            }
+            var reviews = await _reviewRepository.GetReviewByUser(userId);
             return reviews.ToList();
         }
     }

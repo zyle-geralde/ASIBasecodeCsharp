@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ASI.Basecode.WebApp.Controllers
@@ -12,6 +13,7 @@ namespace ASI.Basecode.WebApp.Controllers
     public class ReviewController : Controller
     {
         private readonly IReviewService _reviewService;
+        
         public ReviewController(IReviewService reviewService)
         {
             _reviewService = reviewService;
@@ -108,5 +110,22 @@ namespace ASI.Basecode.WebApp.Controllers
                 return View("~/Views/Reviews/ReviewByBook.cshtml", reviews.ToList());
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ReviewByUser(string userId=null)
+        {
+            // in the case that a user might want to see other people's reviews
+            if (string.IsNullOrEmpty(userId))
+            {
+                if (!User.Identity.IsAuthenticated)
+                    return Challenge();
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+
+            var reviews = await _reviewService.GetReviewByUser(userId);
+
+                return View("~/Views/Reviews/ReviewByUser.cshtml");
+            }
+        
     }
 }
