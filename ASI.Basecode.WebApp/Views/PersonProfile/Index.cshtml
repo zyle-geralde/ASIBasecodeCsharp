@@ -120,7 +120,7 @@
     {
       <div class="review-box border p-3 mb-3 rounded bg-light">
         <div><strong>Book:</strong> 
-          <a asp-controller="Book" asp-action="GetBook" asp-route-bookId="@review.BookId">
+          <a asp-route="BookDetails" asp-route-bookId="@review.BookId">
             @review.BookId
           </a>
         </div>
