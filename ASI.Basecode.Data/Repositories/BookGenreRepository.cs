@@ -91,10 +91,11 @@ namespace ASI.Basecode.Data.Repositories
             await DbContext.SaveChangesAsync();
 
         }
-        public async Task<List<Book>> GetBooksByGenre(string genre_name)
+        public async Task<List<Book>> GetBooksByGenre()
         {
             try
             {
+                // 
                 return await DbContext.Books.ToListAsync();
             }
             catch(Exception ex)

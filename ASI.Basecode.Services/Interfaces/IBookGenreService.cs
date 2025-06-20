@@ -17,5 +17,7 @@ namespace ASI.Basecode.Services.Interfaces
         Task EditGenre(BookGenreViewModel book_genre);
 
         Task DeleteGenre(string genre_id);
+
+        Task<List<BookViewModel>>GetBooksByGenre(string genre_name);
     }
 }
