@@ -5,6 +5,11 @@
 @model List<BookViewModel>
 
 @{
+    var current_genre_details = ViewBag.CurrentGenreDetails as ASI.Basecode.Services.ServiceModels.BookGenreViewModel;
+
+    string genre_display_name = current_genre_details?.GenreName ?? ViewBag.CurrentGenreDetails as string ?? "";
+    string genre_description = current_genre_details?.GenreDescription ?? ViewBag.CurrentGenreDetails as string ?? "";
+
     ViewData["Title"] = "Genre View";
     Layout = "_AdminSidebarLayout";
 }
@@ -20,8 +25,8 @@
 <div class="content-card p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="header-section">
-            <h1>Books</h1>
-            <p>Manage your Genre collection</p>
+            <h1>@genre_display_name</h1>
+            <p>@genre_description</p>
         </div>
     </div>
 
@@ -152,6 +157,22 @@
 
 @section Scripts {
     <script type="module">
+
+         /*try {
+            const response = await fetch('/BookGenre/GetGenre', {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                alert(result.message)
+            } else {
+                alert("Server error")
+            }
+        } catch (backendError) {
+            alert("Unexpected Error Occured")
+        }*/
+
         // Your Firebase configuration
         //Transfer this secretes into AnalyserNode env or file, and include it in gitignore.
         const firebaseConfig = {

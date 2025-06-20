@@ -22,5 +22,8 @@ namespace ASI.Basecode.Data.Interfaces
         Task DeleteGenre(string genre_id);
 
         Task<List<Book>> GetBooksByGenre(); 
+
+        Task<BookGenre> GetBookGenreByName(string genre_name);
+
     }
 }

@@ -203,5 +203,36 @@ namespace ASI.Basecode.Services.Services
                 throw new ApplicationException($"Failed to Get books by genre: {ex.Message}", ex);
             }
         }
+
+        public async Task<BookGenreViewModel> GetBookGenreByName(string genre_name)
+        {
+
+            if (string.IsNullOrEmpty(genre_name))
+            {
+                throw new ArgumentNullException(nameof(genre_name), "Book Genre Name should not be null");
+            }
+
+            try
+            {
+                BookGenre retreived_genre = await BookGenreRepository.GetBookGenreByName(genre_name);
+
+                BookGenreViewModel mapped_genre = new BookGenreViewModel
+                {
+                    BookGenreId = retreived_genre.BookGenreId,
+                    GenreName = retreived_genre.GenreName,
+                    GenreDescription = retreived_genre.GenreDescription,
+                    GenreImageUrl = retreived_genre.GenreImageUrl,
+                    UpdatedDate = retreived_genre.UpdatedDate,
+                    UpdatedByAdminId = retreived_genre.UpdatedByAdminId,
+                    AdminId = retreived_genre.AdminId
+                };
+
+                return mapped_genre;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to retrieve book genre by name.", ex);
+            }
+        }
     }
 }

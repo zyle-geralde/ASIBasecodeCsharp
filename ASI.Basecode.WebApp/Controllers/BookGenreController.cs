@@ -179,6 +179,9 @@ namespace ASI.Basecode.WebApp.Controllers
             try
             {
                 List<BookViewModel> retreived_books_by_genre = await BookGenreService.GetBooksByGenre(genre_name);
+               BookGenreViewModel retreived_genre_by_genre_name = await BookGenreService.GetBookGenreByName(genre_name);
+
+                ViewBag.CurrentGenreDetails = retreived_genre_by_genre_name;
 
                 return View("~/Views/BookGenres/GenreView.cshtml", retreived_books_by_genre);
             }
