@@ -15,15 +15,24 @@
     <h1 class="header-section h1">My Profile</h1>
     <div class="profile-main-row">
         <div class="profile-card">
-            <div class="profile-avatar">
-                <i class="fas fa-user"></i>
-            </div>
+        <div class="profile-avatar">
+            @if (!string.IsNullOrEmpty(Model?.ProfilePicture))
+            {
+                <img id="avatarImg"
+                        src="@(Model.ProfilePicture)"
+                        alt="Profile picture"
+                        class="w-100 h-100 rounded-circle object-fit-cover" />
+            }
+            else
+            {
+                <i class="fas fa-user fa-5x text-secondary"></i>
+            }
+
+        </div>
             <div class="profile-name">@(Model?.FirstName ?? "") @(Model?.LastName ?? "")</div>
             <div class="profile-username">@(Model?.UserId ?? "")</div>
             <div class="profile-bio">
                 @(Model?.AboutMe ?? "No bio available")
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.
             </div>
         </div>
 
@@ -37,27 +46,30 @@
                     <div class="info-fields-row">
                         <div class="info-field-col">
                             <div class="info-label">First Name</div>
-                            <div class="info-value">Maria</div>
+                            <div class="info-value">@Model.FirstName</div>
                         </div>
                         <div class="info-field-col">
                             <div class="info-label">Middle Name</div>
-                            <div class="info-value">Reyes</div>
+                            <div class="info-value">@Model.MiddleName</div>
                         </div>
                         <div class="info-field-col">
                             <div class="info-label">Last Name</div>
-                            <div class="info-value">Garcia</div>
+                            <div class="info-value">@Model.LastName</div>
                         </div>
                         <div class="info-field-col">
                             <div class="info-label">Birthdate</div>
-                            <div class="info-value">06/09/2000</div>
-                        </div>
+                            <div class="info-value">
+                              @( Model.Birthdate
+                                   ?.ToString("MM/dd/yyyy")
+                                 ?? "MM/DD/YYYY" )
+                            </div>                        </div>
                         <div class="info-field-col">
                             <div class="info-label">Gender</div>
-                            <div class="info-value">Female</div>
+                            <div class="info-value">@Model.Gender</div>
                         </div>
                         <div class="info-field-col">
                             <div class="info-label">Location</div>
-                            <div class="info-value">43 P Lopez, Cebu City</div>
+                            <div class="info-value">@Model.Location</div>
                         </div>
                     </div>
                 </div>
@@ -111,41 +123,70 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-0">
-                <form id="personalInfoForm">
+                <form id="personalInfoForm" asp-action="Edit" asp-controller="PersonProfile" method="post">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="UserId" type="hidden" />
                     <div class="mb-3">
-                        <label for="firstName" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="firstName" placeholder="Text">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label for="middleName" class="form-label">Middle Name</label>
-                        <input type="text" class="form-control" id="middleName" placeholder="Text">
+                        <label asp-for="MiddleName" class="form-label"></label>
+                        <input asp-for="MiddleName" class="form-control" />
+                        <span asp-validation-for="MiddleName" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label for="lastName" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="lastName" placeholder="Text">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="birthdate" class="form-label">Birthdate</label>
+                            <label for="birthdate" class="form-label">Birthdate</label>                           
                             <div class="input-group date">
-                                <input type="text" class="form-control" id="birthdate" placeholder="MM/DD/YYYY">
+                                <input asp-for="Birthdate" type="text" class="form-control" id="birthdate" placeholder="MM/DD/YYYY">
                                 <button type="button" class="input-group-text" id="calendarButton">
                                     <i class="fas fa-calendar"></i>
                                 </button>
                             </div>
+                        <span asp-validation-for="Birthdate" class="text-danger"></span>
                         </div>
                         <div class="col">
-                            <label for="gender" class="form-label">Gender</label>
-                            <select class="form-select" id="gender">
-                                <option selected disabled>Select gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
+                            <label asp-for="Gender" class="form-label"></label>
+                            <select asp-for="Gender" class="form-select">
+                                <option value="">Select gender</option>
+                                <option value="male" selected="@(Model.Gender=="male")">Male</option>
+                                <option value="female" selected="@(Model.Gender=="female")">Female</option>
                             </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="mb-4">
-                        <label for="location" class="form-label">Location</label>
-                        <input type="text" class="form-control" id="location" placeholder="Text">
+                        <label asp-for="Location" class="form-label">Location</label>
+                        <input asp-for="Location" type="text" class="form-control" id="location" placeholder="Text">
+                        <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="AboutMe" class="form-label">About Me</label>
+                        <input asp-for="AboutMe" type="text" class="form-control" id="aboutme" placeholder="Text">
+                        <span asp-validation-for="AboutMe" class="text-danger"></span>
+                    </div>
+                    <h3 class="add-book-form-section-title">Profile Picture Upload</h3>
+                    <div class="add-book-form-group add-book-form-grid-span-2">
+                        <label for="profilePictureFile">Select Cover Image</label>
+                        <div class="add-book-file-upload-wrapper">
+                            <input type="text" class="add-book-file-input-text" readonly id="profilePictureNameDisplay" value="@Model?.ProfilePicture">
+                            <input type="file" id="profilePictureFile" accept="image/*" style="display: none;" required>
+                            <button type="button" onclick="document.getElementById('profilePictureFile').click();">BROWSE</button>
+                        </div>
+
+                        <p id="profilePictureUploadStatus" class="add-book-upload-status">
+                            <span class="file-size-info">Max file size: 1GB</span>
+                            <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
+                        </p>
+                         <input type="hidden" id="ProfilePictureHidden" name="ProfilePicture" value="@Model?.ProfilePicture">
+
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
@@ -281,4 +322,113 @@
             });
         });
     </script>
+
+       <script type="module">
+            document.getElementById('profilePictureFile').addEventListener('change', function () {
+            const fileName = this.files[0] ? this.files[0].name : '';
+            document.getElementById('profilePictureNameDisplay').value = fileName;
+            const profilePictureUploadStatus = document.getElementById('profilePictureUploadStatus');
+           profilePictureUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
+           profilePictureUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: JPG, PNG, JPEG';
+           profilePictureUploadStatus.classList.remove('error-message');
+        });
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4CTMSbgGQN_yLn9lEZlswbZ_2A2Xhl0k",
+            authDomain: "basabuzz-ca8fe.firebaseapp.com",
+            projectId: "basabuzz-ca8fe",
+            storageBucket: "basabuzz-ca8fe.firebasestorage.app",
+            messagingSenderId: "206533484485",
+            appId: "1:206533484485:web:2c71a06a17d5244efe75ac"
+        };
+        
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+
+        async function deleteFileFromFirebase(fileUrl) {
+            if (!fileUrl) {
+                console.warn("Attempted to delete null or empty file URL.");
+                return;
+            }
+            try {
+
+                const fileRef = ref(storage, fileUrl);
+                await deleteObject(fileRef);
+                console.log(`Successfully deleted file: ${fileUrl}`);
+            } catch (error) {
+                alert(`Failed to delete file ${fileUrl}: ${error.message}`);
+                console.error(`Failed to delete file ${fileUrl}:`, error);
+            }
+        }
+
+
+
+        // Firebase Upload Function
+        // This function returns the download URL or null on failure/no file
+        async function uploadFileToFirebase(file, path, statusElement) {
+            if (!file) {
+                statusElement.textContent = 'No file selected.';
+                return null; // Indicates no file was provided
+            }
+
+            // Generate New File Namef
+            const timestamp = new Date().getTime();
+            const randomString = Math.random().toString(36).substring(2, 8);
+            const uniqueFileName = `${path}${timestamp}-${randomString}-${file.name}`; // Unique Path
+
+            const storageRef = ref(storage, uniqueFileName); // Use full unique path
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            return new Promise((resolve, reject) => {
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        statusElement.querySelector('.file-size-info').textContent = `Upload is ${progress.toFixed(2)}% done`;
+                    },
+                    (error) => {
+                        statusElement.textContent = `Upload failed: ${error.message}`;
+                        console.error("Upload error:", error);
+                        reject(error); // Reject the promise on upload error
+                    },
+                    async () => {
+                        try {
+                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            statusElement.textContent = 'Upload successful!';
+                            resolve(downloadURL); // Resolve with the download URL
+                        } catch (error) {
+                            statusElement.textContent = `Failed to get download URL: ${error.message}`;
+                            console.error("Get Download URL error:", error);
+                            reject(error); // Reject the promise if getting URL fails
+                        }
+                    }
+                );
+            });
+        }
+
+    const picker      = document.getElementById('profilePictureFile');
+    const displayName = document.getElementById('profilePictureNameDisplay');
+    const statusEl    = document.getElementById('profilePictureUploadStatus');
+    const hiddenInput = document.getElementById('ProfilePictureHidden');
+
+    picker.addEventListener('change', async () => {
+      const file = picker.files[0];
+      if (!file) return;
+
+      displayName.value = file.name;
+      statusEl.querySelector('.file-size-info').textContent = 'Uploading…';
+
+      try {
+        const downloadURL = await uploadFileToFirebase(file, 'profile-images/', statusEl);
+        console.log('Download URL:', downloadURL);
+        hiddenInput.value = downloadURL;
+      } catch {
+      }
+    });
+  
+
+  </script>
 }
+

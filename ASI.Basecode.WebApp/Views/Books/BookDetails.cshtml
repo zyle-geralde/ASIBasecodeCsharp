@@ -178,7 +178,39 @@
                     <span class="detail-label">Updated By Admin ID:</span>
                     <span class="detail-value">@Html.DisplayFor(model => model.UpdatedByAdminId)</span>
                 </div>
-            }
+            <div class="book-reviews-section" style="margin-left: 400px; margin-top: 50px;">
+    <h3>Reviews</h3>
+    @if (!Model.HasReviewed && User.Identity.IsAuthenticated)
+    {
+        <div class="mt-4">
+          <a class="btn btn-primary"
+             asp-controller="Review"
+             asp-action="Add"
+             asp-route-bookId="@Model.BookId">
+            Leave a Review
+          </a>
+        </div>
+    }
+
+    @if (Model.Reviews != null && Model.Reviews.Any())
+    {
+        @foreach (var review in Model.Reviews)
+        {
+            <div class="review-box border p-3 mb-3 rounded bg-light">
+                <div><strong>Reviewer:</strong> @review.UserId</div>
+                <div><strong>Rating:</strong> @review.Rating / 5</div>
+                <div><strong>Comments:</strong></div>
+                <div class="review-comments">@review.Comment</div>
+                <div class="text-muted small">Posted on: @review.UploadDate</div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-muted">No reviews available for this book.</p>
+    }
+</div>
+
         </div>
     }
     else
