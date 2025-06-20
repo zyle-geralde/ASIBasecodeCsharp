@@ -4,8 +4,6 @@ using ASI.Basecode.Services.ServiceModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ASI.Basecode.WebApp.Controllers
@@ -23,12 +21,8 @@ namespace ASI.Basecode.WebApp.Controllers
             return View("~/Views/Reviews/Index.cshtml", model);
         }
 
-        public IActionResult Add(string? bookId)
+        public IActionResult Add()
         {
-            var vm = new ReviewViewModel
-            {
-                BookId = bookId
-            };
             return View("~/Views/Reviews/Add.cshtml");
         }
 
@@ -39,10 +33,7 @@ namespace ASI.Basecode.WebApp.Controllers
             if (ModelState.IsValid)
             {
                 await _reviewService.AddReview(reviewModel);
-                return RedirectToRoute(
-                       routeName: "BookDetails",
-                       routeValues: new { bookId = reviewModel.BookId }
-                   );
+                return RedirectToAction("Index");
             }
             return View("~/Views/Reviews/Add.cshtml", reviewModel);
         }
@@ -93,21 +84,6 @@ namespace ASI.Basecode.WebApp.Controllers
                 return NotFound();
 
             return RedirectToAction("Index");
-        }
-
-
-        [HttpGet]
-        public async Task<IActionResult> ReviewByBook(string bookId)
-        {
-            List<Review> reviews = await _reviewService.GetReviewsByBookId(bookId);
-            if (reviews == null || reviews.Count == 0)
-            {
-                return NotFound("No reviews found for this book.");
-            }
-            else
-            {
-                return View("~/Views/Reviews/ReviewByBook.cshtml", reviews.ToList());
-            }
         }
     }
 }

@@ -12,6 +12,5 @@ namespace ASI.Basecode.Data.Interfaces
         Task<Review> GetReviewById(string reviewId);
         Task DeleteReview(string reviewId);
         Task UpdateReview(Review review);
-        Task<List<Review>> GetReviewsByBookId(string bookId);
     }
 }
