@@ -1,0 +1,159 @@
+﻿body 
+{
+}
+
+.modal-content 
+{
+    border-radius: 16px;
+    border: none;
+}
+
+.modal-title
+{
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.modal-header 
+{
+    min-height: 40px;
+    padding: 0.75rem 1rem;
+}
+
+.modal-header .btn 
+{
+    padding: 0.5rem 0.5rem;
+}
+
+.modal-header .btn i.fas.fa-arrow-left 
+{
+    font-size: 20px;
+    color: #495e53;
+}
+
+.modal-header .btn:hover i.fas.fa-arrow-left 
+{
+    color: #3d4f45;
+}
+
+.modal-body 
+{
+    padding-top: 1rem;
+    padding: 30px 40px;
+}
+
+    .modal-body .form-control 
+    {
+        min-height: 100px;
+        font-size: 11px;
+    }
+
+    .modal-body .form-label 
+    {
+        font-size: 13px;
+        font-weight: 600;
+        color: #495e53;
+        margin-bottom: 0.5rem;
+    }
+
+.modal-body img 
+{
+    width: 100px;
+    object-fit: contain;
+    padding-bottom: 10px;
+}
+
+.modal-dialog 
+{
+    max-width: 400px; 
+    width: 95%; 
+    margin: 1.75rem auto;
+}
+
+.tag-container .btn-outline-secondary 
+{
+    color: #495e53;
+    border-color: #495e53;
+    padding: 0.2rem 1rem;
+    font-size: 11px;
+}
+
+.tag-container .btn-check:checked + .btn-outline-secondary 
+{
+    background-color: #495e53;
+    color: #fff;
+}
+
+.rating 
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+    width: 100%;
+}
+
+.rating .form-label 
+{
+    align-self: flex-start;
+}
+
+.stars 
+{
+    display: flex;
+    gap: 12px; 
+    justify-content: center;
+    padding: 8px 0;
+    position: relative;
+}
+
+.stars i 
+{
+    font-size: 18px; 
+    cursor: pointer;
+    color: #ccc;
+    transition: all 0.2s ease;
+}
+
+
+.stars i.fas 
+{
+    color: #495e53;
+}
+
+.stars i.partial 
+{
+    position: relative;
+    color: #ccc;
+}
+
+.stars i.partial:before 
+{
+    content: '\f005'; 
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--percent);
+    color: #495e53;
+    overflow: hidden;
+}
+
+.rating-value 
+{
+    margin-top: 8px;
+    font-size: 14px;
+    color: #666;
+}
+
+.btn-primary 
+{
+    background-color: #495e53;
+    border: none;
+    padding: 0.3rem 1rem;
+    border-radius: 8px;
+}
+
+.btn-primary:hover 
+{
+    background-color: #3d4f45;
+}
