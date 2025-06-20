@@ -13,6 +13,7 @@ namespace ASI.Basecode.Data.Models
         public string BookId { get; set; }
         public string? Title { get; set; }
         public string? Subtitle { get; set; }
+        public string? GenreList { get; set; }
         public DateTime? UploadDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public DateTime? PublicationDate { get; set; }

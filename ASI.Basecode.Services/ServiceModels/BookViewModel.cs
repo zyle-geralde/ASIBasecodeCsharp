@@ -18,6 +18,7 @@ namespace ASI.Basecode.Services.ServiceModels
 
         [StringLength(100)]
         public string? Subtitle { get; set; }
+        public string? GenreList { get; set; }
 
         [DataType(DataType.Date)]
         public string? UploadDate { get; set; }

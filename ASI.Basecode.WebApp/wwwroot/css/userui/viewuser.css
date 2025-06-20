@@ -1,4 +1,5 @@
-﻿body {
+﻿body 
+{
     background: #F7F4ED;
 }
 
@@ -10,20 +11,23 @@
     align-content:center;
 }
 
-.header-section.h1 {
+.header-section.h1 
+{
     color: #495057;
     font-size: 2rem;
     margin-bottom: 2rem;
 }
 
-.profile-main-row {
+.profile-main-row 
+{
     display: grid;
     grid-template-columns: 350px 1fr;
     gap: 32px;
     align-items: stretch;
 }
 
-.profile-card {
+.profile-card 
+{
     background: #495e53;
     border-radius: 16px;
     padding: clamp(24px, 5vw, 40px);
@@ -35,7 +39,8 @@
     justify-content: center; 
 }
 
-.profile-avatar {
+.profile-avatar 
+{
     width: clamp(120px, 15vw, 160px);
     height: clamp(120px, 15vw, 160px);
     background: #fff;
@@ -46,25 +51,29 @@
     margin-bottom: clamp(16px, 3vw, 24px);
 }
 
-    .profile-avatar i {
+    .profile-avatar i 
+    {
         font-size: clamp(60px, 7vw, 80px);
         color: #495e53;
     }
 
-.profile-name {
+.profile-name 
+{
     font-size: clamp(20px, 2.5vw, 24px);
     font-weight: 600;
     color: #fff;
     margin-bottom: 4px;
 }
 
-.profile-username {
+.profile-username 
+{
     font-size: clamp(14px, 1.5vw, 16px);
     color: #ccc;
     margin-bottom: clamp(16px, 1.5vw, 24px);
 }
 
-.profile-bio {
+.profile-bio 
+{
     color: #e6e6e6;
     font-size: clamp(14px, 1.5vw, 15px);
     line-height: 1.5;
@@ -72,7 +81,8 @@
     margin: 0 auto;
 }
 
-.profile-info-stack {
+.profile-info-stack 
+{
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -80,7 +90,8 @@
     height: 100%; 
 }
 
-.info-card {
+.info-card 
+{
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
@@ -88,11 +99,13 @@
     height: 100%; 
 }
 
-.info-card::after first-child{
+.info-card::after first-child
+{
     height: 100%;
 }
 
-.info-card-header {
+.info-card-header 
+{
     background: #555350;
     color: #fff;
     padding: 16px 24px;
@@ -103,113 +116,137 @@
     align-items: center;
 }
 
-    .info-card-header .fa-pen {
+    .info-card-header .fa-pen 
+    {
         font-size: 14px;
         cursor: pointer;
     }
 
-.info-card-body {
+.info-card-body 
+{
     padding: 24px;
     height: 100%; 
     display: flex;
     flex-direction: column;
 }
 
-.info-fields-row {
+.info-fields-row 
+{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
 }
 
-.info-field-col {
+.info-field-col 
+{
     display: flex;
     flex-direction: column;
     gap: 12px;
     padding-bottom: 12px;
 }
 
-.info-label {
+.info-label 
+{
     color: #6c757d;
     font-size: 14px;
 }
 
-.info-value {
+.info-value 
+{
     color: #212529;
     font-size: 16px;
     font-weight: 500;
 }
 
-.info-cards-bottom-row {
+.info-cards-bottom-row 
+{
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
 }
 
-@media (max-width: 1200px) {
-    .profile-main-row {
+@media (max-width: 1200px) 
+{
+    .profile-main-row 
+    {
         grid-template-columns: 1fr;
     }
 
-    .profile-card {
+    .profile-card 
+    {
         max-width: 400px;
         margin: 0 auto;
         min-height: 400px; 
     }
 
-    .profile-avatar {
+    .profile-avatar 
+    {
         margin-bottom: 16px;
     }
 
-    .profile-bio {
+    .profile-bio 
+    {
         max-width: 80%;
     }
 
 }
 
-@media (max-width: 768px) {
-    .info-fields-row {
+@media (max-width: 768px) 
+{
+    .info-fields-row 
+    {
         grid-template-columns: 1fr 1fr;
     }
 
-    .info-cards-bottom-row {
+    .info-cards-bottom-row 
+    {
         grid-template-columns: 1fr;
     }
 
-    .profile-card {
+    .profile-card 
+    {
         padding: 32px 24px;
         min-height: 350px;
     }
 
-    .profile-bio {
+    .profile-bio 
+    {
         font-size: 14px;
         max-width: 100%;
     }
 }
 
-@media (max-width: 576px) {
-    .info-fields-row {
+@media (max-width: 576px) 
+{
+    .info-fields-row 
+    {
         grid-template-columns: 1fr;
     }
 
-    .container.profile-container {
+    .container.profile-container 
+    {
         padding: 0 16px;
     }
 
-    .profile-card {
+    .profile-card 
+    {
         padding: 24px 20px;
         min-height: 300px;
     }
 
-    .container.profile-container {
+    .container.profile-container
+    {
         padding: 0 16px;
         margin: 60px auto; 
     }
 
-    .profile-avatar {
+    .profile-avatar 
+    {
         margin-bottom: 12px;
     }
 
-    .profile-username {
+    .profile-username 
+    {
         margin-bottom: 16px;
     }
 }
@@ -223,65 +260,77 @@
 /*-----Modal Styles (To adjusted if there is the same styling in the common.css)----*/
 
 /* Modal Styles */
-.modal-dialog {
+.modal-dialog 
+{
     max-width: 500px;
 }
 
-.modal-content {
+.modal-content 
+{
     border-radius: 12px;
     border: none;
     box-shadow: 0 2px 20px rgba(0,0,0,0.1);
 }
 
-.modal-header {
+.modal-header 
+{
     padding: 1.5rem 1.5rem 1rem;
 }
 
-.modal-title {
+.modal-title 
+{
     color: #A37B5D;
     font-size: 1.25rem;
     font-weight: 600;
 }
 
-.btn-close {
+.btn-close 
+{
     opacity: 0.5;
 }
 
-    .btn-close:hover {
+    .btn-close:hover 
+    {
         opacity: 0.75;
     }
 
-.modal-body {
+.modal-body 
+{
     padding: 1rem 1.5rem 1.5rem;
 }
 
 /* Form Styles */
-.form-label {
+.form-label 
+{
     color: #647D7F;
     font-size: 14px;
     font-weight: 500;
     margin-bottom: 8px;
 }
 
-.form-control, .form-select {
+.form-control, .form-select 
+{
     padding: 0.625rem 1rem;
     border: 1px solid #ced4da;
     border-radius: 6px;
     font-size: 12px;
 }
 
-    .form-control:focus, .form-select:focus {
+    .form-control:focus, .form-select:focus
+    {
         border-color: #495e53;
         box-shadow: 0 0 0 0.25rem rgba(73, 94, 83, 0.25);
     }
 
-.input-group-text {
+.input-group-text 
+{
     background-color: #fff;
     border: 1px solid #ced4da;
     color: #6c757d;
 }
 
-.btn-primary {
+.btn-primary 
+{
     background-color: #495e53;
     border: none;
     padding: 0.625rem 2rem;
@@ -290,26 +339,30 @@
     font-size: 14px;
 }
 
-    .btn-primary:hover {
+    .btn-primary:hover 
+    {
         background-color: #3d4f45;
     }
 
 /*----Datepicker inside the modal*/
 
 /* Datepicker Styles */
-.datepicker {
+.datepicker 
+{
     padding: 8px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     border: 1px solid #ced4da;
 }
 
-    .datepicker table {
+    .datepicker table 
+    {
         width: 100%;
     }
 
         .datepicker table tr td,
-        .datepicker table tr th {
+        .datepicker table tr th 
+        {
             text-align: center;
             width: 40px;
             height: 40px;
@@ -317,27 +370,32 @@
         }
 
             .datepicker table tr td.active,
-            .datepicker table tr td.active:hover {
+            .datepicker table tr td.active:hover 
+            {
                 background-color: #495e53 !important;
                 background-image: none;
             }
 
-            .datepicker table tr td.today {
+            .datepicker table tr td.today 
+            {
                 background-color: #e9ecef;
                 background-image: none;
             }
 
-.input-group-text {
+.input-group-text 
+{
     cursor: pointer;
     background-color: #fff;
 }
 
-    .input-group-text:hover {
+    .input-group-text:hover 
+    {
         background-color: #f8f9fa;
     }
 
 /* Make input readonly when needed */
-.datepicker-readonly {
+.datepicker-readonly 
+{
     background-color: #fff !important;
     cursor: default;
 }
@@ -345,27 +403,32 @@
 
 /*----- Password Toggle styles ------*/
 /* Password toggle button styles */
-.password-toggle {
+.password-toggle 
+{
     border-color: #ced4da;
     color: #6c757d;
 }
 
-    .password-toggle:hover {
+    .password-toggle:hover 
+    {
         background-color: #f8f9fa;
         color: #495057;
         border-color: #ced4da;
     }
 
-    .password-toggle:focus {
+    .password-toggle:focus 
+    {
         box-shadow: none;
         border-color: #ced4da;
     }
 
-.input-group > .form-control:focus ~ .password-toggle {
+.input-group > .form-control:focus ~ .password-toggle 
+{
     border-color: #495e53;
 }
 
-.password-toggle i {
+.password-toggle i 
+{
     width: 16px;
     height: 16px;
     display: inline-flex;

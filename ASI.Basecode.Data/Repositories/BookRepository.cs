@@ -56,6 +56,7 @@ namespace ASI.Basecode.Data.Repositories
             existingBook.Edition = book.Edition;
             existingBook.CoverImage = book.CoverImage;
             existingBook.BookFile = book.BookFile;
+            existingBook.GenreList = book.GenreList;
             existingBook.UpdatedByAdminId = book.UpdatedByAdminId;//change to Updated
 
 
@@ -68,6 +69,18 @@ namespace ASI.Basecode.Data.Repositories
             _dbContext.Books.Remove(existingBook);
             await _dbContext.SaveChangesAsync();
             
+        }
+
+        public async Task<List<BookGenre>> GetAllGenres()
+        {
+            try
+            {
+                return await _dbContext.BookGenres.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
     }
