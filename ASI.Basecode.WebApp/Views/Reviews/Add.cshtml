@@ -7,6 +7,7 @@
 <h2>Add New Review</h2>
 
 <form asp-action="Add" method="post" enctype="multipart/form-data">
+    @Html.HiddenFor(m => m.BookId)
     <div class="form-group">
         <label asp-for="BookId" class="control-label">Book Name</label>
         <input asp-for="BookId" class="form-control"></input>
