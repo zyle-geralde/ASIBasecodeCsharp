@@ -325,3 +325,99 @@ label
     background-color: #647D7F !important;
     color: #fff;
 }
+
+
+/*---------------- Required Fields ---------------*/
+.required-label::after {
+    content: " *";
+    color: red;
+}
+
+
+/*---------------- Dropdown with displayed tags selected by the user ---------------*/
+/*---------------- Implemented in AddBook and will be in the BookList later ---------------*/
+.custom-multi-select {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select-btn {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: #fff;
+    text-align: left;
+    font-size: 16px;
+    color: #495057;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .custom-select-btn:hover {
+        background-color: #f8f9fa;
+    }
+
+.custom-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+    .custom-dropdown.show {
+        display: block;
+    }
+
+.dropdown-item {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+    .dropdown-item input[type="checkbox"] {
+        margin-right: 8px;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f1f1f1;
+    }
+
+.selected-tags {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.selected-tag {
+    background-color: #647D7F;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+    .selected-tag .remove-tag {
+        margin-left: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #fff;
+    }
+
+        .selected-tag .remove-tag:hover {
+            color: #ffcccc;
+        }
