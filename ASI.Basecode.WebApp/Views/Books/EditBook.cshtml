@@ -50,22 +50,33 @@
                         <label for="isbn10">ISBN</label>
                         <input type="text" id="isbn10" name="ISBN10" asp-for="ISBN10" class="edit-book-input">
                     </div>
-                    <div class="edit-book-form-group">
-                        <label for="language">Language</label>
-                        <select id="language" name="Language" asp-for="Language" class="edit-book-select">
-                            <option value="">Select language</option>
-                            <option value="English">English</option>
-                            <option value="Filipino">Filipino</option>
-                            <option value="Spanish">Spanish</option>
 
-                        </select>
+                    <div class="edit-book-form-group">
+                        <label for="languageContainer" class="required-label">Language</label>
+                        <div class="custom-multi-select" id="languageContainer">
+                            <div class="custom-select-btn">
+                                <span>Select Language</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="custom-dropdown" id="languageDropdown">
+                            </div>
+                        </div>
+                        <div id="selectedLanguages" class="selected-tags"></div>
+                        <input type="hidden" id="concatenatedLanguage" name="Language" value="@Model?.Language" />
                     </div>
-                    <div class="add-book-form-group">
-                        @*-------Gender-------*@
-                        <label for="genre">Genre</label>
-                        <select id="genre" name="GenreSelect" class="add-book-form-select" multiple>
-                        </select>
-                        <input type="text" id="concatenatedGenre" name="GenreList" value="@Model?.GenreList" />
+
+                    <div class="edit-book-form-group">
+                        <label for="genreContainer" class="required-label">Genre</label>
+                        <div class="custom-multi-select" id="genreContainer">
+                            <div class="custom-select-btn">
+                                <span>Select Genre</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="custom-dropdown" id="genreDropdown">
+                            </div>
+                        </div>
+                        <div id="selectedGenres" class="selected-tags"></div>
+                        <input type="hidden" id="concatenatedGenre" name="GenreList" value="@Model?.GenreList" />
                     </div>
 
 
@@ -107,7 +118,7 @@
                     <label for="numberOfPages">Pages</label>
                     <input type="number" id="numberOfPages" name="NumberOfPages" asp-for="NumberOfPages" class="edit-book-input">
                 </div>
-                <div class="edit-book-form-group">
+                @* <div class="edit-book-form-group">
                     <label for="secondaryLanguage">Language</label>
                     <select id="secondaryLanguage" name="SecondaryLanguage" class="edit-book-select">
                         <option value="">Select language</option>
@@ -115,7 +126,7 @@
                         <option value="Filipino">Filipino</option>
                         <option value="Spanish">Spanish</option>
                     </select>
-                </div>
+                </div> *@
                 <div class="edit-book-form-group">
                     <label for="publisher">Published by</label>
                     <input type="text" id="publisher" name="Publisher" asp-for="Publisher" class="edit-book-input">
@@ -194,72 +205,242 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
 
-        const genreSelect = document.getElementById('genre');
-        const concatenatedGenreInput = document.getElementById('concatenatedGenre');
+        // reusable function to initialize multi-select dropdowns with preselected items (for genre and language dropdowns)
+        async function initializeMultiSelectWithPreselected({
+            containerId,
+            dropdownId,
+            hiddenInputId,
+            selectedContainerId,
+            fetchUrl,
+            placeholderText = 'Select Items',
+            fallbackItems = null,
+            itemType 
+        }) {
+            const selectButton = document.querySelector(`#${containerId} .custom-select-btn`);
+            const dropdown = document.getElementById(dropdownId);
+            const selectedContainer = document.getElementById(selectedContainerId);
+            const hiddenInput = document.getElementById(hiddenInputId);
 
-        //Setting Up Genres
-        try {
-            const response = await fetch('/Book/GetGenre', {
-                method: 'GET'
+            selectButton.querySelector('span').textContent = placeholderText;
+
+            selectButton.addEventListener('click', (event) => {
+                event.stopPropagation(); 
+                dropdown.classList.toggle('show');
             });
 
-            if (response.ok) {
-                const result = await response.json();
-                const genre_list = result.message
-                console.log(genre_list)
+            document.addEventListener('click', (event) => {
+                if (!selectButton.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
 
-                // Add a default "Select Genre" option
-                const default_option = document.createElement('option');
-                default_option.value = ""
-                default_option.textContent = "Select Genre"
-                genreSelect.appendChild(default_option)
+            function addSelectedTag(itemText, itemValue) {
+                const tag = document.createElement('div');
+                tag.className = `selected-tag ${itemType}-tag`; 
+                tag.innerHTML = `
+                            ${itemText}
+                            <span class="remove-tag" data-value="${itemValue}" data-type="${itemType}">×</span>
+                        `;
+                selectedContainer.appendChild(tag);
 
-                //convert genrelist from commaseparated string to a list
-                const commaSeparatedGenre = concatenatedGenreInput.value;
-                const genreArray = commaSeparatedGenre.split(',').map(item => item.trim().toLowerCase()).filter(item => item !== '');
-                console.log(genreArray)
-
-                //Add elements of the genre_list to the select tag
-                genre_list.forEach(genre_name_id => {
-                    const parts = genre_name_id.split(',');
-                    console.log("Hello")
-                    console.log(genre_name_id)
-
-                    const option = document.createElement('option');
-                    option.value = parts[1].trim();
-                    option.textContent = parts[0].trim();
-
-                    if (genreArray.includes(parts[1].trim().toLowerCase())) {
-                        option.selected = true;
-                    }
-
-                    genreSelect.appendChild(option);
-                })
-            } else {
-                alert("Server error")
+                tag.querySelector('.remove-tag').addEventListener('click', () => {
+                    tag.remove();
+                    const checkbox = dropdown.querySelector(`input[value="${itemValue}"]`);
+                    if (checkbox) checkbox.checked = false;
+                    updateHiddenInput();
+                });
             }
-        } catch (backendError) {
-            alert("Unexpected Error Occured")
+
+            // hidden input with selected values
+            function updateHiddenInput() {
+                const selectedCheckboxes = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked'));
+                const selectedValues = selectedCheckboxes.map(checkbox => checkbox.value);
+                hiddenInput.value = selectedValues.join(',');
+            }
+
+            // checkbox changes
+            dropdown.addEventListener('change', (event) => {
+                if (event.target.type === 'checkbox') {
+                    selectedContainer.innerHTML = '';
+                    const selectedCheckboxes = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked'));
+                    selectedCheckboxes.forEach(checkbox => {
+                        const label = dropdown.querySelector(`label[for="${checkbox.id}"]`).textContent;
+                        addSelectedTag(label, checkbox.value);
+                    });
+                    updateHiddenInput();
+                }
+            });
+
+            // Fetch and populate items
+            try {
+                const response = await fetch(fetchUrl, { method: 'GET' });
+                let itemsToPopulate = [];
+
+                if (response.ok) {
+                    const result = await response.json();
+                    itemsToPopulate = result.message;
+                } else if (fallbackItems) {
+                    console.warn(`Failed to fetch from ${fetchUrl}, using fallback items.`);
+                    itemsToPopulate = fallbackItems;
+                } else {
+                    console.error(`Server error fetching data from ${fetchUrl} and no fallback provided.`);
+                    return;
+                }
+
+                // Populate dropdown with checkboxes
+                itemsToPopulate.forEach(item => {
+                    const parts = item.split(',');
+                    const itemName = parts[0].trim();
+                    const itemValue = parts[1].trim();
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'dropdown-item';
+                    optionDiv.innerHTML = `
+                                <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
+                                <label for="${dropdownId}-${itemValue}">${itemName}</label>
+                            `;
+                    dropdown.appendChild(optionDiv);
+                });
+
+                // Restore previously selected items from hidden input and create tags
+                if (hiddenInput.value) {
+                    const preselectedValues = hiddenInput.value.split(',').map(v => v.trim());
+                    Array.from(dropdown.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
+                        if (preselectedValues.includes(checkbox.value)) {
+                            checkbox.checked = true;
+                            const label = dropdown.querySelector(`label[for="${checkbox.id}"]`).textContent;
+                            addSelectedTag(label, checkbox.value);
+                        }
+                    });
+                }
+
+            } catch (error) {
+                console.error(`Error initializing dropdown for ${containerId}:`, error);
+                if (fallbackItems) {
+                    console.warn(`Using fallback items for ${containerId} due to fetch error.`);
+                    // fallback if fetch fails
+                    fallbackItems.forEach(item => {
+                        const parts = item.split(',');
+                        const itemName = parts[0].trim();
+                        const itemValue = parts[1].trim();
+                        const optionDiv = document.createElement('div');
+                        optionDiv.className = 'dropdown-item';
+                        optionDiv.innerHTML = `
+                                    <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
+                                    <label for="${dropdownId}-${itemValue}">${itemName}</label>
+                                `;
+                        dropdown.appendChild(optionDiv);
+                    });
+                    // Restore values for fallback items
+                    if (hiddenInput.value) {
+                        const preselectedValues = hiddenInput.value.split(',').map(v => v.trim());
+                        Array.from(dropdown.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
+                            if (preselectedValues.includes(checkbox.value)) {
+                                checkbox.checked = true;
+                                const label = dropdown.querySelector(`label[for="${checkbox.id}"]`).textContent;
+                                addSelectedTag(label, checkbox.value);
+                            }
+                        });
+                    }
+                } else {
+                    showStatusModal(`Failed to load items for ${placeholderText}. Please try again.`, 'Error');
+                }
+            }
         }
 
-        function updateConcatenatedGenre() {
-            const selectedOptions = Array.from(genreSelect.options).filter(option => option.selected);
-            const selectedGenres = selectedOptions.map(option => option.value);
-            concatenatedGenreInput.value = selectedGenres.join(',');
-        }
+        initializeMultiSelectWithPreselected({
+            containerId: 'genreContainer',
+            dropdownId: 'genreDropdown',
+            hiddenInputId: 'concatenatedGenre',
+            selectedContainerId: 'selectedGenres',
+            fetchUrl: '/Book/GetGenre',
+            placeholderText: 'Select Genre',
+            fallbackItems: [
+                'Fiction,Fiction', 'Science Fiction,ScienceFiction', 'Fantasy,Fantasy',
+                'Thriller,Thriller', 'Mystery,Mystery', 'Romance,Romance', 'Horror,Horror',
+                'Biography,Biography', 'History,History', 'Cookbook,Cookbook', 'Poetry,Poetry'
+            ],
+            itemType: 'genre'
+        });
+        
 
-        //Listener - call updateConcatinedtGenre everytime the selected genre changes
-        genreSelect.addEventListener('change', updateConcatenatedGenre);
+        initializeMultiSelectWithPreselected({
+            containerId: 'languageContainer',
+            dropdownId: 'languageDropdown',
+            hiddenInputId: 'concatenatedLanguage', 
+            selectedContainerId: 'selectedLanguages',
+            fetchUrl: '/Book/GetLanguage', 
+            placeholderText: 'Select Language',
+            fallbackItems: [
+                'English,English', 'Tagalog,Tagalog', 'Bisaya,Bisaya',
+                'Spanish,Spanish', 'French,French', 'German,German', 'Japanese,Japanese'
+            ],
+            itemType: 'language'
+        });
+
+        // const genreSelect = document.getElementById('genre');
+        // const concatenatedGenreInput = document.getElementById('concatenatedGenre');
+
+        // //Setting Up Genres
+        // try {
+        //     const response = await fetch('/Book/GetGenre', {
+        //         method: 'GET'
+        //     });
+
+        //     if (response.ok) {
+        //         const result = await response.json();
+        //         const genre_list = result.message
+        //         console.log(genre_list)
+
+        //         // Add a default "Select Genre" option
+        //         const default_option = document.createElement('option');
+        //         default_option.value = ""
+        //         default_option.textContent = "Select Genre"
+        //         genreSelect.appendChild(default_option)
+
+        //         //convert genrelist from commaseparated string to a list
+        //         const commaSeparatedGenre = concatenatedGenreInput.value;
+        //         const genreArray = commaSeparatedGenre.split(',').map(item => item.trim().toLowerCase()).filter(item => item !== '');
+        //         console.log(genreArray)
+
+        //         //Add elements of the genre_list to the select tag
+        //         genre_list.forEach(genre_name_id => {
+        //             const parts = genre_name_id.split(',');
+        //             console.log("Hello")
+        //             console.log(genre_name_id)
+
+        //             const option = document.createElement('option');
+        //             option.value = parts[1].trim();
+        //             option.textContent = parts[0].trim();
+
+        //             if (genreArray.includes(parts[1].trim().toLowerCase())) {
+        //                 option.selected = true;
+        //             }
+
+        //             genreSelect.appendChild(option);
+        //         })
+        //     } else {
+        //         alert("Server error")
+        //     }
+        // } catch (backendError) {
+        //     alert("Unexpected Error Occured")
+        // }
+
+        // function updateConcatenatedGenre() {
+        //     const selectedOptions = Array.from(genreSelect.options).filter(option => option.selected);
+        //     const selectedGenres = selectedOptions.map(option => option.value);
+        //     concatenatedGenreInput.value = selectedGenres.join(',');
+        // }
+
+        // //Listener - call updateConcatinedtGenre everytime the selected genre changes
+        // genreSelect.addEventListener('change', updateConcatenatedGenre);
 
 
         document.getElementById('coverImageFile').addEventListener('change', function () {
             const fileName = this.files[0] ? this.files[0].name : 'No file selected';
-            // document.getElementById('coverFileNameDisplay').value = fileName; 
         });
 
         document.getElementById('bookFile').addEventListener('change', function () {
             const fileName = this.files[0] ? this.files[0].name : 'No file selected';
-            // document.getElementById('bookFileNameDisplay').value = fileName;
         });
 
 
@@ -448,7 +629,7 @@
 
         
         //Concatinate genrelist then update on and input field
-        updateConcatenatedGenre()
+        // updateConcatenatedGenre()
 
         // Proceed with form data submission to backend
         const formData = new FormData(form);
