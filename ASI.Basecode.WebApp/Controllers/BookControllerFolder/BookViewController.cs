@@ -99,6 +99,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 NumberOfPages = book.NumberOfPages,
                 Language = book.Language,
                 CoverImageUrl = book.CoverImageUrl,
+                GenreList = book.GenreList,
                 BookFileUrl = book.BookFileUrl,
                 SeriesName = book.SeriesName,
                 SeriesOrder = book.SeriesOrder,
