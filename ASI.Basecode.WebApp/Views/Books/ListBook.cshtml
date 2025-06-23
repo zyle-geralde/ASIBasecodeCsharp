@@ -368,13 +368,12 @@
                     const result = await response.json()
                     // alert(`${result.message}`)
                     showStatusModal(result.message || "Book deleted successfully!", 'Success');
-                    if(get_cover_url.textContent !== null || get_cover_url.textConent !== "")
-                    {
+                    if (currentCoverUrlToDelete !== null && currentCoverUrlToDelete !== "") {
                         // await deleteCoverUrl(get_cover_url.textContent);
                         await deleteCoverUrl(currentCoverUrlToDelete);
                     }
 
-                    if (get_book_url.textContent !== null || get_book_url.textContent !== "") {
+                    if (currentBookUrlToDelete !== null && currentBookUrlToDelete !== "") {
                         // await deleteBookUrl(get_book_url.textContent)
                         await deleteBookUrl(currentBookUrlToDelete)
                     }

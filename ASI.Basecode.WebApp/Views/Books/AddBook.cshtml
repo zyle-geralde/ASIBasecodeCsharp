@@ -239,7 +239,7 @@
             if (response.ok) {
                 const result = await response.json();
                 const genre_list = result.message
-                console.log(genre_list)
+
 
                 // Add a default "Select Genre" option 
                 const default_option = document.createElement('option');
@@ -248,10 +248,14 @@
                 genreSelect.appendChild(default_option)
 
                 //Add elements of the genre_list to the select tag
-                genre_list.forEach(genre_name => {
+                genre_list.forEach(genre_name_id => {
+                    const parts = genre_name_id.split(',');
+                    console.log("Hello")
+                    console.log(genre_name_id)
+
                     const option = document.createElement('option');
-                    option.value = genre_name;
-                    option.textContent = genre_name;
+                    option.value = parts[1].trim();
+                    option.textContent = parts[0].trim();
 
                     genreSelect.appendChild(option);
                 })
