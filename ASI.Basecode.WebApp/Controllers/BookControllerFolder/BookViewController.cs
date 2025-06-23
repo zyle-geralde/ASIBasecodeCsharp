@@ -105,6 +105,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 SeriesOrder = book.SeriesOrder,
                 SeriesDescription = book.SeriesDescription,
                 AverageRating = book.AverageRating,
+                AdminId = book.AdminId,
+                UpdatedByAdminId = book.UpdatedByAdminId,
                 Author = book.Author,
                 Likes = book.Likes,
                 ISBN10 = book.ISBN10,
