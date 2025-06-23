@@ -9,7 +9,7 @@ namespace ASI.Basecode.Data.Interfaces
 {
     public interface IAdminRepository
     {
-        bool UserExists(string userId);
-        Task AddUser(User user);
+        bool AdminExists(string userId);
+        Task AddAdmin(Admin user);
     }
 }
