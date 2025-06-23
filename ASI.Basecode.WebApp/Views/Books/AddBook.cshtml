@@ -28,7 +28,7 @@
             <form asp-action="AddBook" asp-controller="Book" method="post" enctype="multipart/form-data" id="addBookForm">
                 <div class="add-book-form-grid">
                     <div class="add-book-form-group">
-                        <label for="title">Title</label>
+                        <label for="title" class="required-label">Title</label>
                         <input type="text" id="title" name="Title" class="add-book-form-input" value="@Model?.Title" required>
                         <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
@@ -38,9 +38,9 @@
                         <span asp-validation-for="Subtitle" class="text-danger"></span>
                     </div>
                     <div class="add-book-form-group">
-                        <label for="publicationDate">Publication Date</label>
+                        <label for="publicationDate" class="required-label">Publication Date</label>
                         <div class="add-book-date-input-wrapper">
-                            <input type="date" id="publicationDate" name="PublicationDate" class="add-book-form-input" value="Model?.PublicationDate" />
+                            <input type="date" id="publicationDate" name="PublicationDate" class="add-book-form-input" value="@(Model?.PublicationDate?.ToString("yyyy-MM-dd"))" />
                         </div>
                         <span asp-validation-for="PublicationDate" class="text-danger"></span>
                     </div>
@@ -64,7 +64,7 @@
                         <input type="number" id="numberOfPages" name="NumberOfPages" class="add-book-form-input" value="@Model?.NumberOfPages">
                         <span asp-validation-for="NumberOfPages" class="text-danger"></span>
                     </div>
-                    <div class="add-book-form-group">
+                   @*  <div class="add-book-form-group">
                         <label for="language">Language</label>
                         <select id="language" name="Language" class="add-book-form-select">
                             <option value="">Select Language</option>
@@ -72,7 +72,21 @@
                             <option value="Tagalog">Tagalog</option>
                             <option value="Bisaya">Bisaya</option>
                         </select>
+                    </div> *@
+                    <div class="add-book-form-group">
+                    <label for="language" class="required-label">Language</label>
+                    <div class="custom-multi-select" id="languageContainer">
+                        <div class="custom-select-btn">
+                            <span>Select Language</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="custom-dropdown" id="languageDropdown">
+                            
+                        </div>
                     </div>
+                    <div id="selectedLanguages" class="selected-tags"></div>
+                    <input type="hidden" id="concatenatedLanguage" name="Language" value="@Model?.Language"/>
+                </div>
                     <div class="add-book-form-group">
                         <label for="seriesName">Series Name</label>
                         <input type="text" id="seriesName" name="SeriesName" class="add-book-form-input" value="@Model?.SeriesName">
@@ -89,7 +103,7 @@
                         <span asp-validation-for="SeriesDescription" class="text-danger"></span>
                     </div>
                     <div class="add-book-form-group add-book-form-grid-span-2">
-                        <label for="author">Author (comma-separated)</label>
+                        <label for="author" class="required-label">Author (comma-separated)</label>
                         <input type="text" id="author" name="Author" class="add-book-form-input" value="@Model?.Author">
                         <span asp-validation-for="Author" class="text-danger"></span>
                     </div>
@@ -98,13 +112,20 @@
                 <h3 class="add-book-form-section-title">Categorization</h3>
                 <div class="add-book-form-grid">
                     <div class="add-book-form-group">
-                        <label for="genre">Genre</label>
-                        <select id="genre" name="GenreSelect" class="add-book-form-select" multiple>
-
-                        </select>
-                        <input type="hidden" id="concatenatedGenre" name="GenreList" value="@Model?.GenreList" />
+                    <label for="genre" class="required-label">Genre</label>
+                    <div class="custom-multi-select" id="genreContainer">
+                        <div class="custom-select-btn">
+                            <span>Select Genre</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="custom-dropdown" id="genreDropdown">
+                          
+                        </div>
                     </div>
-                    <div class="add-book-form-group">
+                    <div id="selectedGenres" class="selected-tags"></div>
+                    <input type="hidden" id="concatenatedGenre" name="GenreList" value="@Model?.GenreList" />
+                </div>
+                    @* <div class="add-book-form-group">
                         <label for="subgenre">Subgenre (comma-separated)</label>
                         <input type="text" id="subgenre" name="Subgenre" class="add-book-form-input" placeholder="e.g., Contemporary, Philosophical Fiction">
                     </div>
@@ -116,7 +137,7 @@
                             <option value="Young Adult">Young Adult</option>
                             <option value="Children">Children</option>
                         </select>
-                    </div>
+                    </div> *@
                     <div class="add-book-form-group">
                         <label for="isbn10">ISBN10</label>
                         <input type="text" id="isbnten" name="ISBN10" class="add-book-form-input" value="@Model?.ISBN10">
@@ -136,33 +157,33 @@
 
             <h3 class="add-book-form-section-title">Cover Image Upload</h3>
             <div class="add-book-form-group add-book-form-grid-span-2">
-                <label for="coverImageFile">Select Cover Image</label>
+                <label for="coverImageFile" class="required-label">Select Cover Image</label>
                 <div class="add-book-file-upload-wrapper">
                     <input type="text" class="add-book-file-input-text" readonly id="coverFileNameDisplay" value="@Model?.CoverImageUrl">
-                    <input type="file" id="coverImageFile" accept="image/*" name="CoverImageFile" style="display: none;" required>
+                    <input type="file" id="coverImageFile" accept="image/*" name="CoverImageFile" style="display: none;">
                     <button type="button" class="add-book-browse-button" onclick="document.getElementById('coverImageFile').click();">BROWSE</button>
                 </div>
-                @* <p id="coverUploadStatus" class="add-book-upload-status">Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG</p> *@
+             
                 <p id="coverUploadStatus" class="add-book-upload-status">
-    <span class="file-size-info">Max file size: 1GB</span>
-    <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
-</p>
+                    <span class="file-size-info">Max file size: 1GB</span>
+                    <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
+                </p>
                 <input type="hidden" id="coverImageUrl" name="CoverImageUrl">
             </div>
 
             <h3 class="add-book-form-section-title">Book File Upload (e.g., PDF)</h3>
             <div class="add-book-form-group add-book-form-grid-span-2">
-                <label for="bookFile">Select Book File</label>
+                <label for="bookFile" class="required-label">Select Book File</label>
                 <div class="add-book-file-upload-wrapper">
                     <input type="text" class="add-book-file-input-text" readonly id="bookFileNameDisplay" value="@Model?.BookFileUrl">
-                    <input type="file" id="bookFile" accept=".pdf,.epub" name="BookFile" style="display: none;" required>
+                    <input type="file" id="bookFile" accept=".pdf,.epub" name="BookFile" style="display: none;">
                     <button type="button" class="add-book-browse-button" onclick="document.getElementById('bookFile').click();">BROWSE</button>
                 </div>
-                @* <p id="bookFileUploadStatus" class="add-book-upload-status">Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: PDF, EPUB.</p> *@
+              
                 <p id="bookFileUploadStatus" class="add-book-upload-status">
-    <span class="file-size-info">Max file size: 1GB</span>
-    <span class="supported-formats-info">Supported formats: PDF, EPUB.</span>
-</p>
+                    <span class="file-size-info">Max file size: 1GB</span>
+                    <span class="supported-formats-info">Supported formats: PDF, EPUB.</span>
+                </p>
                 <input type="hidden" id="bookFileUrl" name="BookFileUrl">
             </div>
 
@@ -192,33 +213,16 @@
     </div>
 </div>
 
-<div class="modal fade success-modal" id="addBookSuccessModal" tabindex="-1" aria-labelledby="addBookSuccessModalLabel" aria-hidden="true">
+<div class="modal fade status-modal" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body text-center py-4">
-                <div class="success-icon mb-3">
+                <div class="status-icon mb-3">
                     <i class="fas fa-check"></i>
                 </div>
-                <h5 class="modal-title mb-2">Added!</h5>
-                <p class="mb-4">Book added successfully!</p>
-                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" onclick="window.location.href='/Book/ListBook';">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="addBookErrorModal" tabindex="-1" aria-labelledby="addBookErrorModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addBookErrorModalLabel">Error</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p id="addBookErrorMessage"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <h5 class="modal-title mb-2" id="statusModalLabel">Success!</h5>
+                <p class="mb-4" id="statusModalMessage">Book added successfully!</p>
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" id="statusModalClose">OK</button>
             </div>
         </div>
     </div>
@@ -227,44 +231,231 @@
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
-        const genreSelect = document.getElementById('genre');
-        const concatenatedGenreInput = document.getElementById('concatenatedGenre');
+        // const genreSelect = document.getElementById('genre');
+        // const concatenatedGenreInput = document.getElementById('concatenatedGenre');
 
         //Setting Up Genres
-         try {
-            const response = await fetch('/Book/GetGenre', {
-                method: 'GET'
+        //  try {
+        //     const response = await fetch('/Book/GetGenre', {
+        //         method: 'GET'
+        //     });
+
+        //     if (response.ok) {
+        //         const result = await response.json();
+        //         const genre_list = result.message
+
+
+        //         // Add a default "Select Genre" option 
+        //         const default_option = document.createElement('option');
+        //         default_option.value = ""
+        //         default_option.textContent = "Select Genre"
+        //         genreSelect.appendChild(default_option)
+
+        //         //Add elements of the genre_list to the select tag
+        //         genre_list.forEach(genre_name_id => {
+        //             const parts = genre_name_id.split(',');
+        //             console.log("Hello")
+        //             console.log(genre_name_id)
+
+        //             const option = document.createElement('option');
+        //             option.value = parts[1].trim();
+        //             option.textContent = parts[0].trim();
+
+        //             genreSelect.appendChild(option);
+        //         })
+        //     } else {
+        //         alert("Server error")
+        //     }
+        // } catch (backendError) {
+        //     alert("Unexpected Error Occured")
+        // }
+
+
+
+        async function initializeMultiSelect({
+            containerId,
+            dropdownId,
+            hiddenInputId,
+            selectedContainerId,
+            fetchUrl,
+            placeholderText = 'Select Items',
+            fallbackItems = null 
+        }) {
+            const selectButton = document.querySelector(`#${containerId} .custom-select-btn`);
+            const dropdown = document.getElementById(dropdownId);
+            const selectedContainer = document.getElementById(selectedContainerId);
+            const hiddenInput = document.getElementById(hiddenInputId);
+
+            // update placeholder text
+            selectButton.querySelector('span').textContent = placeholderText;
+
+            // dropdown visibility
+            selectButton.addEventListener('click', () => {
+                dropdown.classList.toggle('show');
             });
 
-            if (response.ok) {
-                const result = await response.json();
-                const genre_list = result.message
+            // click outside, then close
+            document.addEventListener('click', (event) => {
+                if (!selectButton.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
 
+            // Function to add a selected tag
+            function addSelectedTag(itemText, itemValue) { 
+                const tag = document.createElement('div');
+                tag.className = 'selected-tag'; 
+                tag.innerHTML = `
+                    ${itemText}
+                    <span class="remove-tag" data-value="${itemValue}">×</span>
+                `;
+                selectedContainer.appendChild(tag); 
 
-                // Add a default "Select Genre" option 
-                const default_option = document.createElement('option');
-                default_option.value = ""
-                default_option.textContent = "Select Genre"
-                genreSelect.appendChild(default_option)
-
-                //Add elements of the genre_list to the select tag
-                genre_list.forEach(genre_name_id => {
-                    const parts = genre_name_id.split(',');
-                    console.log("Hello")
-                    console.log(genre_name_id)
-
-                    const option = document.createElement('option');
-                    option.value = parts[1].trim();
-                    option.textContent = parts[0].trim();
-
-                    genreSelect.appendChild(option);
-                })
-            } else {
-                alert("Server error")
+                tag.querySelector('.remove-tag').addEventListener('click', () => {
+                    tag.remove();
+                    const checkbox = dropdown.querySelector(`input[value="${itemValue}"]`);
+                    if (checkbox) checkbox.checked = false;
+                    updateHiddenInput(); 
+                });
             }
-        } catch (backendError) {
-            alert("Unexpected Error Occured")
+
+            // Update hidden input with selected values for this specific multi-select
+            function updateHiddenInput() {
+                const selectedCheckboxes = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked'));
+                const selectedValues = selectedCheckboxes.map(checkbox => checkbox.value);
+                hiddenInput.value = selectedValues.join(',');
+            }
+
+            // checkbox changes for  multi-select
+            dropdown.addEventListener('change', (event) => {
+                if (event.target.type === 'checkbox') {
+                    selectedContainer.innerHTML = ''; 
+                    const selectedCheckboxes = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked'));
+                    selectedCheckboxes.forEach(checkbox => {
+                        const label = dropdown.querySelector(`label[for="${checkbox.id}"]`).textContent;
+                        addSelectedTag(label, checkbox.value);
+                    });
+                    updateHiddenInput();
+                }
+            });
+
+            // Fetch and populate items
+            try {
+                const response = await fetch(fetchUrl, { method: 'GET' });
+                let itemsToPopulate = [];
+
+                if (response.ok) {
+                    const result = await response.json();
+                    itemsToPopulate = result.message;
+                } else if (fallbackItems) {
+                    console.warn(`Failed to fetch from ${fetchUrl}, using fallback items.`);
+                    itemsToPopulate = fallbackItems;
+                } else {
+                    showStatusModal(`Server error fetching data from ${fetchUrl} and no fallback provided.`, 'Error');
+                    return;
+                }
+
+                itemsToPopulate.forEach(item => {
+                    const parts = item.split(',');
+                    const itemName = parts[0].trim();
+                    const itemValue = parts[1].trim();
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'dropdown-item'; 
+                    optionDiv.innerHTML = `
+                        <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
+                        <label for="${dropdownId}-${itemValue}">${itemName}</label>
+                    `;
+                    dropdown.appendChild(optionDiv);
+                });
+
+                // Restore previously selected items from hidden input (after populating dropdown)
+                if (hiddenInput.value) {
+                    const selectedValues = hiddenInput.value.split(',');
+                    Array.from(dropdown.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
+                        if (selectedValues.includes(checkbox.value)) {
+                            checkbox.checked = true;
+                            addSelectedTag(
+                                dropdown.querySelector(`label[for="${checkbox.id}"]`).textContent,
+                                checkbox.value
+                            );
+                        }
+                    });
+                }
+
+            } catch (error) {
+                if (fallbackItems) {
+                    console.warn(`Error fetching from ${fetchUrl}: ${error.message}, using fallback items.`);
+                    // If an error occurs during fetch, and fallback is available, populate with fallback
+                    fallbackItems.forEach(item => {
+                        const parts = item.split(',');
+                        const itemName = parts[0].trim();
+                        const itemValue = parts[1].trim();
+                        const optionDiv = document.createElement('div');
+                        optionDiv.className = 'dropdown-item';
+                        optionDiv.innerHTML = `
+                            <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
+                            <label for="${dropdownId}-${itemValue}">${itemName}</label>
+                        `;
+                        dropdown.appendChild(optionDiv);
+                    });
+                     // Restore previously selected items from hidden input for fallback
+                    if (hiddenInput.value) {
+                        const selectedValues = hiddenInput.value.split(',');
+                        Array.from(dropdown.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
+                            if (selectedValues.includes(checkbox.value)) {
+                                checkbox.checked = true;
+                                addSelectedTag(
+                                    dropdown.querySelector(`label[for="${checkbox.id}"]`).textContent,
+                                    checkbox.value
+                                );
+                            }
+                        });
+                    }
+                } else {
+                    showStatusModal(`Unexpected error occurred while initializing dropdown for ${containerId}: ${error.message}`, 'Error');
+                }
+            }
         }
+
+        initializeMultiSelect({
+            containerId: 'genreContainer',
+            dropdownId: 'genreDropdown',
+            hiddenInputId: 'concatenatedGenre',
+            selectedContainerId: 'selectedGenres',
+            fetchUrl: '/Book/GetGenre',
+            placeholderText: 'Select Genre',
+            fallbackItems: [ // fallback
+                'Fiction,Fiction', 
+                'Science Fiction,ScienceFiction',
+                'Fantasy,Fantasy',
+                'Thriller,Thriller',
+                'Mystery,Mystery',
+                'Romance,Romance',
+                'Horror,Horror',
+                'Biography,Biography',
+                'History,History',
+                'Cookbook,Cookbook',
+                'Poetry,Poetry'
+            ]
+        });
+
+        initializeMultiSelect({
+            containerId: 'languageContainer',
+            dropdownId: 'languageDropdown',
+            hiddenInputId: 'concatenatedLanguage',
+            selectedContainerId: 'selectedLanguages',
+            fetchUrl: '/Book/GetLanguage',
+            placeholderText: 'Select Language',
+            fallbackItems: [ 
+                'English,English', 
+                'Tagalog,Tagalog',
+                'Bisaya,Bisaya',
+                'Spanish,Spanish',
+                'French,French',
+                'German,German',
+                'Japanese,Japanese'
+            ]
+        });
 
         // date picker
         const publicationDateInput = document.getElementById('publicationDate');
@@ -281,9 +472,7 @@
         document.getElementById('coverImageFile').addEventListener('change', function () {
             const fileName = this.files[0] ? this.files[0].name : '';
             document.getElementById('coverFileNameDisplay').value = fileName;
-            // Clear any previous error/status messages for this file
-            // document.getElementById('coverUploadStatus').textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: JPG, PNG, JPEG';
-            const coverUploadStatus = document.getElementById('coverUploadStatus');
+             const coverUploadStatus = document.getElementById('coverUploadStatus');
             coverUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
             coverUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: JPG, PNG, JPEG';
             coverUploadStatus.classList.remove('error-message');
@@ -292,8 +481,6 @@
         document.getElementById('bookFile').addEventListener('change', function () {
             const fileName = this.files[0] ? this.files[0].name : '';
             document.getElementById('bookFileNameDisplay').value = fileName;
-            // Clear any previous error/status messages for this file
-            // document.getElementById('bookFileUploadStatus').textContent = 'Max file size: 1GB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Supported formats: PDF, EPUB.';
             const bookFileUploadStatus = document.getElementById('bookFileUploadStatus');
             bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
             bookFileUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: PDF, EPUB.';
@@ -358,6 +545,7 @@
                     (error) => {
                         statusElement.textContent = `Upload failed: ${error.message}`;
                         console.error("Upload error:", error);
+                        showStatusModal(`File upload failed: ${error.message}`, 'Error');
                         reject(error); // Reject the promise on upload error
                     },
                     async () => {
@@ -368,6 +556,7 @@
                         } catch (error) {
                             statusElement.textContent = `Failed to get download URL: ${error.message}`;
                             console.error("Get Download URL error:", error);
+                            showStatusModal(`Failed to get download URL: ${error.message}`, 'Error');
                             reject(error); // Reject the promise if getting URL fails
                         }
                     }
@@ -375,149 +564,164 @@
             });
         }
 
-        //Turn multiple selected genres into a string separated by comma
+         // Dynamic status modal
+        function showStatusModal(message, type = 'Success') {
+            const confirmationModalElement = document.getElementById('addBookConfirmationModal');
+            const confirmationModal = bootstrap.Modal.getInstance(confirmationModalElement);
+            if (confirmationModal) {
+                confirmationModal.hide();
+            }
 
-        function updateConcatenatedGenre() {
-            const selectedOptions = Array.from(genreSelect.options).filter(option => option.selected);
-            const selectedGenres = selectedOptions.map(option => option.value);
-            concatenatedGenreInput.value = selectedGenres.join(',');
+            const statusModalTitle = document.getElementById('statusModalLabel');
+            const statusModalMessage = document.getElementById('statusModalMessage');
+            const statusModalClose = document.getElementById('statusModalClose');
+
+            if (statusModalTitle) {
+                statusModalTitle.textContent = type;
+            }
+            if (statusModalMessage) {
+                statusModalMessage.textContent = message;
+            }
+
+            const statusIcon = document.querySelector('#statusModal .status-icon i');
+            if (statusIcon) {
+                statusIcon.classList.remove('fa-check', 'fa-times', 'fa-exclamation-triangle');
+                if (type === 'Success') {
+                    statusIcon.classList.add('fa-check');
+                    statusIcon.style.color = '#28a745';
+                } else if (type === 'Error') {
+                    statusIcon.classList.add('fa-times');
+                    statusIcon.style.color = '#dc3545';
+                } else if (type === 'Warning') {
+                    statusIcon.classList.add('fa-exclamation-triangle');
+                    statusIcon.style.color = '#ffc107';
+                } else {
+                    statusIcon.classList.add('fa-check');
+                    statusIcon.style.color = '#28a745';
+                }
+            }
+
+            // Redirect on close for success
+            if (type === 'Success') {
+                statusModalClose.onclick = () => window.location.href = '/Book/ListBook';
+            } else {
+                statusModalClose.onclick = null;
+            }
+
+            setTimeout(() => {
+                const statusModalElement = document.getElementById('statusModal');
+                const statusModal = new bootstrap.Modal(statusModalElement);
+                statusModal.show();
+            }, 100);
         }
 
-        //Listener - call updateConcatinedtGenre everytime the selected genre changes
-         genreSelect.addEventListener('change', updateConcatenatedGenre);
-
-
         const addBookConfirmationModal = new bootstrap.Modal(document.getElementById('addBookConfirmationModal'));
-        const addBookSuccessModal = new bootstrap.Modal(document.getElementById('addBookSuccessModal'));
-        const addBookErrorModal = new bootstrap.Modal(document.getElementById('addBookErrorModal'));
-        const addBookErrorMessage = document.getElementById('addBookErrorMessage');
-
 
         document.getElementById('addBookForm').addEventListener('submit', async (event) => {
-            // Prevent the default HTML form submission initially.
-            
             event.preventDefault();
             
             const form = event.target;
-            const submitButton = form.querySelector('.add-book-submit-button');
+            // const submitButton = form.querySelector('.add-book-submit-button');
+            const titleInput = document.getElementById('title');
+            const authorInput = document.getElementById('author');
+            const publicationDateInput = document.getElementById('publicationDate');
+            const languageInput = document.getElementById('concatenatedLanguage');
+            const genreInput = document.getElementById('concatenatedGenre');
             const coverImageFile = document.getElementById('coverImageFile').files[0];
             const bookFile = document.getElementById('bookFile').files[0];
-
             const coverUploadStatus = document.getElementById('coverUploadStatus');
             const bookFileUploadStatus = document.getElementById('bookFileUploadStatus');
             const coverImageUrlInput = document.getElementById('coverImageUrl');
             const bookFileUrlInput = document.getElementById('bookFileUrl');
 
-            // added
-            // --- Client-side validation for file inputs ---
+            
             let isValid = true;
+            const missingFields = [];
+
+            if (!titleInput.value.trim()) {
+                missingFields.push('Title');
+                titleInput.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                titleInput.classList.remove('is-invalid');
+            }
+
+            if (!authorInput.value.trim()) {
+                missingFields.push('Author');
+                authorInput.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                authorInput.classList.remove('is-invalid');
+            }
+
+            if (!publicationDateInput.value) {
+                missingFields.push('Publication Date');
+                publicationDateInput.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                publicationDateInput.classList.remove('is-invalid');
+            }
+
+            const today = new Date();
+            today.setHours(0,0,0,0); 
+            const pubDate = new Date(publicationDateInput.value);
+
+            if (pubDate > today) {
+                missingFields.push('Publication Date (cannot be in the future)');
+                publicationDateInput.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                publicationDateInput.classList.remove('is-invalid');
+            }
+
+            if (!languageInput.value) {
+                missingFields.push('Language');
+                document.getElementById('languageContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select');
+                isValid = false;
+            } else {
+                document.getElementById('languageContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select');
+            }
+
+            if (!genreInput.value) {
+                missingFields.push('Genre');
+                document.getElementById('genreContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select');
+                isValid = false;
+            } else {
+                document.getElementById('genreContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select');
+            }
+
             if (!coverImageFile && !coverImageUrlInput.value) {
-                 coverUploadStatus.querySelector('.file-size-info').textContent = 'Cover image is required.';
+                missingFields.push('Cover Image');
+                coverUploadStatus.querySelector('.file-size-info').textContent = 'Cover image is required.';
                 coverUploadStatus.classList.add('error-message');
                 isValid = false;
             } else {
-                coverUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB'; // Reset to default
-        coverUploadStatus.classList.remove('error-message');
+                coverUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB'; 
+                coverUploadStatus.classList.remove('error-message');
             }
 
             if (!bookFile && !bookFileUrlInput.value) {
+                missingFields.push('Book File');
                 bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Book file is required.';
-        bookFileUploadStatus.classList.add('error-message');
+                bookFileUploadStatus.classList.add('error-message');
                 isValid = false;
             } else {
-                bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB'; // Reset to default
-        bookFileUploadStatus.classList.remove('error-message'); 
+                bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB'; 
+                bookFileUploadStatus.classList.remove('error-message'); 
             }
 
             if (!isValid) {
-                // If client-side validation fails, show error modal and prevent submission
-                addBookErrorMessage.textContent = 'Please select both a cover image and a book file.';
-                addBookErrorModal.show();
-                return; // Stop here if validation fails
-            }
+                showStatusModal(`Please fill in all required fields. Missing: ${missingFields.join(', ')}.`, 'Warning');
+                return;
+            }
 
             // Show confirmation modal
             addBookConfirmationModal.show();
+            document.getElementById('addBookForm')._currentSubmitEvent = event;
+            // form._currentSubmitEvent = event;
 
             // Store the current form event for later use after confirmation
-            // This is a common pattern for delayed form submission with modals.
-            document.getElementById('addBookForm')._currentSubmitEvent = event;
-            // added end
-
-
-
-
-            // //Save initial state for rollback if backend fails
-            // const originalCoverImageUrl = coverImageUrlInput.value;
-            // const originalBookFileUrl = bookFileUrlInput.value;
-
-            // // Clear previous status messages
-            // if (!coverImageFile) { 
-            //     coverUploadStatus.textContent = 'Max file size: 1GB ...';
-            // }
-            // if (!bookFile) {
-            //     bookFileUploadStatus.textContent = 'Max file size: 1GB ...';
-            // }
-
-            // // Disable submit button to prevent double submission
-            // submitButton.disabled = true;
-            // submitButton.textContent = 'Processing...';
-
-            // let uploadedCoverUrl = null;
-            // let uploadedBookUrl = null;
-
-            // try {
-            //     // Handle Cover Image Upload
-            //     if (coverImageFile) {
-            //         coverUploadStatus.textContent = 'Uploading cover image...';
-            //         uploadedCoverUrl = await uploadFileToFirebase(coverImageFile, 'book_covers/', coverUploadStatus);
-            //         if (uploadedCoverUrl) {
-            //             coverImageUrlInput.value = uploadedCoverUrl;
-            //         } else {
-            //             throw new Error('Cover image upload failed.');
-            //         }
-            //     } else if (coverImageUrlInput.value === "") { //Ensure a cover image is present if required
-            //         alert('Please select a cover image file.');
-            //         submitButton.disabled = false;
-            //         submitButton.textContent = 'ADD BOOK';
-            //         return;
-            //     }
-
-            //     // Handle Book File Upload
-            //     if (bookFile) {
-            //         bookFileUploadStatus.textContent = 'Uploading book file...';
-            //         uploadedBookUrl = await uploadFileToFirebase(bookFile, 'book_files/', bookFileUploadStatus);
-            //         if (uploadedBookUrl) {
-            //             bookFileUrlInput.value = uploadedBookUrl;
-            //         } else {
-            //             throw new Error('Book file upload failed.');
-            //         }
-            //     } else if (bookFileUrlInput.value === "") { //Ensure a book file is present if required
-            //         alert('Please select a book file.');
-            //         submitButton.disabled = false;
-            //         submitButton.textContent = 'ADD BOOK';
-            //         return;
-            //     }
-
-            //     // If uploads are successful, submit form
-            
-            //     form.submit();
-
-            // } catch (error) {
-            //     console.error('Submission error:', error);
-            //     alert(`An error occurred during file upload: ${error.message}. Please try again.`);
-
-            //     // delete Uploaded files if server error occurs
-            //     if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
-            //         await deleteFileFromFirebase(uploadedCoverUrl);
-            //     }
-            //     if (uploadedBookUrl && uploadedBookUrl !== originalBookFileUrl) {
-            //         await deleteFileFromFirebase(uploadedBookUrl);
-            //     }
-
-            //     submitButton.disabled = false;
-            //     submitButton.textContent = 'ADD BOOK';
-            // }
+            // document.getElementById('addBookForm')._currentSubmitEvent = event;
         });
 
 
@@ -579,7 +783,7 @@
                         throw new Error('Book file upload failed.');
                     }
                 }
-                updateConcatenatedGenre();
+            
 
                 const formData = new FormData(form); 
 
@@ -589,11 +793,10 @@
                 });
 
                 if (response.ok) {
-                    addBookSuccessModal.show(); //success modal
+                     showStatusModal('Book added successfully!', 'Success');
                 } else {
-                    const errorData = await response.json(); // parse JSON error from server
-                    addBookErrorMessage.textContent = `Server error: ${errorData.message || response.statusText}`;
-                    addBookErrorModal.show(); 
+                    const errorData = await response.json(); 
+                    showStatusModal(`Server error: ${errorData.message || response.statusText}`, 'Error');
 
                     if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
                         await deleteFileFromFirebase(uploadedCoverUrl);
@@ -605,8 +808,7 @@
 
             } catch (error) {
                 console.error('Submission error:', error);
-                addBookErrorMessage.textContent = `An unexpected error occurred during file upload or form submission: ${error.message}. Please try again.`;
-                addBookErrorModal.show(); 
+                showStatusModal(`An unexpected error occurred during file upload or form submission: ${error.message}. Please try again.`, 'Error');
 
                 // Rollback: delete uploaded files from Firebase
                 if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {

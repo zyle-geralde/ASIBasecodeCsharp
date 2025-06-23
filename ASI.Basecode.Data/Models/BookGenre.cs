@@ -14,9 +14,9 @@ namespace ASI.Basecode.Data.Models
         public string GenreName { get; set; }
         public string? GenreDescription { get; set; }
         public string? GenreImageUrl { get; set; }
-        public string AdminId { get; set; }
+        public string CreatedBy { get; set; }
         public DateTime? UploadDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string? UpdatedByAdminId { get; set; }
+        public string? UpdatedBy { get; set; }
     }
 }

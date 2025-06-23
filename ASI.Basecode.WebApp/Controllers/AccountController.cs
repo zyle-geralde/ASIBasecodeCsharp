@@ -103,7 +103,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 // 認証OK
                 await this._signInManager.SignInAsync(user);
-                this._session.SetString("UserName", user.Name);
+                this._session.SetString("UserName", user.UserName);
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -131,8 +131,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 var user = await _userService.AddUser(model);
                 var profile = new PersonProfile
                 {
-                    ProfileID = user.UserId,
-                    FirstName = model.Name,        // or model.FirstName if separate
+                    ProfileID = user.Email,
+                    FirstName = model.UserName,        // or model.FirstName if separate
                     LastName = null,
                     MiddleName = null,
                     Suffix = null,

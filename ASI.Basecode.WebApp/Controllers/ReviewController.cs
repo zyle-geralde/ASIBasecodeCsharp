@@ -68,7 +68,6 @@ namespace ASI.Basecode.WebApp.Controllers
                 Comment = review.Comment,
                 Likes = review.Likes,
                 UserId = review.UserId,
-                ReviewImage = review.ReviewImage,
                 UploadDate = review.UploadDate,
                 UpdatedDate = review.UpdatedDate
             };

@@ -21,22 +21,19 @@ namespace ASI.Basecode.Data
 
         //Added
         public virtual DbSet<Book> Books { get; set; }
-        public virtual DbSet<BookGenreBridge> BookGenreBridges { get; set; }
         public virtual DbSet<BookGenre> BookGenres { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
-        public virtual DbSet<Reply> Replies { get; set; }
         public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<PersonProfile> PersonProfiles{get;set;}
         public virtual DbSet<Author> Authors { get; set; }
 
-        public virtual DbSet<BookAuthorBridge> BookAuthorBridges { get; set; }
         public virtual DbSet<Language> Languages { get; set; }
         //Added
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.UserId, "UQ__Users__1788CC4D5F4A160F")
+                entity.HasIndex(e => e.Email, "UQ__Users__1788CC4D5F4A160F")
                     .IsUnique();
 
                 entity.Property(e => e.CreatedBy)
@@ -46,7 +43,7 @@ namespace ASI.Basecode.Data
 
                 entity.Property(e => e.CreatedTime).HasColumnType("datetime");
 
-                entity.Property(e => e.Name)
+                entity.Property(e => e.UserName)
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -63,7 +60,7 @@ namespace ASI.Basecode.Data
 
                 entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
 
-                entity.Property(e => e.UserId)
+                entity.Property(e => e.Email)
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
