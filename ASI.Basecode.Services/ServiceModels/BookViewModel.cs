@@ -75,7 +75,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public string AdminId { get; set; }
         public string? UpdatedByAdminId { get; set; }
         public List<ReviewViewModel> Reviews { get; set; } = new();
-        // CHECK IF REGULAR USER HAS LEFT A REVIEW ALR OR NOT
         public bool HasReviewed { get; set; }
     }
 }

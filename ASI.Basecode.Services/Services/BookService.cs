@@ -111,6 +111,7 @@ namespace ASI.Basecode.Services.Services
                 ISBN10 = requestBook.ISBN10,
                 ISBN13 = requestBook.ISBN13,
                 Edition = requestBook.Edition,
+                AverageRating = requestBook.AverageRating,
                 AdminId = "admin1",
                 UpdatedByAdminId = "Logged Admin"
             };
