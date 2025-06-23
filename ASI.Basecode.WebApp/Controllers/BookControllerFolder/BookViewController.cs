@@ -116,7 +116,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 Reviews = reviews
                             .Select(r => new ReviewViewModel
                             {
-                                ReviewId = r.UserId,
+                                ReviewId = r.ReviewId,
+                                UserId = r.UserId,
                                 Rating = r.Rating,
                                 Comment = r.Comment,
                                 UploadDate = r.UploadDate
