@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
+using System.Security.Claims;
 
 namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 {
@@ -17,9 +18,11 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
     {
 
         private readonly IBookService _bookService;
-        public BookViewController(IBookService bookService)
+        private readonly IReviewService _reviewService;
+        public BookViewController(IBookService bookService, IReviewService reviewService)
         {
             _bookService = bookService;
+            _reviewService = reviewService;
         }
 
 
