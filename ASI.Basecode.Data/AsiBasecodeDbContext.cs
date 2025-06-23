@@ -46,7 +46,7 @@ namespace ASI.Basecode.Data
 
                 entity.Property(e => e.CreatedTime).HasColumnType("datetime");
 
-                entity.Property(e => e.Name)
+                entity.Property(e => e.UserName)
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);

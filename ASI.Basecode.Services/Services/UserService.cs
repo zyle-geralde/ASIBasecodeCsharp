@@ -42,7 +42,7 @@ namespace ASI.Basecode.Services.Services
             if (!_repository.UserExists(model.Email))
             {
                 user.Email = model.Email;
-                user.Name = model.Name;
+                user.UserName = model.UserName;
                 user.Password = PasswordManager.EncryptPassword(model.Password);
                 user.CreatedTime = DateTime.Now;
                 user.UpdatedTime = DateTime.Now;
