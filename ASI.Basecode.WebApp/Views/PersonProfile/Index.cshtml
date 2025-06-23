@@ -197,7 +197,7 @@
                         <label for="profilePictureFile">Select Cover Image</label>
                         <div class="add-book-file-upload-wrapper">
                             <input type="text" class="add-book-file-input-text" readonly id="profilePictureNameDisplay" value="@Model?.ProfilePicture">
-                            <input type="file" id="profilePictureFile" accept="image/*" style="display: none;" required>
+                            <input type="file" id="profilePictureFile" accept="image/*" style="display: none;">
                             <button type="button" onclick="document.getElementById('profilePictureFile').click();">BROWSE</button>
                         </div>
 
@@ -205,7 +205,7 @@
                             <span class="file-size-info">Max file size: 1GB</span>
                             <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                         </p>
-                         <input type="hidden" id="ProfilePictureHidden" name="ProfilePicture" value="@Model?.ProfilePicture">
+                         <input type="hidden" asp-for="ProfilePicture" id="ProfilePictureHidden" name="ProfilePicture" value="@Model?.ProfilePicture">
 
                     </div>
                     <div class="text-center">
