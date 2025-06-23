@@ -1,0 +1,95 @@
+﻿
+.main-content 
+{
+    background-color: #f5f5f5;
+    margin-top: 60px;
+    margin-left: 256px;
+    margin-right: auto;
+    flex-grow: 1;
+    padding: 0px;
+    overflow-y: auto;
+    overflow-x: auto;
+    min-width: 0;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.admin-layout 
+{
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.admin-sidebar 
+{
+    width: 256px;
+    background-color: #3e4f4a;
+    color: #e5e7eb;
+    padding: 16px;
+    padding-top: 160px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1;
+}
+
+.admin-sidebar-header 
+{
+    margin-bottom: 32px;
+}
+
+    .admin-sidebar-header h2 
+    {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 16px;
+    }
+
+.admin-sidebar-nav ul 
+{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.admin-nav-item 
+{
+    margin-bottom: 8px;
+}
+
+.admin-nav-link 
+{
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    margin: 15px;
+    border-radius: 8px;
+    color: #ded6c9;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+    .admin-nav-link:hover 
+    {
+        background-color: #ded6c9;
+        color: #3e4f4a;
+    }
+
+.admin-nav-link-active 
+{
+    background-color: #ded6c9;
+    color: #3e4f4a;
+}
+
+.admin-nav-icon 
+{
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+}
