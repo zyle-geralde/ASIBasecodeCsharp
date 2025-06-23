@@ -131,7 +131,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 var user = await _userService.AddUser(model);
                 var profile = new PersonProfile
                 {
-                    ProfileID = user.UserId,
+                    ProfileID = user.Email,
                     FirstName = model.Name,        // or model.FirstName if separate
                     LastName = null,
                     MiddleName = null,
