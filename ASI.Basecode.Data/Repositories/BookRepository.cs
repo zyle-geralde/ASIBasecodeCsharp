@@ -25,9 +25,28 @@ namespace ASI.Basecode.Data.Repositories
             await _dbContext.Books.AddAsync(book);
             await _dbContext.SaveChangesAsync();
         }
-        public async Task<List<Book>> GetAllBooks() 
+        public async Task<List<Book>> GetBooks(string searchTerm,
+            string sortOrder,
+            string genreFilter,
+            int pageIndex,
+            int pageSize) 
         {
-            return await _dbContext.Books.ToListAsync();
+            IQueryable<Book> query = _dbContext.Books.AsNoTracking();
+
+            // SEARCH
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var term = searchTerm.Trim();
+                query = query.Where(b =>
+                (b.Title != null && b.Title.Contains(term) || (b.Subtitle != null && b.Subtitle.Contains(term)) || (b.Author != null && b.Author.Contains(term))));
+
+            }
+
+            query = query
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize);
+
+            return await query.ToListAsync();
         }
         public async Task<Book?> GetBookById(string bookId)
         {
