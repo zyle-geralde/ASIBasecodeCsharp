@@ -1,0 +1,71 @@
+﻿.users-container {
+    padding: 25px;
+}
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #3e4f4a;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.btn-icon {
+    padding: 0.25rem 0.5rem;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    .users-container {
+        margin-left: 0;
+    }
+}
+
+.add-language-modal-content {
+    padding-top: 10px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-bottom: 10px !important;
+}
+
+.add-language-title {
+    color: #9B7653;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.add-language-close {
+    font-size: 1rem;
+}
+
+.add-language-label {
+    color: #5B7670;
+    font-size: 24px !important;
+}
+
+.add-language-btn {
+    background: #5B7670;
+    color: #fff;
+    min-width: 100px;
+    font-size: 14px;
+    font-weight: 300;
+    min-height: 25px;
+    border-radius: 8px;
+}
+
+.form-control
+{
+    font-size: 14px;
+}
+
+

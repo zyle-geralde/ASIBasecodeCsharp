@@ -1,0 +1,155 @@
+﻿@{
+    ViewData["Title"] = "Users";
+    Layout = "_AdminSidebarLayout";
+}
+
+@section styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin/language.css" asp-append-version="true" />
+}
+
+<div class="users-container p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="header-section">
+            <h1>Languages</h1>
+            <p>View and manage language</p>
+        </div>
+
+
+        <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addLanguageModal">
+            <i class="fas fa-plus me-2" style="color: #fff"></i> ADD LANGUAGE
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="search-filter-container">
+                <div style="position: relative; flex-grow: 1;">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" class="form-control search-field" placeholder="Search" style="padding-left: 33px;" />
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary">
+                        <i class="fas fa-sort"></i> Sort
+                    </button>
+                    <button class="btn btn-outline-secondary">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive justify-content-around">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="padding-left: 72px">Language</th>
+                            <th class="text-md-center" style="width: 25%;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="align-middle" style="padding-left: 72px">Cebuano</td>
+                            <td class="align-middle" style="white-space:nowrap;">
+                                <div class="action-buttons justify-content-center">
+                                    <button type="button" class="btn btn-icon text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <a href="/User/EditUser" class="btn btn-icon text-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addLanguageModal" tabindex="-1" aria-labelledby="addLanguageLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content add-language-modal-content p-4">
+            <div class="modal-header border-0 pb-0 mb-3">
+                <h5 class="modal-title add-language-title" id="addLanguageLabel">Add New Language</h5>
+                <button type="button" class="btn-close add-language-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <form id="addLanguageForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="newLanguage" class="form-label">Language</label>
+                        <input type="text" class="form-control" id="newLanguage" placeholder="Text">
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn add-language-btn">ADD</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade success-modal" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center py-4">
+                <div class="success-icon mb-3">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h5 class="modal-title mb-2">Deleted!</h5>
+                <p class="mb-4">Item deleted successfully!</p>
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" id="successModalOkBtn">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var userId = button.getAttribute('data-user-id');
+            var userName = button.getAttribute('data-user-name');
+            document.getElementById('deleteUserId').value = userId;
+            document.getElementById('deleteModalText').textContent = 'Are you sure you want to delete user "' + userName + '"?';
+        });
+
+        document.getElementById('deleteUserForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var form = this;
+            var userId = document.getElementById('deleteUserId').value;
+            var token = form.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            fetch('/User/Delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': token
+                },
+                body: 'id=' + encodeURIComponent(userId),
+                redirect: 'follow'
+            })
+            .then(response => {
+                // Treat redirect as success
+                if (response.redirected || response.ok) {
+                    var modal = bootstrap.Modal.getInstance(deleteModal);
+                    modal.hide();
+                    setTimeout(function () {
+                        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                        successModal.show();
+                    }, 150);
+                } else {
+                    alert('Failed to delete user.');
+                }
+            });
+        });
+        document.getElementById('successModalOkBtn').addEventListener('click', function () {
+            location.reload();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+}
