@@ -62,6 +62,10 @@
     min-height: 25px;
     border-radius: 8px;
 }
+.add-language-btn:hover {
+    background-color: #3d4f45;
+    color: #ffffff;
+}
 
 .form-control
 {
