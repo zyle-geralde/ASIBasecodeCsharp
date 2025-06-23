@@ -46,7 +46,7 @@ header
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 30px;
+    padding: 0px;
     box-sizing: border-box;
 }
 
@@ -59,20 +59,25 @@ header
     display: none;
 }
 
-     header .logosec 
-     {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 20px;
-    }
+header .logosec {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    padding: 0 30px; 
+    border-right: 2px solid #e0e0e0; 
+    height: 100%;
+}
 
-.main-header-search-area 
-{
+.main-header-search-area {
     flex-grow: 1;
     display: flex;
     justify-content: center;
     padding: 0 20px;
+    border-right: 2px solid #e0e0e0; 
+    height: 100%;
 }
 
 .book-icon 
@@ -132,7 +137,7 @@ header
     display: flex;
     align-items: center;
     gap: 10px; 
-    padding: 5px 10px; 
+    padding: 5px 30px; 
     border-radius: 20px; 
     transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
@@ -144,9 +149,8 @@ header
     }
 
 
-.username-display 
-{
-    color: var(--text-color-light);
+.username-display {
+    color: #8b7e6e;
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
