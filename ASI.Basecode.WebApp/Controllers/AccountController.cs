@@ -169,5 +169,15 @@ namespace ASI.Basecode.WebApp.Controllers
             await this._signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }
+
+
+
+        [HttpGet]
+        [Route("Account/RegisterAdmin")]
+        [AllowAnonymous]
+        public IActionResult RegisterAdmin()
+        {
+            return View("~/Views/Account/Register.cshtml");
+        }
     }
 }
