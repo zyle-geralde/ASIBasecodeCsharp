@@ -1,4 +1,5 @@
-﻿.edit-user-container {
+﻿.edit-user-container 
+{
     flex: 1;
     background-color: #f5f5f5;
     min-height: 100vh;
@@ -6,7 +7,8 @@
     padding: 25px;
 }
 
-body {
+body 
+{
     margin: 0;
     padding: 0;
     min-height: 100vh;
@@ -14,16 +16,19 @@ body {
 }
 
 edit-user-container,
-.add-user-container {
+.add-user-container 
+{
     transition: margin-left 0.3s ease-in-out;
 }
 
-/*----------------wala ni sa common ang padding---------------*/
-.admin-common-content-wrapper {
+
+.admin-common-content-wrapper 
+{
     padding: 3rem;
 }
 
-.edit-user-form {
+.edit-user-form 
+{
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
@@ -33,13 +38,15 @@ edit-user-container,
     height: 100%;
 }
 
-.profile-section {
+.profile-section 
+{
     position: relative;
     width: fit-content;
     margin-bottom: 2rem;
 }
 
-.profile-image {
+.profile-image 
+{
     width: 120px;
     height: 120px;
     border-radius: 50%;
@@ -52,7 +59,8 @@ edit-user-container,
     align-items: center;
 }
 
- .profile-image img {
+ .profile-image img 
+ {
     width: 100%;
     height: 100%;
     object-fit: cover; 
@@ -60,13 +68,15 @@ edit-user-container,
 }
 
 
-.upload-input {
+.upload-input 
+{
     position: absolute;
     bottom: 0;
     right: -110px;
 }
 
-.browse-btn {
+.browse-btn 
+{
     background: #647D7F;
     color: white;
     padding: 0.5rem 1.25rem;
@@ -78,7 +88,8 @@ edit-user-container,
     display: block;
 }
 
-.form-content {
+.form-content 
+{
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -86,13 +97,15 @@ edit-user-container,
     margin-bottom: auto;
 }
 
-.form-row {
+.form-row 
+{
     display: flex;
     gap: 3rem;
     margin-bottom: 2rem;
 }
 
-.form-group {
+.form-group 
+{
     flex: 1;
     min-width: 0;
     display: flex;
@@ -100,7 +113,8 @@ edit-user-container,
 }
 
 input[type="text"],
-input[type="email"] {
+input[type="email"] 
+{
     width: 100%;
     padding: 0.5rem;
     border: 1px solid #ddd;
@@ -108,14 +122,16 @@ input[type="email"] {
     font-size: 14px;
 }
 
-.button-group {
+.button-group 
+{
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
     margin-top: 1rem;
 }
 
-.cancel-btn {
+.cancel-btn 
+{
     padding: 0.50rem 1.5rem;
     background: #fff;
     border: 1px solid #ddd;
@@ -125,7 +141,8 @@ input[type="email"] {
     cursor: pointer;
 }
 
-.submit-btn {
+.submit-btn 
+{
     padding: 0.50rem 1.5rem;
     background: #647D7F;
     border: none;
@@ -135,44 +152,53 @@ input[type="email"] {
     cursor: pointer;
 }
 
-@media (max-width: 768px) {
-    .form-row {
+@media (max-width: 768px) 
+{
+    .form-row 
+    {
         flex-direction: column;
         gap: 1rem;
     }
 
-    .content-wrapper {
+    .content-wrapper 
+    {
         padding: 1.5rem;
     }
 
-    .button-group {
+    .button-group 
+    {
         flex-direction: column;
     }
 
-    .button-group button {
+    .button-group button 
+    {
         width: 100%;
     }
 
-    .profile-section {
+    .profile-section 
+    {
         width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
-    .upload-input {
+    .upload-input 
+    {
         position: relative;
         right: auto;
         margin-top: 1rem;
     }
 
-    .edit-user-container {
+    .edit-user-container 
+    {
         margin-left: 0;
         padding: 1rem;
     }
 
     .edit-user-container,
-    .add-user-container {
+    .add-user-container 
+    {
         margin-left: 0;
     }
 }

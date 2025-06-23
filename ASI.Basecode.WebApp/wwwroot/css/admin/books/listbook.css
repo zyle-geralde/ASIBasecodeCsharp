@@ -131,8 +131,11 @@
 
         .data-table td .cover-image {
             max-width: 80px;
-            height: auto;
+            height: 120px; 
+            object-fit: cover; 
+            object-position: center; 
             border-radius: 4px;
+            display: block;
         }
 
 

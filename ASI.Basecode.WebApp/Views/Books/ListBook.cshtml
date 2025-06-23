@@ -46,6 +46,8 @@
         </div>
     </div>
 
+    <p class="no-search-results-message" style="display: none;">No books found matching your search criteria.</p>
+
     @if (Model != null && Model.Any())
     {
         <div class="table-responsive">
@@ -68,9 +70,9 @@
                 </tr>
             </thead>
             <tbody>
-                <td style="display:none" id="book-id"></td>
+                @* <td style="display:none" id="book-id"></td>
                 <td style="display:none" id="cover-url"></td>
-                <td style="display:none" id="book-url"></td>
+                <td style="display:none" id="book-url"></td> *@
                 @foreach (var book in Model)
                 {
                     <tr>
@@ -139,15 +141,15 @@
     </div>
 </div>
 
-<div class="modal fade success-modal" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+<div class="modal fade status-modal" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body text-center py-4">
-                <div class="success-icon mb-3">
+                <div class="status-icon mb-3">
                     <i class="fas fa-check"></i>
                 </div>
-                <h5 class="modal-title mb-2">Deleted!</h5>
-                <p class="mb-4">Item deleted successfully!</p>
+                <h5 class="modal-title mb-2" id="statusModalLabel">Success!</h5>
+                <p class="mb-4" id="statusModalMessage">Item deleted successfully!</p>
                 <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">OK</button>
             </div>
         </div>
@@ -186,7 +188,8 @@
                 await deleteObject(fileRef);
                 console.log(`Successfully deleted file: ${fileUrl}`);
             } catch (error) {
-                alert(`Failed to delete file ${fileUrl}:`, error)
+                // alert(`Failed to delete file ${fileUrl}:`, error)
+                showSuccessModal(`Failed to delete file ${fileUrl}: ${error.message}`, 'Error');
                 console.error(`Failed to delete file ${fileUrl}:`, error);
             }
         }
@@ -197,7 +200,7 @@
                 coverUploadStatusCopy.textContent = 'Cover image upload rolled back due to backend error.';
             }
             else {
-                alert("No cover Url")
+                showStatusModal("Warning: No cover URL provided for rollback.", 'Warning');
             }
         }
 
@@ -207,7 +210,7 @@
                 bookFileUploadStatusCopy.textContent = 'Book file upload rolled back due to backend error.';
             }
             else {
-                alert("No book Url")
+                showStatusModal("Warning: No book URL provided for rollback.", 'Warning');
             }
         }
 
@@ -216,7 +219,7 @@
                 await deleteFileFromFirebase(coverUrlCopy);
             }
             else {
-                alert("No cover Url")
+                showStatusModal("Warning: No cover URL provided.", 'Warning');
             }
         }
 
@@ -225,7 +228,7 @@
                 await deleteFileFromFirebase(bookUrlCopy);
             }
             else {
-                alert("No book Url")
+                showStatusModal("Warning: No book URL provided.", 'Warning');
             }
         }
 
@@ -254,6 +257,7 @@
                     (error) => {
                         statusElement.textContent = `Upload failed: ${error.message}`;
                         console.error("Upload error:", error);
+                        showSuccessModal(`File upload failed: ${error.message}`, 'Error');
                         reject(error); //Reject the promise on upload error
                     },
                     async () => {
@@ -264,6 +268,7 @@
                         } catch (error) {
                             statusElement.textContent = `Failed to get download URL: ${error.message}`;
                             console.error("Get Download URL error:", error);
+                            showSuccessModal(`Failed to get download URL: ${error.message}`, 'Error');
                             reject(error); //Reject the promise if getting URL fails
                         }
                     }
@@ -271,33 +276,75 @@
             });
         }
 
-        function showSuccessModal() {
-            var deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
-            deleteModal.hide();
+
+        // dynamic status modal
+        function showStatusModal(message, type = 'Success') { 
+            var deleteModalElement = document.getElementById('deleteModal');
+            var deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
+            if (deleteModal) {
+                deleteModal.hide();
+            }
+
+            const statusModalTitle = document.getElementById('statusModalLabel'); 
+            const statusModalMessage = document.getElementById('statusModalMessage');  
+
+            if (statusModalTitle) {
+                statusModalTitle.textContent = type;
+            }
+            if (statusModalMessage) {
+                statusModalMessage.textContent = message;
+            }
+
+            // Change icon based on type
+            const statusIcon = document.querySelector('#statusModal .status-icon i'); 
+            if (statusIcon) {
+                statusIcon.classList.remove('fa-check', 'fa-times', 'fa-exclamation-triangle');
+                if (type === 'Success') {
+                    statusIcon.classList.add('fa-check');
+                    statusIcon.style.color = '#28a745';
+                } else if (type === 'Error') {
+                    statusIcon.classList.add('fa-times');
+                    statusIcon.style.color = '#dc3545';
+                } else if (type === 'Warning') {
+                    statusIcon.classList.add('fa-exclamation-triangle');
+                    statusIcon.style.color = '#ffc107';
+                } else {
+                    statusIcon.classList.add('fa-check');
+                    statusIcon.style.color = '#28a745';
+                }
+            }
+
 
             setTimeout(function () {
-                var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                successModal.show();
+                var statusModalElement = document.getElementById('statusModal'); 
+                var statusModal = new bootstrap.Modal(statusModalElement);
+                statusModal.show();
             }, 100);
         }
 
         const show_delete_modal = document.querySelectorAll("#delete-modal-button");
-        const get_book_id = document.getElementById("book-id")
-         const get_cover_url = document.getElementById("cover-url")
-        const get_book_url = document.getElementById("book-url")
+        // const get_book_id = document.getElementById("book-id")
+        //  const get_cover_url = document.getElementById("cover-url")
+        // const get_book_url = document.getElementById("book-url")
+
+        let currentBookIdToDelete = null;
+        let currentCoverUrlToDelete = null;
+        let currentBookUrlToDelete = null;
 
         //Adding click event listener for each delete button
         //Grab the bookId cover Url and Book Url from which the trash button was clicked
         show_delete_modal.forEach(button => {
             button.addEventListener("click", function (event) {
+                currentBookIdToDelete = this.dataset.bookId;
+                currentCoverUrlToDelete = this.dataset.coverUrl;
+                currentBookUrlToDelete = this.dataset.bookUrl;
 
-
-                const hold_book_id = this.dataset.bookId
-                const hold_cover_url = this.dataset.coverUrl
-                const hold_book_url = this.dataset.bookUrl
-                get_book_id.textContent = hold_book_id
-                get_cover_url.textContent = hold_cover_url
-                get_book_url.textContent = hold_book_url
+                // const hold_book_id = this.dataset.bookId
+                // const hold_cover_url = this.dataset.coverUrl
+                // const hold_book_url = this.dataset.bookUrl
+                // get_book_id.textContent = hold_book_id
+                // get_cover_url.textContent = hold_cover_url
+                // get_book_url.textContent = hold_book_url
 
             })
         })
@@ -312,34 +359,137 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ BookId: get_book_id.textContent })
+                    // body: JSON.stringify({ BookId: get_book_id.textContent })
+                    body: JSON.stringify({ BookId: currentBookIdToDelete })
                 })
 
                 if (response.ok) 
                 {
                     const result = await response.json()
-                    alert(`${result.message}`)
-                    if(get_cover_url.textContent !== null || get_cover_url.textConent !== "")
-                    {
-                        await deleteCoverUrl(get_cover_url.textContent);
+                    // alert(`${result.message}`)
+                    showStatusModal(result.message || "Book deleted successfully!", 'Success');
+                    if (currentCoverUrlToDelete !== null && currentCoverUrlToDelete !== "") {
+                        // await deleteCoverUrl(get_cover_url.textContent);
+                        await deleteCoverUrl(currentCoverUrlToDelete);
                     }
 
-                    if (get_book_url.textContent !== null || get_book_url.textConent !== "") {
-                        await deleteBookUrl(get_book_url.textContent)
+                    if (currentBookUrlToDelete !== null && currentBookUrlToDelete !== "") {
+                        // await deleteBookUrl(get_book_url.textContent)
+                        await deleteBookUrl(currentBookUrlToDelete)
                     }
-                    
 
-                    window.location.reload()
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+
                 }
                 else{
-                    alert(`Error: ${result.message}`)
+                    // alert(`Error: ${result.message}`)
+                    const errorResult = await response.json();
+                    showStatusModal(`Error: ${errorResult.message}`, 'Error');
                 }
             }
             catch(error){
-                alert(`Error: An unexpected error occurred while deleting book data. Please try again.`)
+                // alert(`Error: An unexpected error occurred while deleting book data. Please try again.`)
+                showStatusModal(`Error: An unexpected error occurred while deleting book data. Please try again.`, 'Error');
+                console.error("Fetch error:", error);
             }
         })
 
+
+        // dynamic search functionality
+        const searchInput = document.getElementById('searchInput');
+        const dataTable = document.querySelector('.data-table');
+        const tableRows = document.querySelectorAll('.data-table tbody tr');
+        const emptyMessage = document.querySelector('.empty-message'); 
+        const noSearchResultsMessage = document.querySelector('.no-search-results-message'); 
+
+
+        if (emptyMessage) {
+            if (tableRows.length === 0) {
+                emptyMessage.style.display = 'block';
+                if (dataTable) dataTable.style.display = 'none'; 
+            } else {
+                emptyMessage.style.display = 'none';
+            }
+        }
+        if (noSearchResultsMessage) {
+            noSearchResultsMessage.style.display = 'none'; 
+        }
+
+
+        searchInput.addEventListener('keyup', function () {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+
+            // revert to original state, if clear search bar is clear
+            if (searchTerm === '') {
+                tableRows.forEach(row => row.style.display = ''); 
+                if (noSearchResultsMessage) noSearchResultsMessage.style.display = 'none'; 
+                if (emptyMessage) {
+                    if (tableRows.length === 0) {
+                        emptyMessage.style.display = 'block';
+                        if (dataTable) dataTable.style.display = 'none';
+                    } else {
+                        emptyMessage.style.display = 'none';
+                        if (dataTable) dataTable.style.display = ''; 
+                    }
+                } else { 
+                    if (dataTable) dataTable.style.display = ''; 
+                }
+                return;
+            }
+
+            let hasVisibleRows = false;
+            tableRows.forEach(row => {
+                let rowVisible = false;
+                const cells = row.querySelectorAll('td');
+
+                for (let i = 0; i < cells.length; i++) {
+                    if (i === cells.length - 1) {
+                        continue;
+                    }
+                    if (i === 0) {
+                        const imgElement = cells[i].querySelector('img');
+                        const spanElement = cells[i].querySelector('span');
+                        let cellText = '';
+                        if (imgElement && imgElement.alt) {
+                            cellText = imgElement.alt.toLowerCase();
+                        } else if (spanElement) {
+                            cellText = spanElement.textContent.toLowerCase();
+                        }
+                        if (cellText.includes(searchTerm)) {
+                            rowVisible = true;
+                            break;
+                        }
+                        continue;
+                    }
+
+                    const cellText = cells[i].textContent.toLowerCase().trim();
+                    if (cellText.includes(searchTerm)) {
+                        rowVisible = true;
+                        break;
+                    }
+                }
+
+                if (rowVisible) {
+                    row.style.display = '';
+                    hasVisibleRows = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            
+            if (hasVisibleRows) {
+                if (noSearchResultsMessage) noSearchResultsMessage.style.display = 'none'; 
+                if (dataTable) dataTable.style.display = ''; 
+                if (emptyMessage) emptyMessage.style.display = 'none'; 
+            } else {
+                if (noSearchResultsMessage) noSearchResultsMessage.style.display = 'block'; 
+                if (dataTable) dataTable.style.display = 'none';
+                if (emptyMessage) emptyMessage.style.display = 'none'; 
+            }
+        });
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
