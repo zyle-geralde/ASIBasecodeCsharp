@@ -33,7 +33,7 @@ namespace ASI.Basecode.Data.Models
         public string? ISBN10 { get; set; }
         public string? ISBN13 { get; set; }
         public string? Edition { get; set; }
-        public string AdminId { get; set; }
-        public string? UpdatedByAdminId { get; set; }
+        public string CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
     }
 }

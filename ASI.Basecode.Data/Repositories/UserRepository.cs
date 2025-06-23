@@ -24,7 +24,7 @@ namespace ASI.Basecode.Data.Repositories
 
         public bool UserExists(string userId)
         {
-            return this.GetDbSet<User>().Any(x => x.UserId == userId);
+            return this.GetDbSet<User>().Any(x => x.Email == userId);
         }
 
         public async Task AddUser(User user)

@@ -61,7 +61,6 @@ namespace ASI.Basecode.Data.Repositories
             existingReview.Rating = review.Rating;
             existingReview.Comment = review.Comment;
             existingReview.Likes = review.Likes;
-            existingReview.ReviewImage = review.ReviewImage;
             existingReview.UpdatedDate = DateTime.UtcNow;
 
             await _dbContext.SaveChangesAsync();

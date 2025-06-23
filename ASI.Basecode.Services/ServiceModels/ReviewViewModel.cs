@@ -21,9 +21,6 @@ namespace ASI.Basecode.Services.ServiceModels
         [Required(ErrorMessage = "User ID is required.")]
         public string UserId { get; set; }
 
-        [StringLength(255, ErrorMessage = "Review image path cannot exceed 255 characters.")]
-        public string ReviewImage { get; set; }
-
         public DateTime? UploadDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
     }

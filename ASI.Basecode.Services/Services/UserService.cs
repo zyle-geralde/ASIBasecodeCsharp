@@ -30,7 +30,7 @@ namespace ASI.Basecode.Services.Services
         {
             user = new User();
             var passwordKey = PasswordManager.EncryptPassword(password);
-            user = _repository.GetUsers().Where(x => x.UserId == userId &&
+            user = _repository.GetUsers().Where(x => x.Email == userId &&
                                                      x.Password == passwordKey).FirstOrDefault();
 
             return user != null ? LoginResult.Success : LoginResult.Failed;
@@ -39,10 +39,10 @@ namespace ASI.Basecode.Services.Services
         public async Task<User> AddUser(UserViewModel model)
         {
             var user = new User();
-            if (!_repository.UserExists(model.UserId))
+            if (!_repository.UserExists(model.Email))
             {
-                user.UserId = model.UserId;
-                user.Name = model.Name;
+                user.Email = model.Email;
+                user.UserName = model.UserName;
                 user.Password = PasswordManager.EncryptPassword(model.Password);
                 user.CreatedTime = DateTime.Now;
                 user.UpdatedTime = DateTime.Now;
@@ -67,7 +67,7 @@ namespace ASI.Basecode.Services.Services
 
             var vmList = _mapper
                             .Map<List<User>>(users)
-                            .OrderBy(vm => vm.UserId);
+                            .OrderBy(vm => vm.Email);
 
             return vmList;
         }

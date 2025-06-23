@@ -1,39 +1,5 @@
-﻿
-
-
-/*.add-book-container {
-   
-
-    flex: 1;
-    background-color: #f5f5f5;
-    min-height: 100vh;
-    display: flex;
-    padding: 25px;
-}
-*/
-/*.add-book-form-title {
-    font-size: 30px;
-    font-weight: 700;
-    color: #374151;
-    margin-bottom: 16px;
-}*/
-
-/*.add-book-form-subtitle {
-    font-size: 16px;
-    color: #6B7280;
-    margin-bottom: 32px;
-}*/
-
-/*.content-wrapper {
-    flex: 1; 
-    padding: 3rem;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}*/
-
-.add-book-form-section-title {
+﻿.add-book-form-section-title 
+{
     font-size: 20px;
     font-weight: 600;
     color: #647D7F;
@@ -41,38 +7,34 @@
     margin-bottom: 16px;
 }
 
-.add-book-form-grid {
+.add-book-form-grid 
+{
     display: grid;
     grid-template-columns: 1fr;
     gap: 24px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px) 
+{
     .add-book-form-grid {
         grid-template-columns: 1fr 1fr;
     }
 
-    .add-book-form-grid-span-2 {
+    .add-book-form-grid-span-2 
+    {
         grid-column: span 2 / span 2;
     }
 }
 
-.add-book-form-group {
+.add-book-form-group 
+{
     margin-bottom: 0;
 }
 
-
-/*input[type="text"], input[type="date"], input[type="number"] {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-*/
 .add-book-form-input,
 .add-book-form-textarea,
-.add-book-form-select {
+.add-book-form-select 
+{
     display: block;
     width: 100%;
     padding: 8px 12px;
@@ -89,24 +51,28 @@
 
     .add-book-form-input:focus,
     .add-book-form-textarea:focus,
-    .add-book-form-select:focus {
+    .add-book-form-select:focus 
+    {
         outline: none;
         border-color: #4f46e5;
         box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5);
     }
 
-.add-book-form-textarea {
+.add-book-form-textarea 
+{
     min-height: 100px;
     resize: vertical;
 }
 
-.add-book-file-upload-wrapper {
+.add-book-file-upload-wrapper 
+{
     margin-top: 4px;
     display: flex;
     align-items: center;
 }
 
-.add-book-file-input-text {
+.add-book-file-input-text 
+{
     flex-grow: 1;
     padding: 8px 12px;
     border: 1px solid #d1d5db;
@@ -118,7 +84,8 @@
     box-sizing: border-box;
 }
 
-.add-book-browse-button {
+.add-book-browse-button 
+{
     position: absolute;
     right: 30px;
     margin-top: 32px;
@@ -133,11 +100,13 @@
     white-space: nowrap;
 }
 
-    .add-book-browse-button:hover {
+    .add-book-browse-button:hover 
+    {
         background-color: #435c5e;
     }
 
-.add-book-upload-status {
+.add-book-upload-status 
+{
     color: #6b7280;
     font-size: 12px;
     margin-top: 8px;
@@ -146,12 +115,14 @@
     align-items: center;
 }
 
-    .add-book-upload-status.error-message {
+    .add-book-upload-status.error-message 
+    {
         color: red; 
     }
 
 
-.button-container {
+.button-container 
+{
     display: flex;
     justify-content: flex-end; 
     gap: 10px; 
@@ -159,7 +130,8 @@
     margin-bottom: 32px;
 }
 
-.add-book-submit-button {
+.add-book-submit-button 
+{
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -175,12 +147,14 @@
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-    .add-book-submit-button:hover {
+    .add-book-submit-button:hover 
+    {
         background-color: #516a67;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
-.cancel-button {
+.cancel-button 
+{
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -196,16 +170,19 @@
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-    .cancel-button:hover {
+    .cancel-button:hover 
+    {
         background-color: #d0d0d0;
         border-color: #b0b0b0;
     }
 
-.add-book-date-input-wrapper {
+.add-book-date-input-wrapper 
+{
     position: relative;
 }
 
-.add-book-date-input-icon {
+.add-book-date-input-icon 
+{
     position: absolute;
     right: 12px;
     top: 50%;
@@ -216,12 +193,13 @@
     height: 20px;
 }
 
-.add-book-form-input[type="date"] {
+.add-book-form-input[type="date"] 
+{
     cursor: pointer;
 }
 
-    .add-book-form-input[type="date"]::-webkit-calendar-picker-indicator {
-        /* Chrome, Safari, Edge*/
+    .add-book-form-input[type="date"]::-webkit-calendar-picker-indicator 
+    {
         opacity: 1;
         display: block;
         cursor: pointer;
@@ -229,21 +207,4 @@
         color: #647D7F;
         filter: invert(30%) sepia(10%) saturate(1000%) hue-rotate(180deg) brightness(90%) contrast(80%);
     }
-
-    .add-book-form-input[type="date"]::-moz-calendar-picker-indicator {
-        /*Firefox */
-        opacity: 1;
-        display: block;
-        cursor: pointer;
-        font-size: 1.5em;
-        color: #647D7F;
-    }
-
-
-    .add-book-form-input[type="date"]::-ms-reveal {
-        /*EDGE - older version*/
-        display: none;
-    }
-
-
 

@@ -38,7 +38,6 @@ namespace ASI.Basecode.Services.Services
                 Comment = reviewModel.Comment,
                 Likes = reviewModel.Likes,
                 UserId = reviewModel.UserId,
-                ReviewImage = reviewModel.ReviewImage,
                 UploadDate = DateTime.UtcNow,
                 UpdatedDate = DateTime.UtcNow
             };
