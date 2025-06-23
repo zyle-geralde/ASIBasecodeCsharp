@@ -4,6 +4,7 @@ using ASI.Basecode.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASI.Basecode.Data.Migrations
 {
     [DbContext(typeof(AsiBasecodeDBContext))]
-    partial class AsiBasecodeDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250623025014_Replace_UserId_with_Email")]
+    partial class Replace_UserId_with_Email
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,6 +38,9 @@ namespace ASI.Basecode.Data.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
@@ -44,9 +49,6 @@ namespace ASI.Basecode.Data.Migrations
 
                     b.Property<DateTime>("UpdatedTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -58,6 +60,9 @@ namespace ASI.Basecode.Data.Migrations
                     b.Property<string>("AuthorId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("AdminId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AuthorDescription")
                         .HasColumnType("nvarchar(max)");
 
@@ -67,10 +72,7 @@ namespace ASI.Basecode.Data.Migrations
                     b.Property<string>("AuthorName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
+                    b.Property<string>("UpdatedByAdminId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -89,6 +91,9 @@ namespace ASI.Basecode.Data.Migrations
                     b.Property<string>("BookId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("AdminId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Author")
                         .HasColumnType("nvarchar(max)");
 
@@ -99,9 +104,6 @@ namespace ASI.Basecode.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CoverImage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
@@ -152,7 +154,7 @@ namespace ASI.Basecode.Data.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UpdatedBy")
+                    b.Property<string>("UpdatedByAdminId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -166,12 +168,28 @@ namespace ASI.Basecode.Data.Migrations
                     b.ToTable("Books");
                 });
 
+            modelBuilder.Entity("ASI.Basecode.Data.Models.BookAuthorBridge", b =>
+                {
+                    b.Property<string>("BookAuthorBridgeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BookId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("BookAuthorBridgeId");
+
+                    b.ToTable("BookAuthorBridges");
+                });
+
             modelBuilder.Entity("ASI.Basecode.Data.Models.BookGenre", b =>
                 {
                     b.Property<string>("BookGenreId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CreatedBy")
+                    b.Property<string>("AdminId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GenreDescription")
@@ -183,7 +201,7 @@ namespace ASI.Basecode.Data.Migrations
                     b.Property<string>("GenreName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UpdatedBy")
+                    b.Property<string>("UpdatedByAdminId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -197,18 +215,34 @@ namespace ASI.Basecode.Data.Migrations
                     b.ToTable("BookGenres");
                 });
 
+            modelBuilder.Entity("ASI.Basecode.Data.Models.BookGenreBridge", b =>
+                {
+                    b.Property<string>("BookGenreBridgeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BookGenreId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BookId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("BookGenreBridgeId");
+
+                    b.ToTable("BookGenreBridges");
+                });
+
             modelBuilder.Entity("ASI.Basecode.Data.Models.Language", b =>
                 {
                     b.Property<string>("LanguageId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CreatedBy")
+                    b.Property<string>("AdminId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LanguageName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UpdatedBy")
+                    b.Property<string>("UpdatedByAdminId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -260,6 +294,40 @@ namespace ASI.Basecode.Data.Migrations
                     b.HasKey("ProfileID");
 
                     b.ToTable("PersonProfiles");
+                });
+
+            modelBuilder.Entity("ASI.Basecode.Data.Models.Reply", b =>
+                {
+                    b.Property<string>("ReplyId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AdminId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Likes")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReplyContent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReviewId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReviewImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UploadDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ReplyId");
+
+                    b.ToTable("Replies");
                 });
 
             modelBuilder.Entity("ASI.Basecode.Data.Models.Review", b =>
@@ -322,6 +390,12 @@ namespace ASI.Basecode.Data.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -339,12 +413,6 @@ namespace ASI.Basecode.Data.Migrations
 
                     b.Property<DateTime>("UpdatedTime")
                         .HasColumnType("datetime");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
 
                     b.HasKey("Id");
 

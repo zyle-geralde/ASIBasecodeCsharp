@@ -59,7 +59,7 @@ namespace ASI.Basecode.Services.Services
                 ISBN10 = request.ISBN10,
                 ISBN13 = request.ISBN13,
                 Edition = request.Edition,
-                AdminId = "admin1"
+                CreatedBy = "admin1"
             };
 
 
@@ -94,6 +94,7 @@ namespace ASI.Basecode.Services.Services
                 SeriesDescription = requestBook.SeriesDescription,
                 SeriesOrder = requestBook.SeriesOrder,
                 GenreList= requestBook.GenreList,
+                AverageRating =requestBook.AverageRating,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImageUrl = requestBook.CoverImage,
@@ -111,6 +112,8 @@ namespace ASI.Basecode.Services.Services
                 ISBN10 = requestBook.ISBN10,
                 ISBN13 = requestBook.ISBN13,
                 Edition = requestBook.Edition,
+                CreatedBy = "admin1",
+                UpdatedBy = "Logged Admin"
                 AverageRating = requestBook.AverageRating,
                 AdminId = "admin1",
                 UpdatedByAdminId = "Logged Admin"
@@ -150,8 +153,8 @@ namespace ASI.Basecode.Services.Services
                 ISBN10 = request.ISBN10,
                 ISBN13 = request.ISBN13,
                 Edition = request.Edition,
-                AdminId = "admin1",
-                UpdatedByAdminId = "Logged Admin"
+                CreatedBy = "admin1",
+                UpdatedBy = "Logged Admin"
             };
 
 

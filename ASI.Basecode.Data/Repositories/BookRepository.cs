@@ -58,7 +58,7 @@ namespace ASI.Basecode.Data.Repositories
             existingBook.CoverImage = book.CoverImage;
             existingBook.BookFile = book.BookFile;
             existingBook.GenreList = book.GenreList;
-            existingBook.UpdatedByAdminId = book.UpdatedByAdminId;//change to Updated
+            existingBook.UpdatedBy = book.UpdatedBy;//change to Updated
 
 
             await _dbContext.SaveChangesAsync();
