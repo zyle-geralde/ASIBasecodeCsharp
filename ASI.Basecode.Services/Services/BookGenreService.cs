@@ -50,8 +50,8 @@ namespace ASI.Basecode.Services.Services
                 GenreName = book_genre.GenreName,
                 GenreDescription = book_genre.GenreDescription,
                 GenreImageUrl = book_genre.GenreImageUrl,
-                AdminId = "admin1",
-                UpdatedByAdminId = "admin1",
+                CreatedBy = "admin1",
+                UpdatedBy = "admin1",
                 UpdatedDate = DateTime.Now,
                 UploadDate = DateTime.Now,
             };
@@ -83,10 +83,10 @@ namespace ASI.Basecode.Services.Services
                     GenreName = book_genre_element.GenreName,
                     GenreDescription = book_genre_element.GenreDescription,
                     GenreImageUrl = book_genre_element.GenreImageUrl,
-                    AdminId = book_genre_element.AdminId,
+                    CreatedBy = book_genre_element.CreatedBy,
                     UpdatedDate = book_genre_element.UpdatedDate,
                     UploadDate = book_genre_element.UploadDate,
-                    UpdatedByAdminId = book_genre_element.UpdatedByAdminId
+                    UpdatedBy = book_genre_element.UpdatedBy
                 }).ToList();
 
 
@@ -195,8 +195,8 @@ namespace ASI.Basecode.Services.Services
                     ISBN10 = bookEntity.ISBN10,
                     ISBN13 = bookEntity.ISBN13,
                     Edition = bookEntity.Edition,
-                    AdminId = "admin1",
-                    UpdatedByAdminId = "Logged Admin"
+                    CreatedBy = "admin1",
+                    UpdatedBy = "Logged Admin"
                 }).ToList();
 
                 return book_view_models;
@@ -227,8 +227,8 @@ namespace ASI.Basecode.Services.Services
                     GenreDescription = retreived_genre.GenreDescription,
                     GenreImageUrl = retreived_genre.GenreImageUrl,
                     UpdatedDate = retreived_genre.UpdatedDate,
-                    UpdatedByAdminId = retreived_genre.UpdatedByAdminId,
-                    AdminId = retreived_genre.AdminId
+                    UpdatedBy = retreived_genre.UpdatedBy,
+                    CreatedBy = retreived_genre.CreatedBy
                 };
 
                 return mapped_genre;

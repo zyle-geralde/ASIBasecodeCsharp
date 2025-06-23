@@ -169,14 +169,14 @@
 
             <div class="detail-group">
                 <span class="detail-label">Admin ID (Uploader):</span>
-                <span class="detail-value">@Html.DisplayFor(model => model.AdminId)</span>
+                <span class="detail-value">@Html.DisplayFor(model => model.CreatedBy)</span>
             </div>
 
-            @if (!string.IsNullOrWhiteSpace(Model.UpdatedByAdminId))
+            @if (!string.IsNullOrWhiteSpace(Model.UpdatedBy))
             {
                 <div class="detail-group">
                     <span class="detail-label">Updated By Admin ID:</span>
-                    <span class="detail-value">@Html.DisplayFor(model => model.UpdatedByAdminId)</span>
+                    <span class="detail-value">@Html.DisplayFor(model => model.UpdatedBy)</span>
                 </div>
             }
 
