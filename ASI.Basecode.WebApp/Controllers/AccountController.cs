@@ -26,6 +26,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly TokenProviderOptionsFactory _tokenProviderOptionsFactory;
         private readonly IConfiguration _appConfiguration;
         private readonly IUserService _userService;
+        private readonly IAdminService _adminService;
         private readonly IPersonProfileService _personProfileService;
         private readonly IMapper _mapper;
 
@@ -48,6 +49,7 @@ namespace ASI.Basecode.WebApp.Controllers
                             IConfiguration configuration,
                             IMapper mapper,
                             IUserService userService,
+                            IAdminService adminService,
                             IPersonProfileService profileService,
                             TokenValidationParametersFactory tokenValidationParametersFactory,
                             TokenProviderOptionsFactory tokenProviderOptionsFactory) : base(httpContextAccessor, loggerFactory, configuration, mapper)
@@ -58,6 +60,7 @@ namespace ASI.Basecode.WebApp.Controllers
             this._tokenValidationParametersFactory = tokenValidationParametersFactory;
             this._appConfiguration = configuration;
             this._userService = userService;
+            this._adminService = adminService;
             this._personProfileService = profileService;
             this._mapper = mapper;
 
@@ -178,17 +181,17 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public IActionResult RegisterAdmin()
         {
-            return View("~/Views/Account/Register.cshtml");
+            return View("~/Views/Account/RegisterAdmin.cshtml");
         }
 
         [HttpPost]
         [Route("Account/RegisterAdmin")]
         [AllowAnonymous]
-        public async Task<IActionResult> RegisterAdmin(UserViewModel model)
+        public async Task<IActionResult> RegisterAdmin(AdminViewModel model)
         {
             try
             {
-                var user = await _userService.AddUser(model);
+                var user = await _adminService.AddAdmin(model);
                 var profile = new PersonProfile
                 {
                     ProfileID = user.Email,

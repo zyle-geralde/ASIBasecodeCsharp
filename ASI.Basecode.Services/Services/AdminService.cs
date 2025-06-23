@@ -24,7 +24,7 @@ namespace ASI.Basecode.Services.Services
             _repository = repository;
         }
 
-        public async Task<Admin> AddUser(AdminViewModel model)
+        public async Task<Admin> AddAdmin(AdminViewModel model)
         {
             var user = new Admin();
             if (!_repository.AdminExists(model.Email))

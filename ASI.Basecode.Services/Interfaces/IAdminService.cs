@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Services.ServiceModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace ASI.Basecode.Services.Interfaces
 {
-    interface IAdminInterface
+    public interface IAdminService
     {
+        Task<Admin> AddAdmin(AdminViewModel model);
     }
 }
