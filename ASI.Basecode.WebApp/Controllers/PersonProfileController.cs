@@ -53,7 +53,6 @@ namespace ASI.Basecode.WebApp.Controllers
                         Rating = r.Rating,
                         Comment = r.Comment,
                         Likes = r.Likes,
-                        ReviewImage = r.ReviewImage,
                         UploadDate = r.UploadDate,
                         UpdatedDate = r.UpdatedDate
                     })
