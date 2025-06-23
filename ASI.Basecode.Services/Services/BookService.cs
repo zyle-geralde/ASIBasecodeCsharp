@@ -114,6 +114,9 @@ namespace ASI.Basecode.Services.Services
                 Edition = requestBook.Edition,
                 CreatedBy = "admin1",
                 UpdatedBy = "Logged Admin"
+                AverageRating = requestBook.AverageRating,
+                AdminId = "admin1",
+                UpdatedByAdminId = "Logged Admin"
             };
             //return await _bookRepository.GetBookById(bookId);
             return book;

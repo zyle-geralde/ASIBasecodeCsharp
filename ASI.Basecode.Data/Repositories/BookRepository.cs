@@ -1,12 +1,13 @@
-﻿using System;
+﻿using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
-using ASI.Basecode.Data.Interfaces;
-using ASI.Basecode.Data.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace ASI.Basecode.Data.Repositories
 {
@@ -82,6 +83,27 @@ namespace ASI.Basecode.Data.Repositories
                 throw;
             }
         }
+
+        public async Task calculateAverageRating(string bookId)
+        {
+            var reviews = _dbContext.Reviews
+                .Where(r => r.BookId == bookId);
+
+            double avg;
+            if (await reviews.AnyAsync())
+                avg = await reviews.AverageAsync(r => r.Rating);
+            else
+                avg = 0;
+
+            var book = await _dbContext.Books.FindAsync(bookId);
+            if (book != null)
+            {
+                book.AverageRating = (float)avg;
+                await _dbContext.SaveChangesAsync();
+            }
+
+        }
+
 
     }
 }

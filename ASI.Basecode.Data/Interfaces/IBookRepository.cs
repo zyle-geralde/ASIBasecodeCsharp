@@ -19,5 +19,6 @@ namespace ASI.Basecode.Data.Interfaces
         Task DeleteBook(string bookId);
 
         Task<List<BookGenre>> GetAllGenres();
+        Task calculateAverageRating(string bookId);
     }
 }

@@ -16,11 +16,14 @@ namespace ASI.Basecode.Services.Services
     public class ReviewService : IReviewService
     {
         private readonly IReviewRepository _reviewRepository;
+        private readonly IBookRepository _bookRepository;
+
         private readonly IMapper _mapper;
 
-        public ReviewService(IReviewRepository reviewRepository, IMapper mapper)
+        public ReviewService(IReviewRepository reviewRepository, IBookRepository bookRepository, IMapper mapper)
         {
             _reviewRepository = reviewRepository;
+            _bookRepository = bookRepository;
             _mapper = mapper;
 
         }
@@ -45,6 +48,7 @@ namespace ASI.Basecode.Services.Services
             };
 
             await _reviewRepository.AddReview(review);
+            await _bookRepository.calculateAverageRating(review.BookId);
         }
         
         public async Task<List<Review>> GetAllReviews()
@@ -76,6 +80,7 @@ namespace ASI.Basecode.Services.Services
             }
             
             await _reviewRepository.DeleteReview(reviewId);
+            await _bookRepository.calculateAverageRating(existingReview.BookId);
             return true;
 
 
@@ -99,6 +104,8 @@ namespace ASI.Basecode.Services.Services
             existing.UpdatedDate = DateTime.UtcNow;
 
             await _reviewRepository.UpdateReview(existing);
+            await _bookRepository.calculateAverageRating(reviewModel.BookId);
+
             return true;
         }
 
