@@ -9,10 +9,12 @@ namespace ASI.Basecode.Data.Interfaces
 {
     public interface IUserRepository
     {
+        Task<List<User>> GetUsersQueried(string searchTerm, string sortOrder, int pageIndex, int pageSize);
         IQueryable<User> GetUsers();
         bool UserExists(string userId);
         Task AddUser(User user);
         Task<User> GetUserById(int Id);
         Task DeleteUser(int Id);
+
     }
 }

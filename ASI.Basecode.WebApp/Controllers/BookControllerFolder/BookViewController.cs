@@ -56,7 +56,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [HttpGet]
         [Route("Book/ListBook")]
         [AllowAnonymous]
-        public async Task<IActionResult> ListBook(string searchString,
+        public async Task<IActionResult> ListBook(string searchTerm,
             string sortOrder,
             string genreFilter,
             int? page)
@@ -64,7 +64,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             const int PageSize = 10;
             int pageIndex = page.GetValueOrDefault(1);
 
-            ViewData["CurrentSearch"] = searchString;
+            ViewData["CurrentSearch"] = searchTerm;
             ViewData["CurrentSort"] = sortOrder;
             ViewData["CurrentGenre"] = genreFilter;
             ViewData["TitleSortParm"] = sortOrder == "title" ? "title_desc" : "title";
@@ -72,7 +72,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             ViewData["DateSortParm"] = sortOrder == "date" ? "date_desc" : "date";
 
             var books = await _bookService.GetBooks(
-                searchString, sortOrder, genreFilter, pageIndex, PageSize );
+                searchTerm, sortOrder, genreFilter, pageIndex, PageSize );
 
             //List<Book> books = await _bookService.GetAllBooks();
             return View("~/Views/Books/ListBook.cshtml", books);

@@ -22,6 +22,23 @@ namespace ASI.Basecode.Data.Repositories
             return this.GetDbSet<User>();
         }
 
+        public async Task<List<User>> GetUsersQueried(string searchTerm, string sortOrder, int pageIndex, int pageSize)
+        {
+            IQueryable<User> query = this.GetDbSet<User>().AsNoTracking();
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var term = searchTerm.Trim();
+                query = query.Where(b =>
+                    (b.Id.ToString() != null && b.Id.ToString().Contains(term))|| (b.UserName != null && b.UserName.Contains(term)) || (b.Email != null && b.Email.Contains(term)));
+            }
+
+            query = query
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize);
+
+            return await query.ToListAsync();
+        }
+
         public bool UserExists(string userId)
         {
             return this.GetDbSet<User>().Any(x => x.Email == userId);
