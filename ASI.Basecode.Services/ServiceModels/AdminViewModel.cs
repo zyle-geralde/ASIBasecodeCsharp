@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ASI.Basecode.Services.ServiceModels
 {
-    public class UserViewModel
+    public class AdminViewModel
     {
         [Required(ErrorMessage = "Email is required.")]
         public string Email { get; set; }
