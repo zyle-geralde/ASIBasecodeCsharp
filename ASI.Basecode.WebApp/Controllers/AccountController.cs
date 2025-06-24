@@ -125,6 +125,12 @@ namespace ASI.Basecode.WebApp.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public IActionResult AdminDashboard()
+        {
+            return View();
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register(UserViewModel model)
