@@ -36,6 +36,12 @@ namespace ASI.Basecode.Services.Services
             return user != null ? LoginResult.Success : LoginResult.Failed;
         }
 
+        public async Task<List<User>> GetUsersQueried(string searchTerm, string sortOrder, int pageIndex, int pageSize)
+        {
+            var users = await _repository.GetUsersQueried(searchTerm, sortOrder, pageIndex, pageSize);
+            return users.ToList();
+            
+        }
         public async Task<User> AddUser(UserViewModel model)
         {
             var user = new User();

@@ -74,11 +74,27 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
-        public async Task<List<Book>> GetAllBooks()
+        public async Task<List<BookViewModel>> GetBooks(
+            string searchTerm,
+            string sortOrder,
+            string genreFilter,
+            int pageIndex,
+            int pageSize)
         {
-            return await _bookRepository.GetAllBooks();
+            var books = await _bookRepository.GetBooks(searchTerm, sortOrder, genreFilter, pageIndex, pageSize);
+            return books.Select(b => new BookViewModel
+            {
+                BookId = b.BookId,
+                Title = b.Title,
+                Subtitle = b.Subtitle,
+                GenreList = b.GenreList,
+                PublicationDate = b.PublicationDate,
+                Author = b.Author,
+                AverageRating = b.AverageRating,
+                CoverImage =b.CoverImage,
+                BookFile=b.BookFile
+            }).ToList();
         }
-
         public async Task<BookViewModel?> GetBookById(string bookId)
         {
             Book requestBook= await _bookRepository.GetBookById(bookId);
@@ -113,10 +129,7 @@ namespace ASI.Basecode.Services.Services
                 ISBN13 = requestBook.ISBN13,
                 Edition = requestBook.Edition,
                 CreatedBy = "admin1",
-                UpdatedBy = "Logged Admin"
-                AverageRating = requestBook.AverageRating,
-                AdminId = "admin1",
-                UpdatedByAdminId = "Logged Admin"
+                UpdatedBy = "Logged Admin",
             };
             //return await _bookRepository.GetBookById(bookId);
             return book;
