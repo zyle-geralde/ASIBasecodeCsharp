@@ -17,7 +17,9 @@
     var currentFromDate  = (string?)ViewData["CurrentFromDate"];
     var currentToDate    = (string?)ViewData["CurrentToDate"];
     var currentGenres = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>();
-    var currentSort      = (string?)ViewData["CurrentSort"] ?? "title";
+    var currentSort = (string?)ViewData["CurrentSort"];
+    var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
+
 }
 
 @section styles {
@@ -52,6 +54,25 @@
              placeholder="Title, subtitle, author…"
              class="form-control" />
     </div>
+
+      <div class="col-md-3">
+      <label class="form-label">Sort by</label>
+      <select name="sortOrder" class="form-select">
+        <option value="title"             selected="@(currentSort == "title")">Title</option>
+        <option value="publicationdate"   selected="@(currentSort == "publicationdate")">Publication Date</option>
+        <option value="rating"            selected="@(currentSort == "rating")">Rating</option>
+      </select>
+    </div>
+
+     <div class="col-md-2">
+      <label class="form-label">Direction</label>
+      <select name="sortDescending" class="form-select">
+        <option value="false" selected="@(!currentSortDescending)">Ascending</option>
+        <option value="true"  selected="@( currentSortDescending)">Descending</option>
+      </select>
+    </div>
+
+
 
     <div class="col-md-3">
       <label class="form-label">Author</label>
@@ -158,51 +179,15 @@
             <thead>
                 <tr>
                     <th>Cover</th>
-                    <th>
-                          <a asp-action="ListBook" asp-route-searchTerm="@ViewData["CurrentSearch"]"  asp-route-author="@currentAuthor"
-                             asp-route-minRating="@currentRating"
-                             asp-route-publishedFrom="@currentFromDate"
-                             asp-route-publishedTo="@currentToDate"
-                             asp-route-genreFilter="@currentGenres">
-                             Title</a>
-                        </th>
-                    <th>
-                        <a asp-action="ListBook" asp-route-searchTerm="@ViewData["CurrentSearch"]"  asp-route-author="@currentAuthor"
-                             asp-route-minRating="@currentRating"
-                             asp-route-publishedFrom="@currentFromDate"
-                             asp-route-publishedTo="@currentToDate"
-                             asp-route-genreFilter="@currentGenres">Subtitle</a>
-                    </th>
-  
-                                        <th>
-                        <a asp-action="ListBook" asp-route-searchTerm="@ViewData["CurrentSearch"]"  asp-route-author="@currentAuthor"
-                             asp-route-minRating="@currentRating"
-                             asp-route-publishedFrom="@currentFromDate"
-                             asp-route-publishedTo="@currentToDate"
-                             asp-route-genreFilter="@currentGenres">Author</a>
-                    </th>
-
-
-                    <th>Genre</th>
-                    <th>
-                        <a asp-action="ListBook" asp-route-searchTerm="@ViewData["CurrentSearch"]"  asp-route-author="@currentAuthor"
-                             asp-route-minRating="@currentRating"
-                             asp-route-publishedFrom="@currentFromDate"
-                             asp-route-publishedTo="@currentToDate"
-                             asp-route-genreFilter="@currentGenres">Publication Date</a>
-                    </th>                    <th>Language</th>
-                    @* <th>Pages</th> *@
-                    <th>
-                        <a asp-action="ListBook" asp-route-searchTerm="@ViewData["CurrentSearch"]"  asp-route-author="@currentAuthor"
-                             asp-route-minRating="@currentRating"
-                             asp-route-publishedFrom="@currentFromDate"
-                             asp-route-publishedTo="@currentToDate"
-                             asp-route-genreFilter="@currentGenres">Rating</a>
-                    </th>                    
-                    @* <th>Likes</th> *@
-                    <th>Series</th>
-                    @* <th>Description</th> *@
-                    <th>Actions</th>
+<th>Title</th>
+      <th>Subtitle</th>
+      <th>Author</th>
+      <th>Genre</th>
+      <th>Publication Date</th>
+      <th>Language</th>
+      <th>Rating</th>
+      <th>Series</th>
+      <th>Actions</th>                         
                 </tr>
             </thead>
             <tbody>

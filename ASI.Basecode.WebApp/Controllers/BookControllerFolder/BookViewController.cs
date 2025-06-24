@@ -68,7 +68,9 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             DateTime? publishedTo,
             string[]? genreFilter,
             string? sortOrder,
-            int? page)
+            bool sortDescending = false,
+            int? page = 1
+            )
         {
             const int PageSize = 10;
             int pageIndex = page.GetValueOrDefault(1);
@@ -81,9 +83,12 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 PublishedFrom = publishedFrom,
                 PublishedTo = publishedTo,
                 GenreNames = genreFilter?.ToList(),
-                SortOrder = sortOrder ?? "title",
+                SortDescending = sortDescending,
                 PageIndex = page.GetValueOrDefault(1),
-                PageSize = PageSize
+                SortOrder = sortOrder ?? "title",
+                PageSize = PageSize,
+
+
             };
 
 
@@ -94,6 +99,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             ViewData["CurrentToDate"] = publishedTo?.ToString("yyyy-MM-dd");
             ViewData["CurrentGenres"] = genreFilter ?? Array.Empty<string>();
             ViewData["CurrentSort"] = queryParams.SortOrder;
+            ViewData["CurrentSortDescending"] = queryParams.SortDescending;
 
             var allGenres = await _bookGenreService.GetAllGenreList();
             ViewData["AllGenres"] = allGenres;

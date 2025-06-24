@@ -44,11 +44,8 @@ namespace ASI.Basecode.Data.Repositories
             if (queryParams.Rating.HasValue)
                 query = query.Where(b => b.AverageRating >= queryParams.Rating.Value);
 
-            if (queryParams.PublishedFrom.HasValue)
-                query = query.Where(b => b.PublicationDate >= queryParams.PublishedFrom.Value);
-
-            if (queryParams.PublishedTo.HasValue)
-                query = query.Where(b => b.PublicationDate <= queryParams.PublishedTo.Value);
+            if (queryParams.PublishedFrom.HasValue && queryParams.PublishedTo.HasValue)
+                query = query.Where(b => b.PublicationDate >= queryParams.PublishedFrom.Value && b.PublicationDate <= queryParams.PublishedTo.Value);
 
             if (queryParams.GenreNames != null && queryParams.GenreNames.Any())
             {
@@ -58,6 +55,35 @@ namespace ASI.Basecode.Data.Repositories
                     query = query.Where(b =>
                         b.GenreList != null
                         && b.GenreList.Contains(gn));
+                }
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.SortOrder))
+            {
+                bool desc = queryParams.SortDescending;
+                switch (queryParams.SortOrder.Trim().ToLower())
+                {
+                    case "title":
+                        query = desc
+                            ? query.OrderByDescending(b => b.Title)
+                            : query.OrderBy(b => b.Title);
+                        break;
+
+                    case "publicationdate":
+                        query = desc
+                            ? query.OrderByDescending(b => b.PublicationDate)
+                            : query.OrderBy(b => b.PublicationDate);
+                        break;
+
+                    case "rating":
+                        query = desc
+                            ? query.OrderByDescending(b => b.AverageRating)
+                            : query.OrderBy(b => b.AverageRating);
+                        break;
+
+                    default:
+                        query = query.OrderBy(b => b.Title);
+                        break;
                 }
             }
 
