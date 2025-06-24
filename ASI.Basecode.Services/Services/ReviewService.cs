@@ -50,7 +50,7 @@ namespace ASI.Basecode.Services.Services
             await _reviewRepository.AddReview(review);
             await _bookRepository.calculateAverageRating(review.BookId);
         }
-        
+
         public async Task<List<Review>> GetAllReviews()
         {
             return await _reviewRepository.GetAllReviews();
@@ -78,7 +78,7 @@ namespace ASI.Basecode.Services.Services
             {
                 return false;
             }
-            
+
             await _reviewRepository.DeleteReview(reviewId);
             await _bookRepository.calculateAverageRating(existingReview.BookId);
             return true;

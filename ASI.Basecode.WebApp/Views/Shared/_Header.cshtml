@@ -2,24 +2,50 @@
 @inject IHttpContextAccessor HttpContextAccessor
 
 
-<style>
-    header {
-        position: fixed; 
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 60px; 
-        background-color: #ffffff; 
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        z-index: 100; 
-        display: flex;
-        justify-content: space-between; 
-        align-items: center; 
-        padding: 0 20px; 
-        box-sizing: border-box;
-    }
-</style>
 <header class="@((ViewBag.LoginView == true) ? "hide-navbar" : "")">
+    <div class="logosec">
+        <img src="~/img/bb_logo_cream.png" alt="Book Icon" class="book-icon hover-pointer"
+             onclick="window.location.href = '@Url.Action("Index", "Home")';" />
+    </div>
+
+    <div class="main-header-search-area">
+        <div class="search-container">
+            <i class="fas fa-search main-search-icon"></i>
+            <input type="text" placeholder="Search for books, authors, etc..." class="search-input" />
+        </div>
+    </div>
+
+    <div class="logosec">
+        <div class="mr-20 hover-pointer profile-dropdown-trigger">
+
+            <div class="dp">
+                <img src="~/img/profile-logo.png"
+                     class="dpicn"
+                     alt="dp">
+            </div>
+            <span class="username-display">@HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+
+
+            <div class="dropdown">
+                <ul>
+                    <li>
+                        <i class="fa-solid fa-user"></i> <a href="#">Profile</a>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-star"></i> <a href="#">Reviews</a>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <a asp-action="SignOutUser" asp-controller="Account">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+@* <header class="@((ViewBag.LoginView == true) ? "hide-navbar" : "")">
     <div class="logosec hover-pointer">
         <img src="~/img/asi-logo-invert.svg"
              style="width: 185px;" alt="logo"
@@ -49,4 +75,4 @@
             </div>
         </div>
     </div>
-</header>
+</header> *@

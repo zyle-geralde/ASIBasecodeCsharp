@@ -1,15 +1,15 @@
 ﻿using ASI.Basecode.Data.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Linq;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 {
@@ -88,7 +88,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         }
 
         [HttpGet]
-        [Route("Book/BookDetails/{bookId}")]
+        [Route("Book/BookDetails/{bookId}", Name="BookDetails")]
         [AllowAnonymous]
         public async Task<IActionResult> GetBook(string bookId)
         {

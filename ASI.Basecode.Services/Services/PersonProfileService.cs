@@ -34,14 +34,14 @@ namespace ASI.Basecode.Services.Services
 
             await _repository.AddPersonProfile(personProfile);
         }
-        public async Task<bool> EditPersonProfile(PersonProfile personProfile)
+        public async Task<bool> EditPersonProfile(PersonProfileViewModel personProfile)
         {
             if(personProfile == null)
             {
                 throw new ArgumentNullException(nameof(personProfile), "Person profile cannot be null");
             }
 
-            var existingProfile = await _repository.GetPersonProfile(personProfile.ProfileID);
+            var existingProfile = await _repository.GetPersonProfile(personProfile.UserId);
             if(existingProfile == null)
             {
                 return false;
