@@ -21,5 +21,9 @@ namespace ASI.Basecode.Services.ServiceModels
         [Required(ErrorMessage = "Confirmation Password is required.")]
         [Compare("Password", ErrorMessage = "Password and Confirmation Password must match.")]
         public string ConfirmPassword { get; set; }
+
+        public string? OtpCode { get; set; }
+        public DateTime? OtpExpirationDate { get; set; }
+        public bool IsEmailVerified { get; set; } = false;
     }
 }

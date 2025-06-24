@@ -1,0 +1,91 @@
+﻿@model OtpViewModel
+@using static ASI.Basecode.Resources.Views.Screen
+@using ASI.Basecode.Services.ServiceModels;
+@section styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/login.css" />
+}
+@{
+    ViewBag.LoginView = true;
+    ViewData["Title"] = "OTP view";
+    var modelStateErrors = ViewData.ModelState.Values.SelectMany(v => v.Errors);
+}
+
+
+<div>
+    @Html.AntiForgeryToken()
+</div>
+
+@if (modelStateErrors.Any())
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @foreach (var error in modelStateErrors)
+        {
+            <p>@error.ErrorMessage</p>
+        }
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+                            <form method="post" action="/Account/VerifyOtp" id="loginForm">
+                                <div>Enter OTP</div>
+                                <div class="form-outline mb-4">
+        <input type="text" id="form2Example11" class="form-control"
+               asp-for="OtpCode" placeholder="Enter userid" />
+        <span asp-validation-for="OtpCode" class="text-danger"></span>
+                                </div>
+    <div class="form-outline mb-4">
+        <input type="hidden"id="form2Example11" class="form-control"
+               asp-for="Email" value = "@Model.Email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+                                <button type = "submit">Submit</button>
+                            </form>
+
+<button id="resendOtpLink">Reset OTP link</button>
+
+
+
+@section Scripts {
+    <script>
+        // Check for error message and display Toastr notification
+        var errorMessage = '@TempData["ErrorMessage"]';
+        if (errorMessage) {
+            toastr.error(errorMessage);
+        }
+
+        var successMessage = '@TempData["SuccessMessage"]';
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
+
+        document.getElementById('resendOtpLink').addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent the default link behavior
+
+            var emailInput = document.querySelector('input[name="Email"]');
+            var email = emailInput ? emailInput.value : '';
+
+            if (!email) {
+                alert('Error: Email address not found. Cannot resend OTP.');
+                return;
+            }
+
+            //Create a hidden form
+            var form = document.createElement('form');
+            form.method = 'post';
+            form.action = '@Url.Action("ResendOtp", "Account")'; //Matches your route
+
+            var hiddenEmailInput = document.createElement('input');
+            hiddenEmailInput.type = 'hidden';
+            hiddenEmailInput.name = 'email';//should match the parameter in the controller
+            hiddenEmailInput.value = email;
+            form.appendChild(hiddenEmailInput);
+
+            // Append the form to the body and submit it
+            document.body.appendChild(form);
+            form.submit();
+        });
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+}
