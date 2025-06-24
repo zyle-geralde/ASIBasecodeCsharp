@@ -174,50 +174,9 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
 
-
-        //Admin Register
-        [HttpGet]
-        [Route("Account/RegisterAdmin")]
         [AllowAnonymous]
-        public IActionResult RegisterAdmin()
+        public IActionResult AdminDashboard()
         {
-            return View("~/Views/Account/RegisterAdmin.cshtml");
-        }
-
-        [HttpPost]
-        [Route("Account/RegisterAdmin")]
-        [AllowAnonymous]
-        public async Task<IActionResult> RegisterAdmin(AdminViewModel model)
-        {
-            try
-            {
-                var user = await _adminService.AddAdmin(model);
-                var profile = new PersonProfile
-                {
-                    ProfileID = user.Email,
-                    FirstName = model.UserName,        // or model.FirstName if separate
-                    LastName = null,
-                    MiddleName = null,
-                    Suffix = null,
-                    Gender = null,
-                    BirthDate = null,
-                    Location = null,
-                    Role = "Admin",
-                    AboutMe = string.Empty
-                };
-                await _personProfileService.AddPersonProfile(profile);
-
-                return RedirectToAction("Login", "Account");//Change this
-            }
-            catch (InvalidDataException ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = ex;
-                //TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
-            }
             return View();
         }
     }

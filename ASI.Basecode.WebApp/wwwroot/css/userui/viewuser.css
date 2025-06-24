@@ -435,3 +435,55 @@
     align-items: center;
     justify-content: center;
 }
+
+/* wwwroot/css/userui/viewuser.css or a global CSS file */
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); opacity: 1; }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+.fa-bounce {
+    animation: bounceIn 0.6s;
+}
+
+.edit-avatar-btn {
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgb(134, 168, 170, 0.9);
+    border: 3px solid #fff;
+    color: #fff;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: background 0.2s;
+    z-index: 2;
+    padding: 0;
+}
+
+    .edit-avatar-btn:hover, .edit-avatar-btn:focus {
+        background: rgb(62, 79, 78, 0.9);
+        color: #fff;
+    }
+
+.edit-avatar-btn i {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.edit-avatar-btn i.fas.fa-pen {
+    font-size: 14px;      /* Make the icon smaller */
+    width: 14px;          /* Ensure the icon is not stretched */
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}

@@ -5,6 +5,7 @@ using ASI.Basecode.WebApp.Extensions.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 var appBuilder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -26,6 +27,7 @@ appBuilder.Logging
 
 var configurer = new StartupConfigurer(appBuilder.Configuration);
 configurer.ConfigureServices(appBuilder.Services);
+appBuilder.Services.AddHttpContextAccessor();
 
 var app = appBuilder.Build();
 

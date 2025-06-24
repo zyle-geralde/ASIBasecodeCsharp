@@ -34,9 +34,29 @@
             </a>
         </p>
     </div>
+
+    <form asp-action="ListBook" method="get" class="mb-3">
+  <input type="text"
+         name="searchTerm"
+         value="@ViewData["CurrentSearch"]"
+         placeholder="Search by title, subtitle or author"
+         class="form-control d-inline-block w-50" />
+
+  @* <select name="genreFilter"
+          class="form-select d-inline-block mx-2"
+          onchange="this.form.submit()">
+    <option value="">— All Genres —</option>
+    @foreach(var g in await Html.GetGenresAsync()) {
+      <option value="@g" @(g == (string)ViewData["CurrentGenre"] ? "selected" : "")>@g</option>
+    }
+  </select> *@
+
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
     
 
-    <div class="search-filter-container">
+    @* <div class="search-filter-container">
         <div style="position: relative; flex-grow: 1;">
             <i class="fas fa-search search-icon"></i>
             <input type="text" id="searchInput" class="form-control search-field" placeholder="Search" style="padding-left: 33px;" /> 
@@ -51,7 +71,7 @@
         </div>
     </div>
 
-    <p class="no-search-results-message" style="display: none;">No books found matching your search criteria.</p>
+    <p class="no-search-results-message" style="display: none;">No books found matching your search criteria.</p> *@
 
     @if (Model != null && Model.Any())
     {
@@ -60,9 +80,14 @@
             <thead>
                 <tr>
                     <th>Cover</th>
-                    <th>Title</th>
-                    <th>Subtitle</th>
-                    <th>Author</th>
+                    <th>
+                          <a asp-action="ListBook" asp-route-searchTerm="@ViewData["CurrentSearch"]">Title</a>
+                        </th>
+                    <th>
+                        <a asp-action="ListBook" asp-route-searchTerm="@ViewData["CurrentSearch"]">Subtitle</a>
+                    </th>
+                    <th><a asp-action="ListBook" asp-route-searchTerm="@ViewData["CurrentSearch"]">Author</a>
+</th>
                     <th>Publisher</th>
                     <th>Publication Date</th>
                     <th>Language</th>

@@ -1,0 +1,170 @@
+﻿@{
+    ViewData["Title"] = "Users";
+    Layout = "_AdminSidebarLayout";
+}
+
+@section styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin/language.css" asp-append-version="true" />
+}
+
+<div class="users-container p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="header-section">
+            <h1>Languages</h1>
+            <p>View and manage language</p>
+        </div>
+
+
+        <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addLanguageModal">
+            <i class="fas fa-plus me-2" style="color: #fff"></i> ADD LANGUAGE
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="search-filter-container">
+                <div style="position: relative; flex-grow: 1;">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" class="form-control search-field" placeholder="Search" style="padding-left: 33px;" />
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary">
+                        <i class="fas fa-sort"></i> Sort
+                    </button>
+                    <button class="btn btn-outline-secondary">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive justify-content-around">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="padding-left: 10px">Language</th>
+                            <th class="text-md-center" style="width: 25%;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="align-middle" style="padding-left: 10px">Cebuano</td>
+                            <td class="align-middle" style="white-space:nowrap;">
+                                <div class="action-buttons justify-content-center">
+                                    <button type="button" class="btn btn-icon text-danger" data-bs-toggle="modal" data-bs-target="#deleteLanguageModal">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <a href="/User/EditUser" class="btn btn-icon text-primary" data-bs-toggle="modal" data-bs-target="#editLanguageModal">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Language Modal -->
+<div class="modal fade" id="addLanguageModal" tabindex="-1" aria-labelledby="addLanguageLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content add-language-modal-content p-4">
+            <div class="modal-header border-0 pb-0 mb-3">
+                <h5 class="modal-title add-language-title" id="addLanguageLabel">Add New Language</h5>
+                <button type="button" class="btn-close add-language-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <form id="addLanguageForm">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="newLanguage" class="form-label">Language</label>
+                        <input type="text" class="form-control" id="newLanguage" name="LanguageName" placeholder="Text" required>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn add-language-btn">ADD</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editLanguageModal" tabindex="-1" aria-labelledby="editLanguageLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content add-language-modal-content p-4">
+            <div class="modal-header border-0 pb-0 mb-3">
+                <h5 class="modal-title add-language-title" id="editLanguageLabel">Add New Language</h5>
+                <button type="button" class="btn-close add-language-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <form id="editLanguageForm">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="newLanguage" class="form-label">Language</label>
+                        <input type="text" class="form-control" id="editLanguage" />
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn add-language-btn">SAVE CHANGES</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade confirmation-modal" id="deleteLanguageModal" tabindex="-1" aria-labelledby="deleteLanguageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="deleteLanguageModalLabel">Delete Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="mb-4" id="deleteLanguageModalText">Are you sure you want to delete this language?</p>
+                <form id="deleteUserForm" >
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="deleteUserId" />
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger px-4">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade success-modal" id="successLanguageModal" tabindex="-1" aria-labelledby="successLanguageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center py-4">
+                <div class="success-icon mb-3">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h5 class="modal-title mb-2">Deleted!</h5>
+                <p class="mb-4">Item deleted successfully!</p>
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" id="successLanguageModalOkBtn">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Proper modal handling
+            $('#addLanguageModal','#editLanguageModal', '#deleteLanguageModal', '#successLanguageModal').on('hidden.bs.modal', function () {
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+}

@@ -15,24 +15,15 @@
     <h1 class="header-section h1">My Profile</h1>
     <div class="profile-main-row">
         <div class="profile-card">
-        <div class="profile-avatar">
-            @if (!string.IsNullOrEmpty(Model?.ProfilePicture))
-            {
-                <img id="avatarImg"
-                        src="@(Model.ProfilePicture)"
-                        alt="Profile picture"
-                        class="w-100 h-100 rounded-circle object-fit-cover" />
-            }
-            else
-            {
-                <i class="fas fa-user fa-5x text-secondary"></i>
-            }
-
-        </div>
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
             <div class="profile-name">@(Model?.FirstName ?? "") @(Model?.LastName ?? "")</div>
             <div class="profile-username">@(Model?.UserId ?? "")</div>
             <div class="profile-bio">
                 @(Model?.AboutMe ?? "No bio available")
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.
             </div>
         </div>
 
@@ -46,30 +37,27 @@
                     <div class="info-fields-row">
                         <div class="info-field-col">
                             <div class="info-label">First Name</div>
-                            <div class="info-value">@Model.FirstName</div>
+                            <div class="info-value">Maria</div>
                         </div>
                         <div class="info-field-col">
                             <div class="info-label">Middle Name</div>
-                            <div class="info-value">@Model.MiddleName</div>
+                            <div class="info-value">Reyes</div>
                         </div>
                         <div class="info-field-col">
                             <div class="info-label">Last Name</div>
-                            <div class="info-value">@Model.LastName</div>
+                            <div class="info-value">Garcia</div>
                         </div>
                         <div class="info-field-col">
                             <div class="info-label">Birthdate</div>
-                            <div class="info-value">
-                              @( Model.Birthdate
-                                   ?.ToString("MM/dd/yyyy")
-                                 ?? "MM/DD/YYYY" )
-                            </div>                        </div>
+                            <div class="info-value">06/09/2000</div>
+                        </div>
                         <div class="info-field-col">
                             <div class="info-label">Gender</div>
-                            <div class="info-value">@Model.Gender</div>
+                            <div class="info-value">Female</div>
                         </div>
                         <div class="info-field-col">
                             <div class="info-label">Location</div>
-                            <div class="info-value">@Model.Location</div>
+                            <div class="info-value">43 P Lopez, Cebu City</div>
                         </div>
                     </div>
                 </div>
@@ -112,11 +100,31 @@
             </div>
         </div>
     </div>
+    <div class="profile-reviews-section mt-5">
+  <h3>My Reviews</h3>
+
+
+    @foreach (var review in Model.Reviews)
+    {
+      <div class="review-box border p-3 mb-3 rounded bg-light">
+        <div><strong>Book:</strong> 
+          <a asp-route="BookDetails" asp-route-bookId="@review.BookId">
+            @review.BookId
+          </a>
+        </div>
+        <div><strong>Rating:</strong> @review.Rating / 5</div>
+        <div><strong>Comment:</strong> @review.Comment</div>
+        <div class="small text-muted">Posted on: @review.UploadDate</div>
+      </div>
+    
+  }
+</div>
+
 </div>
 
 <!-- Personal Information Edit Modal -->
 <div class="modal fade" id="personalInfoEdit" tabindex="-1" aria-labelledby="personalInfoEditLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h5 class="modal-title" id="personalInfoEditLabel">Personal Information</h5>
@@ -126,68 +134,70 @@
                 <form id="personalInfoForm" asp-action="Edit" asp-controller="PersonProfile" method="post">
                     @Html.AntiForgeryToken()
                     <input asp-for="UserId" type="hidden" />
-                    <div class="mb-3">
-                        <label asp-for="FirstName" class="form-label"></label>
-                        <input asp-for="FirstName" class="form-control" />
-                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    <div class="add-book-form-group add-book-form-grid-span-2 text-center">
+                        <div class="d-flex align-items-center justify-content-center gap-3" style="flex-direction: column">
+                            <div style="width:100px; height:100px; position:relative;">
+                                <img id="profilePicturePreview"
+                                     src="@(Model?.ProfilePicture ?? "")"
+                                     alt="Profile Preview"
+                                     class="rounded-circle object-fit-cover"
+                                     style="width:100px; height:100px; background:#f4f4f6; border:1px solid #ddd; display:@(string.IsNullOrEmpty(Model?.ProfilePicture) ? "none" : "block");" />
+                                <span id="profilePictureDefaultIcon" style="position:absolute; top:0; left:0; width:100px; height:100px; display:@(string.IsNullOrEmpty(Model?.ProfilePicture) ? "flex" : "none"); align-items:center; justify-content:center; background:#f4f4f6; border-radius:50%;">
+                                    <i class="fas fa-user" style="font-size:64px; color:#222;"></i>
+                                </span>
+                                <input type="file" id="profilePictureFile" accept="image/*" style="display: none;">
+                                <button type="button"
+                                        class="edit-avatar-btn"
+                                        onclick="document.getElementById('profilePictureFile').click();"
+                                        aria-label="Edit profile picture">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                            </div>
+                            <input type="hidden" asp-for="ProfilePicture" id="ProfilePictureHidden" name="ProfilePicture" value="@Model?.ProfilePicture">
+                            <input type="text" id="profilePictureNameDisplay" style="display:none;" /> <!-- Add this line -->
+                            <p id="profilePictureUploadStatus" class="add-book-upload-status mt-2" style="display: flex; flex-direction: row; align-items: center; gap: 4px">
+                                <span class="file-size-info" style="font-size:10px">Max file size: 1GB; </span>
+                                <span class="supported-formats-info" style="font-size:10px">  Supported formats: JPG, PNG, JPEG</span>
+                            </p>
+                        </div>
+                        
                     </div>
                     <div class="mb-3">
-                        <label asp-for="MiddleName" class="form-label"></label>
-                        <input asp-for="MiddleName" class="form-control" />
-                        <span asp-validation-for="MiddleName" class="text-danger"></span>
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstName" placeholder="Text">
                     </div>
                     <div class="mb-3">
-                        <label asp-for="LastName" class="form-label"></label>
-                        <input asp-for="LastName" class="form-control" />
-                        <span asp-validation-for="LastName" class="text-danger"></span>
+                        <label for="middleName" class="form-label">Middle Name</label>
+                        <input type="text" class="form-control" id="middleName" placeholder="Text">
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" placeholder="Text">
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="birthdate" class="form-label">Birthdate</label>                           
+                            <label for="birthdate" class="form-label">Birthdate</label>
                             <div class="input-group date">
-                                <input asp-for="Birthdate" type="text" class="form-control" id="birthdate" placeholder="MM/DD/YYYY">
+                                <input type="text" class="form-control" id="birthdate" placeholder="MM/DD/YYYY">
                                 <button type="button" class="input-group-text" id="calendarButton">
                                     <i class="fas fa-calendar"></i>
                                 </button>
                             </div>
-                        <span asp-validation-for="Birthdate" class="text-danger"></span>
                         </div>
                         <div class="col">
-                            <label asp-for="Gender" class="form-label"></label>
-                            <select asp-for="Gender" class="form-select">
-                                <option value="">Select gender</option>
-                                <option value="male" selected="@(Model.Gender=="male")">Male</option>
-                                <option value="female" selected="@(Model.Gender=="female")">Female</option>
+                            <label for="gender" class="form-label">Gender</label>
+                            <select class="form-select" id="gender">
+                                <option selected disabled>Select gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
                             </select>
-                            <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="mb-4">
-                        <label asp-for="Location" class="form-label">Location</label>
-                        <input asp-for="Location" type="text" class="form-control" id="location" placeholder="Text">
-                        <span asp-validation-for="Location" class="text-danger"></span>
                     </div>
                     <div class="mb-4">
                         <label asp-for="AboutMe" class="form-label">About Me</label>
-                        <input asp-for="AboutMe" type="text" class="form-control" id="aboutme" placeholder="Text">
+                        <textarea asp-for="AboutMe" class="form-control" id="aboutme" rows="4" placeholder="Tell us about yourself"></textarea>
                         <span asp-validation-for="AboutMe" class="text-danger"></span>
-                    </div>
-                    <h3 class="add-book-form-section-title">Profile Picture Upload</h3>
-                    <div class="add-book-form-group add-book-form-grid-span-2">
-                        <label for="profilePictureFile">Select Cover Image</label>
-                        <div class="add-book-file-upload-wrapper">
-                            <input type="text" class="add-book-file-input-text" readonly id="profilePictureNameDisplay" value="@Model?.ProfilePicture">
-                            <input type="file" id="profilePictureFile" accept="image/*" style="display: none;">
-                            <button type="button" onclick="document.getElementById('profilePictureFile').click();">BROWSE</button>
-                        </div>
-
-                        <p id="profilePictureUploadStatus" class="add-book-upload-status">
-                            <span class="file-size-info">Max file size: 1GB</span>
-                            <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
-                        </p>
-                         <input type="hidden" asp-for="ProfilePicture" id="ProfilePictureHidden" name="ProfilePicture" value="@Model?.ProfilePicture">
-
-                    </div>
+                    </div>                    
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
                     </div>
@@ -320,17 +330,38 @@
                     icon.removeClass('fa-eye-slash').addClass('fa-eye');
                 }
             });
+
+        });
+
+        // Only update the modal preview, not the main avatar
+        document.getElementById('profilePictureFile').addEventListener('change', function () {
+            const file = this.files[0];
+            const preview = document.getElementById('profilePicturePreview');
+            const defaultIcon = document.getElementById('profilePictureDefaultIcon');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    defaultIcon.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+                defaultIcon.style.display = 'flex';
+            }
         });
     </script>
 
-       <script type="module">
-            document.getElementById('profilePictureFile').addEventListener('change', function () {
+    <script type="module">
+        document.getElementById('profilePictureFile').addEventListener('change', function () {
             const fileName = this.files[0] ? this.files[0].name : '';
             document.getElementById('profilePictureNameDisplay').value = fileName;
             const profilePictureUploadStatus = document.getElementById('profilePictureUploadStatus');
-           profilePictureUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
-           profilePictureUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: JPG, PNG, JPEG';
-           profilePictureUploadStatus.classList.remove('error-message');
+            profilePictureUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
+            profilePictureUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: JPG, PNG, JPEG';
+            profilePictureUploadStatus.classList.remove('error-message');
         });
 
         const firebaseConfig = {
@@ -341,7 +372,7 @@
             messagingSenderId: "206533484485",
             appId: "1:206533484485:web:2c71a06a17d5244efe75ac"
         };
-        
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
         import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
 
@@ -354,7 +385,6 @@
                 return;
             }
             try {
-
                 const fileRef = ref(storage, fileUrl);
                 await deleteObject(fileRef);
                 console.log(`Successfully deleted file: ${fileUrl}`);
@@ -364,8 +394,6 @@
             }
         }
 
-
-
         // Firebase Upload Function
         // This function returns the download URL or null on failure/no file
         async function uploadFileToFirebase(file, path, statusElement) {
@@ -374,7 +402,13 @@
                 return null; // Indicates no file was provided
             }
 
-            // Generate New File Namef
+            // Show spinner while uploading
+            statusElement.innerHTML = `
+                <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="width: 20px; height: 10px"></span>
+                <span class="ms-1" style="font-size: 12px">Uploading…</span>
+            `;
+
+            // Generate New File Name
             const timestamp = new Date().getTime();
             const randomString = Math.random().toString(36).substring(2, 8);
             const uniqueFileName = `${path}${timestamp}-${randomString}-${file.name}`; // Unique Path
@@ -385,50 +419,56 @@
             return new Promise((resolve, reject) => {
                 uploadTask.on('state_changed',
                     (snapshot) => {
+                        // Show spinner and progress
                         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        statusElement.querySelector('.file-size-info').textContent = `Upload is ${progress.toFixed(2)}% done`;
+                        statusElement.innerHTML = `
+                            <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>
+                            <span class="ms-1" style="font-size: 12px">Uploading… ${progress.toFixed(0)}%</span>
+                        `;
                     },
                     (error) => {
-                        statusElement.textContent = `Upload failed: ${error.message}`;
-                        console.error("Upload error:", error);
-                        reject(error); // Reject the promise on upload error
+                        statusElement.innerHTML = `<span class="text-danger">Upload failed: ${error.message}</span>`;
+                        reject(error);
                     },
                     async () => {
                         try {
                             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                            statusElement.textContent = 'Upload successful!';
-                            resolve(downloadURL); // Resolve with the download URL
+                            // Show animated check icon on success
+                            statusElement.innerHTML = `
+                                <span class="fa-stack" style="vertical-align: middle; font-size:12px">
+                                    <i class="fas fa-circle fa-stack-2x text-success" style="height: 10px; weight: 10px"></i>
+                                    <i class="fas fa-check fa-stack-1x fa-inverse" style="height: 10px; weight: 10px"></i>
+                                </span>
+                                <span class="ms-2 text-success" style="font-size:12px">Upload successful!</span>
+                            `;
+                            resolve(downloadURL);
                         } catch (error) {
-                            statusElement.textContent = `Failed to get download URL: ${error.message}`;
-                            console.error("Get Download URL error:", error);
-                            reject(error); // Reject the promise if getting URL fails
+                            statusElement.innerHTML = `<span class="text-danger">Failed to get download URL: ${error.message}</span>`;
+                            reject(error);
                         }
                     }
                 );
             });
         }
 
-    const picker      = document.getElementById('profilePictureFile');
-    const displayName = document.getElementById('profilePictureNameDisplay');
-    const statusEl    = document.getElementById('profilePictureUploadStatus');
-    const hiddenInput = document.getElementById('ProfilePictureHidden');
+        const picker      = document.getElementById('profilePictureFile');
+        const displayName = document.getElementById('profilePictureNameDisplay');
+        const statusEl    = document.getElementById('profilePictureUploadStatus');
+        const hiddenInput = document.getElementById('ProfilePictureHidden');
 
-    picker.addEventListener('change', async () => {
-      const file = picker.files[0];
-      if (!file) return;
+        picker.addEventListener('change', async () => {
+            const file = picker.files[0];
+            if (!file) return;
 
-      displayName.value = file.name;
-      statusEl.querySelector('.file-size-info').textContent = 'Uploading…';
-
-      try {
-        const downloadURL = await uploadFileToFirebase(file, 'profile-images/', statusEl);
-        console.log('Download URL:', downloadURL);
-        hiddenInput.value = downloadURL;
-      } catch {
-      }
-    });
-  
-
-  </script>
+            displayName.value = file.name;
+            // The spinner and progress will be handled by uploadFileToFirebase
+            try {
+                const downloadURL = await uploadFileToFirebase(file, 'profile-images/', statusEl);
+                console.log('Download URL:', downloadURL);
+                hiddenInput.value = downloadURL;
+            } catch {
+                // Error already handled in uploadFileToFirebase
+            }
+        });
+    </script>
 }
-
