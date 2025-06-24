@@ -144,7 +144,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 };
                 await _personProfileService.AddPersonProfile(profile);
 
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("VerifyOtpPage", "Account", new { email = user.Email });
             }
             catch(InvalidDataException ex)
             {
@@ -217,6 +217,22 @@ namespace ASI.Basecode.WebApp.Controllers
             }
           
             return View();
+        }
+
+
+        //VerifyOTP
+        [HttpGet]
+        [Route("Account/VerifyOtpPage/{email}")]
+        [AllowAnonymous]
+        public IActionResult VerifyOtpPage(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                TempData["ErrorMessage"] = "Invalid verification request.";
+                return RedirectToAction("Login", "Account");
+            }
+            ViewBag.Email = email;
+            return View("~/Views/Account/OTPView.cshtml"); // Render a view named VerifyOtpPage.cshtml
         }
     }
 }

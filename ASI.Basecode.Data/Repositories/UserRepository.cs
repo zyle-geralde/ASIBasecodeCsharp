@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity;
 
 namespace ASI.Basecode.Data.Repositories
 {
@@ -43,6 +44,17 @@ namespace ASI.Basecode.Data.Repositories
             if (user == null) return;
 
             this.GetDbSet<User>().Remove(user);
+            await UnitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<User> FindUserByEmail(string email)
+        {
+            return await this.GetDbSet<User>().FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task UpdateUser(User user)
+        {
+            GetDbSet<User>().Update(user);
             await UnitOfWork.SaveChangesAsync();
         }
     }

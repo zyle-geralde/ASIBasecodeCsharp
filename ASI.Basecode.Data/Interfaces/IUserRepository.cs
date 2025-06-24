@@ -14,5 +14,7 @@ namespace ASI.Basecode.Data.Interfaces
         Task AddUser(User user);
         Task<User> GetUserById(int Id);
         Task DeleteUser(int Id);
+        Task<User> FindUserByEmail(string email);
+        Task UpdateUser(User user);
     }
 }

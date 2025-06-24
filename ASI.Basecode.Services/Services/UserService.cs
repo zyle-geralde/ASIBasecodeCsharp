@@ -12,6 +12,7 @@ using static ASI.Basecode.Resources.Constants.Enums;
 using System.Net.Mail;
 using System.Net;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -48,6 +49,9 @@ namespace ASI.Basecode.Services.Services
                 user.UpdatedTime = DateTime.Now;
                 user.CreatedBy = System.Environment.UserName;
                 user.UpdatedBy = System.Environment.UserName;
+                user.IsEmailVerified = false;
+                user.OtpCode = GenerateOtpCode();
+                user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
 
                 await _repository.AddUser(user);
                 return user;
@@ -82,6 +86,30 @@ namespace ASI.Basecode.Services.Services
 
             await _repository.DeleteUser(id);
             return true;
+        }
+
+        private string GenerateOtpCode()
+        {
+            //Generate 6-digit numeric OTP
+            //RNGCryptoServiceProvider for strong randomness
+            var otpBytes = new byte[4]; // Enough to get a number up to 2^32 - 1
+            RandomNumberGenerator.Fill(otpBytes);
+            var otp = BitConverter.ToUInt32(otpBytes, 0) % 1_000_000; //Get a number between 0 and 999,999
+            return otp.ToString("D6"); //Format as a 6-digit string, padding with leading zeros if necessary
+        }
+
+        public async Task<User> RegenerateOtpAsync(string email)
+        {
+            var user = await _repository.FindUserByEmail(email);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found for OTP regeneration.");
+            }
+
+            user.OtpCode = GenerateOtpCode();
+            user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5); // New expiry
+            await _repository.UpdateUser(user);
+            return user;
         }
     }
 }

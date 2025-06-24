@@ -39,6 +39,7 @@ namespace ASI.Basecode.WebApp
             this._services.AddScoped<IReviewService, ReviewService>();
             this._services.AddScoped<IPersonProfileService, PersonProfileService>();
             this._services.AddScoped<IBookGenreService, BookGenreService>();
+            
 
 
 
