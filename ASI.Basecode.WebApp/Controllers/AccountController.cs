@@ -139,7 +139,7 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             catch(Exception ex)
             {
-                TempData["ErrorMessage"] = ex;
+                TempData["ErrorMessage"] = ex.Message;
                 //TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
             }
             return View();
@@ -186,7 +186,7 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = ex;
+                TempData["ErrorMessage"] = ex.Message;
                 //TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
             }
           

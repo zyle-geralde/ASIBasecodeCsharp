@@ -27,13 +27,15 @@ namespace ASI.Basecode.Services.Services
         private readonly IMapper _mapper;
         private readonly IPersonProfileService _personProfileService;
         private readonly IPersonProfileRepository _personProfileRepository;
+        private readonly IEmailSender _emailSenderService;
 
-        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository)
+        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService)
         {
             _mapper = mapper;
             _repository = repository;
             _personProfileService = personProfileService;
             _personProfileRepository = personProfileRepository;
+            _emailSenderService = emailSenderService; 
         }
 
         public LoginResult AuthenticateUser(string userId, string password, ref User user)
@@ -63,7 +65,7 @@ namespace ASI.Basecode.Services.Services
                 user.CreatedBy = System.Environment.UserName;
                 user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = false;
-                user.OtpCode = GenerateOtpCode();
+                user.OtpCode = await GenerateOtpCode(model.Email);
                 user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
 
                 await _repository.AddUser(user);
@@ -89,7 +91,7 @@ namespace ASI.Basecode.Services.Services
                 user.CreatedBy = System.Environment.UserName;
                 user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = false;
-                user.OtpCode = GenerateOtpCode();
+                user.OtpCode = await GenerateOtpCode(model.Email);
                 user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
 
                 await _repository.AddUser(user);
@@ -129,7 +131,7 @@ namespace ASI.Basecode.Services.Services
                         get_user.CreatedBy = System.Environment.UserName;
                         get_user.UpdatedBy = System.Environment.UserName;
                         get_user.IsEmailVerified = false;
-                        get_user.OtpCode = GenerateOtpCode();
+                        get_user.OtpCode = await GenerateOtpCode(model.Email);
                         get_user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
 
                         await _repository.UpdateUser(get_user);
@@ -184,7 +186,7 @@ namespace ASI.Basecode.Services.Services
                 user.CreatedBy = System.Environment.UserName;
                 user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = false;
-                user.OtpCode = GenerateOtpCode();
+                user.OtpCode =  await GenerateOtpCode(model.Email);
                 user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
 
                 await _repository.AddUser(user);
@@ -224,7 +226,7 @@ namespace ASI.Basecode.Services.Services
                         get_user.CreatedBy = System.Environment.UserName;
                         get_user.UpdatedBy = System.Environment.UserName;
                         get_user.IsEmailVerified = false;
-                        get_user.OtpCode = GenerateOtpCode();
+                        get_user.OtpCode = await GenerateOtpCode(model.Email);
                         get_user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
 
                         await _repository.UpdateUser(get_user);
@@ -356,14 +358,26 @@ namespace ASI.Basecode.Services.Services
             return true;
         }
 
-        private string GenerateOtpCode()
+        private async Task<string> GenerateOtpCode(string email)
         {
+            
             //Generate 6-digit numeric OTP
             //RNGCryptoServiceProvider for strong randomness
             var otpBytes = new byte[4]; // Enough to get a number up to 2^32 - 1
             RandomNumberGenerator.Fill(otpBytes);
             var otp = BitConverter.ToUInt32(otpBytes, 0) % 1_000_000; //Get a number between 0 and 999,999
-            return otp.ToString("D6"); //Format as a 6-digit string, padding with leading zeros if necessary
+            var otp_string = otp.ToString("D6");
+            var subject = "BasaBuzz 6 digit code";
+            var message = "This is your code " + otp_string;
+            try
+            {
+                await _emailSenderService.SendEmailAsync(email, subject, message);
+            }
+            catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+            
+            return otp_string; //Format as a 6-digit string, padding with leading zeros if necessary
         }
 
         public async Task<OtpViewModel> RegenerateOtpAsync(string email)
@@ -378,7 +392,7 @@ namespace ASI.Basecode.Services.Services
                 throw new ArgumentException("Email is already verified");
             }
 
-            user.OtpCode = GenerateOtpCode();
+            user.OtpCode = await GenerateOtpCode(email);
             user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5); // New expiry
             await _repository.UpdateUser(user);
 
