@@ -181,6 +181,12 @@ namespace ASI.Basecode.WebApp.Controllers
             return View("~/Views/Account/RegisterAdmin.cshtml");
         }
 
+        [AllowAnonymous]
+        public IActionResult AdminDashboard()
+        {
+            return View();
+        }
+
         [HttpPost]
         [Route("Account/RegisterAdmin")]
         [AllowAnonymous]

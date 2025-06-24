@@ -74,54 +74,27 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
-        public async Task<List<BookViewModel>> GetAllBooks()
+        public async Task<List<BookViewModel>> GetBooks(
+            string searchTerm,
+            string sortOrder,
+            string genreFilter,
+            int pageIndex,
+            int pageSize)
         {
-            try
+            var books = await _bookRepository.GetBooks(searchTerm, sortOrder, genreFilter, pageIndex, pageSize);
+            return books.Select(b => new BookViewModel
             {
-                var all_books = await _bookRepository.GetAllBooks();
-
-                var book_view_models = all_books.Select(bookEntity => new BookViewModel
-                {
-                    BookId = bookEntity.BookId,
-                    Title = bookEntity.Title,
-                    Subtitle = bookEntity.Subtitle,
-                    Description = bookEntity.Description,
-                    NumberOfPages = bookEntity.NumberOfPages,
-                    Language = bookEntity.Language,
-                    SeriesName = bookEntity.SeriesName,
-                    SeriesDescription = bookEntity.SeriesDescription,
-                    SeriesOrder = bookEntity.SeriesOrder,
-                    GenreList = bookEntity.GenreList,
-
-                    // Firebase Storage URLs are directly mapped
-                    CoverImageUrl = bookEntity.CoverImage,
-                    BookFileUrl = bookEntity.BookFile,
-
-                    // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
-                    UpdatedDate = bookEntity.UpdatedDate,
-                    PublicationDate = bookEntity.PublicationDate,
-
-
-                    // Handle comma-separated strings
-                    Publisher = bookEntity.Publisher, // Store as string
-                    PublicationLocation = bookEntity.PublicationLocation, // Store as string
-                    Author = bookEntity.Author, // Store as string
-                    ISBN10 = bookEntity.ISBN10,
-                    ISBN13 = bookEntity.ISBN13,
-                    Edition = bookEntity.Edition,
-                    CreatedBy = "admin1",
-                    UpdatedBy = "Logged Admin"
-                }).ToList();
-
-                return book_view_models;
-
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException($"Failed to Get books by genre: {ex.Message}", ex);
-            }
+                BookId = b.BookId,
+                Title = b.Title,
+                Subtitle = b.Subtitle,
+                GenreList = b.GenreList,
+                PublicationDate = b.PublicationDate,
+                Author = b.Author,
+                AverageRating = b.AverageRating,
+                CoverImage =b.CoverImage,
+                BookFile=b.BookFile
+            }).ToList();
         }
-
         public async Task<BookViewModel?> GetBookById(string bookId)
         {
             Book requestBook= await _bookRepository.GetBookById(bookId);
