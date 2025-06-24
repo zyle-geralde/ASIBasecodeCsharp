@@ -149,11 +149,11 @@ namespace ASI.Basecode.WebApp.Controllers
 
                 return RedirectToAction("Login", "Account");
             }
-            catch(InvalidDataException ex)
+            catch (InvalidDataException ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex;
                 //TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
@@ -218,7 +218,12 @@ namespace ASI.Basecode.WebApp.Controllers
                 TempData["ErrorMessage"] = ex;
                 //TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
             }
-            return View();
+
+            [AllowAnonymous]
+            IActionResult AdminDashboard()
+            {
+                return View();
+            }
         }
     }
 }
