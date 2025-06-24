@@ -19,5 +19,6 @@ namespace ASI.Basecode.Services.Interfaces
         Task VerifyOtp(OtpViewModel model);
 
         Task<OtpViewModel> GetUserbyEmail(string email);
+        Task<OtpViewModel> RegenerateOtpAsync(string email);
     }
 }

@@ -185,7 +185,7 @@ namespace ASI.Basecode.Services.Services
                 user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = false;
                 user.OtpCode = GenerateOtpCode();
-                user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
+                user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
 
                 await _repository.AddUser(user);
 
@@ -225,7 +225,7 @@ namespace ASI.Basecode.Services.Services
                         get_user.UpdatedBy = System.Environment.UserName;
                         get_user.IsEmailVerified = false;
                         get_user.OtpCode = GenerateOtpCode();
-                        get_user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
+                        get_user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
 
                         await _repository.UpdateUser(get_user);
 
@@ -366,18 +366,28 @@ namespace ASI.Basecode.Services.Services
             return otp.ToString("D6"); //Format as a 6-digit string, padding with leading zeros if necessary
         }
 
-        public async Task<User> RegenerateOtpAsync(string email)
+        public async Task<OtpViewModel> RegenerateOtpAsync(string email)
         {
             var user = await _repository.FindUserByEmail(email);
             if (user == null)
             {
                 throw new ArgumentException("User not found for OTP regeneration.");
             }
+            if(user.IsEmailVerified == true)
+            {
+                throw new ArgumentException("Email is already verified");
+            }
 
             user.OtpCode = GenerateOtpCode();
             user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5); // New expiry
             await _repository.UpdateUser(user);
-            return user;
+
+            OtpViewModel user_otp = new OtpViewModel
+            {
+                Email = user.Email,
+                OtpCode = user.OtpCode,
+            };
+            return user_otp;
         }
     }
 }

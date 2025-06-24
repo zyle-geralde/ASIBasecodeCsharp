@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Serilog.Core;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -204,9 +205,18 @@ namespace ASI.Basecode.WebApp.Controllers
                 TempData["ErrorMessage"] = "Invalid verification request.";
                 return RedirectToAction("Login", "Account");
             }
-            OtpViewModel user_otp = await _userService.GetUserbyEmail(email);
-            ViewBag.Email = email;
-            return View("~/Views/Account/OTPView.cshtml", user_otp); // Render a view named VerifyOtpPage.cshtml
+            try
+            {
+                OtpViewModel user_otp = await _userService.GetUserbyEmail(email);
+                ViewBag.Email = email;
+                return View("~/Views/Account/OTPView.cshtml", user_otp);
+            }
+            catch(Exception ex)
+            {
+                TempData["ErrorMessage"] = "Email not found";
+                return RedirectToAction("Login", "Account");
+            }
+           
         }
 
 
@@ -227,6 +237,47 @@ namespace ASI.Basecode.WebApp.Controllers
                 ModelState.AddModelError("", ex.Message);
                 return View("~/Views/Account/OTPView.cshtml",model);
             }
+        }
+
+        [HttpPost]
+        [Route("Account/ResendOtp")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResendOtp(string email)
+
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError("", "Email is required to resend OTP.");
+                return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
+            }
+
+            try
+            {
+                OtpViewModel otpSent = await _userService.RegenerateOtpAsync(email);
+
+                if (otpSent != null)
+                {
+                    TempData["SuccessMessage"] = "A new OTP has been sent to your email. Please check your inbox.";
+                    return RedirectToAction("VerifyOtpPage", "Account", new { Email = email });
+                }
+                else
+                {
+                   
+                    ModelState.AddModelError("", "Failed to send new OTP. Please try again.");
+                    return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError("", "Email already verified");
+                return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
+            }
+            catch (Exception ex) 
+            {
+                ModelState.AddModelError("", "An unexpected error occurred while trying to resend OTP. Please try again later.");
+                return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
+            }
+
         }
     }
 }
