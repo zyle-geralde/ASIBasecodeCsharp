@@ -1,4 +1,5 @@
-﻿using ASI.Basecode.Data.Models;
+﻿using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
@@ -64,6 +65,19 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             const int PageSize = 10;
             int pageIndex = page.GetValueOrDefault(1);
 
+            var queryParams = new BookQueryParams
+            {
+                SearchTerm = searchTerm,
+                SortOrder = sortOrder ?? "title",
+                GenreNames = !string.IsNullOrEmpty(genreFilter)
+                 ? new List<string> { genreFilter }
+                 : new List<string>(),
+
+                PageIndex = pageIndex,
+                PageSize = PageSize
+            };
+
+
             ViewData["CurrentSearch"] = searchTerm;
             ViewData["CurrentSort"] = sortOrder;
             ViewData["CurrentGenre"] = genreFilter;
@@ -72,7 +86,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             ViewData["DateSortParm"] = sortOrder == "date" ? "date_desc" : "date";
 
             var books = await _bookService.GetBooks(
-                searchTerm, sortOrder, genreFilter, pageIndex, PageSize );
+                queryParams );
 
             //List<Book> books = await _bookService.GetAllBooks();
             return View("~/Views/Books/ListBook.cshtml", books);

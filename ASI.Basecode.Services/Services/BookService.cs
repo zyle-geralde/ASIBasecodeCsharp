@@ -75,13 +75,9 @@ namespace ASI.Basecode.Services.Services
         }
 
         public async Task<List<BookViewModel>> GetBooks(
-            string searchTerm,
-            string sortOrder,
-            string genreFilter,
-            int pageIndex,
-            int pageSize)
+          BookQueryParams queryParams)
         {
-            var books = await _bookRepository.GetBooks(searchTerm, sortOrder, genreFilter, pageIndex, pageSize);
+            var books = await _bookRepository.GetBooks(queryParams);
             return books.Select(b => new BookViewModel
             {
                 BookId = b.BookId,
