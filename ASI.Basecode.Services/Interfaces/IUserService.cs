@@ -12,6 +12,7 @@ namespace ASI.Basecode.Services.Interfaces
         //Task<User> AddUser(UserViewModel model);
         Task<User> AddUser(UserViewModel model);
         Task<User> AddUserFromRegister(UserViewModel model);
+        Task<User> AddAdminFromRegister(UserViewModel model);
         IEnumerable<User> GetAllUsers();
         Task<bool> DeleteUser(int id);
     }

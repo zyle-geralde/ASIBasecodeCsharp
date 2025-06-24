@@ -174,21 +174,8 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
-                var user = await _userService.AddUser(model);
-                var profile = new PersonProfile
-                {
-                    ProfileID = user.Email,
-                    FirstName = model.UserName,        // or model.FirstName if separate
-                    LastName = null,
-                    MiddleName = null,
-                    Suffix = null,
-                    Gender = null,
-                    BirthDate = null,
-                    Location = null,
-                    Role = "Admin",
-                    AboutMe = string.Empty
-                };
-                await _personProfileService.AddPersonProfile(profile);
+                var user = await _userService.AddAdminFromRegister(model);
+
 
                 return RedirectToAction("Login", "Account");//Change this
             }
