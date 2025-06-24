@@ -23,7 +23,6 @@ namespace ASI.Basecode.Data
         public virtual DbSet<Book> Books { get; set; }
         public virtual DbSet<BookGenre> BookGenres { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
-        public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<PersonProfile> PersonProfiles{get;set;}
         public virtual DbSet<Author> Authors { get; set; }
 
