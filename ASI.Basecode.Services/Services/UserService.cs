@@ -54,7 +54,6 @@ namespace ASI.Basecode.Services.Services
                 user.UpdatedTime = DateTime.Now;
                 user.CreatedBy = System.Environment.UserName;
                 user.UpdatedBy = System.Environment.UserName;
-                user.AdminId = "test";
 
                 await _repository.AddUser(user);
                 return user;
