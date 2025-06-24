@@ -13,7 +13,7 @@ namespace ASI.Basecode.Data.Interfaces
         public List<string>? GenreNames { get; set; }
 
         public string? Author { get; set; }
-
+        public int? Rating { get; set; }
         public DateTime? PublishedFrom { get; set; }
         public DateTime? PublishedTo { get; set; }
 

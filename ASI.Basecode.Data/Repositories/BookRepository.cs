@@ -38,6 +38,30 @@ namespace ASI.Basecode.Data.Repositories
 
             }
 
+            if (!string.IsNullOrEmpty(queryParams.Author))
+                query = query.Where(b => b.Author != null && b.Author.Contains(queryParams.Author.Trim()));
+
+            if (queryParams.Rating.HasValue)
+                query = query.Where(b => b.AverageRating >= queryParams.Rating.Value);
+
+            if (queryParams.PublishedFrom.HasValue)
+                query = query.Where(b => b.PublicationDate >= queryParams.PublishedFrom.Value);
+
+            if (queryParams.PublishedTo.HasValue)
+                query = query.Where(b => b.PublicationDate <= queryParams.PublishedTo.Value);
+
+            if (queryParams.GenreNames != null && queryParams.GenreNames.Any())
+            {
+                foreach (var gn in queryParams.GenreNames)
+                {
+                    var pattern = "%," + gn.Trim() + ",%";
+                    query = query.Where(b =>
+                        b.GenreList != null
+                        && b.GenreList.Contains(gn));
+                }
+            }
+
+
             query = query
                 .Skip((queryParams.PageIndex - 1) * queryParams.PageSize)
                 .Take(queryParams.PageSize);
