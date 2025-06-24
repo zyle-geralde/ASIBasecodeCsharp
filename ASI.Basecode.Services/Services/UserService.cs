@@ -16,6 +16,8 @@ using System.Security.Cryptography;
 using NetTopologySuite.Geometries;
 using System.Data;
 using ASI.Basecode.Data.Repositories;
+using static System.Net.WebRequestMethods;
+using System.Security.Policy;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -40,8 +42,12 @@ namespace ASI.Basecode.Services.Services
             var passwordKey = PasswordManager.EncryptPassword(password);
             user = _repository.GetUsers().Where(x => x.Email == userId &&
                                                      x.Password == passwordKey).FirstOrDefault();
+            if(user == null)
+            {
+                return LoginResult.Failed; 
+            }
 
-            return user != null ? LoginResult.Success : LoginResult.Failed;
+            return user.IsEmailVerified == true ? LoginResult.Success : LoginResult.Failed;
         }
 
         public async Task<User> AddUser(UserViewModel model)
@@ -261,6 +267,67 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
+        public async Task VerifyOtp(OtpViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.OtpCode))
+            {
+                throw new Exception("Email or otpcode is null");
+            }
+
+            try
+            {
+                var user = await _repository.FindUserByEmail(model.Email);
+
+                if (user == null)
+                {
+                    throw new Exception("User is null");
+                }
+
+                if (user.IsEmailVerified)
+                {
+                    throw new Exception("Email already verified");
+                }
+
+                // Validate OTP
+                if (user.OtpCode == model.OtpCode && user.OtpExpirationDate.HasValue && user.OtpExpirationDate.Value > DateTime.UtcNow)
+                {
+                    user.IsEmailVerified = true;
+                    user.OtpCode = null; 
+                    user.OtpExpirationDate = null;
+
+                    await _repository.UpdateUser(user);
+
+                }
+                else
+                {
+                    throw new Exception("Expired or Invalid OTP, try a different code or try resending one");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<OtpViewModel> GetUserbyEmail(string email)
+        {
+            try
+            {
+                var user = await _repository.FindUserByEmail(email);
+
+                OtpViewModel otp_user = new OtpViewModel
+                {
+                    Email = user.Email,
+                    OtpCode = user.OtpCode,
+                };
+
+                return otp_user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occured while getting user");
+            }
+        }
 
 
         public IEnumerable<User> GetAllUsers()

@@ -177,7 +177,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 var user = await _userService.AddAdminFromRegister(model);
 
 
-                return RedirectToAction("Login", "Account");//Change this
+                return RedirectToAction("VerifyOtpPage", "Account", new { email = user.Email });
             }
             catch (InvalidDataException ex)
             {
@@ -197,15 +197,36 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpGet]
         [Route("Account/VerifyOtpPage/{email}")]
         [AllowAnonymous]
-        public IActionResult VerifyOtpPage(string email)
+        public async Task<IActionResult> VerifyOtpPage(string email)
         {
             if (string.IsNullOrEmpty(email))
             {
                 TempData["ErrorMessage"] = "Invalid verification request.";
                 return RedirectToAction("Login", "Account");
             }
+            OtpViewModel user_otp = await _userService.GetUserbyEmail(email);
             ViewBag.Email = email;
-            return View("~/Views/Account/OTPView.cshtml"); // Render a view named VerifyOtpPage.cshtml
+            return View("~/Views/Account/OTPView.cshtml", user_otp); // Render a view named VerifyOtpPage.cshtml
+        }
+
+
+        [HttpPost]
+        [Route("Account/VerifyOtp")]
+        [AllowAnonymous]
+        public async Task<IActionResult> VerifyOtp(OtpViewModel model)
+        {
+            try
+            {
+                
+                await _userService.VerifyOtp(model);
+                TempData["SuccessMessage"] = "Verified";
+
+                return RedirectToAction("Login", "Account");
+            }
+            catch (Exception ex) {
+                ModelState.AddModelError("", ex.Message);
+                return View("~/Views/Account/OTPView.cshtml",model);
+            }
         }
     }
 }
