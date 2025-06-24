@@ -218,16 +218,12 @@ namespace ASI.Basecode.WebApp.Controllers
                 TempData["ErrorMessage"] = ex;
                 //TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
             }
-            return View(model);
-        }
 
             [AllowAnonymous]
-            public IActionResult AdminDashboard()
+            IActionResult AdminDashboard()
             {
                 return View();
             }
         }
     }
-
-
-
+}
