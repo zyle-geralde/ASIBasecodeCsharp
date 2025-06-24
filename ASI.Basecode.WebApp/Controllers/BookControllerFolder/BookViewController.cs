@@ -58,7 +58,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [AllowAnonymous]
         public async Task<IActionResult> ListBook()
         {
-            List<Book> books = await _bookService.GetAllBooks();
+            List<BookViewModel> books = await _bookService.GetAllBooks();
             return View("~/Views/Books/ListBook.cshtml", books);
         }
 

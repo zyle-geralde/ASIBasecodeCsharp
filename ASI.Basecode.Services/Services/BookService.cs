@@ -74,9 +74,52 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
-        public async Task<List<Book>> GetAllBooks()
+        public async Task<List<BookViewModel>> GetAllBooks()
         {
-            return await _bookRepository.GetAllBooks();
+            try
+            {
+                var all_books = await _bookRepository.GetAllBooks();
+
+                var book_view_models = all_books.Select(bookEntity => new BookViewModel
+                {
+                    BookId = bookEntity.BookId,
+                    Title = bookEntity.Title,
+                    Subtitle = bookEntity.Subtitle,
+                    Description = bookEntity.Description,
+                    NumberOfPages = bookEntity.NumberOfPages,
+                    Language = bookEntity.Language,
+                    SeriesName = bookEntity.SeriesName,
+                    SeriesDescription = bookEntity.SeriesDescription,
+                    SeriesOrder = bookEntity.SeriesOrder,
+                    GenreList = bookEntity.GenreList,
+
+                    // Firebase Storage URLs are directly mapped
+                    CoverImageUrl = bookEntity.CoverImage,
+                    BookFileUrl = bookEntity.BookFile,
+
+                    // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
+                    UpdatedDate = bookEntity.UpdatedDate,
+                    PublicationDate = bookEntity.PublicationDate,
+
+
+                    // Handle comma-separated strings
+                    Publisher = bookEntity.Publisher, // Store as string
+                    PublicationLocation = bookEntity.PublicationLocation, // Store as string
+                    Author = bookEntity.Author, // Store as string
+                    ISBN10 = bookEntity.ISBN10,
+                    ISBN13 = bookEntity.ISBN13,
+                    Edition = bookEntity.Edition,
+                    CreatedBy = "admin1",
+                    UpdatedBy = "Logged Admin"
+                }).ToList();
+
+                return book_view_models;
+
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to Get books by genre: {ex.Message}", ex);
+            }
         }
 
         public async Task<BookViewModel?> GetBookById(string bookId)
