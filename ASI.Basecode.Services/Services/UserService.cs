@@ -13,6 +13,9 @@ using System.Net.Mail;
 using System.Net;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
+using NetTopologySuite.Geometries;
+using System.Data;
+using ASI.Basecode.Data.Repositories;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -20,11 +23,15 @@ namespace ASI.Basecode.Services.Services
     {
         private readonly IUserRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IPersonProfileService _personProfileService;
+        private readonly IPersonProfileRepository _personProfileRepository;
 
-        public UserService(IUserRepository repository, IMapper mapper)
+        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository)
         {
             _mapper = mapper;
             _repository = repository;
+            _personProfileService = personProfileService;
+            _personProfileRepository = personProfileRepository;
         }
 
         public LoginResult AuthenticateUser(string userId, string password, ref User user)
@@ -61,6 +68,104 @@ namespace ASI.Basecode.Services.Services
                 throw new InvalidDataException(Resources.Messages.Errors.UserExists);
             }
         }
+
+
+        public async Task<User> AddUserFromRegister(UserViewModel model)
+        {
+            var user = new User();
+            if (!_repository.UserExists(model.Email))
+            {
+                user.Email = model.Email;
+                user.UserName = model.UserName;
+                user.Password = PasswordManager.EncryptPassword(model.Password);
+                user.CreatedTime = DateTime.Now;
+                user.UpdatedTime = DateTime.Now;
+                user.CreatedBy = System.Environment.UserName;
+                user.UpdatedBy = System.Environment.UserName;
+                user.IsEmailVerified = false;
+                user.OtpCode = GenerateOtpCode();
+                user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
+
+                await _repository.AddUser(user);
+
+
+                var profile = new PersonProfile
+                {
+                    ProfileID = user.Email,
+                    FirstName = model.UserName,        // or model.FirstName if separate
+                    LastName = null,
+                    MiddleName = null,
+                    Suffix = null,
+                    Gender = null,
+                    BirthDate = null,
+                    Location = null,
+                    Role = "User",
+                    AboutMe = string.Empty
+                };
+                await _personProfileService.AddPersonProfile(profile);
+
+                return user;
+            }
+            else
+            {
+                bool verified_email = await _repository.CheckEmailVerified(model.Email);
+                if (!verified_email)
+                {
+                    User get_user = await _repository.FindUserByEmail(model.Email);
+                    string old_user_email = get_user.Email;
+                    if (get_user != null)
+                    {
+                        get_user.Email = model.Email;
+                        get_user.UserName = model.UserName;
+                        get_user.Password = PasswordManager.EncryptPassword(model.Password);
+                        get_user.CreatedTime = DateTime.Now;
+                        get_user.UpdatedTime = DateTime.Now;
+                        get_user.CreatedBy = System.Environment.UserName;
+                        get_user.UpdatedBy = System.Environment.UserName;
+                        get_user.IsEmailVerified = false;
+                        get_user.OtpCode = GenerateOtpCode();
+                        get_user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
+
+                        await _repository.UpdateUser(get_user);
+
+                    }
+                    else
+                    {
+                        throw new Exception("User Not Found");
+                    }
+
+                    PersonProfile get_profile = await _personProfileService.GetPersonProfile(old_user_email);
+                    if (get_profile != null) {
+                        get_profile.ProfileID = model.Email;
+                        get_profile.FirstName = model.UserName;
+                        get_profile.LastName = null;
+                        get_profile.MiddleName = null;
+                        get_profile.Suffix = null;
+                        get_profile.Gender = null;
+                        get_profile.BirthDate = null;
+                        get_profile.Location = null;
+                        get_profile.Role = "User";
+                        get_profile.AboutMe = string.Empty;
+
+                        await _personProfileRepository.EditPersonProfile(get_profile);
+                    }
+                    else
+                    {
+                        throw new Exception("User Not Found");
+                    }
+
+
+                    return get_user;
+
+                }
+                else
+                {
+                    throw new InvalidDataException(Resources.Messages.Errors.UserExists);
+                }
+            }
+        }
+
+
 
         public IEnumerable<User> GetAllUsers()
         {

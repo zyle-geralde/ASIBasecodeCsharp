@@ -128,21 +128,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
-                var user = await _userService.AddUser(model);
-                var profile = new PersonProfile
-                {
-                    ProfileID = user.Email,
-                    FirstName = model.UserName,       
-                    LastName = null,
-                    MiddleName = null,
-                    Suffix = null,
-                    Gender = null,
-                    BirthDate = null,
-                    Location = null,
-                    Role = "User",
-                    AboutMe = string.Empty
-                };
-                await _personProfileService.AddPersonProfile(profile);
+                var user = await _userService.AddUserFromRegister(model);
 
                 return RedirectToAction("VerifyOtpPage", "Account", new { email = user.Email });
             }
