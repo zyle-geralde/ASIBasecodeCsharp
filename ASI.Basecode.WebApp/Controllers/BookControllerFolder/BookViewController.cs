@@ -56,9 +56,25 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [HttpGet]
         [Route("Book/ListBook")]
         [AllowAnonymous]
-        public async Task<IActionResult> ListBook()
+        public async Task<IActionResult> ListBook(string searchTerm,
+            string sortOrder,
+            string genreFilter,
+            int? page)
         {
-            List<BookViewModel> books = await _bookService.GetAllBooks();
+            const int PageSize = 10;
+            int pageIndex = page.GetValueOrDefault(1);
+
+            ViewData["CurrentSearch"] = searchTerm;
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["CurrentGenre"] = genreFilter;
+            ViewData["TitleSortParm"] = sortOrder == "title" ? "title_desc" : "title";
+            ViewData["AuthorSortParm"] = sortOrder == "author" ? "author_desc" : "author";
+            ViewData["DateSortParm"] = sortOrder == "date" ? "date_desc" : "date";
+
+            var books = await _bookService.GetBooks(
+                searchTerm, sortOrder, genreFilter, pageIndex, PageSize );
+
+            //List<Book> books = await _bookService.GetAllBooks();
             return View("~/Views/Books/ListBook.cshtml", books);
         }
 
@@ -116,7 +132,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 Reviews = reviews
                             .Select(r => new ReviewViewModel
                             {
-                                ReviewId = r.UserId,
+                                ReviewId = r.ReviewId,
+                                UserId = r.UserId,
                                 Rating = r.Rating,
                                 Comment = r.Comment,
                                 UploadDate = r.UploadDate

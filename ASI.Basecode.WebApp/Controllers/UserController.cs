@@ -1,6 +1,7 @@
 ﻿using ASI.Basecode.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 
@@ -13,10 +14,18 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             _userService = userService;
         }
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(string searchTerm, string sortOrder, int? page)
         {
-            var model = _userService.GetAllUsers();
-            return View("~/Views/Users/Index.cshtml", model);
+            const int PageSize = 10;
+
+            int pageIndex = page.GetValueOrDefault(1);
+            ViewData["CurrentSearch"] = searchTerm;
+            ViewData["CurrentSort"] = sortOrder;
+
+            var users = await _userService.GetUsersQueried(searchTerm, sortOrder, pageIndex, PageSize);
+
+            return View("~/Views/Users/Index.cshtml", users);
         }
         [AllowAnonymous] //To be removed if the flow is finalized
         public IActionResult AddUser()

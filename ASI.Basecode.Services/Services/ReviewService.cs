@@ -3,9 +3,11 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,11 +16,14 @@ namespace ASI.Basecode.Services.Services
     public class ReviewService : IReviewService
     {
         private readonly IReviewRepository _reviewRepository;
+        private readonly IBookRepository _bookRepository;
+
         private readonly IMapper _mapper;
 
-        public ReviewService(IReviewRepository reviewRepository, IMapper mapper)
+        public ReviewService(IReviewRepository reviewRepository, IBookRepository bookRepository, IMapper mapper)
         {
             _reviewRepository = reviewRepository;
+            _bookRepository = bookRepository;
             _mapper = mapper;
 
         }
@@ -43,6 +48,7 @@ namespace ASI.Basecode.Services.Services
             };
 
             await _reviewRepository.AddReview(review);
+            await _bookRepository.calculateAverageRating(review.BookId);
         }
 
         public async Task<List<Review>> GetAllReviews()
@@ -74,6 +80,7 @@ namespace ASI.Basecode.Services.Services
             }
 
             await _reviewRepository.DeleteReview(reviewId);
+            await _bookRepository.calculateAverageRating(existingReview.BookId);
             return true;
 
 
@@ -97,6 +104,8 @@ namespace ASI.Basecode.Services.Services
             existing.UpdatedDate = DateTime.UtcNow;
 
             await _reviewRepository.UpdateReview(existing);
+            await _bookRepository.calculateAverageRating(reviewModel.BookId);
+
             return true;
         }
 
@@ -107,6 +116,16 @@ namespace ASI.Basecode.Services.Services
                 throw new ArgumentException("No book id provided", nameof(bookId));
             }
             var reviews = await _reviewRepository.GetReviewsByBookId(bookId);
+            return reviews.ToList();
+        }
+
+        public async Task<List<Review>> GetReviewByUser(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new ArgumentException("No user ID provided");
+            }
+            var reviews = await _reviewRepository.GetReviewByUser(userId);
             return reviews.ToList();
         }
     }

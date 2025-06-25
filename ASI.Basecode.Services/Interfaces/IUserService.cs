@@ -20,5 +20,6 @@ namespace ASI.Basecode.Services.Interfaces
 
         Task<OtpViewModel> GetUserbyEmail(string email);
         Task<OtpViewModel> RegenerateOtpAsync(string email);
+        Task<List<User>> GetUsersQueried(string searchTerm, string sortOrder, int pageIndex, int pageSize);
     }
 }

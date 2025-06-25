@@ -75,7 +75,8 @@ namespace ASI.Basecode.Services.ServiceModels
         public string CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
         public List<ReviewViewModel> Reviews { get; set; } = new();
-        // CHECK IF REGULAR USER HAS LEFT A REVIEW ALR OR NOT
         public bool HasReviewed { get; set; }
+        public string? CoverImage { get; set; }
+        public string? BookFile { get; set; }
     }
 }
