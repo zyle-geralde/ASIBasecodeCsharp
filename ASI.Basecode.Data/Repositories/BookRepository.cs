@@ -168,7 +168,18 @@ namespace ASI.Basecode.Data.Repositories
                 book.AverageRating = (float)avg;
                 await _dbContext.SaveChangesAsync();
             }
+        }
 
+        public async Task<List<Book>> GetAllBooks()
+        {
+            try
+            {
+                return await _dbContext.Books.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
 

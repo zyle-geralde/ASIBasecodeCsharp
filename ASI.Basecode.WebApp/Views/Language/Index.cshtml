@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ASI.Basecode.Services.ServiceModels.LanguageViewModel;
+@{
     ViewData["Title"] = "Users";
     Layout = "_AdminSidebarLayout";
 }
@@ -22,6 +23,14 @@
             <i class="fas fa-plus me-2" style="color: #fff"></i> ADD LANGUAGE
         </a>
     </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
     <div class="card">
         <div class="card-body">
@@ -75,11 +84,21 @@
                 <button type="button" class="btn-close add-language-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-2">
-                <form id="addLanguageForm">
-                    @Html.AntiForgeryToken()
+                <div class="text-danger">
+                    @if (!ViewData.ModelState.IsValid && Html.ValidationSummary(true) != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                            @Html.ValidationSummary(true, null, new { @class = "mb-0 list-unstyled" })
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                </div>
+                <form id="addLanguageForm" asp-action="AddLanguage" asp-controller="Language" method="post" >
                     <div class="mb-3">
+                        <span asp-validation-for="LanguageName" class="text-danger"></span>
                         <label for="newLanguage" class="form-label">Language</label>
-                        <input type="text" class="form-control" id="newLanguage" name="LanguageName" placeholder="Text" required>
+                        <input type="text" class="form-control" id="newLanguage" name="LanguageName" placeholder="Text" required value="@Model.LanguageName">
                     </div>
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn add-language-btn">ADD</button>
@@ -160,6 +179,19 @@
                 $('body').removeClass('modal-open');
                 $('.modal-backdrop').remove();
             });
+
+            // automatically show the "Add Language Modal" if there are server side validation errors
+            // crucial when the controller returns the view with ModelState errors.
+            @if (!ViewData.ModelState.IsValid && Context.Request.Method == "POST")
+            {
+                <text>
+                    var addLanguageModalElement = document.getElementById('addLanguageModal');
+                    if (addLanguageModalElement) {
+                        var addLanguageModal = new bootstrap.Modal(addLanguageModalElement);
+                        addLanguageModal.show();
+                    }
+                </text>
+            }
         });
     </script>
 

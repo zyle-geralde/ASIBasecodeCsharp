@@ -20,5 +20,7 @@ namespace ASI.Basecode.Data.Interfaces
 
         Task<List<BookGenre>> GetAllGenres();
         Task calculateAverageRating(string bookId);
+
+        Task<List<Book>> GetAllBooks();
     }
 }
