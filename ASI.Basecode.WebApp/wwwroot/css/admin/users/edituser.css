@@ -122,37 +122,60 @@ input[type="email"]
     font-size: 14px;
 }
 
-.button-group 
-{
+.button-container {
+    width: 100%;
     display: flex;
     justify-content: flex-end;
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end !important;
+    align-items: stretch !important;
     gap: 1rem;
     margin-top: 1rem;
+    padding-bottom: 0;
 }
 
-.cancel-btn 
-{
-    padding: 0.50rem 1.5rem;
+.cancel-btn, .submit-btn {
+    /* Common button styles */
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 42px; /* Set a fixed height for both buttons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    line-height: 1;
+    box-sizing: border-box;
+}
+
+.cancel-btn {
     background: #fff;
     border: 1px solid #ddd;
-    border-radius: 4px;
     color: #333;
-    font-size: 14px;
-    cursor: pointer;
+    width: 120px; /* Fixed width */
 }
 
-.submit-btn 
-{
-    padding: 0.50rem 1.5rem;
+.submit-btn {
     background: #647D7F;
     border: none;
-    border-radius: 4px;
     color: white;
-    font-size: 14px;
-    cursor: pointer;
+    width: 160px; /* Fixed width - wider than cancel button */
 }
 
-@media (max-width: 768px) 
+.cancel-btn:hover {
+    background: #f5f5f5;
+}
+
+.submit-btn:hover {
+    background: #556a6c;
+}
+
+@media (max-width: 785px) 
 {
     .form-row 
     {
@@ -165,15 +188,15 @@ input[type="email"]
         padding: 1.5rem;
     }
 
-    .button-group 
-    {
+    .button-group {
         flex-direction: column;
-    }
-
-    .button-group button 
-    {
         width: 100%;
     }
+
+        .button-group button {
+            width: 100%;
+            padding: 0.5rem 1rem;
+        }
 
     .profile-section 
     {
