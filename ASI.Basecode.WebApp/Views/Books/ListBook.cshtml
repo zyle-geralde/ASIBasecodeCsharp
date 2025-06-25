@@ -14,7 +14,7 @@
     Layout = "_AdminSidebarLayout";
 }
 
-@{
+@*@{
     var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
     var currentSearch    = (string?)ViewData["CurrentSearch"];
     var currentAuthor    = (string?)ViewData["CurrentAuthor"];
@@ -25,7 +25,7 @@
     var currentSort = (string?)ViewData["CurrentSort"];
     var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
 
-}
+}*@
 
 @section styles {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -48,7 +48,7 @@
         </p>
     </div>
 
-    <form asp-action="ListBook" method="get" class="mb-3">
+    @*<form asp-action="ListBook" method="get" class="mb-3">
 
 <div class="row g-3 align-items-end">
     <div class="col-md-4">
@@ -156,11 +156,11 @@
     </button>
   </div>
 
-</form>
+</form>*@
 
     
 
-    @* <div class="search-filter-container">
+    <div class="search-filter-container">
         <div style="position: relative; flex-grow: 1;">
             <i class="fas fa-search search-icon"></i>
             <input type="text" id="searchInput" class="form-control search-field" placeholder="Search" style="padding-left: 33px;" /> 
@@ -175,7 +175,7 @@
         </div>
     </div>
 
-    <p class="no-search-results-message" style="display: none;">No books found matching your search criteria.</p> *@
+    <p class="no-search-results-message" style="display: none;">No books found matching your search criteria.</p> 
 
     @if (Model != null && Model.Any())
     {
@@ -187,7 +187,6 @@
 <th>Title</th>
       <th>Subtitle</th>
       <th>Author</th>
-      <th>Genre</th>
       <th>Publication Date</th>
       <th>Language</th>
       <th>Rating</th>
@@ -215,7 +214,7 @@
                         <td>@book.Title</td>
                         <td>@book.Subtitle</td>
                         <td>@book.Author</td>
- <td>
+ @*<td>
         @{
           var ids = (book.GenreList ?? "")
                     .Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -224,7 +223,9 @@
                       .Select(g => g.GenreName);
         }
         @string.Join(", ", names)
-      </td>                        <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
+
+      </td*@>  
+      <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
                         <td>@book.Language</td>
                         @* <td>@book.NumberOfPages</td> *@
                         <td>@book.AverageRating</td>

@@ -13,6 +13,7 @@ namespace ASI.Basecode.Services.Interfaces
     {
         Task AddBook(BookViewModel book);
         Task<List<BookViewModel>> GetBooks(BookQueryParams queryParams);
+        Task<List<BookViewModel>> GetAllBooks();
         Task<BookViewModel?> GetBookById(string bookId);
 
         Task EditBook(BookViewModel request);
