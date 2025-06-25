@@ -34,11 +34,11 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             return View("~/Views/Users/AddUser.cshtml");
         }
-        [AllowAnonymous] //To be removed if the flow is finalized
-        public IActionResult EditUser()
-        {
-            return View("~/Views/Users/EditUser.cshtml");
-        }
+        //[AllowAnonymous] //To be removed if the flow is finalized
+        /* public IActionResult EditUser()
+         {
+             return View("~/Views/Users/EditUser.cshtml");
+         }*/
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -96,29 +96,41 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
+        [Route("User/EditUser/{id}")]
         public async Task<IActionResult> EditUser(int id)
         {
             try
             {
+                // Add logging to check the ID being received
+                Console.WriteLine($"Attempting to edit user with ID: {id}");
+
                 var user = await _userService.GetUserById(id);
+
+                // Add logging to check if user was found
                 if (user == null)
                 {
+                    Console.WriteLine($"User with ID {id} not found in the database.");
                     TempData["ErrorMessage"] = "User not found.";
                     return RedirectToAction("Index");
                 }
 
+                Console.WriteLine($"User found: ID={user.Id}, Email={user.Email}, Username={user.UserName}");
+
                 var viewModel = new UserViewModel
                 {
+                    Id = user.Id,
                     Email = user.Email,
                     UserName = user.UserName,
-                    // Don't set password fields as they should be empty for security
-                    IsEmailVerified = user.IsEmailVerified
+                    IsEmailVerified = user.IsEmailVerified,
+                    IsUpdate = true // Mark as update to disable validation
                 };
 
                 return View("~/Views/Users/EditUser.cshtml", viewModel);
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error loading user {id}: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
                 TempData["ErrorMessage"] = "An error occurred while loading the user.";
                 return RedirectToAction("Index");
             }
@@ -126,8 +138,18 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditUser(UserViewModel model)
+        public async Task<IActionResult> EditUser(int id, UserViewModel model)
         {
+            // Ensure the ID is populated
+            model.Id = id;
+
+            // If updating and no password is provided, remove validation errors for password fields
+            if (model.IsUpdate && string.IsNullOrEmpty(model.Password))
+            {
+                ModelState.Remove("Password");
+                ModelState.Remove("ConfirmPassword");
+            }
+
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "Please correct the errors in the form.";
@@ -142,11 +164,10 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "An error occurred while updating the user.";
+                TempData["ErrorMessage"] = "An error occurred while updating the user: " + ex.Message;
                 return View("~/Views/Users/EditUser.cshtml", model);
             }
         }
-
 
     }
 }

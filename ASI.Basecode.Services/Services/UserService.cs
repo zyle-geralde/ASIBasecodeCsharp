@@ -133,10 +133,10 @@ namespace ASI.Basecode.Services.Services
         {
             try
             {
-                var user = await _repository.FindUserByEmail(model.Email);
+                var user = await _repository.GetUserById(model.Id);
                 if (user == null)
                 {
-                    throw new Exception("User not found.");
+                    throw new InvalidDataException("User not found.");
                 }
 
                 user.UserName = model.UserName;
@@ -152,9 +152,9 @@ namespace ASI.Basecode.Services.Services
                 await _repository.UpdateUser(user);
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw new InvalidDataException($"Error updating user: {ex.Message}");
             }
         }
 

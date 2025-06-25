@@ -25,5 +25,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public string? OtpCode { get; set; }
         public DateTime? OtpExpirationDate { get; set; }
         public bool IsEmailVerified { get; set; } = false;
+        public int Id { get; set; }
+        public bool IsUpdate { get; set; } = false;
     }
 }
