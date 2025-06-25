@@ -105,7 +105,7 @@
                 <section class="section-card">
                     <div class="book-list-header">
                         <h2>View Books Top Rated By Users?</h2>
-                        <a href="#">See More</a>
+                        <a asp-controller="Book" asp-action="SearchResults" asp-route-sortOrder="rating" asp-route-sortDescending="true" asp-route-category="Top Rated">See More</a>
                     </div>
                     @foreach (var book in topRatedBooks) 
                     {
@@ -146,7 +146,7 @@
                 <section class="section-card">
                     <div class="book-list-header">
                         <h2>View New Books</h2>
-                        <a href="#">See More</a>
+                        <a asp-controller="Book" asp-action="SearchResults" asp-route-sortOrder="uploaddate" asp-route-sortDescending="true" asp-route-category="New Books">See More</a>
                     </div>
                     @foreach (var book in newBooks) 
                     {

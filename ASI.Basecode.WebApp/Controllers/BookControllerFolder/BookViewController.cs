@@ -112,6 +112,77 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         }
 
         [HttpGet]
+        [Route("Book/SearchResults")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SearchResults(
+        string? searchTerm,
+        string? author,
+        int? rating,
+        DateTime? publishedFrom,
+        DateTime? publishedTo,
+        string[]? genreFilter,
+        string? sortOrder,
+        bool sortDescending = false,
+        int? page = 1,
+        string? category = null
+        )
+        {
+                const int PageSize = 10;
+                int pageIndex = page.GetValueOrDefault(1);
+
+                var queryParams = new BookQueryParams
+                {
+                    SearchTerm = searchTerm,
+                    Author = author,
+                    Rating = rating,
+                    PublishedFrom = publishedFrom,
+                    PublishedTo = publishedTo,
+                    GenreNames = genreFilter?.ToList(),
+                    SortDescending = sortDescending,
+                    PageIndex = page.GetValueOrDefault(1),
+                    SortOrder = sortOrder ?? "title",
+                    PageSize = PageSize,
+
+
+                };
+
+
+                ViewData["CurrentSearch"] = searchTerm;
+                ViewData["CurrentAuthor"] = author;
+                ViewData["CurrentRating"] = rating;
+                ViewData["CurrentFromDate"] = publishedFrom?.ToString("yyyy-MM-dd");
+                ViewData["CurrentToDate"] = publishedTo?.ToString("yyyy-MM-dd");
+                ViewData["CurrentGenres"] = genreFilter ?? Array.Empty<string>();
+                ViewData["CurrentSort"] = queryParams.SortOrder;
+                ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+
+                var allGenres = await _bookGenreService.GetAllGenreList();
+                ViewData["AllGenres"] = allGenres;
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                ViewData["CategoryTitle"] = category;
+            }
+            else if (sortOrder?.Equals("AverageRating", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                ViewData["CategoryTitle"] = "Top Rated";
+            }
+            else if (sortOrder?.Equals("UploadDate", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                ViewData["CategoryTitle"] = "Newly Added";
+            }
+            else
+            {
+                ViewData["CategoryTitle"] = "Search Results";
+            }
+            var books = await _bookService.GetBooks(
+                    queryParams);
+                //List<Book> books = await _bookService.GetAllBooks();
+                return View("~/Views/Books/BookSearchResults.cshtml", books);
+            }
+
+
+        [HttpGet]
         [Route("Book/EditBook/{bookId}")]
         [AllowAnonymous]
         public async Task<IActionResult> EditBook(string bookId)

@@ -83,6 +83,7 @@ namespace ASI.Basecode.Services.Services
                 BookId = b.BookId,
                 Title = b.Title,
                 Subtitle = b.Subtitle,
+                UploadDate = b.UploadDate,
                 GenreList = b.GenreList,
                 PublicationDate = b.PublicationDate,
                 Author = b.Author,

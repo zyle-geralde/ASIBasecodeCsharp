@@ -1,0 +1,24 @@
+﻿@using ASI.Basecode.Services.ServiceModels
+@model List<BookViewModel>
+@{
+    ViewData["Title"] = "Search Results";
+    var categoryTitle = (string?)ViewData["CategoryTitle"] ?? "Search Results";
+}
+
+<h1>Search Results</h1>
+
+<h1>@categoryTitle</h1>
+
+
+<div class="book-grid">
+  @foreach(var book in Model) {
+    <div class="book-card">
+      <img src="@book.CoverImageUrl" alt="@book.Title" />
+      <h3>@book.Title</h3>
+      <p>by @book.Author</p>
+        <p>Upload date: @book.UploadDate</p>
+        <p>Average rating: @book.AverageRating</p>
+    </div>
+  }
+</div>
+
