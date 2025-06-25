@@ -11,6 +11,8 @@ namespace ASI.Basecode.Data.Models
         public DateTime CreatedTime { get; set; }
         public string UpdatedBy { get; set; }
         public DateTime UpdatedTime { get; set; }
-        public string AdminId { get; set; }
+        public string OtpCode { get; set; }
+        public DateTime? OtpExpirationDate { get; set; }
+        public bool IsEmailVerified { get; set; } = false;
     }
 }

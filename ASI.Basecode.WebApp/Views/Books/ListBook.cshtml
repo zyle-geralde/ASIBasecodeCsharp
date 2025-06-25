@@ -5,6 +5,11 @@
 @model List<BookViewModel>
 
 @{
+    var current_genre_details = ViewBag.CurrentGenreDetails as ASI.Basecode.Services.ServiceModels.BookGenreViewModel;
+
+    string genre_display_name = current_genre_details?.GenreName ?? ViewBag.CurrentGenreDetails as string ?? "Books";
+    string genre_description = current_genre_details?.GenreDescription ?? ViewBag.CurrentGenreDetails as string ?? "Manage your book collection";
+
     ViewData["Title"] = "Book List";
     Layout = "_AdminSidebarLayout";
 }
@@ -33,8 +38,8 @@
 <div class="content-card p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="header-section">
-            <h1>Books</h1>
-            <p>Manage your book collection</p>
+            <h1>@genre_display_name</h1>
+            <p>@genre_description</p>
         </div>
         <p>
             <a href="/Book/AddBook" class="btn btn-secondary">
@@ -198,9 +203,9 @@
                 {
                     <tr>
                         <td>
-                            @if (!string.IsNullOrWhiteSpace(book.CoverImage))
+                            @if (!string.IsNullOrWhiteSpace(book.CoverImageUrl))
                             {
-                                <img src="@book.CoverImage" alt="Cover Image" class="cover-image" /> 
+                                <img src="@book.CoverImageUrl" alt="Cover Image" class="cover-image" /> 
                             }
                             else
                             {
@@ -234,7 +239,7 @@
                                     <a href="/Book/EditBook/@book.BookId" class="action-icon-button text-primary">
                                         <i class="fas fa-edit"></i> 
                                     </a>
-                                <button type="button" class="action-icon-button text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" id="delete-modal-button" data-book-id="@book.BookId" data-cover-url=@book.CoverImage data-book-url=@book.BookFile>
+                                <button type="button" class="action-icon-button text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" id="delete-modal-button" data-book-id="@book.BookId" data-cover-url=@book.CoverImageUrl data-book-url=@book.BookFileUrl>
                                         <i class="fas fa-trash"></i> 
                                     </button>
                                 </div>

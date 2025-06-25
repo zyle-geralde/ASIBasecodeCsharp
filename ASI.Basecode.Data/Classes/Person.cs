@@ -8,8 +8,6 @@ namespace ASI.Basecode.Data.Classes
 {
     public abstract class Person
     {
-
-        public string ProfileID { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
     }

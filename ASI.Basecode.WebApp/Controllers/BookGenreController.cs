@@ -17,10 +17,12 @@ namespace ASI.Basecode.WebApp.Controllers
     public class BookGenreController : Controller
     {
         private readonly IBookGenreService BookGenreService;
+        private readonly IBookService BookService;
 
-        public BookGenreController(IBookGenreService book_genre_service)
+        public BookGenreController(IBookGenreService book_genre_service,IBookService book_service)
         {
             BookGenreService = book_genre_service;
+            BookService = book_service;
         }
 
         [HttpGet]
@@ -178,12 +180,13 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
+                //Change this during code cleaning
                 List<BookViewModel> retreived_books_by_genre = await BookGenreService.GetBooksByGenre(genre_name);
-               BookGenreViewModel retreived_genre_by_genre_name = await BookGenreService.GetBookGenreByName(genre_name);
+                BookGenreViewModel retreived_genre_by_genre_name = await BookGenreService.GetBookGenreByName(genre_name);
 
                 ViewBag.CurrentGenreDetails = retreived_genre_by_genre_name;
 
-                return View("~/Views/BookGenres/GenreView.cshtml", retreived_books_by_genre);
+                return View("~/Views/Books/ListBook.cshtml", retreived_books_by_genre);
             }
             catch (ApplicationException ex)
             {
