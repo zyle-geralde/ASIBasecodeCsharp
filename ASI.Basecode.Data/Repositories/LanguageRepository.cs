@@ -54,5 +54,10 @@ namespace ASI.Basecode.Data.Repositories
             _dbContext.Languages.Remove(existingLanguage);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task EditLanguage()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

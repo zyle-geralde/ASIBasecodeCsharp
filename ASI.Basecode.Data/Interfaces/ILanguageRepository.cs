@@ -18,5 +18,7 @@ namespace ASI.Basecode.Data.Interfaces
         Task DeleteLanguage(string languageId);
 
         Task<Language> GetLanguageById(string languageId);
+
+        Task EditLanguage();
     }
 }

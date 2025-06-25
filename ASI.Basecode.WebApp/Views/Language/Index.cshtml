@@ -102,7 +102,7 @@
             <div class="modal-body pt-2">
                 <div id="addLanguageErrorAlert">
                 </div>
-                <form id="addLanguageForm" >
+                <div id="addLanguageForm" >
                     <div class="mb-3">
                         <label for="newLanguage" class="form-label">Language</label>
                         <input type="text" class="form-control" id="newLanguage" name="LanguageName" placeholder="Text"> @* Removed 'required' as JS/server will handle validation *@
@@ -111,7 +111,7 @@
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn add-language-btn" id="submitAddLanguageBtn">ADD</button> @* Changed type to 'button' and added ID *@
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -245,7 +245,7 @@
                 })
 
                 $("#delete-button-submit").on("click",async function(event){
-                            event.preventDefault();
+                    event.preventDefault();
 
                     try{
                         //fetch for Delete Language
@@ -295,15 +295,45 @@
                       })
 
 
-                    $("#edit-button-submit").on("click",async function(event){
-
-                        event.preventDefault();
-                        console.log(languageIdToEdit)
-                        console.log(languageNameToEdit)
-
-                        
+                    
                     })
-             })
+
+                            $("#edit-button-submit").on("click",async function(event){
+
+                                event.preventDefault();
+                                console.log(languageIdToEdit)
+                                console.log(languageNameToEdit)
+
+                                        try{
+                                        //fetch for Edit Language
+                                            const response = await fetch('/Language/Edit', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({LanguageId: languageIdToEdit, LanguageName: $("#editLanguage").val()})
+                                        })
+
+                                        if (response.ok) {
+                                            var data = await response.json();
+                                            console.log(data)
+                                            alert(data.message)
+                                            location.reload();
+                                        }
+                                        else {
+                                            var data = await response.json();
+                                            console.log(data)
+                                            alert(data.message)
+
+                                         }
+                                    }
+                                    catch(error){
+                                        alert(error);
+
+                                    }
+
+
+                            })
 
          });
 

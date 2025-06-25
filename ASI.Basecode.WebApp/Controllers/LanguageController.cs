@@ -103,5 +103,37 @@ namespace ASI.Basecode.WebApp.Controllers
                 return BadRequest(new { ex.Message });
             }
         }
+
+
+        [HttpPost]
+        [Route("Language/Edit")]
+        [AllowAnonymous]
+        public async Task<IActionResult> EditGenre([FromBody]LanguageViewModel language)
+        {
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _languageService.EditLanguage(language);
+                    return Ok(new { Message = "Language Successfully edited" });
+                }
+                catch (ArgumentException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+                catch (ApplicationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+
+            }
+
+            return BadRequest(new { Message = "Title should not be null or exceed 300 characters" });
+        }
     }
 }

@@ -109,5 +109,33 @@ namespace ASI.Basecode.Services.Services
             }
 
         }
+
+
+        public async Task EditLanguage(LanguageViewModel language)
+        {
+            if (language == null)
+            {
+                throw new ArgumentNullException(nameof(language), "Language should not be null");
+            }
+            bool check_language_exist = await _languageRepository.CheckLanguageExist(language.LanguageName);
+
+            if (check_language_exist)
+            {
+                throw new ArgumentException("Language Name already exist");
+            }
+            try
+            {
+                Language existing_language = await _languageRepository.GetLanguageById(language.LanguageId);
+
+                existing_language.LanguageName = language.LanguageName;
+                existing_language.UpdatedDate = DateTime.UtcNow;
+
+                await _languageRepository.EditLanguage();
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to edit book genre by id.");
+            }
+        }
     }
 }
