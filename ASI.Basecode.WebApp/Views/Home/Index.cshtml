@@ -1,6 +1,9 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using ASI.Basecode.Services.ServiceModels
+@model List<BookGenreViewModel>
 
+
+@{
+    ViewData["Title"] = "Home Page";
     // Genre
     var genres = new List<Tuple<string, string>>
     {
@@ -89,17 +92,25 @@
                     <h2>What Do You Feel Like Reading?</h2>
                     <p>Find books that match your mood!</p>
                     <div class="category-scroll-container">
-                        @foreach (var genre in genres)
-                        {
-                            <div class="category-card">
-                                <img src="@genre.Item2" alt="@genre.Item1 Books">
-                                <div class="category-card-overlay">
-                                    <span>@genre.Item1</span>
-                                </div>
+                                         @foreach (var genre in Model)
+                    {
+                    <a asp-controller="Book"
+                       asp-action="SearchResults"
+                       asp-route-genreFilter="@genre.BookGenreId"
+                       asp-route-category="@genre.GenreName"
+                       class="category-card">
+                       <img src="@genre.GenreImageUrl" 
+                                 alt="@genre.GenreName Books" 
+                                 style="width:120px;height:180px;" />
+                            <div class="category-card-overlay">
+                                <span>@genre.GenreName</span>
                             </div>
-                        }
+                        </a>
+                    }
                     </div>
                 </section>
+                <ul>
+                  
 
                 <!-- View Books Top Rated By Users? Section -->
                 <section class="section-card">
@@ -141,6 +152,20 @@
                         </div>
                     }
                 </section>
+                <ul>
+@*   @foreach (var genre in Model)
+  {
+    <li style="margin-bottom: .5rem;">
+      <strong>@genre.GenreName</strong><br />
+      @if (!string.IsNullOrEmpty(genre.GenreImageUrl))
+      {
+        <img src="@genre.GenreImageUrl"
+             alt="@genre.GenreName"
+             style="width:80px;height:auto;margin-top:.25rem;" />
+      }
+    </li>
+  }
+</ul> *@
 
                 <!-- View New Books Section -->
                 <section class="section-card">
