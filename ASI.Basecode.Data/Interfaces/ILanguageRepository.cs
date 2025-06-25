@@ -10,5 +10,7 @@ namespace ASI.Basecode.Data.Interfaces
     public interface ILanguageRepository
     {
         Task AddLanguage(Language language);
+
+        Task<bool> CheckLanguageExist(string language);
     }
 }
