@@ -59,5 +59,32 @@ namespace ASI.Basecode.Data.Repositories
         {
             await _dbContext.SaveChangesAsync();
         }
+        
+
+        public async Task<List<Book>> GetBooksByLanguage()
+        {
+            try
+            {
+                
+                return await _dbContext.Books.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Language> GetBookGenreByName(string languageId)
+        {
+            try
+            {
+                return await _dbContext.Languages.FirstOrDefaultAsync(language => language.LanguageId == languageId);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
     }
 }

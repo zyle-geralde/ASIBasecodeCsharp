@@ -20,5 +20,9 @@ namespace ASI.Basecode.Data.Interfaces
         Task<Language> GetLanguageById(string languageId);
 
         Task EditLanguage();
+
+        Task<List<Book>> GetBooksByLanguage();
+
+        Task<Language> GetLanguageByName(string language_name);
     }
 }
