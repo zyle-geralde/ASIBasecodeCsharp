@@ -1,0 +1,606 @@
+﻿@model List<ASI.Basecode.Services.ServiceModels.AuthorModel>
+
+@{
+    ViewData["Title"] = "Authors";
+    Layout = "_AdminSidebarLayout";
+
+    // --- TEMPORARY DATA FOR DESIGN VIEWING  ---
+    var tempAuthors = new List<ASI.Basecode.Services.ServiceModels.AuthorModel>
+    {
+        new ASI.Basecode.Services.ServiceModels.AuthorModel
+        {
+            AuthorId = "temp-author-1",
+            AuthorName = "Jane Austen",
+            AuthorDescription = "Prolific English novelist, celebrated for her works which interpret, critique and comment upon the British landed gentry.",
+            AuthorImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Jane_Austen_by_Cassandra_Austen_%28cropped%29.jpg/220px-Jane_Austen_by_Cassandra_Austen_%28cropped%29.jpg",
+            CreatedBy = "System",
+            UploadDate = DateTime.Now.AddMonths(-18),
+            UpdatedDate = DateTime.Now.AddMonths(-18)
+        },
+        new ASI.Basecode.Services.ServiceModels.AuthorModel
+        {
+            AuthorId = "temp-author-2",
+            AuthorName = "George Orwell",
+            AuthorDescription = "English novelist, essayist, journalist, and critic. Best known for the dystopian novel 'Nineteen Eighty-Four'.",
+            AuthorImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/George_Orwell_promo_photo.jpg/220px-George_Orwell_promo_photo.jpg",
+            CreatedBy = "System",
+            UploadDate = DateTime.Now.AddMonths(-12),
+            UpdatedDate = DateTime.Now.AddMonths(-12)
+        },
+        new ASI.Basecode.Services.ServiceModels.AuthorModel
+        {
+            AuthorId = "temp-author-3",
+            AuthorName = "Agatha Christie",
+            AuthorDescription = "English crime novelist, short story writer, and playwright. She is best known for her 66 detective novels.",
+            AuthorImageUrl = null,
+            CreatedBy = "System",
+            UploadDate = DateTime.Now.AddMonths(-24),
+            UpdatedDate = DateTime.Now.AddMonths(-24)
+        }
+    };
+}
+
+@section styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin/books/listbook.css" asp-append-version="true" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <style>
+        .author-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+
+        .data-table th:last-child,
+        .data-table td:last-child {
+            text-align: center; 
+            vertical-align: middle;
+        }
+
+        .data-table td .action-buttons {
+            display: flex; 
+            justify-content: center;
+            align-items: center; 
+            gap: 0.5rem; 
+            white-space: nowrap; 
+        }
+    </style>
+}
+
+<div class="content-card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="header-section">
+            <h1>Authors</h1>
+            <p>View and manage authors</p>
+        </div>
+
+        <p>
+            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addAuthorModal">
+                <i class="fas fa-plus me-2" style="color: #fff"></i> ADD AUTHOR
+            </a>
+        </p>
+    </div>
+
+    <div class="search-filter-container">
+        <div style="position: relative; flex-grow: 1;">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" class="form-control search-field" placeholder="Search authors..." style="padding-left: 33px;" />
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary">
+                <i class="fas fa-sort"></i> Sort
+            </button>
+        </div>
+    </div>
+
+    @if (tempAuthors != null && tempAuthors.Any())
+    {
+        <div class="table-responsive">
+            <table class="data-table table table-hover">
+                <thead>
+                    <tr>
+                        <th style="padding-left: 10px">Image</th>
+                        <th>Author Name</th>
+                        <th>Description</th>
+                        <th>Upload Date</th>
+                        <th class="text-md-center">Actions</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var author in tempAuthors)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrWhiteSpace(author.AuthorImageUrl))
+                                {
+                                    <img src="@author.AuthorImageUrl" alt="Author Image" class="author-image" />
+                                }
+                                else
+                                {
+                                    <span>No Image</span>
+                                }
+                            </td>
+                            <td class="align-middle" style="padding-left: 10px">@author.AuthorName</td>
+                            <td class="align-middle">@author.AuthorDescription</td>
+                            <td class="align-middle">@author.UploadDate?.ToShortDateString()</td>
+                            <td class="align-middle" style="white-space:nowrap;">
+                                <div class="action-buttons"> 
+                                    <button type="button" class="btn btn-icon text-primary edit-author-btn"
+                                            data-bs-toggle="modal" data-bs-target="#editAuthorModal"
+                                            data-author-id="@author.AuthorId"
+                                            data-author-name="@author.AuthorName"
+                                            data-author-description="@author.AuthorDescription"
+                                            data-author-image-url="@author.AuthorImageUrl">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-icon text-danger delete-author-btn"
+                                            data-bs-toggle="modal" data-bs-target="#deleteAuthorConfirmModal"
+                                            data-author-id="@author.AuthorId"
+                                            data-author-image-url="@author.AuthorImageUrl"
+                                            data-author-name="@author.AuthorName">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p class="empty-message">No authors found. Click "ADD AUTHOR" to add some.</p>
+    }
+</div>
+
+
+<div class="modal fade" id="addAuthorModal" tabindex="-1" aria-labelledby="addAuthorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content add-language-modal-content p-4">
+            <div class="modal-header border-0 pb-0 mb-3">
+                <h5 class="modal-title add-language-title" id="addAuthorLabel">Add New Author</h5>
+                <button type="button" class="btn-close add-language-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <form id="addAuthorForm" method="post" action="/Author/Add">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="newAuthorName" class="form-label">Author Name</label>
+                        <input type="text" class="form-control" id="newAuthorName" name="AuthorName" placeholder="e.g., J.K. Rowling" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newAuthorDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="newAuthorDescription" name="AuthorDescription" rows="3" placeholder="Brief description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newAuthorImageFile" class="form-label">Author Image</label>
+                        <input type="file" class="form-control" id="newAuthorImageFile" accept="image/*">
+                        <span id="newAuthorImageUploadStatus" class="form-text"></span>
+                        <input type="hidden" id="newAuthorImageUrl" name="AuthorImageUrl" />
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn add-language-btn">ADD</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editAuthorModal" tabindex="-1" aria-labelledby="editAuthorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content edit-author-modal-content p-4">
+            <div class="modal-header border-0 pb-0 mb-3">
+                <h5 class="modal-title edit-author-title" id="editAuthorLabel">Edit Author</h5>
+                <button type="button" class="btn-close edit-author-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <form id="editAuthorForm" method="post" action="/Author/Edit">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editAuthorId" name="AuthorId" />
+                    <div class="mb-3">
+                        <label for="editAuthorName" class="form-label">Author Name</label>
+                        <input type="text" class="form-control" id="editAuthorName" name="AuthorName" placeholder="Text" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editAuthorDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="editAuthorDescription" name="AuthorDescription" rows="3" placeholder="Brief description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editAuthorImageFile" class="form-label">Author Image</label>
+                        <input type="file" class="form-control" id="editAuthorImageFile" accept="image/*">
+                        <span id="editAuthorImageUploadStatus" class="form-text"></span>
+                        <input type="hidden" id="editAuthorImageUrl" name="AuthorImageUrl" />
+                        <p class="form-text">Current Image: <span id="currentAuthorImageFileName"></span></p>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn edit-author-btn">SAVE CHANGES</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade confirmation-modal" id="deleteAuthorConfirmModal" tabindex="-1" aria-labelledby="deleteAuthorConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="deleteAuthorConfirmModalLabel">Delete Author Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="mb-4" id="deleteAuthorModalText">Are you sure you want to delete author: <strong id="authorToDeleteName"></strong>? This action cannot be undone and will permanently remove the author and their associated image.</p>
+                <input type="hidden" id="deleteAuthorId" />
+                <input type="hidden" id="deleteAuthorImageUrl" />
+                <div class="d-flex justify-content-center gap-2">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger px-4" id="confirmDeleteAuthorBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script type="module">
+        //  Firebase configuration 
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4CTMSbgGQN_yLn9lEZlswbZ_2A2Xhl0k",
+            authDomain: "basabuzz-ca8fe.firebaseapp.com",
+            projectId: "basabuzz-ca8fe",
+            storageBucket: "basabuzz-ca8fe.firebasestorage.app",
+            messagingSenderId: "206533484485",
+            appId: "1:206533484485:web:2c71a06a17d5244efe75ac"
+        };
+
+        // Initialize Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebase/storage/9.6.1/index.esm.js";
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+
+        // Firebase Utility Functions
+        async function uploadFileToFirebase(file, path, statusElement) {
+            if (!file) {
+                statusElement.textContent = 'No file selected.';
+                return null;
+            }
+            const timestamp = new Date().getTime();
+            const randomString = Math.random().toString(36).substring(2, 8);
+            const uniqueFileName = `${path}${timestamp}-${randomString}-${file.name}`;
+            const storageRef = ref(storage, uniqueFileName);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            return new Promise((resolve, reject) => {
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        statusElement.textContent = `Upload is ${progress.toFixed(2)}% done`;
+                    },
+                    (error) => {
+                        statusElement.textContent = `Upload failed: ${error.message}`;
+                        console.error("Upload error:", error);
+                        reject(error);
+                    },
+                    async () => {
+                        try {
+                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            statusElement.textContent = 'Upload successful!';
+                            resolve(downloadURL);
+                        } catch (error) {
+                            statusElement.textContent = `Failed to get download URL: ${error.message}`;
+                            console.error("Get Download URL error:", error);
+                            reject(error);
+                        }
+                    }
+                );
+            });
+        }
+
+        async function deleteFileFromFirebase(fileUrl) {
+            if (!fileUrl) {
+                console.warn("Attempted to delete null or empty file URL from Firebase.");
+                return;
+            }
+            try {
+                const fileRef = ref(storage, fileUrl);
+                await deleteObject(fileRef);
+                console.log(`Successfully deleted file from Firebase: ${fileUrl}`);
+            } catch (error) {
+                console.error(`Failed to delete file from Firebase ${fileUrl}:`, error);
+            }
+        }
+
+        // --- ADD AUTHOR MODAL LOGIC ---
+        const addAuthorForm = document.getElementById("addAuthorForm");
+        const newAuthorImageFile = document.getElementById("newAuthorImageFile");
+        const newAuthorImageUploadStatus = document.getElementById("newAuthorImageUploadStatus");
+        const newAuthorImageUrlInput = document.getElementById("newAuthorImageUrl");
+
+        addAuthorForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const antiForgeryToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            if (!antiForgeryToken) {
+                toastr.error("Anti-forgery token not found. Cannot proceed.");
+                return;
+            }
+
+            let uploadedImageUrl = newAuthorImageUrlInput.value;
+            if (newAuthorImageFile.files.length > 0) {
+                const file = newAuthorImageFile.files[0];
+                try {
+                    uploadedImageUrl = await uploadFileToFirebase(file, "authors/", newAuthorImageUploadStatus);
+                    newAuthorImageUrlInput.value = uploadedImageUrl;
+                } catch (error) {
+                    toastr.error("Failed to upload image. Please try again.");
+                    console.error("Image upload error:", error);
+                    return;
+                }
+            }
+
+            const authorData = {
+                AuthorName: addAuthorForm.querySelector('[name="AuthorName"]').value,
+                AuthorDescription: addAuthorForm.querySelector('[name="AuthorDescription"]').value,
+                AuthorImageUrl: uploadedImageUrl
+            };
+
+            try {
+                const response = await fetch("/Author/Add", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': antiForgeryToken
+                    },
+                    body: JSON.stringify(authorData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    toastr.success(result.message || "Author added successfully!");
+                    $('#addAuthorModal').modal('hide');
+                    window.location.reload();
+                } else {
+                    let errorMessage = result.message || "Failed to add author.";
+                    if (result.errors && result.errors.length > 0) {
+                        errorMessage += "<br>" + result.errors.join("<br>");
+                    }
+                    toastr.error(errorMessage);
+                    console.error("Add Author Error:", result);
+                }
+            } catch (error) {
+                toastr.error("An unexpected error occurred while adding the author.");
+                console.error("Add Author Fetch Error:", error);
+                if (uploadedImageUrl && uploadedImageUrl.trim() !== '') {
+                    await deleteFileFromFirebase(uploadedImageUrl);
+                    toastr.warning("Image upload rolled back due to backend error.");
+                }
+            }
+        });
+
+        $('#addAuthorModal').on('hidden.bs.modal', function () {
+            addAuthorForm.reset();
+            newAuthorImageUploadStatus.textContent = '';
+            newAuthorImageUrlInput.value = '';
+        });
+
+
+        // --- EDIT AUTHOR MODAL LOGIC ---
+        const editAuthorForm = document.getElementById("editAuthorForm");
+        const editAuthorImageFile = document.getElementById("editAuthorImageFile");
+        const editAuthorImageUploadStatus = document.getElementById("editAuthorImageUploadStatus");
+        const editAuthorImageUrlInput = document.getElementById("editAuthorImageUrl");
+        const currentAuthorImageFileName = document.getElementById("currentAuthorImageFileName");
+
+        $('.edit-author-btn').on('click', function () {
+            const authorId = $(this).data('author-id');
+            const authorName = $(this).data('author-name');
+            const authorDescription = $(this).data('author-description');
+            const authorImageUrl = $(this).data('author-image-url');
+
+            $('#editAuthorId').val(authorId);
+            $('#editAuthorName').val(authorName);
+            $('#editAuthorDescription').val(authorDescription);
+            $('#editAuthorImageUrl').val(authorImageUrl);
+            $('#editAuthorImageUrl').data('original-url', authorImageUrl);
+
+            if (authorImageUrl) {
+                const urlParts = authorImageUrl.split('/');
+                currentAuthorImageFileName.textContent = urlParts[urlParts.length - 1].split('?')[0];
+            } else {
+                currentAuthorImageFileName.textContent = 'No image uploaded';
+            }
+
+            editAuthorImageUploadStatus.textContent = '';
+            editAuthorImageFile.value = '';
+        });
+
+        editAuthorForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const antiForgeryToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            if (!antiForgeryToken) {
+                toastr.error("Anti-forgery token not found. Cannot proceed.");
+                return;
+            }
+
+            let uploadedImageUrl = editAuthorImageUrlInput.value;
+            let originalImageUrl = $('#editAuthorImageUrl').data('original-url');
+
+            if (editAuthorImageFile.files.length > 0) {
+                const file = editAuthorImageFile.files[0];
+                try {
+                    uploadedImageUrl = await uploadFileToFirebase(file, "authors/", editAuthorImageUploadStatus);
+                    editAuthorImageUrlInput.value = uploadedImageUrl;
+                    if (originalImageUrl && originalImageUrl !== uploadedImageUrl) {
+                        await deleteFileFromFirebase(originalImageUrl);
+                    }
+                } catch (error) {
+                    toastr.error("Failed to upload new image. Please try again.");
+                    console.error("Image upload error:", error);
+                    return;
+                }
+            } else if (!editAuthorImageUrlInput.value && originalImageUrl) {
+                await deleteFileFromFirebase(originalImageUrl);
+            }
+
+
+            const authorData = {
+                AuthorId: $('#editAuthorId').val(),
+                AuthorName: $('#editAuthorName').val(),
+                AuthorDescription: $('#editAuthorDescription').val(),
+                AuthorImageUrl: editAuthorImageUrlInput.value
+            };
+
+            try {
+                const response = await fetch("/Author/Edit", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': antiForgeryToken
+                    },
+                    body: JSON.stringify(authorData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    toastr.success(result.message || "Author updated successfully!");
+                    $('#editAuthorModal').modal('hide');
+                    window.location.reload();
+                } else {
+                    let errorMessage = result.message || "Failed to update author.";
+                    if (result.errors && result.errors.length > 0) {
+                        errorMessage += "<br>" + result.errors.join("<br>");
+                    }
+                    toastr.error(errorMessage);
+                    console.error("Edit Author Error:", result);
+                }
+            } catch (error) {
+                toastr.error("An unexpected error occurred while updating the author.");
+                console.error("Edit Author Fetch Error:", error);
+                if (editAuthorImageFile.files.length > 0 && uploadedImageUrl && uploadedImageUrl.trim() !== '') {
+                    await deleteFileFromFirebase(uploadedImageUrl);
+                    toastr.warning("New image upload rolled back due to backend error.");
+                }
+            }
+        });
+
+        $('#editAuthorModal').on('hidden.bs.modal', function () {
+            editAuthorForm.reset();
+            editAuthorImageUploadStatus.textContent = '';
+            editAuthorImageUrlInput.value = '';
+            currentAuthorImageFileName.textContent = '';
+            $('#editAuthorImageUrl').removeData('original-url');
+        });
+
+
+        // --- DELETE AUTHOR MODAL LOGIC ---
+        $('.delete-author-btn').on('click', function () {
+            const authorId = $(this).data('author-id');
+            const authorName = $(this).data('author-name');
+            const authorImageUrl = $(this).data('author-image-url');
+
+            $('#deleteAuthorId').val(authorId);
+            $('#deleteAuthorImageUrl').val(authorImageUrl);
+            $('#authorToDeleteName').text(authorName);
+        });
+
+        document.getElementById("confirmDeleteAuthorBtn").addEventListener("click", async function () {
+            const authorIdToDelete = $('#deleteAuthorId').val();
+            const authorImageUrlToDelete = $('#deleteAuthorImageUrl').val();
+
+            var deleteModalInstance = bootstrap.Modal.getInstance(document.getElementById('deleteAuthorConfirmModal'));
+            deleteModalInstance.hide();
+
+            try {
+                const antiForgeryToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                if (!antiForgeryToken) {
+                    toastr.error("Anti-forgery token not found. Cannot proceed with deletion.");
+                    console.error("Anti-forgery token missing.");
+                    return;
+                }
+
+                const response = await fetch("/Author/Delete", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': antiForgeryToken
+                    },
+                    body: JSON.stringify({ AuthorId: authorIdToDelete })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    toastr.success(result.message || "Author deleted successfully!");
+                    if (authorImageUrlToDelete && authorImageUrlToDelete.trim() !== '') {
+                        await deleteFileFromFirebase(authorImageUrlToDelete);
+                    }
+                    window.location.reload();
+                } else {
+                    toastr.error(result.message || `Error: ${response.statusText}`);
+                    console.error("Server delete error:", result);
+                }
+            } catch (error) {
+                toastr.error("An unexpected error occurred while deleting the author. Please try again.");
+                console.error(`Error during fetch or Firebase deletion:`, error);
+            }
+        });
+
+
+        // --- GENERAL MODAL CLEANUP ---
+        $(document).ready(function () {
+            $('#addAuthorModal, #editAuthorModal, #deleteAuthorConfirmModal').on('hidden.bs.modal', function () {
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+            });
+        });
+
+        // Display TempData messages from controller
+        $(document).ready(function () {
+            var successMessage = '@(TempData["SuccessMessage"] ?? string.Empty)';
+            if (successMessage) {
+                toastr.success(successMessage);
+            }
+
+            var errorMessage = '@(TempData["ErrorMessage"] ?? string.Empty)';
+            if (errorMessage) {
+                toastr.error(errorMessage);
+            }
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById("searchInput");
+        if (searchInput) {
+            searchInput.addEventListener("keyup", function () {
+                const filter = searchInput.value.toLowerCase();
+                const table = document.querySelector(".data-table tbody");
+                const rows = table.querySelectorAll("tr");
+
+                rows.forEach(row => {
+                    const nameCol = row.children[1] ? row.children[1].textContent.toLowerCase() : '';
+                    const descCol = row.children[2] ? row.children[2].textContent.toLowerCase() : '';
+
+                    if (nameCol.includes(filter) || descCol.includes(filter)) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        }
+    </script>
+}

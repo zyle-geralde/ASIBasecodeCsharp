@@ -1,4 +1,5 @@
-﻿using ASI.Basecode.Data.Models;
+﻿using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
@@ -19,10 +20,13 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         private readonly IBookService _bookService;
         private readonly IReviewService _reviewService;
-        public BookViewController(IBookService bookService, IReviewService reviewService)
+        private readonly IBookGenreService _bookGenreService;
+        //private readonly IBookRepository _bookRepository;
+        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService)
         {
             _bookService = bookService;
             _reviewService = reviewService;
+            _bookGenreService = bookGenreService;
         }
 
 
@@ -35,45 +39,74 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             return View("~/Views/Books/AddBook.cshtml");
         }
 
-        [HttpGet]
-        [Route("Book/GetGenre")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetAllGenres()
-        {
-            try
-            {
-                List<string> all_genres = await _bookService.GetAllGenres();
+        //[HttpGet]
+        //[Route("Book/GetGenre")]
+        //[AllowAnonymous]
+        //public async Task<IActionResult> GetAllGenres()
+        //{
+        //    try
+        //    {
+        //        List<string> all_genres = await _bookService.GetAllGenres();
 
-                return Ok(new { Message = all_genres });
-            }
-            catch (Exception ex) 
-            {
-                return StatusCode(500, $"Failed to get all Genres: {ex.Message}");
-            }
-        }
+        //        return Ok(new { Message = all_genres });
+        //    }
+        //    catch (Exception ex) 
+        //    {
+        //        return StatusCode(500, $"Failed to get all Genres: {ex.Message}");
+        //    }
+        //}
 
 
         [HttpGet]
         [Route("Book/ListBook")]
         [AllowAnonymous]
-        public async Task<IActionResult> ListBook(string searchTerm,
-            string sortOrder,
-            string genreFilter,
-            int? page)
+        public async Task<IActionResult> ListBook(
+            string? searchTerm,
+            string? author,
+            int? rating,
+            DateTime? publishedFrom,
+            DateTime? publishedTo,
+            string[]? genreFilter,
+            string? sortOrder,
+            bool sortDescending = false,
+            int? page = 1
+            )
         {
             const int PageSize = 10;
             int pageIndex = page.GetValueOrDefault(1);
 
+            var queryParams = new BookQueryParams
+            {
+                SearchTerm = searchTerm,
+                Author = author,
+                Rating = rating,
+                PublishedFrom = publishedFrom,
+                PublishedTo = publishedTo,
+                GenreNames = genreFilter?.ToList(),
+                SortDescending = sortDescending,
+                PageIndex = page.GetValueOrDefault(1),
+                SortOrder = sortOrder ?? "title",
+                PageSize = PageSize,
+
+
+            };
+
+
             ViewData["CurrentSearch"] = searchTerm;
-            ViewData["CurrentSort"] = sortOrder;
-            ViewData["CurrentGenre"] = genreFilter;
-            ViewData["TitleSortParm"] = sortOrder == "title" ? "title_desc" : "title";
-            ViewData["AuthorSortParm"] = sortOrder == "author" ? "author_desc" : "author";
-            ViewData["DateSortParm"] = sortOrder == "date" ? "date_desc" : "date";
+            ViewData["CurrentAuthor"] = author;
+            ViewData["CurrentRating"] = rating;
+            ViewData["CurrentFromDate"] = publishedFrom?.ToString("yyyy-MM-dd");
+            ViewData["CurrentToDate"] = publishedTo?.ToString("yyyy-MM-dd");
+            ViewData["CurrentGenres"] = genreFilter ?? Array.Empty<string>();
+            ViewData["CurrentSort"] = queryParams.SortOrder;
+            ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+
+            var allGenres = await _bookGenreService.GetAllGenreList();
+            ViewData["AllGenres"] = allGenres;
+
 
             var books = await _bookService.GetBooks(
-                searchTerm, sortOrder, genreFilter, pageIndex, PageSize );
-
+                queryParams );
             //List<Book> books = await _bookService.GetAllBooks();
             return View("~/Views/Books/ListBook.cshtml", books);
         }
