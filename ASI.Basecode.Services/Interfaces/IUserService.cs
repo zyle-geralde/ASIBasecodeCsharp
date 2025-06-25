@@ -15,10 +15,7 @@ namespace ASI.Basecode.Services.Interfaces
         Task<User> AddAdminFromRegister(UserViewModel model);
         IEnumerable<User> GetAllUsers();
         Task<bool> DeleteUser(int id);
-
         Task<List<User>> GetUsersQueried(string searchTerm, string sortOrder, int pageIndex, int pageSize);
-
-
         Task VerifyOtp(OtpViewModel model);
 
         Task<OtpViewModel> GetUserbyEmail(string email);
