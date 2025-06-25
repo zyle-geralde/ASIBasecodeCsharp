@@ -1,0 +1,103 @@
+﻿.edit-genre-grid {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 40px;
+    align-items: start;
+    margin-top: 20px;
+}
+
+.image-upload-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 0;
+    margin: 0 auto;
+}
+
+.image-preview-container {
+    width: 150px;
+    height: 200px;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #f9f9f9;
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+    .image-preview-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border-radius: 4px;
+    }
+
+    .image-preview-container .placeholder-text {
+        color: #888;
+        font-style: italic;
+        text-align: center;
+        padding: 10px;
+    }
+
+
+.edit-genre-browse-button {
+    background: #647D7F;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-block;
+    width: 150px;
+    text-align: center;
+}
+
+    .edit-genre-browse-button:hover {
+        background-color: #435c5e;
+    }
+
+.edit-genre-upload-status {
+    font-size: 0.85em;
+    color: #555;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 250px; 
+    text-align: center;
+}
+
+    .edit-genre-upload-status.error-message {
+        color: #dc3545;
+    }
+
+#generImageFileNameDisplay {
+    display: none;
+}
+
+/*  .book-master-form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .book-master-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        } */
