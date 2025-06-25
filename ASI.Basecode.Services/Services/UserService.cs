@@ -124,6 +124,39 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
+        public async Task<User> GetUserById(int id)
+        {
+            return await _repository.GetUserById(id);
+        }
+
+        public async Task<bool> UpdateUser(UserViewModel model)
+        {
+            try
+            {
+                var user = await _repository.FindUserByEmail(model.Email);
+                if (user == null)
+                {
+                    throw new Exception("User not found.");
+                }
+
+                user.UserName = model.UserName;
+                user.UpdatedTime = DateTime.Now;
+                user.UpdatedBy = System.Environment.UserName;
+
+                // Update password if provided
+                if (!string.IsNullOrEmpty(model.Password))
+                {
+                    user.Password = PasswordManager.EncryptPassword(model.Password);
+                }
+
+                await _repository.UpdateUser(user);
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         public async Task<User> AddUserFromRegister(UserViewModel model)
         {

@@ -95,5 +95,58 @@ namespace ASI.Basecode.WebApp.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> EditUser(int id)
+        {
+            try
+            {
+                var user = await _userService.GetUserById(id);
+                if (user == null)
+                {
+                    TempData["ErrorMessage"] = "User not found.";
+                    return RedirectToAction("Index");
+                }
+
+                var viewModel = new UserViewModel
+                {
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    // Don't set password fields as they should be empty for security
+                    IsEmailVerified = user.IsEmailVerified
+                };
+
+                return View("~/Views/Users/EditUser.cshtml", viewModel);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the user.";
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditUser(UserViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Please correct the errors in the form.";
+                return View("~/Views/Users/EditUser.cshtml", model);
+            }
+
+            try
+            {
+                await _userService.UpdateUser(model);
+                TempData["SuccessMessage"] = "User updated successfully!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the user.";
+                return View("~/Views/Users/EditUser.cshtml", model);
+            }
+        }
+
+
     }
 }
