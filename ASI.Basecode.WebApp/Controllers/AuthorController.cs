@@ -9,6 +9,10 @@ namespace ASI.Basecode.WebApp.Controllers
 {
     public class AuthorController : Controller
     {
+
+        [HttpGet]
+        [Route("Author/Index")]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();

@@ -39,25 +39,25 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             return View("~/Views/Books/AddBook.cshtml");
         }
 
-        //[HttpGet]
-        //[Route("Book/GetGenre")]
-        //[AllowAnonymous]
-        //public async Task<IActionResult> GetAllGenres()
-        //{
-        //    try
-        //    {
-        //        List<string> all_genres = await _bookService.GetAllGenres();
-
-        //        return Ok(new { Message = all_genres });
-        //    }
-        //    catch (Exception ex) 
-        //    {
-        //        return StatusCode(500, $"Failed to get all Genres: {ex.Message}");
-        //    }
-        //}
-
-
         [HttpGet]
+        [Route("Book/GetGenre")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllGenres()
+        {
+            try
+            {
+                List<string> all_genres = await _bookService.GetAllGenres();
+
+                return Ok(new { Message = all_genres });
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, $"Failed to get all Genres: {ex.Message}");
+            }
+        }
+
+
+        /*[HttpGet]
         [Route("Book/ListBook")]
         [AllowAnonymous]
         public async Task<IActionResult> ListBook(
@@ -108,6 +108,17 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             var books = await _bookService.GetBooks(
                 queryParams );
             //List<Book> books = await _bookService.GetAllBooks();
+            return View("~/Views/Books/ListBook.cshtml", books);
+        }*/
+
+        [HttpGet]
+        [Route("Book/ListBook")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ListBook()
+        {
+            
+            List<BookViewModel> books = await _bookService.GetAllBooks();
+
             return View("~/Views/Books/ListBook.cshtml", books);
         }
 

@@ -40,6 +40,7 @@ namespace ASI.Basecode.WebApp
             this._services.AddScoped<IPersonProfileService, PersonProfileService>();
             this._services.AddScoped<IBookGenreService, BookGenreService>();
             this._services.AddScoped<IEmailSender, EmailSenderService>();
+            this._services.AddScoped<ILanguageService, LanguageService>();
 
 
 
@@ -51,6 +52,7 @@ namespace ASI.Basecode.WebApp
             this._services.AddScoped<IReviewRepository, ReviewRepository>();
             this._services.AddScoped<IPersonProfileRepository, PersonProfileRepository>();
             this._services.AddScoped<IBookGenreRepository, BookGenreRepository>();
+            this._services.AddScoped<ILanguageRepository, LanguageRepository>();
 
 
             // Manager Class
