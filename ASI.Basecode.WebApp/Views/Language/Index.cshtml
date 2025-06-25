@@ -71,7 +71,7 @@
                                             </button>
                                             <button type="button" class="btn btn-icon text-primary edit-language-btn"
                                                     data-bs-toggle="modal" data-bs-target="#editLanguageModal"
-                                                    data-id="@language.LanguageId" data-name="@language.LanguageName">
+                                                    data-id="@language.LanguageId" data-name="@language.LanguageName" id="edit_language_button">
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                         </div>
@@ -117,24 +117,25 @@
     </div>
 </div>
 
+@*Edit Modal*@
 <div class="modal fade" id="editLanguageModal" tabindex="-1" aria-labelledby="editLanguageLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content add-language-modal-content p-4">
             <div class="modal-header border-0 pb-0 mb-3">
-                <h5 class="modal-title add-language-title" id="editLanguageLabel">Add New Language</h5>
+                <h5 class="modal-title add-language-title" id="editLanguageLabel">Edit Language</h5>
                 <button type="button" class="btn-close add-language-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-2">
-                <form id="editLanguageForm">
-                    @Html.AntiForgeryToken()
+                <dev id="editLanguageForm">
+                    
                     <div class="mb-3">
                         <label for="newLanguage" class="form-label">Language</label>
                         <input type="text" class="form-control" id="editLanguage" />
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn add-language-btn">SAVE CHANGES</button>
+                        <button type="button" class="btn add-language-btn" id="edit-button-submit">SAVE CHANGES</button>
                     </div>
-                </form>
+                </dev>
             </div>
         </div>
     </div>
@@ -244,7 +245,7 @@
                 })
 
                 $("#delete-button-submit").on("click",async function(event){
-                    event.preventDefault();
+                            event.preventDefault();
 
                     try{
                         //fetch for Delete Language
@@ -271,11 +272,42 @@
                     }
                     catch(error){
                         alert(error);
+                    
                     }
                 })
 
 
-          });
+            //Edit language
+                  const show_edit_modal = document.querySelectorAll("#edit_language_button");
+                  let languageIdToEdit = null
+                  let languageNameToEdit = null
+
+                        //Adding click event listener for each delete button
+                        //Grab the bookId cover Url and Book Url from which the trash button was clicked
+                  show_edit_modal.forEach(button => {
+                  button.addEventListener("click", function (event) {
+                      languageIdToEdit = this.dataset.id;
+                      languageNameToEdit = this.dataset.name
+                      $("#editLanguage").val(languageNameToEdit)
+                      console.log(languageIdToEdit)
+                      console.log(languageNameToEdit)
+
+                      })
+
+
+                    $("#edit-button-submit").on("click",async function(event){
+
+                        event.preventDefault();
+                        console.log(languageIdToEdit)
+                        console.log(languageNameToEdit)
+
+                        
+                    })
+             })
+
+         });
+
+ 
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
