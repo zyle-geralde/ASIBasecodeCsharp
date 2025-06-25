@@ -10,7 +10,7 @@ namespace ASI.Basecode.Data.Interfaces
     public interface IBookRepository
     {
         Task AddBook(Book book);
-        Task<List<Book>> GetAllBooks();
+        Task<List<Book>> GetBooks(BookQueryParams queryParams);
 
         Task<Book?> GetBookById(string bookId);
 
@@ -19,5 +19,6 @@ namespace ASI.Basecode.Data.Interfaces
         Task DeleteBook(string bookId);
 
         Task<List<BookGenre>> GetAllGenres();
+        Task calculateAverageRating(string bookId);
     }
 }

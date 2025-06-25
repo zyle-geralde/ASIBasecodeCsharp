@@ -18,6 +18,430 @@
     width: 600px;
 }
 
+body 
+{
+    background: #f6f3ea;
+    font-family: 'Montserrat', sans-serif;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container
+{
+    max-width: 1980px;
+}
+
+.main-container 
+{
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    height: calc(100vh - 80px); /* 80px is the header height */
+    min-height: 0;
+    width: 100vw;
+    overflow: hidden;
+}
+
+.register-form-container 
+{
+    width: 40vw;
+    max-width: 480px;
+    min-width: 320px;
+    height: 100%;
+    margin: 0;
+    background: white;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 18px;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+}
+
+.quote-container 
+{
+    width: 60vw;
+    min-width: 320px;
+    max-width: none;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-image: url('https://placehold.co/971x937');
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0;
+    overflow: hidden;
+}
+
+.quote-overlay 
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(247, 244, 237, 0.65);
+}
+
+
+
+.quote-mark-left 
+{
+    position: absolute;
+    left: -18px;
+    top: -18px;
+    color: #3E4F4E;
+    font-size: 48px;
+    font-family: 'Gayathri', sans-serif;
+    font-weight: 700;
+}
+
+.quote-mark-right 
+{
+    position: absolute;
+    right: -18px;
+    bottom: -18px;
+    color: #485C61;
+    font-size: 48px;
+    font-family: 'Gayathri', sans-serif;
+    font-weight: 700;
+    transform: rotate(180deg);
+}
+
+.quote-text 
+{
+    color: #2C3438;
+    font-size: 1.2rem;
+    font-family: 'Inter', sans-serif;
+    font-style: italic;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.form-title 
+{
+    font-family: 'Merriweather', serif;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 32px;
+    line-height: 1.2;
+}
+
+.title-highlight 
+{
+    color: #5b7c78;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+}
+
+.form-group 
+{
+    width: 100%;
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label 
+{
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    color: #3a4a47;
+    margin-bottom: 4px;
+    display: block;
+    font-size: 14px;
+}
+
+.form-control 
+{
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #bfc8c6;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'Montserrat', sans-serif;
+    background: #fafafa;
+    color: #222;
+    margin-bottom: 2px;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.form-control::placeholder 
+{
+    color: #98958E;
+    font-weight: 300;
+}
+
+.submit-btn 
+{
+    width: 100%;
+    background: #4b5f5a;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 24px;
+    padding: 10px 0;
+    margin: 0 0 8px 0;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.submit-btn:hover 
+{
+    background: #5b7c78;
+}
+
+.alternate-link 
+{
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.alternate-link a 
+{
+    color: #5b7c78;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+.alternate-link a:hover 
+{
+    color: #3a4a47;
+}
+
+.login-redirect 
+{
+    text-align: center;
+    color: #222;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.05rem;
+    margin-top: 8px;
+}
+
+.login-link 
+{
+    color: #5b7c78;
+    text-decoration: underline;
+    margin-left: 2px;
+}
+
+.login-link:hover 
+{
+    color: #3a4a47;
+}
+
+/* Layout split for register page */
+.register-main-split 
+{
+    display: flex;
+    height: 100vh;
+    background: #f6f3ea;
+    min-height: 100vh;
+    box-sizing: border-box;
+    gap: 10px;
+}
+
+.register-left 
+{
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f6f3ea;
+    height: 100vh;
+    width: 50vh;
+}
+
+.register-form-card 
+{
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    padding: 32px 64px 32px 64px;
+    width: 100%;
+    max-width: 480px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.register-form-card form 
+{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.register-right 
+{
+    flex: 1 1 0;
+    position: relative;
+    background: none; 
+    overflow: hidden;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+.quote-bg 
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/img/book_bg.jpg') center center/cover no-repeat;
+    z-index: 0;
+    margin: 0; 
+    border-radius: 0; 
+}
+
+.quote-overlay 
+{
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(246, 243, 234, 0.5);
+    z-index: 1;
+}
+
+.quote-content 
+{
+    position: relative;
+    z-index: 2;
+    max-width: 650px;
+    margin: 0 100px;
+    text-align: center;
+    color: #222;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1.4rem;
+    line-height: 1.25;
+    display: flex;
+    flex-direction: row;
+    gap: 100px !important;
+}
+
+.quote-mark-left, .quote-mark-right 
+{
+    font-size: 64px;
+    color: #5b7c78;
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    margin-bottom: 8px;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.qoute-mark-left
+{
+    align-self: flex-start;
+}
+
+.qoute-mark-right 
+{
+    align-self: flex-end;
+}
+
+.quote-text 
+{
+    font-size: 1.4rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: #222;
+    margin: 25px;
+    padding-left: 25px;
+    text-align: center;
+    font-style: italic;
+    align-self: center;
+}
+
+.back-arrow 
+{
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    z-index: 10;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive: stack vertically on small screens */
+@media (max-width: 900px) 
+{
+    .register-main-split 
+    {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+    .register-left, .register-right
+    {
+        min-height: unset;
+        height: auto;
+        width: 100%;
+        justify-content: center;
+    }
+    .register-right, .quote-bg 
+    {
+        height: 220px;
+        min-height: 180px;
+        max-height: 260px;
+    }
+    .quote-content 
+    {
+        font-size: 1rem;
+        max-width: 95vw;
+        padding: 0 100px;
+        margin: 0;
+    }
+    .quote-text 
+    {
+        font-size: 1.1rem;
+        line-height: 1.3;
+        word-break: break-word;
+    }
+    .quote-mark-left, .quote-mark-right 
+    {
+        font-size: 1.5rem;
+        margin-bottom: 2px;
+    }
+}
+
+/* Scroll if content overflows on small screens */
+@media (max-width: 900px) 
+{
+    .register-main-split 
+    {
+        overflow-y: auto;
+        height: 100vh;
+    }
+}
+
 @media (min-width: 768px) 
 {
     .gradient-form 
@@ -32,5 +456,42 @@
     {
         border-top-right-radius: .3rem;
         border-bottom-right-radius: .3rem;
+    }
+}
+
+@media (max-width: 900px) 
+{
+    .main-container 
+    {
+        flex-direction: column;
+        align-items: center;
+        height: auto;
+        min-height: unset;
+    }
+    .register-form-container, .quote-container 
+    {
+        width: 95vw;
+        min-width: unset;
+        max-width: 95vw;
+        margin: 24px auto;
+        border-radius: 18px;
+        height: auto;
+    }
+    .quote-container 
+    {
+        height: 220px;
+    }
+}
+
+@media (max-width: 600px) 
+{
+    .register-form-card
+    {
+        max-width: 98vw;
+        padding: 18px 4vw 18px 4vw;
+    }
+    .form-title, .title-highlight 
+    {
+        font-size: 1.3rem;
     }
 }

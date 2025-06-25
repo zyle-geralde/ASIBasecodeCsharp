@@ -4,159 +4,114 @@
 
 @{
 
-    var currentPagePath = ViewContext.RouteData.Values["page"]?.ToString();
+    // var currentPagePath = ViewContext.RouteData.Values["page"]?.ToString();
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 }
 
-<style>
-    body {
-        font-family: 'Inter', sans-serif;
-    }
+<!DOCTYPE html>
 
-    .main-content {
-        background-color: #f5f5f5;
-        margin-top: 60px;
-        margin-left: 256px;
-        margin-right: auto;
-        flex-grow: 1;
-        padding: 0px;
-        overflow-y: auto;
-        overflow-x: auto;
-        min-width: 0;
-        box-sizing: border-box;
-        width: 100%;
-    }
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @* <title>@ViewData["Title"]</title> *@
 
-    .admin-layout {
-        display: flex;
-        min-height: 100vh;
-        width: 100%;
-    }
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    .admin-sidebar {
-        width: 256px;
-        background-color: #3e4f4a;
-        color: #e5e7eb;
-        padding: 16px;
-        padding-top: 160px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        flex-shrink: 0;
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        overflow-y: auto;
-        z-index: 1;
-    }
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/main.css" />
+    <link rel="stylesheet" href="~/css/login.css" />
 
-    .admin-sidebar-header {
-        margin-bottom: 32px;
-    }
+    <link rel="stylesheet" href="~/css/admin/adminsidebar.css" asp-append-version="true" />
 
-        .admin-sidebar-header h2 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 16px;
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+
+    @RenderSection("styles", required: false)
+
+    <style>
+        .dropdown {
+            position: absolute;
         }
+    </style>
+</head>
 
-    .admin-sidebar-nav ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
 
-    .admin-nav-item {
-        margin-bottom: 8px;
-    }
+<body>
+    @Html.Partial("_Header")
+    <div class="admin-layout">
 
-    .admin-nav-link {
-        display: flex;
-        align-items: center;
-        padding: 20px;
-        margin: 15px;
-        border-radius: 8px;
-        color: #ded6c9;
-        text-decoration: none;
-        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-    }
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+            </div>
+            <nav class="admin-sidebar-nav">
+                <ul>
+                    <li class="admin-nav-item">
+                        <a href="/Account/AdminDashboard" class="admin-nav-link @(currentController == "Account" && currentAction == "AdminDashboard" ? "admin-nav-link-active" : "")">
+                            <svg class="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l7 7m-15 0v10a1 1 0 001 1h3m-10-9h9.284c.032.112.066.223.109.333.342.825.966 1.547 1.777 2.053l.255.155c.677.41 1.528.536 2.39.378l.245-.054a2 2 0 001.272-1.63L21 9V6.2a1 1 0 00-.293-.707L18.414 4"></path></svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/User/Index" class="admin-nav-link @(currentController == "User" && currentAction == "Index" ? "admin-nav-link-active" : "")">
+                            <svg class="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.109-1.282-.326-1.874M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.109-1.282.326-1.874m0 0a2.007 2.007 0 012.336-2.336c.55-.174 1.137-.282 1.777-.282s1.227.108 1.777.282c.8.252 1.498.777 2.053 1.432M12 10a4 4 0 110-8 4 4 0 010 8z"></path></svg>
+                            Users
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/Book/ListBook" class="admin-nav-link @(currentController == "Book" && currentAction == "ListBook" ? "admin-nav-link-active" : "")">
+                            <svg class="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.523 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.523 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                            Books
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/BookGenre/ListGenre" class="admin-nav-link @(currentController == "BookGenre" && currentAction == "ListGenre" ? "admin-nav-link-active" : "")">
+                            <svg class="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            Genres
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/Author/Index" class="admin-nav-link @(currentController == "Author" && currentAction == "ListAuthor" ? "admin-nav-link-active" : "")">
+                            <svg class="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                            Authors
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/Language/Index" class="admin-nav-link @(currentController == "Language" && currentAction == "ListLanguage" ? "admin-nav-link-active" : "")">
+                            <svg class="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2h7a2 2 0 002-2v-1a2 2 0 012-2h2.945M19 7l3 3m0 0l-3 3m0-3H2m0 0l3-3m0 0l3 3"></path><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="2" x2="12" y2="22"></line><path d="M12 2a15.3 15.3 0 015 10c0 2.2-1.7 4.1-4 4.8l-1 0.4l-1 0.4c-2.3 0.7-5 0.7-7.3 0C5.7 18.1 4 16.2 4 14v-1a15.3 15.3 0 015-10"></path></svg>
+                            Languages
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
 
-        .admin-nav-link:hover {
-            background-color: #ded6c9;
-            color: #3e4f4a;
-        }
-
-    .admin-nav-link-active {
-        background-color: #ded6c9;
-        color: #3e4f4a;
-    }
-
-    .admin-nav-icon {
-        width: 20px;
-        height: 20px;
-        margin-right: 12px;
-    }
-
-</style>
-
-<link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
-<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-
-@RenderSection("styles", required: false)
-@Html.Partial("_Header")
-<div class="admin-layout">
-
-    <aside class="admin-sidebar">
-        <div class="admin-sidebar-header">
+        <div class="main-content">
+            @* This is where the content of the pages will be rendered *@
+            @RenderBody()
         </div>
-        <nav class="admin-sidebar-nav">
-            <ul>
-                <li class="admin-nav-item">
-                    <a href="/Account/AdminDashboard" class="admin-nav-link @(currentPagePath == "/Account/AdminDashboard" || currentPagePath == "/Account/AdminDashboard" ? "admin-nav-link-active" : "")">
-                        <svg class="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l7 7m-15 0v10a1 1 0 001 1h3m-10-9h9.284c.032.112.066.223.109.333.342.825.966 1.547 1.777 2.053l.255.155c.677.41 1.528.536 2.39.378l.245-.054a2 2 0 001.272-1.63L21 9V6.2a1 1 0 00-.293-.707L18.414 4"></path></svg>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="admin-nav-item">
-                    <a href="/User/Index" class="admin-nav-link @(currentPagePath == "/User/Index" ? "admin-nav-link-active" : "")">
-                        <svg class="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.109-1.282-.326-1.874M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.109-1.282.326-1.874m0 0a2.007 2.007 0 012.336-2.336c.55-.174 1.137-.282 1.777-.282s1.227.108 1.777.282c.8.252 1.498.777 2.053 1.432M12 10a4 4 0 110-8 4 4 0 010 8z"></path></svg>
-                        Users
-                    </a>
-                </li>
-                <li class="admin-nav-item">
-                    <a href="/Book/ListBook" class="admin-nav-link @(currentPagePath == "/Book/ListBook" ? "admin-nav-link-active" : "")">
-                        <svg class="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.523 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.523 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                        Books
-                    </a>
-                </li>
-                
-                <li class="admin-nav-item">
-                    <a href="/BookGenre/ListGenre" class="admin-nav-link @(currentPagePath == "/BookGenre/ListGenre" ? "admin-nav-link-active" : "")">
-                        <svg class="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        Genres
-                    </a>
-                </li>
-                <li class="admin-nav-item">
-                    <a href="/Reviews/Index" class="admin-nav-link @(currentPagePath == "/Reviews/Index" ? "admin-nav-link-active" : "")">
-                        <svg class="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
-                        Authors
-                    </a>
-                </li>
-                <li class="admin-nav-item">
-                    <a href="/Reviews/Index" class="admin-nav-link @(currentPagePath == "/Reviews/Index" ? "admin-nav-link-active" : "")">
-                        <svg class="admin-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
-                        Languages
-                    </a>
-                </li>
-                
-            </ul>
-        </nav>
-    </aside>
-
-    <div class="main-content">
-        @* This is where the content of the pages will be rendered *@
-        @RenderBody()
     </div>
-</div>
 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://kit.fontawesome.com/7a7c645416.js" crossorigin="anonymous"></script>
 
-@RenderSection("scripts", required: false)
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.js"></script>
+
+    <script>
+        toastr.options = {
+            positionClass: "toast-top-center",
+            timeOut: 3000,
+            closeButton: true,
+            progressBar: true
+        };
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

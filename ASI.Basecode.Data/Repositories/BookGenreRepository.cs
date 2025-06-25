@@ -37,7 +37,7 @@ namespace ASI.Basecode.Data.Repositories
         {
             return await DbContext.BookGenres.AnyAsync(genre => genre.GenreName.ToLower() == genre_name.ToLower());
         }
-        /*public async Task<List<BookGenre>> GetAllGenres()
+        public async Task<List<BookGenre>> GetAllGenres()
         {
             try
             {
@@ -46,7 +46,7 @@ namespace ASI.Basecode.Data.Repositories
             catch (Exception ex) {
                 throw;
             }
-        }*/
+        }
 
         public async Task<BookGenre> GetBookGenreById(string genre_id)
         {

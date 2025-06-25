@@ -1,12 +1,13 @@
-﻿using System;
+﻿using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
-using ASI.Basecode.Data.Interfaces;
-using ASI.Basecode.Data.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace ASI.Basecode.Data.Repositories
 {
@@ -24,9 +25,74 @@ namespace ASI.Basecode.Data.Repositories
             await _dbContext.Books.AddAsync(book);
             await _dbContext.SaveChangesAsync();
         }
-        public async Task<List<Book>> GetAllBooks() 
+        public async Task<List<Book>> GetBooks(BookQueryParams queryParams) 
         {
-            return await _dbContext.Books.ToListAsync();
+            IQueryable<Book> query = _dbContext.Books.AsNoTracking();
+
+            // SEARCH
+            if (!string.IsNullOrEmpty(queryParams.SearchTerm))
+            {
+                var term = queryParams.SearchTerm.Trim();
+                query = query.Where(b =>
+                (b.Title != null && b.Title.Contains(term) || (b.Subtitle != null && b.Subtitle.Contains(term)) || (b.Author != null && b.Author.Contains(term))));
+
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.Author))
+                query = query.Where(b => b.Author != null && b.Author.Contains(queryParams.Author.Trim()));
+
+            if (queryParams.Rating.HasValue)
+                query = query.Where(b => b.AverageRating >= queryParams.Rating.Value);
+
+            if (queryParams.PublishedFrom.HasValue && queryParams.PublishedTo.HasValue)
+                query = query.Where(b => b.PublicationDate >= queryParams.PublishedFrom.Value && b.PublicationDate <= queryParams.PublishedTo.Value);
+
+            if (queryParams.GenreNames != null && queryParams.GenreNames.Any())
+            {
+                foreach (var gn in queryParams.GenreNames)
+                {
+                    var pattern = "%," + gn.Trim() + ",%";
+                    query = query.Where(b =>
+                        b.GenreList != null
+                        && b.GenreList.Contains(gn));
+                }
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.SortOrder))
+            {
+                bool desc = queryParams.SortDescending;
+                switch (queryParams.SortOrder.Trim().ToLower())
+                {
+                    case "title":
+                        query = desc
+                            ? query.OrderByDescending(b => b.Title)
+                            : query.OrderBy(b => b.Title);
+                        break;
+
+                    case "publicationdate":
+                        query = desc
+                            ? query.OrderByDescending(b => b.PublicationDate)
+                            : query.OrderBy(b => b.PublicationDate);
+                        break;
+
+                    case "rating":
+                        query = desc
+                            ? query.OrderByDescending(b => b.AverageRating)
+                            : query.OrderBy(b => b.AverageRating);
+                        break;
+
+                    default:
+                        query = query.OrderBy(b => b.Title);
+                        break;
+                }
+            }
+
+
+            query = query
+                .Skip((queryParams.PageIndex - 1) * queryParams.PageSize)
+                .Take(queryParams.PageSize);
+
+            return await query.ToListAsync();
         }
         public async Task<Book?> GetBookById(string bookId)
         {
@@ -82,6 +148,27 @@ namespace ASI.Basecode.Data.Repositories
                 throw;
             }
         }
+
+        public async Task calculateAverageRating(string bookId)
+        {
+            var reviews = _dbContext.Reviews
+                .Where(r => r.BookId == bookId);
+
+            double avg;
+            if (await reviews.AnyAsync())
+                avg = await reviews.AverageAsync(r => r.Rating);
+            else
+                avg = 0;
+
+            var book = await _dbContext.Books.FindAsync(bookId);
+            if (book != null)
+            {
+                book.AverageRating = (float)avg;
+                await _dbContext.SaveChangesAsync();
+            }
+
+        }
+
 
     }
 }
