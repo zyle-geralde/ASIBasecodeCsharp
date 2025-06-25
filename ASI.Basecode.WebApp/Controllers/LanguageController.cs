@@ -25,7 +25,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-            return View();
+            return View("~/Views/Language/Index.cshtml", new LanguageViewModel());
         }
 
         [HttpPost]
@@ -38,25 +38,25 @@ namespace ASI.Basecode.WebApp.Controllers
                 try
                 {
                     await _languageService.AddLanguage(language);
-                    return Ok(new { Message = "Language Successfully added" });
+                    TempData["SuccessMessage"] = "Langugae added successfully!";
+                    return RedirectToAction("Index");
                 }
                 catch (ArgumentException ex)
                 {
-                    return BadRequest(new { Message = ex.Message });
+                    ModelState.AddModelError("",   ex.Message);
                 }
                 catch (ApplicationException ex)
                 {
-                    return BadRequest(new { Message = ex.Message });
+                     ModelState.AddModelError("", ex.Message);
                 }
                 catch (Exception ex)
                 {
-                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                     ModelState.AddModelError("", ex.Message);
                 }
 
             }
 
-            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-            return BadRequest(new { errors = errors, Message = "Validation failed." });
+            return View("~/Views/Language/Index.cshtml",language);
         }
     }
 }
