@@ -68,5 +68,32 @@ namespace ASI.Basecode.Services.Services
             }
 
         }
+
+
+        public async Task<List<LanguageViewModel>> GetAllLanguage()
+        {
+
+            List<Language> language_list = await _languageRepository.GetAllLanguage();
+
+
+            if (language_list == null || !language_list.Any())
+            {
+                return new List<LanguageViewModel>();
+            }
+
+            //Mapping
+            List<LanguageViewModel> view_model_list = language_list.Select(language_element => new LanguageViewModel
+            {
+                LanguageId = language_element.LanguageId,
+                LanguageName = language_element.LanguageName,
+                CreatedBy = language_element.CreatedBy,
+                UpdatedDate = language_element.UpdatedDate,
+                UploadDate = language_element.UploadDate,
+                UpdatedBy = language_element.UpdatedBy
+            }).ToList();
+
+
+            return view_model_list;
+        }
     }
 }

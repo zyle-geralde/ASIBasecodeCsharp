@@ -28,5 +28,17 @@ namespace ASI.Basecode.Data.Repositories
         {
             return await _dbContext.Languages.AnyAsync(language_param => language_param.LanguageName.ToLower() == language.ToLower());
         }
+
+        public async Task<List<Language>> GetAllLanguage()
+        {
+            try
+            {
+                return await _dbContext.Languages.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }
