@@ -1,5 +1,5 @@
 ﻿@using ASI.Basecode.Services.ServiceModels
-@model List<BookGenreViewModel>
+@model HomeViewModel
 
 
 @{
@@ -92,7 +92,7 @@
                     <h2>What Do You Feel Like Reading?</h2>
                     <p>Find books that match your mood!</p>
                     <div class="category-scroll-container">
-                                         @foreach (var genre in Model)
+                                         @foreach (var genre in Model.Genres)
                     {
                     <a asp-controller="Book"
                        asp-action="SearchResults"
@@ -118,19 +118,20 @@
                         <h2>View Books Top Rated By Users?</h2>
                         <a asp-controller="Book" asp-action="SearchResults" asp-route-sortOrder="rating" asp-route-sortDescending="true" asp-route-category="Top Rated">See More</a>
                     </div>
-                    @foreach (var book in topRatedBooks) 
+                    @foreach (var book in Model.TopRatedBooks) 
                     {
-                        <div class="book-card">
-                            <img src="@book.ImageUrl" alt="@book.Title Book Cover">
+                        <a  class="book-card"
+                          href="/Book/BookDetails/@book.BookId" >
+                            <img src="@book.CoverImage" alt="@book.Title Book Cover">
                             <div class="book-card-content">
                                 <h3>@book.Title</h3>
                                 <p class="author">by @book.Author</p>
-                                <p class="description">@book.Description</p>
+                                <p class="description"><i>@book.Description</i></p>
                                 <div class="star-rating">
                                     <div class="stars">
                                         @for (int i = 0; i < 5; i++)
                                         {
-                                            if (i < book.Rating)
+                                            if (i < book.AverageRating)
                                             {
                                                 <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
                                             }
@@ -140,32 +141,29 @@
                                             }
                                         }
                                     </div>
-                                    <span class="rating-text">@book.Rating/5</span> 
+                                    <span class="rating-text">@book.AverageRating/5</span> 
                                 </div>
                                 <div class="genre-tags">
-                                    @foreach (var tag in book.Tags)
+                                                                    <span class="genre-tag">@book.GenreList</span>
+
+                                @* @if (!book.GenreList.Any())
+                                {
+                                                             @foreach (var tag in book.GenreList)
                                     {
-                                        <span class="genre-tag @tag.ToLower().Replace(" ", "-")">@tag</span>
+                                        <span class="genre-tag @tag">@tag</span>
                                     }
+                                }
+                                else
+                                {
+                                    <p>stay a while</p>
+                                } *@
+
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     }
                 </section>
                 <ul>
-@*   @foreach (var genre in Model)
-  {
-    <li style="margin-bottom: .5rem;">
-      <strong>@genre.GenreName</strong><br />
-      @if (!string.IsNullOrEmpty(genre.GenreImageUrl))
-      {
-        <img src="@genre.GenreImageUrl"
-             alt="@genre.GenreName"
-             style="width:80px;height:auto;margin-top:.25rem;" />
-      }
-    </li>
-  }
-</ul> *@
 
                 <!-- View New Books Section -->
                 <section class="section-card">
@@ -173,19 +171,20 @@
                         <h2>View New Books</h2>
                         <a asp-controller="Book" asp-action="SearchResults" asp-route-sortOrder="uploaddate" asp-route-sortDescending="true" asp-route-category="New Books">See More</a>
                     </div>
-                    @foreach (var book in newBooks) 
+                    @foreach (var book in Model.NewBooks) 
                     {
-                        <div class="book-card">
-                            <img src="@book.ImageUrl" alt="@book.Title Book Cover">
+                        <a  class="book-card"
+                          href="/Book/BookDetails/@book.BookId" >
+                            <img src="@book.CoverImage" alt="@book.Title Book Cover">
                             <div class="book-card-content">
                                 <h3>@book.Title</h3>
                                 <p class="author">by @book.Author</p>
-                                <p class="description">@book.Description</p>
+                                <p class="description"><i>@book.Description</i></p>
                                 <div class="star-rating">
                                     <div class="stars">
                                         @for (int i = 0; i < 5; i++)
                                         {
-                                            if (i < book.Rating)
+                                            if (i < book.AverageRating)
                                             {
                                                 <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
                                             }
@@ -195,16 +194,18 @@
                                             }
                                         }
                                     </div>
-                                    <span class="rating-text">@book.Rating/5</span> 
+                                    <span class="rating-text">@book.AverageRating/5</span> 
                                 </div>
-                                <div class="genre-tags">
-                                    @foreach (var tag in book.Tags)
-                                    {
-                                        <span class="genre-tag @tag.ToLower().Replace(" ", "-")">@tag</span>
-                                    }
-                                </div>
+
+                            <div class="genre-tags">
+                                <span class="">@book.GenreList</span>
+                                @* @foreach (var tag in book.)
+                                {
+                                    <span class="genre-tag">@tag</span>
+                                } *@
                             </div>
-                        </div>
+                            </div>
+                        </a>
                     }
                 </section>
             </div>
@@ -239,12 +240,16 @@
                                     }
                                 </div>
                             </div>
+
                             <div class="genre-tags">
-                                @foreach (var tag in book.Tags)
+                                                                @* <spa class="genre-tag">@book.GenreList</spa> *@
+
+                                @* @foreach (var tag in book.GenreNames)
                                 {
-                                    <span class="featured-genre-tag @tag.ToLower().Replace(" ", "-")">@tag</span>
-                                }
+                                    <span class="genre-tag">@tag</span>
+                                } *@
                             </div>
+
                         </div>
                     </div>
                 }

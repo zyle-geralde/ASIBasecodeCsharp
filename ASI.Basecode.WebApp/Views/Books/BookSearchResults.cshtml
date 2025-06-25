@@ -20,13 +20,14 @@
         else
         {
                     @foreach(var book in Model) {
-    <div class="book-card">
+    <a class="book-card"  href="/Book/BookDetails/@book.BookId">
+
       <img src="@book.CoverImage" alt="@book.Title" />
       <h3>@book.Title</h3>
       <p>by @book.Author</p>
         <p>Upload date: @book.UploadDate</p>
         <p>Average rating: @book.AverageRating</p>
-    </div>
+    </a>
         }
 
   }
