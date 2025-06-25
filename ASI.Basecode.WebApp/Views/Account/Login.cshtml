@@ -20,6 +20,31 @@
             display: block; 
         }
 
+
+        .back-arrow {
+            position: absolute;
+            top: 32px;
+            left: 32px;
+            z-index: 10;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); 
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .back-arrow:hover {
+            background-color: rgba(255, 255, 255, 0.6); 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .back-arrow svg path {
+            stroke: #333; 
+        }
+
         .login-main-split {
             display: flex;
             height: 100vh; 
@@ -115,7 +140,8 @@
             background: #fff;
             border-radius: 20px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.13);
-            padding: 32px 64px; 
+            padding: 32px 64px;
+            overflow-y: hidden;
             width: 100%;
             max-width: 480px;
             display: flex;
@@ -132,6 +158,8 @@
             display: flex;
             flex-direction: column;
             align-items: stretch;
+                flex-grow: 1; 
+                justify-content: space-between;
         }
 
         .login-logo {
@@ -274,60 +302,122 @@
             color: #3a4a47;
         }
 
-        @@media (max-width: 900px) {
+        @@media (max-width: 599px) {
             .login-main-split {
                 flex-direction: column;
-                height: auto;
+                height: auto; 
                 min-height: 100vh;
-                overflow-y: auto; 
+                overflow-y: auto;
             }
+            body {
+                padding-top: 0; 
+            }
+            header {
+                display: none;
+            }
+
             .login-left-panel, .login-right-panel {
                 min-height: unset;
-                height: auto;
+                height: auto; 
                 width: 100%;
                 justify-content: center;
             }
-            .login-left-panel { 
-                height: 220px;
+            .login-left-panel {
+                height: 200px; 
                 min-height: 180px;
-                max-height: 260px;
+                max-height: 250px;
+                padding: 1rem; 
             }
             .login-quote-content {
                 font-size: 1rem;
                 max-width: 95vw;
-                padding: 0 20px;
+                padding: 0 10px;
                 margin: 0 auto;
-                flex-direction: column; 
-                gap: 10px;
+                flex-direction: column;
+                gap: 5px;
             }
             .login-quote-mark-left, .login-quote-mark-right {
-                font-size: 1.5rem;
-                margin-bottom: 2px;
+                font-size: 1.2rem;
+                margin-bottom: 0;
                 padding: 0;
-                position: static; 
-                align-self: center; 
             }
+
             .login-quote-text {
-                font-size: 1.1rem;
-                line-height: 1.3;
+                font-size: 1rem;
+                line-height: 1.2;
                 word-break: break-word;
                 margin: 0;
                 padding: 0;
             }
-            .login-form-card { 
-                width: 95%; 
+            .login-form-card {
+                width: 95%;
                 max-width: 95%;
                 margin: 24px auto;
-                padding: 18px 24px; 
+                padding: 18px 24px;
+                max-height: unset; 
+                overflow-y: hidden; 
+                flex-shrink: 0; 
+                flex-grow: 1;
             }
             .form-title, .title-highlight {
                 font-size: 1.3rem;
             }
             .login-right-panel {
                 width: 100%;
-                padding: 0 10px; 
+                padding: 0 10px;
+            }
+
+            .back-arrow {
+                top: 15px; 
+                left: 15px; 
             }
         }
+
+
+        @@media (max-height: 768px) and (min-width: 600px) { 
+            .login-form-card {
+                padding: 20px 40px;
+                max-height: 100%;
+            }
+            .login-logo {
+                width: 140px !important;
+                margin-bottom: 15px;
+            }
+            .form-title {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+            .title-highlight {
+                font-size: 20px;
+            }
+            .form-group {
+                margin-bottom: 12px;
+            }
+            .form-label {
+                font-size: 12px;
+            }
+            .form-control-custom {
+                padding: 8px 12px;
+                font-size: 10px;
+            }
+            .forgot-password-link {
+                margin-top: -0.2rem;
+                margin-bottom: 0.8rem;
+            }
+            .forgot-password-link a {
+                font-size: 0.8rem;
+            }
+            .login-btn {
+                padding: 8px 0;
+                font-size: 14px;
+                border-radius: 20px;
+            }
+            .signup-section {
+                font-size: 0.9rem;
+                margin-top: 5px;
+            }
+        }
+
 
         .modal-content.forgot-modal-content {
             background-color: #5a7b80;
@@ -518,7 +608,7 @@
                 </div>
                 <button class="login-btn" type="submit">Sign In</button>
                 <div class="signup-section">
-                    Already have an account? <a href="/Account/Login" class="signup-section-link">Sign Up</a>
+                    Already have an account? <a href="/Account/Register" class="signup-section-link">Sign Up</a>
                 </div>
             </form>
         </div>
