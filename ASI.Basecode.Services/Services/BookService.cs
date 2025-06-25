@@ -15,7 +15,6 @@ namespace ASI.Basecode.Services.Services
     public class BookService : IBookService
     {
         private readonly IBookRepository _bookRepository;
-
         public BookService(IBookRepository bookRepository)
         {
             _bookRepository = bookRepository;
@@ -89,8 +88,12 @@ namespace ASI.Basecode.Services.Services
                 Author = b.Author,
                 AverageRating = b.AverageRating,
                 CoverImage =b.CoverImage,
-                BookFile=b.BookFile
+                BookFile=b.BookFile,
+                Description = b.Description
+
             }).ToList();
+
+
         }
         public async Task<BookViewModel?> GetBookById(string bookId)
         {
