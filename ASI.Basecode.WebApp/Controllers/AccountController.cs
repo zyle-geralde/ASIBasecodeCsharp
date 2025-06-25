@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Serilog.Core;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -128,23 +129,9 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
-                var user = await _userService.AddUser(model);
-                var profile = new PersonProfile
-                {
-                    ProfileID = user.Email,
-                    FirstName = model.UserName,       
-                    LastName = null,
-                    MiddleName = null,
-                    Suffix = null,
-                    Gender = null,
-                    BirthDate = null,
-                    Location = null,
-                    Role = "User",
-                    AboutMe = string.Empty
-                };
-                await _personProfileService.AddPersonProfile(profile);
+                var user = await _userService.AddUserFromRegister(model);
 
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("VerifyOtpPage", "Account", new { email = user.Email });
             }
             catch(InvalidDataException ex)
             {
@@ -152,7 +139,7 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             catch(Exception ex)
             {
-                TempData["ErrorMessage"] = ex;
+                TempData["ErrorMessage"] = ex.Message;
                 //TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
             }
             return View();
@@ -194,23 +181,10 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
-                var user = await _userService.AddUser(model);
-                var profile = new PersonProfile
-                {
-                    ProfileID = user.Email,
-                    FirstName = model.UserName,        // or model.FirstName if separate
-                    LastName = null,
-                    MiddleName = null,
-                    Suffix = null,
-                    Gender = null,
-                    BirthDate = null,
-                    Location = null,
-                    Role = "Admin",
-                    AboutMe = string.Empty
-                };
-                await _personProfileService.AddPersonProfile(profile);
+                var user = await _userService.AddAdminFromRegister(model);
 
-                return RedirectToAction("Login", "Account");//Change this
+
+                return RedirectToAction("VerifyOtpPage", "Account", new { email = user.Email });
             }
             catch (InvalidDataException ex)
             {
@@ -218,11 +192,98 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = ex;
+                TempData["ErrorMessage"] = ex.Message;
                 //TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
             }
           
             return View();
+        }
+
+
+        //VerifyOTP
+        [HttpGet]
+        [Route("Account/VerifyOtpPage/{email}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> VerifyOtpPage(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                TempData["ErrorMessage"] = "Invalid verification request.";
+                return RedirectToAction("Login", "Account");
+            }
+            try
+            {
+                OtpViewModel user_otp = await _userService.GetUserbyEmail(email);
+                ViewBag.Email = email;
+                return View("~/Views/Account/OTPView.cshtml", user_otp);
+            }
+            catch(Exception ex)
+            {
+                TempData["ErrorMessage"] = "Email not found";
+                return RedirectToAction("Login", "Account");
+            }
+           
+        }
+
+
+        [HttpPost]
+        [Route("Account/VerifyOtp")]
+        [AllowAnonymous]
+        public async Task<IActionResult> VerifyOtp(OtpViewModel model)
+        {
+            try
+            {
+                
+                await _userService.VerifyOtp(model);
+                TempData["SuccessMessage"] = "Verified";
+
+                return RedirectToAction("Login", "Account");
+            }
+            catch (Exception ex) {
+                ModelState.AddModelError("", ex.Message);
+                return View("~/Views/Account/OTPView.cshtml",model);
+            }
+        }
+
+        [HttpPost]
+        [Route("Account/ResendOtp")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResendOtp(string email)
+
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError("", "Email is required to resend OTP.");
+                return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
+            }
+
+            try
+            {
+                OtpViewModel otpSent = await _userService.RegenerateOtpAsync(email);
+
+                if (otpSent != null)
+                {
+                    TempData["SuccessMessage"] = "A new OTP has been sent to your email. Please check your inbox.";
+                    return RedirectToAction("VerifyOtpPage", "Account", new { Email = email });
+                }
+                else
+                {
+                   
+                    ModelState.AddModelError("", "Failed to send new OTP. Please try again.");
+                    return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError("", "Email already verified");
+                return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
+            }
+            catch (Exception ex) 
+            {
+                ModelState.AddModelError("", "An unexpected error occurred while trying to resend OTP. Please try again later.");
+                return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
+            }
+
         }
     }
 }

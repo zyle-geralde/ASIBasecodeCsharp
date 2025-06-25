@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+//using System.Data.Entity;
 
 namespace ASI.Basecode.Data.Repositories
 {
@@ -43,6 +44,12 @@ namespace ASI.Basecode.Data.Repositories
         {
             return this.GetDbSet<User>().Any(x => x.Email == userId);
         }
+        public async Task<bool> CheckEmailVerified(string email)
+        {
+            User existing_user = await FindUserByEmail(email);
+
+            return existing_user.IsEmailVerified;
+        }
 
         public async Task AddUser(User user)
         {
@@ -54,12 +61,24 @@ namespace ASI.Basecode.Data.Repositories
         {
             return await this.GetDbSet<User>().FirstOrDefaultAsync(u => u.Id == id);
         }
+
         public async Task DeleteUser(int id)
         {
             var user = await GetUserById(id);
             if (user == null) return;
 
             this.GetDbSet<User>().Remove(user);
+            await UnitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<User> FindUserByEmail(string email)
+        {
+            return await this.GetDbSet<User>().FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task UpdateUser(User user)
+        {
+            GetDbSet<User>().Update(user);
             await UnitOfWork.SaveChangesAsync();
         }
     }
