@@ -439,7 +439,18 @@ body
     {
         overflow-y: auto;
         height: 100vh;
+        flex-direction: column !important;
     }
+
+        .register-main-split .register-left {
+            order: 0;
+        }
+
+        .register-main-split .register-right {
+            order: 1;
+        }
+
+
 }
 
 @media (min-width: 768px) 
