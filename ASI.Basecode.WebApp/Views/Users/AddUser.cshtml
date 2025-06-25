@@ -19,7 +19,8 @@
                 <p>Enter details of the new user here.</p>
              </div>
 
-            <form class="add-user-form">
+            <form asp-action="AddUser" asp-controller="User" method="post" class="add-user-form" id="addUserForm">
+            @Html.AntiForgeryToken()
                 <div class="form-row">
                     <div class="form-group">
                         <label for="userId">Email</label>
@@ -76,7 +77,7 @@
        
                 <div class="d-flex justify-content-center gap-2">
                     <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger-2 px-4" onclick="showSuccessModal()">Add User</button>
+                    <button type="button" class="btn btn-danger-2 px-4" onclick="submitAddUserForm()">Add User</button>
                 </div>
             </div>
         </div>
@@ -101,15 +102,18 @@
 
 @section Scripts {
     <script>
-        function showSuccessModal() {
-            var addModal = bootstrap.Modal.getInstance(document.getElementById('addModal'));
-            addModal.hide();
-
-            setTimeout(function() {
+        function submitAddUserForm() {
+            document.getElementById('addUserForm').submit();
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            if (successMessage) {
                 var successModal = new bootstrap.Modal(document.getElementById('successModal'));
                 successModal.show();
-            }, 100);
-        }
+            }
+        });
     </script>
     <script>
         // Check for error message and display Toastr notification

@@ -83,6 +83,47 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
+        public async Task<User> AddUserFromAdmin(UserViewModel model)
+        {
+            var user = new User();
+            if (!_repository.UserExists(model.Email))
+            {
+                user.Email = model.Email;
+                user.UserName = model.UserName;
+                user.Password = PasswordManager.EncryptPassword(model.Password);
+                user.CreatedTime = DateTime.Now;
+                user.UpdatedTime = DateTime.Now;
+                user.CreatedBy = System.Environment.UserName;
+                user.UpdatedBy = System.Environment.UserName;
+                user.IsEmailVerified = true;
+                user.OtpCode = null;
+                user.OtpExpirationDate = null;
+
+                await _repository.AddUser(user);
+
+                var profile = new PersonProfile
+                {
+                    ProfileID = user.Email,
+                    FirstName = null, // Use username as first name or you could add FirstName to your model
+                    LastName = null,
+                    MiddleName = null,
+                    Suffix = null,
+                    Gender = null,
+                    BirthDate = null,
+                    Location = null,
+                    Role = "User", // Default role is User
+                    AboutMe = string.Empty
+                };
+                await _personProfileService.AddPersonProfile(profile);
+
+                return user;
+            }
+            else
+            {
+                throw new InvalidDataException(Resources.Messages.Errors.UserExists);
+            }
+        }
+
 
         public async Task<User> AddUserFromRegister(UserViewModel model)
         {
@@ -106,7 +147,7 @@ namespace ASI.Basecode.Services.Services
                 var profile = new PersonProfile
                 {
                     ProfileID = user.Email,
-                    FirstName = model.UserName,        // or model.FirstName if separate
+                    FirstName = null,        // or model.FirstName if separate
                     LastName = null,
                     MiddleName = null,
                     Suffix = null,
