@@ -55,8 +55,12 @@ namespace ASI.Basecode.Services.Services
                 }
                 catch (Exception ex)
                 {
-                    throw new ApplicationException(ex.Message);
+                    throw new ApplicationException("Failed in adding language");
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed in adding language");
             }
 
         }

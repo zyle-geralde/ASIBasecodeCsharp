@@ -38,7 +38,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 try
                 {
                     await _languageService.AddLanguage(language);
-                    return Ok(new { Message = "Genre Successfully added" });
+                    return Ok(new { Message = "Language Successfully added" });
                 }
                 catch (ArgumentException ex)
                 {
