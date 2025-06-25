@@ -7,6 +7,8 @@ using System.Linq;
 using System;
 using ASI.Basecode.Services.ServiceModels;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using ASI.Basecode.WebApp.Payload.LanguagePayload;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -20,43 +22,59 @@ namespace ASI.Basecode.WebApp.Controllers
             _languageService = languageService;
         }
 
+
         [HttpGet]
         [Route("Language/Index")]
         [AllowAnonymous]
-        public IActionResult Index()
+        public async Task<IActionResult> GenreList()
         {
-            return View("~/Views/Language/Index.cshtml", new LanguageViewModel());
+            try
+            {
+                List<LanguageViewModel> language_list = await _languageService.GetAllLanguage();
+
+                return View("~/Views/Language/Index.cshtml", language_list);
+            }
+            catch (ApplicationException ex)
+            {
+
+                return View("~/Views/Language/Index.cshtml", new List<LanguageViewModel>());
+            }
+            catch (Exception ex)
+            {
+                return View("~/Views/Language/Index.cshtml", new List<LanguageViewModel>());
+                
+            }
         }
 
         [HttpPost]
         [Route("Language/AddLanguage")]
         [AllowAnonymous]
-        public async Task<IActionResult> AddLanguage(LanguageViewModel language)
+        public async Task<IActionResult> AddLanguage([FromBody]LanguageViewModel language)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     await _languageService.AddLanguage(language);
-                    TempData["SuccessMessage"] = "Langugae added successfully!";
-                    return RedirectToAction("Index");
+                    return Ok(new { Message = "Language Added successfully!" });
                 }
                 catch (ArgumentException ex)
                 {
-                    ModelState.AddModelError("",   ex.Message);
+                    return BadRequest(new { ex.Message });
                 }
                 catch (ApplicationException ex)
                 {
-                     ModelState.AddModelError("", ex.Message);
+                    return BadRequest(new { ex.Message });
                 }
                 catch (Exception ex)
                 {
-                     ModelState.AddModelError("", ex.Message);
+                    return BadRequest(new { ex.Message });
                 }
 
             }
 
-            return View("~/Views/Language/Index.cshtml",language);
+
+            return BadRequest(new { Message = "Title should not be null or exceed 300 characters" });
         }
     }
 }

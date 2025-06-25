@@ -12,5 +12,7 @@ namespace ASI.Basecode.Data.Interfaces
         Task AddLanguage(Language language);
 
         Task<bool> CheckLanguageExist(string language);
+
+        Task <List<Language>>GetAllLanguage();
     }
 }

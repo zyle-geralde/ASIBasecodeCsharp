@@ -11,5 +11,7 @@ namespace ASI.Basecode.Services.Interfaces
     public interface ILanguageService
     {
         Task AddLanguage(LanguageViewModel language);
+
+        Task<List<LanguageViewModel>> GetAllLanguage();
     }
 }

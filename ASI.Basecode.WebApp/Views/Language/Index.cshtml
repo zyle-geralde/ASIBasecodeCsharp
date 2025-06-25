@@ -1,4 +1,4 @@
-﻿@model ASI.Basecode.Services.ServiceModels.LanguageViewModel;
+﻿@model IEnumerable<ASI.Basecode.Services.ServiceModels.LanguageViewModel>;
 @{
     ViewData["Title"] = "Users";
     Layout = "_AdminSidebarLayout";
@@ -55,6 +55,36 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @if (Model != null && Model.Any()) // Check if the model is not null and has items
+                        {
+                            @foreach (var language in Model)
+                            {
+                                <tr>
+                                    <td class="align-middle" style="padding-left: 10px">@language.LanguageName</td>
+                                    <td class="align-middle" style="white-space:nowrap;">
+                                        <div class="action-buttons justify-content-center">
+                                            <button type="button" class="btn btn-icon text-danger delete-language-btn"
+                                                    data-bs-toggle="modal" data-bs-target="#deleteLanguageModal"
+                                                    data-id="@language.LanguageId" data-name="@language.LanguageName">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-icon text-primary edit-language-btn"
+                                                    data-bs-toggle="modal" data-bs-target="#editLanguageModal"
+                                                    data-id="@language.LanguageId" data-name="@language.LanguageName">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="2" class="text-center">No languages found.</td>
+                            </tr>
+                        }
+                    </tbody>
                         <tr>
                             <td class="align-middle" style="padding-left: 10px">Cebuano</td>
                             <td class="align-middle" style="white-space:nowrap;">
@@ -84,24 +114,16 @@
                 <button type="button" class="btn-close add-language-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-2">
-                <div class="text-danger">
-                    @if (!ViewData.ModelState.IsValid && Html.ValidationSummary(true) != null)
-                    {
-                        <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
-                            @Html.ValidationSummary(true, null, new { @class = "mb-0 list-unstyled" })
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    }
-
+                <div id="addLanguageErrorAlert">
                 </div>
-                <form id="addLanguageForm" asp-action="AddLanguage" asp-controller="Language" method="post" >
+                <form id="addLanguageForm" >
                     <div class="mb-3">
-                        <span asp-validation-for="LanguageName" class="text-danger"></span>
                         <label for="newLanguage" class="form-label">Language</label>
-                        <input type="text" class="form-control" id="newLanguage" name="LanguageName" placeholder="Text" required value="@Model.LanguageName">
+                        <input type="text" class="form-control" id="newLanguage" name="LanguageName" placeholder="Text"> @* Removed 'required' as JS/server will handle validation *@
+                        <span id="languageNameError" class="text-danger"></span> @* Use a specific ID for this error span *@
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn add-language-btn">ADD</button>
+                        <button type="button" class="btn add-language-btn" id="submitAddLanguageBtn">ADD</button> @* Changed type to 'button' and added ID *@
                     </div>
                 </form>
             </div>
@@ -180,19 +202,44 @@
                 $('.modal-backdrop').remove();
             });
 
-            // automatically show the "Add Language Modal" if there are server side validation errors
-            // crucial when the controller returns the view with ModelState errors.
-            @if (!ViewData.ModelState.IsValid && Context.Request.Method == "POST")
-            {
-                <text>
-                    var addLanguageModalElement = document.getElementById('addLanguageModal');
-                    if (addLanguageModalElement) {
-                        var addLanguageModal = new bootstrap.Modal(addLanguageModalElement);
-                        addLanguageModal.show();
-                    }
-                </text>
-            }
-        });
+                $('#submitAddLanguageBtn').on('click', async function(e) {
+                        e.preventDefault(); //Prevent default button click behavior
+
+                        //Clear previous error messages 
+                        $('#languageNameError').text('');
+                        $('#addLanguageErrorAlert').empty();
+
+                        var languageName = $('#newLanguage').val();
+
+                        try{
+                                //fetch for Add Language
+                                const response = await fetch('/Language/AddLanguage', {
+                                    method: 'POST',
+                                    headers: {
+                                    'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({LanguageName: languageName })
+                                })
+
+                                if (response.ok) {
+                                    var data = await response.json();
+                                    console.log(data)
+                                    alert(data.message)
+                                    location.reload();
+                                }
+                                 else {
+                                    var data = await response.json();
+                                    console.log(data)
+                                    alert(data.message)
+                                            
+                                 }
+                        }
+                        catch(error){
+                            alert(error);
+                        }
+
+                    });
+          });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

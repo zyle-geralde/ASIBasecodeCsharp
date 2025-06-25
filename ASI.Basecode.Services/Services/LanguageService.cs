@@ -35,7 +35,7 @@ namespace ASI.Basecode.Services.Services
 
                 if (check_language_exist)
                 {
-                    throw new ArgumentException("Genre Name already exist");
+                    throw new ArgumentException("Language Name already exist");
                 }
 
 
