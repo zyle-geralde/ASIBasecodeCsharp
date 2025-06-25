@@ -143,5 +143,83 @@ namespace ASI.Basecode.Services.Services
                 throw new ApplicationException("Failed to edit book genre by id.");
             }
         }
+
+
+        public async Task<List<BookViewModel>> GetBooksByLanguage(string languageId)
+        {
+            try
+            {
+                var all_books = await _languageRepository.GetBooksByLanguage();
+                var filtered_books = all_books.Where(book => book.Language == languageId).ToList();
+
+                var book_view_models = filtered_books.Select(bookEntity => new BookViewModel
+                {
+                    BookId = bookEntity.BookId,
+                    Title = bookEntity.Title,
+                    Subtitle = bookEntity.Subtitle,
+                    Description = bookEntity.Description,
+                    NumberOfPages = bookEntity.NumberOfPages,
+                    Language = bookEntity.Language,
+                    SeriesName = bookEntity.SeriesName,
+                    SeriesDescription = bookEntity.SeriesDescription,
+                    SeriesOrder = bookEntity.SeriesOrder,
+                    GenreList = bookEntity.GenreList,
+
+                    // Firebase Storage URLs are directly mapped
+                    CoverImageUrl = bookEntity.CoverImage,
+                    BookFileUrl = bookEntity.BookFile,
+
+                    // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
+                    UpdatedDate = bookEntity.UpdatedDate,
+                    PublicationDate = bookEntity.PublicationDate,
+
+
+                    // Handle comma-separated strings
+                    Publisher = bookEntity.Publisher, // Store as string
+                    PublicationLocation = bookEntity.PublicationLocation, // Store as string
+                    Author = bookEntity.Author, // Store as string
+                    ISBN10 = bookEntity.ISBN10,
+                    ISBN13 = bookEntity.ISBN13,
+                    Edition = bookEntity.Edition,
+                    CreatedBy = "admin1",
+                    UpdatedBy = "Logged Admin"
+                }).ToList();
+
+                return book_view_models;
+
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to get book based on language");
+            }
+        }
+
+        public async Task<LanguageViewModel> GetLanguageByName(string languageId)
+        {
+            if (string.IsNullOrEmpty(languageId))
+            {
+                throw new ArgumentNullException(nameof(languageId), "Language Name should not be null");
+            }
+
+            try
+            {
+                Language retreived_language= await _languageRepository.GetLanguageByName(languageId);
+
+                LanguageViewModel mapped_language = new LanguageViewModel
+                {
+                    LanguageId = retreived_language.LanguageId,
+                    LanguageName = retreived_language.LanguageName,
+                    UpdatedDate = retreived_language.UpdatedDate,
+                    UpdatedBy = retreived_language.UpdatedBy,
+                    CreatedBy = retreived_language.CreatedBy
+                };
+
+                return mapped_language;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to retrieve language by name.");
+            }
+        }
     }
 }

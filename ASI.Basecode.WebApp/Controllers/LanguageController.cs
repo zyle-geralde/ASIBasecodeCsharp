@@ -135,5 +135,33 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return BadRequest(new { Message = "Title should not be null or exceed 300 characters" });
         }
+
+
+
+        [HttpGet]
+        [Route("Language/LanguageView/{languageId}")]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> GetBooksByGenre(string languageId)
+        {
+            try
+            {
+                //Change this during code cleaning
+                List<BookViewModel> retreived_books_by_language = await _languageService.GetBooksByLanguage(languageId);
+                LanguageViewModel retreived_language_by_Id = await _languageService.GetLanguageByName(languageId);
+
+                ViewBag.CurrentLanguageDetails = retreived_language_by_Id;
+
+                return View("~/Views/Books/ListBook.cshtml", retreived_books_by_language);
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = ex.Message });
+            }
+        }
     }
 }

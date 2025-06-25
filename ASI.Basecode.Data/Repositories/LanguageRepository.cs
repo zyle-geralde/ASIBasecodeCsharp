@@ -74,7 +74,7 @@ namespace ASI.Basecode.Data.Repositories
             }
         }
 
-        public async Task<Language> GetBookGenreByName(string languageId)
+        public async Task<Language> GetLanguageByName(string languageId)
         {
             try
             {

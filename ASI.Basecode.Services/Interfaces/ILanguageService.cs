@@ -17,5 +17,10 @@ namespace ASI.Basecode.Services.Interfaces
         Task DeleteLanguage(string languageId);
 
         Task EditLanguage(LanguageViewModel language);
+
+
+        Task<List<BookViewModel>> GetBooksByLanguage(string languageId);
+
+        Task<LanguageViewModel> GetLanguageByName(string languageId);
     }
 }
