@@ -25,26 +25,72 @@ namespace ASI.Basecode.Data.Repositories
             await _dbContext.Books.AddAsync(book);
             await _dbContext.SaveChangesAsync();
         }
-        public async Task<List<Book>> GetBooks(string searchTerm,
-            string sortOrder,
-            string genreFilter,
-            int pageIndex,
-            int pageSize) 
+        public async Task<List<Book>> GetBooks(BookQueryParams queryParams) 
         {
             IQueryable<Book> query = _dbContext.Books.AsNoTracking();
 
             // SEARCH
-            if (!string.IsNullOrEmpty(searchTerm))
+            if (!string.IsNullOrEmpty(queryParams.SearchTerm))
             {
-                var term = searchTerm.Trim();
+                var term = queryParams.SearchTerm.Trim();
                 query = query.Where(b =>
                 (b.Title != null && b.Title.Contains(term) || (b.Subtitle != null && b.Subtitle.Contains(term)) || (b.Author != null && b.Author.Contains(term))));
 
             }
 
+            if (!string.IsNullOrEmpty(queryParams.Author))
+                query = query.Where(b => b.Author != null && b.Author.Contains(queryParams.Author.Trim()));
+
+            if (queryParams.Rating.HasValue)
+                query = query.Where(b => b.AverageRating >= queryParams.Rating.Value);
+
+            if (queryParams.PublishedFrom.HasValue && queryParams.PublishedTo.HasValue)
+                query = query.Where(b => b.PublicationDate >= queryParams.PublishedFrom.Value && b.PublicationDate <= queryParams.PublishedTo.Value);
+
+            if (queryParams.GenreNames != null && queryParams.GenreNames.Any())
+            {
+                foreach (var gn in queryParams.GenreNames)
+                {
+                    var pattern = "%," + gn.Trim() + ",%";
+                    query = query.Where(b =>
+                        b.GenreList != null
+                        && b.GenreList.Contains(gn));
+                }
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.SortOrder))
+            {
+                bool desc = queryParams.SortDescending;
+                switch (queryParams.SortOrder.Trim().ToLower())
+                {
+                    case "title":
+                        query = desc
+                            ? query.OrderByDescending(b => b.Title)
+                            : query.OrderBy(b => b.Title);
+                        break;
+
+                    case "publicationdate":
+                        query = desc
+                            ? query.OrderByDescending(b => b.PublicationDate)
+                            : query.OrderBy(b => b.PublicationDate);
+                        break;
+
+                    case "rating":
+                        query = desc
+                            ? query.OrderByDescending(b => b.AverageRating)
+                            : query.OrderBy(b => b.AverageRating);
+                        break;
+
+                    default:
+                        query = query.OrderBy(b => b.Title);
+                        break;
+                }
+            }
+
+
             query = query
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize);
+                .Skip((queryParams.PageIndex - 1) * queryParams.PageSize)
+                .Take(queryParams.PageSize);
 
             return await query.ToListAsync();
         }

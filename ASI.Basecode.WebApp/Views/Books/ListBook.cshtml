@@ -14,6 +14,19 @@
     Layout = "_AdminSidebarLayout";
 }
 
+@{
+    var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
+    var currentSearch    = (string?)ViewData["CurrentSearch"];
+    var currentAuthor    = (string?)ViewData["CurrentAuthor"];
+    var currentRating = (int?)ViewData["CurrentRating"];
+    var currentFromDate  = (string?)ViewData["CurrentFromDate"];
+    var currentToDate    = (string?)ViewData["CurrentToDate"];
+    var currentGenres = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>();
+    var currentSort = (string?)ViewData["CurrentSort"];
+    var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
+
+}
+
 @section styles {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -36,22 +49,113 @@
     </div>
 
     <form asp-action="ListBook" method="get" class="mb-3">
-  <input type="text"
-         name="searchTerm"
-         value="@ViewData["CurrentSearch"]"
-         placeholder="Search by title, subtitle or author"
-         class="form-control d-inline-block w-50" />
 
-  @* <select name="genreFilter"
-          class="form-select d-inline-block mx-2"
-          onchange="this.form.submit()">
-    <option value="">— All Genres —</option>
-    @foreach(var g in await Html.GetGenresAsync()) {
-      <option value="@g" @(g == (string)ViewData["CurrentGenre"] ? "selected" : "")>@g</option>
-    }
-  </select> *@
+<div class="row g-3 align-items-end">
+    <div class="col-md-4">
+      <label class="form-label">Search</label>
+      <input type="text"
+             name="searchTerm"
+             value="@ViewData["CurrentSearch"]"
+             placeholder="Title, subtitle, author…"
+             class="form-control" />
+    </div>
 
-  <button type="submit" class="btn btn-primary">Search</button>
+      <div class="col-md-3">
+      <label class="form-label">Sort by</label>
+      <select name="sortOrder" class="form-select">
+        <option value="title"             selected="@(currentSort == "title")">Title</option>
+        <option value="publicationdate"   selected="@(currentSort == "publicationdate")">Publication Date</option>
+        <option value="rating"            selected="@(currentSort == "rating")">Rating</option>
+      </select>
+    </div>
+
+     <div class="col-md-2">
+      <label class="form-label">Direction</label>
+      <select name="sortDescending" class="form-select">
+        <option value="false" selected="@(!currentSortDescending)">Ascending</option>
+        <option value="true"  selected="@( currentSortDescending)">Descending</option>
+      </select>
+    </div>
+
+
+
+    <div class="col-md-3">
+      <label class="form-label">Author</label>
+      <input type="text"
+             name="author"
+             value="@currentAuthor"
+             class="form-control" />
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label">Rating</label>
+       <select name="rating" class="form-select">
+      <option value="">Any</option>
+          @for (int i = 1; i <= 5; i++)
+          {
+            if (currentRating == i)
+            {
+              <option value="@i" selected>
+                @i ★ & up
+              </option>
+            }
+            else
+            {
+              <option value="@i">
+                @i ★ & up
+              </option>
+            }
+          }
+    </select>
+
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Date Published</label>
+      <div class="d-flex">
+        <input type="date"
+               name="publishedFrom"
+               value="@currentFromDate"
+               class="form-control me-1" />
+        <input type="date"
+               name="publishedTo"
+               value="@currentToDate"
+               class="form-control" />
+      </div>
+    </div>
+  </div>
+
+  <fieldset class="mt-3">
+    <legend class="form-label">Genres</legend>
+    <div class="row">
+      @foreach (var genre in allGenres)
+      {
+        <div class="col-sm-3">
+          <div class="form-check">
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="genreFilter"
+                   value="@genre.BookGenreId"
+                   id="g_@genre.BookGenreId"
+                   @(currentGenres.Contains(genre.BookGenreId) ? "checked" : "") />
+            <label class="form-check-label" for="g_@genre">
+              @genre.GenreName
+            </label>
+          </div>
+        </div>
+      }
+    </div>
+  </fieldset>
+
+  <div class="d-flex justify-content-end mt-3">
+    <a asp-action="ListBook" class="btn btn-outline-secondary me-2">
+      Clear All
+    </a>
+    <button type="submit" class="btn btn-primary">
+      Apply Filters
+    </button>
+  </div>
+
 </form>
 
     
@@ -80,23 +184,15 @@
             <thead>
                 <tr>
                     <th>Cover</th>
-                    <th>
-                          <a asp-action="ListBook" asp-route-searchTerm="@ViewData["CurrentSearch"]">Title</a>
-                        </th>
-                    <th>
-                        <a asp-action="ListBook" asp-route-searchTerm="@ViewData["CurrentSearch"]">Subtitle</a>
-                    </th>
-                    <th><a asp-action="ListBook" asp-route-searchTerm="@ViewData["CurrentSearch"]">Author</a>
-</th>
-                    <th>Publisher</th>
-                    <th>Publication Date</th>
-                    <th>Language</th>
-                    @* <th>Pages</th> *@
-                    <th>Rating</th>
-                    @* <th>Likes</th> *@
-                    <th>Series</th>
-                    @* <th>Description</th> *@
-                    <th>Actions</th>
+<th>Title</th>
+      <th>Subtitle</th>
+      <th>Author</th>
+      <th>Genre</th>
+      <th>Publication Date</th>
+      <th>Language</th>
+      <th>Rating</th>
+      <th>Series</th>
+      <th>Actions</th>                         
                 </tr>
             </thead>
             <tbody>
@@ -119,8 +215,16 @@
                         <td>@book.Title</td>
                         <td>@book.Subtitle</td>
                         <td>@book.Author</td>
-                        <td>@book.Publisher</td>
-                        <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
+ <td>
+        @{
+          var ids = (book.GenreList ?? "")
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
+          var names = allGenres
+                      .Where(g => ids.Contains(g.BookGenreId))
+                      .Select(g => g.GenreName);
+        }
+        @string.Join(", ", names)
+      </td>                        <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
                         <td>@book.Language</td>
                         @* <td>@book.NumberOfPages</td> *@
                         <td>@book.AverageRating</td>
