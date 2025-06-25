@@ -128,9 +128,18 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ArgumentNullException(nameof(book_genre), "Book Genre should not be null");
             }
+
+
             try
             {
                 BookGenre existing_genre = await BookGenreRepository.GetBookGenreById(book_genre.BookGenreId);
+                
+                bool check_user_exist = await BookGenreRepository.CheckGenreExist(book_genre.GenreName);
+
+                if (check_user_exist && existing_genre.GenreName != book_genre.GenreName)
+                {
+                    throw new ArgumentException("Genre Name already exist");
+                }
 
                 existing_genre.GenreName = book_genre.GenreName;
                 existing_genre.GenreDescription = book_genre.GenreDescription;
@@ -138,6 +147,10 @@ namespace ASI.Basecode.Services.Services
                 existing_genre.UpdatedDate = DateTime.UtcNow;
 
                 await BookGenreRepository.EditGenre();
+            }
+            catch(ArgumentException ex)
+            {
+                throw new ArgumentException(ex.Message);
             }
             catch(Exception ex)
             {

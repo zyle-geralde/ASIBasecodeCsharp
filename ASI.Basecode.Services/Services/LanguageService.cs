@@ -117,20 +117,26 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ArgumentNullException(nameof(language), "Language should not be null");
             }
-            bool check_language_exist = await _languageRepository.CheckLanguageExist(language.LanguageName);
 
-            if (check_language_exist)
-            {
-                throw new ArgumentException("Language Name already exist");
-            }
             try
             {
                 Language existing_language = await _languageRepository.GetLanguageById(language.LanguageId);
+
+                bool check_language_exist = await _languageRepository.CheckLanguageExist(language.LanguageName);
+
+                if (check_language_exist && existing_language.LanguageName != language.LanguageName)
+                {
+                    throw new ArgumentException("Language Name already exist");
+                }
 
                 existing_language.LanguageName = language.LanguageName;
                 existing_language.UpdatedDate = DateTime.UtcNow;
 
                 await _languageRepository.EditLanguage();
+            }
+            catch(ArgumentException ex)
+            {
+                throw new ArgumentException(ex.Message);
             }
             catch (Exception ex)
             {
