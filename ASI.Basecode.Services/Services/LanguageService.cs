@@ -95,5 +95,19 @@ namespace ASI.Basecode.Services.Services
 
             return view_model_list;
         }
+
+        public async Task DeleteLanguage(string languageId)
+        {
+
+            try
+            {
+                await _languageRepository.DeleteLanguage(languageId);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to Delete Language");
+            }
+
+        }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace ASI.Basecode.Data.Repositories
 {
@@ -39,6 +40,19 @@ namespace ASI.Basecode.Data.Repositories
             {
                 throw;
             }
+        }
+
+        public async Task<Language> GetLanguageById(string languageId)
+        {
+            return await _dbContext.Languages.FirstOrDefaultAsync(language => language.LanguageId == languageId);
+        }
+
+        public async Task DeleteLanguage(string languageId)
+        {
+            Language existingLanguage = await GetLanguageById(languageId);
+
+            _dbContext.Languages.Remove(existingLanguage);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

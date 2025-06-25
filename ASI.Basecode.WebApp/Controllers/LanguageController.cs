@@ -9,6 +9,7 @@ using ASI.Basecode.Services.ServiceModels;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using ASI.Basecode.WebApp.Payload.LanguagePayload;
+using ASI.Basecode.WebApp.Payload.BooksPayload;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -75,6 +76,32 @@ namespace ASI.Basecode.WebApp.Controllers
 
 
             return BadRequest(new { Message = "Title should not be null or exceed 300 characters" });
+        }
+
+        [HttpPost]
+        [Route("Language/Delete")]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> DeleteBook([FromBody] DeleteLanguagePayload language)
+        {
+            if (language == null)
+            {
+                return BadRequest(new { Message = "No data has been passed" });
+            }
+
+            try
+            {
+                await _languageService.DeleteLanguage(language.LanguageId);
+                return Ok(new { Message = "Language Deleted successfully!" });
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
         }
     }
 }

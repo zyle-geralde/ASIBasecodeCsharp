@@ -13,5 +13,7 @@ namespace ASI.Basecode.Services.Interfaces
         Task AddLanguage(LanguageViewModel language);
 
         Task<List<LanguageViewModel>> GetAllLanguage();
+
+        Task DeleteLanguage(string languageId);
     }
 }
