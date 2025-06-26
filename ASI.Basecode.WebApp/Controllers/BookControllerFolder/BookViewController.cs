@@ -57,6 +57,24 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         }
 
 
+        [HttpGet]
+        [Route("Book/GetLanguage")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllLanguage()
+        {
+            try
+            {
+                List<string> all_language = await _bookService.GetAllLanguage();
+
+                return Ok(new { Message = all_language });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to get all Genres: {ex.Message}");
+            }
+        }
+
+
         /*[HttpGet]
         [Route("Book/ListBook")]
         [AllowAnonymous]

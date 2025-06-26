@@ -149,6 +149,18 @@ namespace ASI.Basecode.Data.Repositories
             }
         }
 
+        public async Task<List<Language>> GetAllLanguage()
+        {
+            try
+            {
+                return await _dbContext.Languages.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task calculateAverageRating(string bookId)
         {
             var reviews = _dbContext.Reviews

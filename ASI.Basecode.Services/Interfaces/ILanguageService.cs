@@ -11,5 +11,16 @@ namespace ASI.Basecode.Services.Interfaces
     public interface ILanguageService
     {
         Task AddLanguage(LanguageViewModel language);
+
+        Task<List<LanguageViewModel>> GetAllLanguage();
+
+        Task DeleteLanguage(string languageId);
+
+        Task EditLanguage(LanguageViewModel language);
+
+
+        Task<List<BookViewModel>> GetBooksByLanguage(string languageId);
+
+        Task<LanguageViewModel> GetLanguageByName(string languageId);
     }
 }

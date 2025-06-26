@@ -731,7 +731,12 @@
             addBookConfirmationModal.hide(); // Hide the confirmation modal
 
             const form = document.getElementById('addBookForm');
+
             const submitButton = form.querySelector('.book-master-submit-button');
+
+            console.log(form)
+            @* const submitButton = form.querySelector('.add-book-submit-button'); *@
+
             const coverImageFile = document.getElementById('coverImageFile').files[0];
             const bookFile = document.getElementById('bookFile').files[0];
 
@@ -788,6 +793,7 @@
             
 
                 const formData = new FormData(form); 
+                //console.log(formData)
 
                 const response = await fetch(form.action, {
                     method: form.method,
