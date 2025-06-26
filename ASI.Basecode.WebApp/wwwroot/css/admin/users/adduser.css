@@ -10,6 +10,15 @@
     padding: 3rem; 
 }
 
+.form-control::placeholder {
+    color: #999; 
+    opacity: 0.7; 
+}
+
+.form-control{
+    font-size: 14px;
+}
+
 .add-user-form 
 {
     display: flex;
@@ -19,6 +28,7 @@
     max-width: 1100px;
     margin: 0;
     height: 100%;
+    margin-top: 50px;
 }
 
 .form-content 
@@ -26,7 +36,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 4rem !important;
     margin-bottom: auto;
 }
 
@@ -34,7 +44,7 @@
 {
     display: flex;
     gap: 3rem; 
-    margin-bottom: 2rem; 
+    margin-bottom: 1rem; 
 }
 
 .form-group 
@@ -132,42 +142,65 @@ input[type="file"]
     font-size: 12px;
 }
 
-.button-group 
-{
+.button-container {
+    width: 100%;
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 1rem; 
-    padding-bottom: 0; 
+    margin-top: 40px;
 }
 
-.cancel-btn 
-{
-    padding: 0.50rem 1.5rem;
+.button-group {
+    display: flex;
+    justify-content: flex-end !important;
+    align-items: stretch !important;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-bottom: 0;
+}
+
+.cancel-btn, .submit-btn {
+    /* Common button styles */
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 38px; /* Set a fixed height for both buttons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    line-height: 1;
+    box-sizing: border-box;
+}
+
+.cancel-btn {
     background: #fff;
     border: 1px solid #ddd;
-    border-radius: 4px;
     color: #333;
-    font-size: 14px;
-    cursor: pointer;
+    width: 120px; /* Fixed width */
 }
 
-.submit-btn 
-{
-    padding: 0.50rem 1.5rem;
+.submit-btn {
     background: #647D7F;
     border: none;
-    border-radius: 4px;
     color: white;
-    font-size: 14px;
-    cursor: pointer;
+    width: 140px; /* Fixed width - wider than cancel button */
 }
+
+    .cancel-btn:hover {
+        background: #f5f5f5;
+    }
+
+    .submit-btn:hover {
+        background: #556a6c;
+    }
 
 @media (max-width: 785px) 
 {
     .form-row 
     {
-        flex-direction: column;
+        flex-direction: column-reverse;
         gap: 1rem;
     }
 
@@ -176,15 +209,24 @@ input[type="file"]
         padding: 1.5rem;
     }
 
-    .button-group 
+    .admin-common-container
     {
-        flex-direction: column;
+        padding: 20px;
+    }
+    .admin-common-content-wrapper
+    {
+        padding: 1rem;
     }
 
-    .button-group button 
-    {
+    .button-group {
+        flex-direction: column;
         width: 100%;
     }
+
+        .button-group button {
+            width: 100%;
+            padding: 0.5rem 1rem;
+        }
 
     .edit-user-container,
     .add-user-container 

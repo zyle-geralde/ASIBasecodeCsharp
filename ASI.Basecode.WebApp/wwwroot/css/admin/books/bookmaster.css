@@ -1,0 +1,186 @@
+﻿.book-master-form-section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #647D7F;
+    margin-top: 32px;
+    margin-bottom: 16px;
+}
+
+.book-master-form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+@media (min-width: 768px) {
+    .book-master-form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .book-master-form-grid-span-2 {
+        grid-column: span 2 / span 2;
+    }
+}
+
+.book-master-form-group {
+    margin-bottom: 0;
+}
+
+.book-master-form-input,
+.book-master-form-textarea,
+.book-master-form-select {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 4px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    font-size: 16px;
+    line-height: 1.5;
+    color: #757575;
+    appearance: none;
+    box-sizing: border-box;
+}
+
+    .book-master-form-input:focus,
+    .book-master-form-textarea:focus,
+    .book-master-form-select:focus {
+        outline: none;
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5);
+    }
+
+.book-master-form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.book-master-file-upload-wrapper {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.book-master-file-input-text {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    font-size: 16px;
+    color: #374151;
+    background-color: #f9fafb;
+    box-sizing: border-box;
+}
+
+.book-master-browse-button {
+    position: absolute;
+    right: 30px;
+    margin-top: 32px;
+    transform: translateY(-50%);
+    background: #647D7F;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+    .book-master-browse-button:hover {
+        background-color: #435c5e;
+    }
+
+.book-master-upload-status {
+    color: #6b7280;
+    font-size: 12px;
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .book-master-upload-status.error-message {
+        color: red;
+    }
+
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+
+.book-master-submit-button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background-color: #5f7c78;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+    .book-master-submit-button:hover {
+        background-color: #516a67;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+.cancel-button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background-color: #e0e0e0;
+    color: #555555;
+    border: 1px solid #c0c0c0;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+    .cancel-button:hover {
+        background-color: #d0d0d0;
+        border-color: #b0b0b0;
+    }
+
+.book-master-date-input-wrapper {
+    position: relative;
+}
+
+.book-master-date-input-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #9ca3af;
+    width: 20px;
+    height: 20px;
+}
+
+.book-master-form-input[type="date"] {
+    cursor: pointer;
+}
+
+    .book-master-form-input[type="date"]::-webkit-calendar-picker-indicator {
+        opacity: 1;
+        display: block;
+        cursor: pointer;
+        font-size: 1.5em;
+        color: #647D7F;
+        filter: invert(30%) sepia(10%) saturate(1000%) hue-rotate(180deg) brightness(90%) contrast(80%);
+    }

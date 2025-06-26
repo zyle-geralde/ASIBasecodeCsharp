@@ -28,9 +28,16 @@ body
     box-sizing: border-box;
 }
 
+.main
+{
+    width: 100%;
+}
+
 .container
 {
     max-width: 1980px;
+    padding: 0;
+    margin: 0;
 }
 
 .main-container 
@@ -439,7 +446,18 @@ body
     {
         overflow-y: auto;
         height: 100vh;
+        flex-direction: column !important;
     }
+
+        .register-main-split .register-left {
+            order: 0;
+        }
+
+        .register-main-split .register-right {
+            order: 1;
+        }
+
+
 }
 
 @media (min-width: 768px) 
