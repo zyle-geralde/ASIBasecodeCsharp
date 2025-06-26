@@ -21,7 +21,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public string? GenreList { get; set; }
 
         [DataType(DataType.Date)]
-        public string? UploadDate { get; set; }
+        public DateTime? UploadDate { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? UpdatedDate { get; set; }
