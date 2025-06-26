@@ -260,7 +260,7 @@
 /*-----Modal Styles (To adjusted if there is the same styling in the common.css)----*/
 
 /* Modal Styles */
-.modal-dialog 
+/*.modal-dialog 
 {
     max-width: 500px;
 }
@@ -295,6 +295,46 @@
     }
 
 .modal-body 
+{
+    padding: 1rem 1.5rem 1.5rem;
+}*/
+
+/* Modal Styles for Profile Edit Modals */
+.profile-edit-modal .modal-dialog 
+{
+    max-width: 500px;
+}
+
+.profile-edit-modal .modal-content 
+{
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+
+.profile-edit-modal .modal-header 
+{
+    padding: 1.5rem 1.5rem 1rem;
+}
+
+.profile-edit-modal .modal-title 
+{
+    color: #A37B5D;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.profile-edit-modal .btn-close 
+{
+    opacity: 0.5;
+}
+
+.profile-edit-modal .btn-close:hover 
+{
+    opacity: 0.75;
+}
+
+.profile-edit-modal .modal-body 
 {
     padding: 1rem 1.5rem 1.5rem;
 }
@@ -487,3 +527,52 @@
     justify-content: center;
     line-height: 1;
 }
+
+.success-modal .modal-content {
+    border-radius: 12px;
+    background-color: #f5f2ef;
+    border: none;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.success-modal .modal-body {
+    padding: 2rem;
+}
+
+.success-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #647D7F;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+    .success-icon i {
+        color: white;
+        font-size: 24px;
+    }
+
+.success-modal .modal-title {
+    color: #333;
+    font-weight: 600;
+}
+
+.success-modal p {
+    color: #666;
+    font-size: 14px !important;
+}
+
+.success-modal .btn-secondary {
+    background-color: #647D7F;
+    border: none;
+    color: white;
+    min-width: 100px;
+}
+
+    .success-modal .btn-secondary:hover {
+        background-color: #4f6466;
+    }

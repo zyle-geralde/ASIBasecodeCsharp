@@ -159,8 +159,8 @@ namespace ASI.Basecode.WebApp.Controllers
             try
             {
                 await _userService.UpdateUser(model);
-                TempData["SuccessMessage"] = "User updated successfully!";
-                return RedirectToAction("Index");
+                ViewData["SaveSuccess"] = true;
+                return View("~/Views/Users/EditUser.cshtml", model);
             }
             catch (Exception ex)
             {

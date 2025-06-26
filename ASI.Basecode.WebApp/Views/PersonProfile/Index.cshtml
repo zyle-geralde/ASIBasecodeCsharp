@@ -135,7 +135,7 @@
 </div>
 
 <!-- Personal Information Edit Modal -->
-<div class="modal fade" id="personalInfoEdit" tabindex="-1" aria-labelledby="personalInfoEditLabel" aria-hidden="true">
+<div class="modal fade profile-edit-modal" id="personalInfoEdit" tabindex="-1" aria-labelledby="personalInfoEditLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header border-0">
@@ -225,7 +225,7 @@
 </div>
 
 <!-- User Information Edit Modal -->
-<div class="modal fade" id="userInfoEdit" tabindex="-1" aria-labelledby="userInfoEditLabel" aria-hidden="true">
+<div class="modal fade profile-edit-modal" id="userInfoEdit" tabindex="-1" aria-labelledby="userInfoEditLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header border-0">
@@ -252,7 +252,7 @@
 </div>
 
 <!-- Update Password Modal -->
-<div class="modal fade" id="updatePass" tabindex="-1" aria-labelledby="updatePassLabel" aria-hidden="true">
+<div class="modal fade profile-edit-modal" id="updatePass" tabindex="-1" aria-labelledby="updatePassLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header border-0">
@@ -292,6 +292,21 @@
                         <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade success-modal" id="successLanguageModal" tabindex="-1" aria-labelledby="successLanguageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center py-4">
+                <div class="success-icon mb-3">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h5 class="modal-title mb-2" id="successLanguageModalTitle"></h5>
+                <p class="mb-4" id="successLanguageModalMessage"></p>
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" id="successLanguageModalOkBtn">OK</button>
             </div>
         </div>
     </div>
@@ -596,5 +611,40 @@
   
 
   </script>
+    <script>
+                document.addEventListener('DOMContentLoaded', function () {
+            // Get query string parameter
+            function getQueryParam(name) {
+                const url = new URL(window.location.href);
+                return url.searchParams.get(name);
+            }
+            var type = getQueryParam('success');
+            if (type) {
+                var title = "";
+                var message = "";
+                if (type === "personal") {
+                    title = "Success!";
+                    message = "Personal Information saved successfully!";
+                } else if (type === "user") {
+                    title = "Success!";
+                    message = "User Information saved successfully!";
+                } else if (type === "password") {
+                    title = "Updated";
+                    message = "Password updated successfully!";
+                }
+                document.getElementById('successLanguageModalTitle').textContent = title;
+                document.getElementById('successLanguageModalMessage').textContent = message;
+                var modal = new bootstrap.Modal(document.getElementById('successLanguageModal'));
+                modal.show();
+
+                // Remove the query parameter from the URL (without reloading)
+                if (window.history.replaceState) {
+                    const url = new URL(window.location);
+                    url.searchParams.delete('success');
+                    window.history.replaceState({}, document.title, url.pathname + url.search);
+                }
+            }
+        });
+    </script>
 }
 

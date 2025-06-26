@@ -135,6 +135,19 @@
                 document.querySelector('.edit-user-form').submit();
                 // Do not show the success modal immediately - it should be shown after a successful response
             });
+
+           @if (ViewData["SaveSuccess"] != null && (bool)ViewData["SaveSuccess"])
+            {
+                <text>
+                setTimeout(function() {
+                    var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    successModal.show();
+                    document.getElementById('successModalOkBtn').addEventListener('click', function() {
+                        window.location.href = '/User/Index';
+                    });
+                }, 300);
+                </text>
+            }
         });
     </script>
     <script>

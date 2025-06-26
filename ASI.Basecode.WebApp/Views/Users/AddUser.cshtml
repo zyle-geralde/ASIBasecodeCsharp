@@ -107,11 +107,16 @@
         }
     </script>
     <script>
-        $(document).ready(function () {
-            var successMessage = '@TempData["SuccessMessage"]';
-            if (successMessage) {
-                var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                successModal.show();
+        document.addEventListener('DOMContentLoaded', function () {
+            // Show the modal if the success message exists
+            @if (TempData["SuccessMessage"] != null)
+            {
+                    <text>
+                    setTimeout(function() {
+                        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                        successModal.show();
+                    }, 300);
+                    </text>
             }
         });
     </script>

@@ -13,7 +13,7 @@
 }
 
  <div class="users-container p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
         <div class="header-section">
             <h1>Users</h1>
             <p>View and manage users</p>
@@ -54,14 +54,18 @@
 
             
 
-            <div class="table-responsive justify-content-around">
-                <table class="table table-hover">
+            <div class="table-responsive justify-content-around scrollable-table-container">
+                <table class="table table-hover user-table">
+                    <colgroup>
+                        <col style="width: 20%;">  
+                        <col style="width: 30%;">  
+                        <col style="width: 40%;">  
+                        <col style="width: 10%;">   
+                    </colgroup>
                     <thead>
                         <tr>
                         
-                            <th>User</th>
-                            <th>Last Name</th>
-                            <th>First Name</th>
+                            <th>User ID</th>
                             <th>
                                 <a asp-action="Index" asp-route-searchTerm=@ViewData["CurrentSearch"]>
                                     Username
@@ -78,10 +82,8 @@
                         {
                             <tr>
                                 <td>@u.Id</td>
-                                <td></td>
-                                <td> </td>
                                 <td>@u.UserName</td>
-                                <td> </td> 
+                                <td>@u.Email</td> 
                                  <td>
                                     <div class="action-buttons">
                                             <button type="button" class="btn btn-icon text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-user-id="@u.Id" data-user-name="@u.Email">
