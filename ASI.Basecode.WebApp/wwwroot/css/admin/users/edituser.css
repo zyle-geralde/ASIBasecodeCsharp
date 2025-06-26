@@ -244,6 +244,36 @@ input[type="email"]
     margin-top: 10px;
 }
 
+.custom-tooltip {
+    --bs-tooltip-bg: #d9534f;
+    --bs-tooltip-color: #fff;
+    font-size: 14px;
+}
+
+.is-invalid {
+    border-color: #d9534f !important;
+}
+
+.customToast {
+    min-width: 400px;
+    background-color: #d9534f;
+    color: #fff;
+    font-size: 1rem;
+    z-index: 1080;
+    min-height: 200px;
+}
+.toast-body {
+    text-align: center;
+}
+    .customToast .toast-body {
+        color: #fff;
+
+    }
+
+.custom-toast-top {
+    margin-top: 100px !important;
+    z-index: 1200 !important; 
+}
 
 @media (max-width: 785px) 
 {

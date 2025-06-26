@@ -59,12 +59,12 @@ namespace ASI.Basecode.WebApp.Controllers
             catch (InvalidDataException ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return View(model);
+                return View("~/Views/Users/AddUser.cshtml");
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "An unexpected error occurred.";
-                return View(model);
+                return View("~/Views/Users/AddUser.cshtml");
             }
         }
 
@@ -164,7 +164,7 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "An error occurred while updating the user: " + ex.Message;
+                TempData["ErrorMessage"] = ex.Message;
                 return View("~/Views/Users/EditUser.cshtml", model);
             }
         }

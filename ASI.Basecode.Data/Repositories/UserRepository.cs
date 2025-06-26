@@ -76,6 +76,11 @@ namespace ASI.Basecode.Data.Repositories
             return await this.GetDbSet<User>().FirstOrDefaultAsync(u => u.Email == email);
         }
 
+        public bool UserNameExists(string userName)
+        {
+            return this.GetDbSet<User>().Any(x => x.UserName == userName);
+        }
+
         public async Task UpdateUser(User user)
         {
             GetDbSet<User>().Update(user);

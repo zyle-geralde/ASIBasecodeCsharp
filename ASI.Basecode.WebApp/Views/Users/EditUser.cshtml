@@ -2,6 +2,8 @@
 @model UserViewModel
 @{
     Layout = "_AdminSidebarLayout";
+    var errorMessage = TempData["ErrorMessage"] as string;
+    var isUsernameError = errorMessage != null && errorMessage.ToLower().Contains("username");
 }
 
 @section styles {
@@ -32,7 +34,9 @@
                     <div class="form-group">
                         <label for="name">Username</label>
                         <input type="text" id="name" class="form-control"
-                               asp-for="UserName" placeholder="Username" />
+                               asp-for="UserName" placeholder="Username"
+                               data-bs-toggle="tooltip" data-bs-placement="top"
+                               data-bs-custom-class="custom-tooltip" />
                         <span asp-validation-for="UserName" class="text-danger"></span>
                     </div>
                 </div>
@@ -101,6 +105,16 @@
                 <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" id="successModalOkBtn">OK</button>
             </div>
         </div>
+    </div>
+</div>
+
+<div id="customToast" class="toast align-items-center position-fixed top-0 end-0 mt-4 me-4 custom-toast-top"
+     role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+    <div class="d-flex">
+        <div class="toast-body" id="customToastBody">
+            <!-- Message will be injected here -->
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
 </div>
 
@@ -174,4 +188,37 @@
             document.getElementById('switchToggle').addEventListener('change', togglePasswordFields);
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize all tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Show tooltip if username error exists
+            var errorMessage = '@(errorMessage ?? "")';
+            var isUsernameError = @isUsernameError.ToString().ToLower();
+
+            if (isUsernameError) {
+                var usernameInput = document.getElementById('name');
+                usernameInput.setAttribute('data-bs-title', errorMessage);
+                var tooltip = bootstrap.Tooltip.getOrCreateInstance(usernameInput);
+                tooltip.show();
+                usernameInput.classList.add('is-invalid');
+            }
+        });
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var errorMessage = '@(errorMessage ?? "")';
+        if (errorMessage) {
+            var toastBody = document.getElementById('customToastBody');
+            toastBody.textContent = errorMessage;
+            var toastEl = document.getElementById('customToast');
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+    });
+</script>
 }

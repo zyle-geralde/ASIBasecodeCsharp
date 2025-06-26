@@ -2,6 +2,9 @@
 @model UserViewModel
 @{
     Layout = "_AdminSidebarLayout";
+    var errorMessage = TempData["ErrorMessage"] as string;
+    var isEmailError = errorMessage != null && errorMessage.ToLower().Contains("email");
+    var isUsernameError = errorMessage != null && errorMessage.ToLower().Contains("username");
 }
 
 @section styles {
@@ -18,20 +21,23 @@
                 <h1>Add New User</h1>
                 <p>Enter details of the new user here.</p>
              </div>
-
             <form asp-action="AddUser" asp-controller="User" method="post" class="add-user-form" id="addUserForm">
             @Html.AntiForgeryToken()
                 <div class="form-row">
                     <div class="form-group">
                         <label for="userId">Email</label>
                         <input type="text" id="userId" class="form-control"
-                               asp-for="Email" placeholder="sample@gmail.com" />
+                               asp-for="Email" placeholder="sample@gmail.com"
+                               data-bs-toggle="tooltip" data-bs-placement="top"
+                               data-bs-custom-class="custom-tooltip" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label for="name">Username</label>
                         <input type="text" id="name" class="form-control"
-                               asp-for="UserName" placeholder="Username" />
+                               asp-for="UserName" placeholder="Username"
+                               data-bs-toggle="tooltip" data-bs-placement="top"
+                               data-bs-custom-class="custom-tooltip" />
                         <span asp-validation-for="UserName" class="text-danger"></span>
                     </div>                   
                 </div>
@@ -99,6 +105,15 @@
     </div>
 </div>
 
+<div id="customToast" class="toast align-items-center position-fixed top-0 end-0 mt-4 me-4 custom-toast-top"
+     role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+    <div class="d-flex">
+        <div class="toast-body" id="customToastBody">
+            <!-- Message will be injected here -->
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
 
 @section Scripts {
     <script>
@@ -130,11 +145,45 @@
         });
     </script>
     <script>
-        // Check for error message and display Toastr notification
-        var errorMessage = '@TempData["ErrorMessage"]';
-        if (errorMessage) {
-            toastr.error(errorMessage);
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            // Bootstrap 5 tooltips initialization
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Show tooltip if error exists
+            var errorMessage = '@(errorMessage ?? "")';
+            var isEmailError = @isEmailError.ToString().ToLower();
+            var isUsernameError = @isUsernameError.ToString().ToLower();
+
+            if (isEmailError) {
+                var emailInput = document.getElementById('userId');
+                emailInput.setAttribute('data-bs-title', errorMessage);
+                var tooltip = bootstrap.Tooltip.getOrCreateInstance(emailInput);
+                tooltip.show();
+                emailInput.classList.add('is-invalid');
+            }
+            if (isUsernameError) {
+                var usernameInput = document.getElementById('name');
+                usernameInput.setAttribute('data-bs-title', errorMessage);
+                var tooltip = bootstrap.Tooltip.getOrCreateInstance(usernameInput);
+                tooltip.show();
+                usernameInput.classList.add('is-invalid');
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var errorMessage = '@(errorMessage ?? "")';
+            if (errorMessage) {
+                var toastBody = document.getElementById('customToastBody');
+                toastBody.textContent = errorMessage;
+                var toastEl = document.getElementById('customToast');
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            }
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 }

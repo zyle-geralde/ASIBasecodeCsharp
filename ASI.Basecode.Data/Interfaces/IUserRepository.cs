@@ -17,7 +17,7 @@ namespace ASI.Basecode.Data.Interfaces
         Task DeleteUser(int Id);
         Task<User> FindUserByEmail(string email);
         Task UpdateUser(User user);
-
+        bool UserNameExists(string userName);
         Task<bool> CheckEmailVerified(string email);
     }
 }
