@@ -10,7 +10,7 @@ namespace ASI.Basecode.Data.Interfaces
     public interface IBookRepository
     {
         Task AddBook(Book book);
-        Task<List<Book>> GetBooks(BookQueryParams queryParams);
+        Task<List<Book>> GetBooks(BookQueryParams? queryParams = null);
 
         Task<Book?> GetBookById(string bookId);
 

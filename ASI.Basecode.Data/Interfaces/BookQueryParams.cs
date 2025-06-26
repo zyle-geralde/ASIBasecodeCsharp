@@ -10,7 +10,7 @@ namespace ASI.Basecode.Data.Interfaces
     {
         public string? SearchTerm { get; set; }
 
-        public List<string>? GenreNames { get; set; }
+        public List<string>? GenreNames { get; set; } = new();
 
         public string? Author { get; set; }
         public int? Rating { get; set; }
