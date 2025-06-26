@@ -40,7 +40,7 @@ namespace ASI.Basecode.Services.ServiceModels
 
         public int? NumberOfPages { get; set; }
 
-        [StringLength(20)]
+        [StringLength(500)]
         public string? Language { get; set; }
 
         [StringLength(1000)]

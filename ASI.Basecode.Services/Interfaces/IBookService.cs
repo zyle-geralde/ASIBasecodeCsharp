@@ -21,5 +21,7 @@ namespace ASI.Basecode.Services.Interfaces
         Task DeletBook(string bookId);
 
         Task<List<string>> GetAllGenres();
+
+        Task<List<string>> GetAllLanguage();
     }
 }

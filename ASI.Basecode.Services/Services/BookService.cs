@@ -275,5 +275,28 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
+        public async Task<List<string>> GetAllLanguage()
+        {
+            try
+            {
+                List<Language> language_list = await _bookRepository.GetAllLanguage();
+
+
+                if (language_list == null || !language_list.Any())
+                {
+                    return new List<string>();
+                }
+
+                //Mapping
+                List<string> view_model_list = language_list.Select(book_language_element => book_language_element.LanguageName + ',' + book_language_element.LanguageId).ToList();
+
+                return view_model_list;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to retrieve language genres.", ex);
+            }
+        }
+
     }
 }
