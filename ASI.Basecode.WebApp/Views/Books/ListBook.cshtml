@@ -6,9 +6,23 @@
 
 @{
     var current_genre_details = ViewBag.CurrentGenreDetails as ASI.Basecode.Services.ServiceModels.BookGenreViewModel;
+    var current_language_details = ViewBag.CurrentLanguageDetails as ASI.Basecode.Services.ServiceModels.LanguageViewModel;
+    string display_name = null;
+    string description = null;
 
-    string genre_display_name = current_genre_details?.GenreName ?? ViewBag.CurrentGenreDetails as string ?? "Books";
-    string genre_description = current_genre_details?.GenreDescription ?? ViewBag.CurrentGenreDetails as string ?? "Manage your book collection";
+    if(current_language_details == null)
+    {
+        display_name = current_genre_details?.GenreName ?? ViewBag.CurrentGenreDetails as string ?? "Books";
+        description = current_genre_details?.GenreDescription ?? ViewBag.CurrentGenreDetails as string ?? "Manage your book collection";
+    }
+    else
+    {
+        display_name = current_language_details?.LanguageName ?? ViewBag.CurrentLanguageDetails as string ?? "Books";
+        description = "Language";
+
+    }
+
+
 
     ViewData["Title"] = "Book List";
     Layout = "_AdminSidebarLayout";
@@ -38,8 +52,8 @@
 <div class="content-card p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="header-section">
-            <h1>@genre_display_name</h1>
-            <p>@genre_description</p>
+            <h1>@display_name</h1>
+            <p>@description</p>
         </div>
         <p>
             <a href="/Book/AddBook" class="btn btn-secondary">
