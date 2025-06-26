@@ -26,5 +26,13 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             return View("~/Views/Author/AddAuthor.cshtml");
         }
+
+        [HttpGet]
+        [Route("Author/EditAuthor")]
+        [AllowAnonymous]
+        public IActionResult EditAuthor()
+        {
+            return View("~/Views/Author/EditAuthor.cshtml");
+        }
     }
 }

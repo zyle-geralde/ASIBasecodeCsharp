@@ -13,6 +13,32 @@
     <link rel="stylesheet" href="~/css/admin/books/bookmaster.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/books/editgenre.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
+
+    <style>
+        .image-preview-container {
+            border-radius: 50%;
+            overflow: hidden; 
+            width: 150px; 
+            height: 150px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ddd; 
+            background-color: #f8f8f8; 
+        }
+
+            .image-preview-container img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; 
+            }
+
+            .image-preview-container .placeholder-text {
+                color: #888;
+                font-size: 0.9em;
+                text-align: center;
+            }
+    </style>
 }
 
 <div class="admin-common-container">
