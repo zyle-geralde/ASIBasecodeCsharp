@@ -77,7 +77,7 @@
        
                 <div class="d-flex justify-content-center gap-2">
                     <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger-2 px-4" onclick="submitAddUserForm()">Add User</button>
+                    <button type="button" class="btn btn-danger-2 px-4" onclick="validateAndSubmitAddUserForm()">Add User</button>
                 </div>
             </div>
         </div>
@@ -102,8 +102,17 @@
 
 @section Scripts {
     <script>
-        function submitAddUserForm() {
-            document.getElementById('addUserForm').submit();
+            function validateAndSubmitAddUserForm() {
+            var form = document.getElementById('addUserForm');
+            // If using jQuery validation (unobtrusive), trigger validation
+            if (typeof $ !== 'undefined' && typeof $.validator !== 'undefined') {
+                if ($(form).valid()) {
+                    form.submit();
+                }
+            } else {
+                // fallback: submit anyway
+                form.submit();
+            }
         }
     </script>
     <script>
