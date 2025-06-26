@@ -16,10 +16,12 @@ namespace ASI.Basecode.Services.Services
     public class BookService : IBookService
     {
         private readonly IBookRepository _bookRepository;
+        private readonly ILanguageRepository _languageRepository;
 
-        public BookService(IBookRepository bookRepository)
+        public BookService(IBookRepository bookRepository,ILanguageRepository languageRepository)
         {
             _bookRepository = bookRepository;
+            _languageRepository = languageRepository;
         }
 
         public async Task AddBook(BookViewModel request)
@@ -106,6 +108,7 @@ namespace ASI.Basecode.Services.Services
 
             foreach (var book in book_list)
             {
+                Language languageName = await _languageRepository.GetLanguageByName(book.Language!=null?book.Language:"");
                 var viewModel = new BookViewModel
                 {
                     BookId = book.BookId,
@@ -113,7 +116,7 @@ namespace ASI.Basecode.Services.Services
                     Subtitle = book.Subtitle,
                     Description = book.Description,
                     NumberOfPages = book.NumberOfPages,
-                    Language = book.Language,
+                    Language = languageName!=null?languageName.LanguageName:"",
                     SeriesName = book.SeriesName,
                     SeriesDescription = book.SeriesDescription,
                     SeriesOrder = book.SeriesOrder,

@@ -14,9 +14,11 @@ namespace ASI.Basecode.Services.Services
     public class BookGenreService:IBookGenreService
     {
         private readonly IBookGenreRepository BookGenreRepository;
-        public BookGenreService(IBookGenreRepository book_genre_repositry) 
+        private readonly ILanguageRepository _languageRepository;
+        public BookGenreService(IBookGenreRepository book_genre_repositry, ILanguageRepository languageRepository) 
         {
             BookGenreRepository = book_genre_repositry;
+            _languageRepository = languageRepository;
         }
 
         public async Task AddGenre(BookGenreViewModel book_genre)
@@ -179,38 +181,45 @@ namespace ASI.Basecode.Services.Services
                 var all_books = await BookGenreRepository.GetBooksByGenre();
                 var filtered_books = all_books.Where(book => book.GenreList != null && book.GenreList.ToLower().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Any(g => g.Trim() == genre_name.ToLower())).ToList();
 
-                var book_view_models = filtered_books.Select(bookEntity => new BookViewModel
+                var book_view_models = new List<BookViewModel>();
+
+                foreach (var bookEntity in filtered_books)
                 {
-                    BookId = bookEntity.BookId,
-                    Title = bookEntity.Title,
-                    Subtitle = bookEntity.Subtitle,
-                    Description = bookEntity.Description,
-                    NumberOfPages = bookEntity.NumberOfPages,
-                    Language = bookEntity.Language,
-                    SeriesName = bookEntity.SeriesName,
-                    SeriesDescription = bookEntity.SeriesDescription,
-                    SeriesOrder = bookEntity.SeriesOrder,
-                    GenreList = bookEntity.GenreList,
+                    //Await each GetLanguageByName call sequentially
+                    var languageName = await _languageRepository.GetLanguageByName(bookEntity != null?bookEntity.Language:"");
 
-                    // Firebase Storage URLs are directly mapped
-                    CoverImageUrl = bookEntity.CoverImage,
-                    BookFileUrl = bookEntity.BookFile,
+                    book_view_models.Add(new BookViewModel
+                    {
+                        BookId = bookEntity.BookId,
+                        Title = bookEntity.Title,
+                        Subtitle = bookEntity.Subtitle,
+                        Description = bookEntity.Description,
+                        NumberOfPages = bookEntity.NumberOfPages,
+                        Language = languageName !=null?languageName.LanguageName:"", //Use the awaited languageName
+                        SeriesName = bookEntity.SeriesName,
+                        SeriesDescription = bookEntity.SeriesDescription,
+                        SeriesOrder = bookEntity.SeriesOrder,
+                        GenreList = bookEntity.GenreList,
 
-                    // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
-                    UpdatedDate = bookEntity.UpdatedDate,
-                    PublicationDate = bookEntity.PublicationDate,
+                        // Firebase Storage URLs are directly mapped
+                        CoverImageUrl = bookEntity.CoverImage,
+                        BookFileUrl = bookEntity.BookFile,
 
+                        // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
+                        UpdatedDate = bookEntity.UpdatedDate,
+                        PublicationDate = bookEntity.PublicationDate,
 
-                    // Handle comma-separated strings
-                    Publisher = bookEntity.Publisher, // Store as string
-                    PublicationLocation = bookEntity.PublicationLocation, // Store as string
-                    Author = bookEntity.Author, // Store as string
-                    ISBN10 = bookEntity.ISBN10,
-                    ISBN13 = bookEntity.ISBN13,
-                    Edition = bookEntity.Edition,
-                    CreatedBy = "admin1",
-                    UpdatedBy = "Logged Admin"
-                }).ToList();
+                        // Handle comma-separated strings
+                        Publisher = bookEntity.Publisher, // Store as string
+                        PublicationLocation = bookEntity.PublicationLocation, // Store as string
+                        Author = bookEntity.Author, // Store as string
+                        ISBN10 = bookEntity.ISBN10,
+                        ISBN13 = bookEntity.ISBN13,
+                        Edition = bookEntity.Edition,
+                        CreatedBy = "admin1",
+                        UpdatedBy = "Logged Admin"
+                    });
+                }
 
                 return book_view_models;
 
