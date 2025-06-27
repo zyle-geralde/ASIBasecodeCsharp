@@ -1,23 +1,25 @@
-﻿using ASI.Basecode.Data.Interfaces;
+﻿using ASI.Basecode.Data;
+using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
-using static ASI.Basecode.Resources.Constants.Enums;
-using System.Net.Mail;
 using System.Net;
-using System.Threading.Tasks;
+using System.Net.Mail;
 using System.Security.Cryptography;
-using NetTopologySuite.Geometries;
-using System.Data;
-using ASI.Basecode.Data.Repositories;
-using static System.Net.WebRequestMethods;
 using System.Security.Policy;
+using System.Threading.Tasks;
+using static ASI.Basecode.Resources.Constants.Enums;
+using static System.Net.WebRequestMethods;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -28,14 +30,17 @@ namespace ASI.Basecode.Services.Services
         private readonly IPersonProfileService _personProfileService;
         private readonly IPersonProfileRepository _personProfileRepository;
         private readonly IEmailSender _emailSenderService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService)
+        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService,
+        IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
             _repository = repository;
             _personProfileService = personProfileService;
             _personProfileRepository = personProfileRepository;
-            _emailSenderService = emailSenderService; 
+            _emailSenderService = emailSenderService;
+            _unitOfWork = unitOfWork;
         }
 
         public LoginResult AuthenticateUser(string userId, string password, ref User user)
@@ -492,6 +497,27 @@ namespace ASI.Basecode.Services.Services
                 OtpCode = user.OtpCode,
             };
             return user_otp;
+        }
+
+        public async Task<bool> IsUsernameAvailable(string username, int? currentUserId = null)
+        {
+            if (string.IsNullOrEmpty(username))
+                return false;
+
+            // Get user with this username using the existing repository
+            var users = _repository.GetUsers();
+            var existingUser = await users.FirstOrDefaultAsync(u => u.UserName.ToLower() == username.ToLower());
+
+            // If no user found with this username, it's available
+            if (existingUser == null)
+                return true;
+
+            // If we're editing a user and the username belongs to that same user, it's available
+            if (currentUserId.HasValue && existingUser.Id == currentUserId.Value)
+                return true;
+
+            // Username exists and belongs to another user
+            return false;
         }
     }
 }

@@ -244,6 +244,11 @@ input[type="email"]
     margin-top: 10px;
 }
 
+.form-check-input:checked {
+    background-color: #6c757d !important; /* gray */
+    border-color: #6c757d !important;
+}
+
 .custom-tooltip {
     --bs-tooltip-bg: #d9534f;
     --bs-tooltip-color: #fff;
@@ -254,25 +259,50 @@ input[type="email"]
     border-color: #d9534f !important;
 }
 
-.customToast {
-    min-width: 400px;
-    background-color: #d9534f;
+.position-relative {
+    position: relative !important;
+}
+
+.form-group.position-relative {
+    position: relative !important;
+}
+
+.valid-tooltip,
+.invalid-tooltip {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 5;
+    max-width: 100%;
+    padding: 0.25rem 0.5rem;
+    margin-top: 0.1rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+}
+
+.valid-tooltip {
     color: #fff;
-    font-size: 1rem;
-    z-index: 1080;
-    min-height: 200px;
+    background-color: rgba(40, 167, 69, 0.9);
 }
-.toast-body {
-    text-align: center;
+
+.invalid-tooltip {
+    color: #fff;
+    background-color: rgba(220, 53, 69, 0.9);
+    display: none;
 }
-    .customToast .toast-body {
-        color: #fff;
 
-    }
+.was-validated .form-control:invalid ~ .invalid-tooltip,
+.form-control.is-invalid ~ .invalid-tooltip {
+    display: block;
+}
 
-.custom-toast-top {
-    margin-top: 100px !important;
-    z-index: 1200 !important; 
+.form-control.is-invalid ~ .invalid-tooltip {
+    display: block;
+}
+
+.form-control:not(.is-invalid) ~ .invalid-tooltip {
+    display: none;
 }
 
 @media (max-width: 785px) 
