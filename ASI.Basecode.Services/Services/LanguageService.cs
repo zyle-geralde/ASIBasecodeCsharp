@@ -14,9 +14,11 @@ namespace ASI.Basecode.Services.Services
     public class LanguageService:ILanguageService
     {
         private readonly ILanguageRepository _languageRepository;
+        private readonly IAuthorRepository _authorRepository;
 
-        public LanguageService(ILanguageRepository languageRepository) { 
+        public LanguageService(ILanguageRepository languageRepository,IAuthorRepository authorRepository) { 
             _languageRepository = languageRepository;
+            _authorRepository = authorRepository;
         }
 
         public async Task AddLanguage(LanguageViewModel language)
@@ -160,6 +162,7 @@ namespace ASI.Basecode.Services.Services
                 {
                     //Await each GetLanguageByName call sequentially
                     var languageName = (await _languageRepository.GetLanguageByName(bookEntity.Language))?.LanguageName;
+                    Author authorName = await _authorRepository.GetAuthorById(bookEntity.Author != null ? bookEntity.Author : "");
 
                     book_view_models.Add(new BookViewModel
                     {
@@ -185,7 +188,7 @@ namespace ASI.Basecode.Services.Services
                         // Handle comma-separated strings
                         Publisher = bookEntity.Publisher, // Store as string
                         PublicationLocation = bookEntity.PublicationLocation, // Store as string
-                        Author = bookEntity.Author, // Store as string
+                        Author = authorName != null ? authorName.AuthorName : "", // Store as string
                         ISBN10 = bookEntity.ISBN10,
                         ISBN13 = bookEntity.ISBN13,
                         Edition = bookEntity.Edition,

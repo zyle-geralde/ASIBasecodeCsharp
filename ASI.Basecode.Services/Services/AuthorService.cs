@@ -14,9 +14,11 @@ namespace ASI.Basecode.Services.Services
     public class AuthorService:IAuthorService
     {
         private readonly IAuthorRepository _authorRepository;
-        public AuthorService(IAuthorRepository authorRepository)
+        private readonly ILanguageRepository _languageRepository;
+        public AuthorService(IAuthorRepository authorRepository,ILanguageRepository languageRepository)
         {
             _authorRepository = authorRepository;
+            _languageRepository = languageRepository;
         }
 
         public async Task AddAuthor(AuthorViewModel author)
@@ -162,6 +164,62 @@ namespace ASI.Basecode.Services.Services
             catch (Exception ex)
             {
                 throw new ApplicationException($"Failed to delete author: {ex.Message}", ex);
+            }
+        }
+        public async Task<List<BookViewModel>> GetBooksByAuthor(string author_id)
+        {
+            try
+            {
+                var all_books = await _authorRepository.GetBooksByAuthor();
+                var filtered_books = all_books.Where(book => book.Author == author_id).ToList();
+
+                var book_view_models = new List<BookViewModel>();
+
+                foreach (var bookEntity in filtered_books)
+                {
+                    //Await each GetLanguageByName call sequentially
+                    var languageName = await _languageRepository.GetLanguageByName(bookEntity != null ? bookEntity.Language : "");
+                    Author authorName = await _authorRepository.GetAuthorById(bookEntity.Author != null ? bookEntity.Author : "");
+
+                    book_view_models.Add(new BookViewModel
+                    {
+                        BookId = bookEntity.BookId,
+                        Title = bookEntity.Title,
+                        Subtitle = bookEntity.Subtitle,
+                        Description = bookEntity.Description,
+                        NumberOfPages = bookEntity.NumberOfPages,
+                        Language = languageName != null ? languageName.LanguageName : "", //Use the awaited languageName
+                        SeriesName = bookEntity.SeriesName,
+                        SeriesDescription = bookEntity.SeriesDescription,
+                        SeriesOrder = bookEntity.SeriesOrder,
+                        GenreList = bookEntity.GenreList,
+
+                        // Firebase Storage URLs are directly mapped
+                        CoverImageUrl = bookEntity.CoverImage,
+                        BookFileUrl = bookEntity.BookFile,
+
+                        // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
+                        UpdatedDate = bookEntity.UpdatedDate,
+                        PublicationDate = bookEntity.PublicationDate,
+
+                        // Handle comma-separated strings
+                        Publisher = bookEntity.Publisher, // Store as string
+                        PublicationLocation = bookEntity.PublicationLocation, // Store as string
+                        Author = authorName != null ? authorName.AuthorName : "", // Store as string
+                        ISBN10 = bookEntity.ISBN10,
+                        ISBN13 = bookEntity.ISBN13,
+                        Edition = bookEntity.Edition,
+                        CreatedBy = "admin1",
+                        UpdatedBy = "Logged Admin"
+                    });
+                }
+
+                return book_view_models;
+
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to Get books by genre: {ex.Message}", ex);
             }
         }
 

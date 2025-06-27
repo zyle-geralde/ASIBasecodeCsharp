@@ -21,5 +21,8 @@ namespace ASI.Basecode.Data.Interfaces
 
         Task DeleteAuthor(string auhtor_id);
 
+
+        Task<List<Book>> GetBooksByAuthor();
+
     }
 }

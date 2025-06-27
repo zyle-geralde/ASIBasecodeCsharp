@@ -174,5 +174,31 @@ namespace ASI.Basecode.WebApp.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet]
+        [Route("Author/AuthorView/{authorId}")]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> GetBooksByAuthor(string authorId)
+        {
+            try
+            {
+                //Change this during code cleaning
+                List<BookViewModel> retreived_books_by_author = await _authorService.GetBooksByAuthor(authorId);
+                AuthorViewModel retreived_author_by_Id = await _authorService.GetAuthorById(authorId);
+
+                ViewBag.CurrentAuthorDetails = retreived_author_by_Id;
+
+                return View("~/Views/Books/ListBook.cshtml", retreived_books_by_author);
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = ex.Message });
+            }
+        }
     }
 }

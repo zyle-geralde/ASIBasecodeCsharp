@@ -95,6 +95,9 @@
                             <td class="align-middle">@author.UploadDate?.ToShortDateString()</td>
                             <td class="align-middle" style="white-space:nowrap;">
                                 <div class="action-buttons">
+                                    <a href="/Author/AuthorView/@author.AuthorId" class="action-icon-button text-secondary">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
                                     <a @* href="/Author/EditAuthor/@author.AuthorId" *@ href="/Author/EditAuthor/@author.AuthorId"  class="btn btn-icon text-primary">
                                         <i class="fas fa-edit"></i>
                                     </a>

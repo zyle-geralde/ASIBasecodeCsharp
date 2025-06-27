@@ -15,10 +15,12 @@ namespace ASI.Basecode.Services.Services
     {
         private readonly IBookGenreRepository BookGenreRepository;
         private readonly ILanguageRepository _languageRepository;
-        public BookGenreService(IBookGenreRepository book_genre_repositry, ILanguageRepository languageRepository) 
+        private readonly IAuthorRepository _authorRepository;
+        public BookGenreService(IBookGenreRepository book_genre_repositry, ILanguageRepository languageRepository,IAuthorRepository authorRepository) 
         {
             BookGenreRepository = book_genre_repositry;
             _languageRepository = languageRepository;
+            _authorRepository = authorRepository;
         }
 
         public async Task AddGenre(BookGenreViewModel book_genre)
@@ -187,6 +189,7 @@ namespace ASI.Basecode.Services.Services
                 {
                     //Await each GetLanguageByName call sequentially
                     var languageName = await _languageRepository.GetLanguageByName(bookEntity != null?bookEntity.Language:"");
+                    Author authorName = await _authorRepository.GetAuthorById(bookEntity.Author != null ? bookEntity.Author : "");
 
                     book_view_models.Add(new BookViewModel
                     {
@@ -212,7 +215,7 @@ namespace ASI.Basecode.Services.Services
                         // Handle comma-separated strings
                         Publisher = bookEntity.Publisher, // Store as string
                         PublicationLocation = bookEntity.PublicationLocation, // Store as string
-                        Author = bookEntity.Author, // Store as string
+                        Author = authorName != null ? authorName.AuthorName : "", // Store as string
                         ISBN10 = bookEntity.ISBN10,
                         ISBN13 = bookEntity.ISBN13,
                         Edition = bookEntity.Edition,

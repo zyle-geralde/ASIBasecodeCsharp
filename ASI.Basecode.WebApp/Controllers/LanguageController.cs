@@ -27,7 +27,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpGet]
         [Route("Language/Index")]
         [AllowAnonymous]
-        public async Task<IActionResult> GenreList()
+        public async Task<IActionResult> LanguageList()
         {
             try
             {

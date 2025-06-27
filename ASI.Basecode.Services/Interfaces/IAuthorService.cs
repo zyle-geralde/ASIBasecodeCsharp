@@ -18,5 +18,7 @@ namespace ASI.Basecode.Services.Interfaces
 
         Task DeleteAuthor(string author_id);
 
+        Task<List<BookViewModel>> GetBooksByAuthor(string author_id);
+
     }
 }

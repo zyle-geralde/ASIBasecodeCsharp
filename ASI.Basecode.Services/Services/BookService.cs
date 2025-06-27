@@ -111,6 +111,7 @@ namespace ASI.Basecode.Services.Services
             foreach (var book in book_list)
             {
                 Language languageName = await _languageRepository.GetLanguageByName(book.Language!=null?book.Language:"");
+                Author authorName = await _authorRepository.GetAuthorById(book.Author != null ? book.Author : "");
                 var viewModel = new BookViewModel
                 {
                     BookId = book.BookId,
@@ -137,7 +138,7 @@ namespace ASI.Basecode.Services.Services
                     // Handle comma-separated strings
                     Publisher = book.Publisher, // Store as string
                     PublicationLocation = book.PublicationLocation, // Store as string
-                    Author = book.Author, // Store as string
+                    Author = authorName != null ? authorName.AuthorName : "", // Store as string
                     ISBN10 = book.ISBN10,
                     ISBN13 = book.ISBN13,
                     Edition = book.Edition,

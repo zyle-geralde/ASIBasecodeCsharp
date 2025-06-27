@@ -78,5 +78,17 @@ namespace ASI.Basecode.Data.Repositories
             _dbContext.Authors.Remove(existing_author);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<List<Book>> GetBooksByAuthor()
+        {
+            try
+            { 
+                return await _dbContext.Books.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }
