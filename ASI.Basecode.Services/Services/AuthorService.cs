@@ -58,5 +58,34 @@ namespace ASI.Basecode.Services.Services
                 throw new ApplicationException($"Failed to add author", ex);
             }
         }
+
+
+        public async Task<List<AuthorViewModel>> GetAllAuthorList()
+        {
+            List<Author> author_list = await _authorRepository.GetAllAuthorList();
+
+
+            if (author_list == null || !author_list.Any())
+            {
+                return new List<AuthorViewModel>();
+            }
+
+            //Mapping
+            List<AuthorViewModel> view_model_list = author_list.Select(author_element => new AuthorViewModel
+            {
+                AuthorId = author_element.AuthorId,
+                AuthorName = author_element.AuthorName,
+                AuthorDescription = author_element.AuthorDescription,
+                AuthorImageUrl = author_element.AuthorImageUrl,
+                CreatedBy = author_element.CreatedBy,
+                UpdatedDate = author_element.UpdatedDate,
+                UploadDate = author_element.UploadDate,
+                UpdatedBy = author_element.UpdatedBy
+            }).ToList();
+
+
+            return view_model_list;
+        }
+
     }
 }
