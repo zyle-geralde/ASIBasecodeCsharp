@@ -15,25 +15,25 @@ function showSuccessModal(modalId, title, message, reloadOnClose = false, redire
     if (title) {
         $(`#${modalId}Title`).text(title);
     }
-
+    
     if (message) {
         $(`#${modalId}Message`).text(message);
     }
 
     // Close any open modals first
     closeAllModals();
-
+    
     // Show the success modal
-    setTimeout(function () {
+    setTimeout(function() {
         const modal = new bootstrap.Modal(document.getElementById(modalId));
         modal.show();
 
         // Setup action on modal close
-        $(`#${modalId}OkBtn`).off('click').on('click', function () {
+        $(`#${modalId}OkBtn`).off('click').on('click', function() {
             handleModalClose(reloadOnClose, redirectUrl);
         });
 
-        $(`#${modalId}`).off('hidden.bs.modal').on('hidden.bs.modal', function () {
+        $(`#${modalId}`).off('hidden.bs.modal').on('hidden.bs.modal', function() {
             handleModalClose(reloadOnClose, redirectUrl);
         });
     }, 100);
@@ -94,3 +94,19 @@ function handleModalClose(reload, redirectUrl) {
         location.reload();
     }
 }
+
+/**
+ * Check and show success message from TempData if available
+ * This should only be called explicitly when needed
+ */
+function checkAndShowTempDataSuccess() {
+    const successMessage = document.getElementById('tempDataSuccessMessage');
+    if (successMessage && successMessage.value) {
+        showSuccessModal('successModal', 'Success!', successMessage.value, false);
+        // Clear the value to prevent showing again
+        successMessage.value = '';
+    }
+}
+
+// Don't automatically check for success messages on document ready
+// Only call checkAndShowTempDataSuccess() when explicitly needed

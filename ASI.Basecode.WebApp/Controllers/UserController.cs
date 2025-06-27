@@ -17,28 +17,30 @@ namespace ASI.Basecode.WebApp.Controllers
             _userService = userService;
         }
         [HttpGet]
-        public async Task<IActionResult> Index(string searchTerm, string sortOrder, int? page)
+        public async Task<IActionResult> Index(string searchTerm, string sortOrder)
         {
-            const int PageSize = 10;
-
-            int pageIndex = page.GetValueOrDefault(1);
+            TempData.Remove("SuccessMessage");
+            // Remove pagination parameters - get all users
             ViewData["CurrentSearch"] = searchTerm;
             ViewData["CurrentSort"] = sortOrder;
 
-            var users = await _userService.GetUsersQueried(searchTerm, sortOrder, pageIndex, PageSize);
+            // Pass a large number or 0 to get all users
+            var users = await _userService.GetUsersQueried(searchTerm, sortOrder, 1, int.MaxValue);
 
             return View("~/Views/Users/Index.cshtml", users);
         }
+
         [AllowAnonymous] //To be removed if the flow is finalized
         public IActionResult AddUser()
         {
+            if (!IsPostBack())
+            {
+                TempData.Remove("SuccessMessage");
+                ViewData["ShowSuccessModal"] = null;
+                ViewData["SaveSuccess"] = null;
+            }
             return View("~/Views/Users/AddUser.cshtml");
         }
-        //[AllowAnonymous] //To be removed if the flow is finalized
-        /* public IActionResult EditUser()
-         {
-             return View("~/Views/Users/EditUser.cshtml");
-         }*/
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -47,27 +49,32 @@ namespace ASI.Basecode.WebApp.Controllers
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "Please correct the errors in the form.";
-                return View(model);
+                return View("~/Views/Users/AddUser.cshtml", model);
             }
 
             try
             {
                 await _userService.AddUserFromAdmin(model);
+
+                // Return directly to the view with success flags instead of redirecting
+                ModelState.Clear(); // Clear the form
+
+                // Use ViewData instead of TempData for immediate display
+                TempData["ShowSuccessModal"] = true;
                 TempData["SuccessMessage"] = "User added successfully!";
                 return RedirectToAction("AddUser");
             }
             catch (InvalidDataException ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return View("~/Views/Users/AddUser.cshtml");
+                return View("~/Views/Users/AddUser.cshtml", model);
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "An unexpected error occurred.";
-                return View("~/Views/Users/AddUser.cshtml");
+                return View("~/Views/Users/AddUser.cshtml", model);
             }
         }
-
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
@@ -101,6 +108,11 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
+                if (!IsPostBack())
+                {
+                    TempData.Remove("SuccessMessage");
+                    ViewData["SaveSuccess"] = null;
+                }
                 // Add logging to check the ID being received
                 Console.WriteLine($"Attempting to edit user with ID: {id}");
 
@@ -169,5 +181,10 @@ namespace ASI.Basecode.WebApp.Controllers
             }
         }
 
+        private bool IsPostBack()
+        {
+            return Request.Method == "POST" ||
+                   (Request.Headers["Referer"].ToString()?.Contains(Request.Path.Value) == true);
+        }
     }
 }
