@@ -1,25 +1,23 @@
-﻿using ASI.Basecode.Data;
-using ASI.Basecode.Data.Interfaces;
+﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
-using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using System.Security.Cryptography;
-using System.Security.Policy;
-using System.Threading.Tasks;
 using static ASI.Basecode.Resources.Constants.Enums;
+using System.Net.Mail;
+using System.Net;
+using System.Threading.Tasks;
+using System.Security.Cryptography;
+using NetTopologySuite.Geometries;
+using System.Data;
+using ASI.Basecode.Data.Repositories;
 using static System.Net.WebRequestMethods;
+using System.Security.Policy;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -30,17 +28,14 @@ namespace ASI.Basecode.Services.Services
         private readonly IPersonProfileService _personProfileService;
         private readonly IPersonProfileRepository _personProfileRepository;
         private readonly IEmailSender _emailSenderService;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService,
-        IUnitOfWork unitOfWork)
+        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService)
         {
             _mapper = mapper;
             _repository = repository;
             _personProfileService = personProfileService;
             _personProfileRepository = personProfileRepository;
             _emailSenderService = emailSenderService;
-            _unitOfWork = unitOfWork;
         }
 
         public LoginResult AuthenticateUser(string userId, string password, ref User user)
@@ -49,9 +44,9 @@ namespace ASI.Basecode.Services.Services
             var passwordKey = PasswordManager.EncryptPassword(password);
             user = _repository.GetUsers().Where(x => x.Email == userId &&
                                                      x.Password == passwordKey).FirstOrDefault();
-            if(user == null)
+            if (user == null)
             {
-                return LoginResult.Failed; 
+                return LoginResult.Failed;
             }
 
             return user.IsEmailVerified == true ? LoginResult.Success : LoginResult.Failed;
@@ -61,7 +56,7 @@ namespace ASI.Basecode.Services.Services
         {
             var users = await _repository.GetUsersQueried(searchTerm, sortOrder, pageIndex, pageSize);
             return users.ToList();
-            
+
         }
         public async Task<User> AddUser(UserViewModel model)
         {
@@ -96,7 +91,7 @@ namespace ASI.Basecode.Services.Services
             if (_repository.UserNameExists(model.UserName))
                 throw new InvalidDataException("A user with this username already exists!");
 
-                    var user = new User();
+            var user = new User();
             if (!_repository.UserExists(model.Email))
             {
                 user.Email = model.Email;
@@ -237,7 +232,8 @@ namespace ASI.Basecode.Services.Services
                     }
 
                     PersonProfile get_profile = await _personProfileService.GetPersonProfile(old_user_email);
-                    if (get_profile != null) {
+                    if (get_profile != null)
+                    {
                         get_profile.ProfileID = model.Email;
                         get_profile.FirstName = model.UserName;
                         get_profile.LastName = null;
@@ -280,7 +276,7 @@ namespace ASI.Basecode.Services.Services
                 user.CreatedBy = System.Environment.UserName;
                 user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = false;
-                user.OtpCode =  await GenerateOtpCode(model.Email);
+                user.OtpCode = await GenerateOtpCode(model.Email);
                 user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
 
                 await _repository.AddUser(user);
@@ -388,7 +384,7 @@ namespace ASI.Basecode.Services.Services
                 if (user.OtpCode == model.OtpCode && user.OtpExpirationDate.HasValue && user.OtpExpirationDate.Value > DateTime.UtcNow)
                 {
                     user.IsEmailVerified = true;
-                    user.OtpCode = null; 
+                    user.OtpCode = null;
                     user.OtpExpirationDate = null;
 
                     await _repository.UpdateUser(user);
@@ -455,7 +451,7 @@ namespace ASI.Basecode.Services.Services
 
         private async Task<string> GenerateOtpCode(string email)
         {
-            
+
             //Generate 6-digit numeric OTP
             //RNGCryptoServiceProvider for strong randomness
             var otpBytes = new byte[4]; // Enough to get a number up to 2^32 - 1
@@ -468,10 +464,11 @@ namespace ASI.Basecode.Services.Services
             {
                 await _emailSenderService.SendEmailAsync(email, subject, message);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 throw new Exception(ex.Message);
             }
-            
+
             return otp_string; //Format as a 6-digit string, padding with leading zeros if necessary
         }
 
@@ -482,7 +479,7 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ArgumentException("User not found for OTP regeneration.");
             }
-            if(user.IsEmailVerified == true)
+            if (user.IsEmailVerified == true)
             {
                 throw new ArgumentException("Email is already verified");
             }
@@ -497,27 +494,6 @@ namespace ASI.Basecode.Services.Services
                 OtpCode = user.OtpCode,
             };
             return user_otp;
-        }
-
-        public async Task<bool> IsUsernameAvailable(string username, int? currentUserId = null)
-        {
-            if (string.IsNullOrEmpty(username))
-                return false;
-
-            // Get user with this username using the existing repository
-            var users = _repository.GetUsers();
-            var existingUser = await users.FirstOrDefaultAsync(u => u.UserName.ToLower() == username.ToLower());
-
-            // If no user found with this username, it's available
-            if (existingUser == null)
-                return true;
-
-            // If we're editing a user and the username belongs to that same user, it's available
-            if (currentUserId.HasValue && existingUser.Id == currentUserId.Value)
-                return true;
-
-            // Username exists and belongs to another user
-            return false;
         }
     }
 }

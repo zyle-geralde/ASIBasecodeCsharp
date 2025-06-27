@@ -23,6 +23,6 @@ namespace ASI.Basecode.Services.Interfaces
 
         Task<OtpViewModel> GetUserbyEmail(string email);
         Task<OtpViewModel> RegenerateOtpAsync(string email);
-        Task<bool> IsUsernameAvailable(string username, int? currentUserId = null);
+
     }
 }

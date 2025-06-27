@@ -13,7 +13,7 @@ namespace ASI.Basecode.Data.Repositories
 {
     public class UserRepository : BaseRepository, IUserRepository
     {
-        public UserRepository(IUnitOfWork unitOfWork) : base(unitOfWork) 
+        public UserRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
 
         }
@@ -30,7 +30,7 @@ namespace ASI.Basecode.Data.Repositories
             {
                 var term = searchTerm.Trim();
                 query = query.Where(b =>
-                    (b.Id.ToString() != null && b.Id.ToString().Contains(term))|| (b.UserName != null && b.UserName.Contains(term)) || (b.Email != null && b.Email.Contains(term)));
+                    (b.Id.ToString() != null && b.Id.ToString().Contains(term)) || (b.UserName != null && b.UserName.Contains(term)) || (b.Email != null && b.Email.Contains(term)));
             }
 
             query = query
@@ -79,29 +79,6 @@ namespace ASI.Basecode.Data.Repositories
         public bool UserNameExists(string userName)
         {
             return this.GetDbSet<User>().Any(x => x.UserName == userName);
-        }
-
-        public async Task<bool> IsUsernameAvailable(string username, int? currentUserId = null)
-        {
-            if (string.IsNullOrEmpty(username))
-                return false;
-
-            // Use the GetUsers method directly from this class, not from _repository
-            var users = GetUsers();
-
-            // Find user with matching username
-            var existingUser = await users.FirstOrDefaultAsync(u => u.UserName.ToLower() == username.ToLower());
-
-            // If no user found with this username, it's available
-            if (existingUser == null)
-                return true;
-
-            // If we're editing a user and the username belongs to that same user, it's available
-            if (currentUserId.HasValue && existingUser.Id == currentUserId.Value)
-                return true;
-
-            // Username exists and belongs to another user
-            return false;
         }
 
         public async Task UpdateUser(User user)

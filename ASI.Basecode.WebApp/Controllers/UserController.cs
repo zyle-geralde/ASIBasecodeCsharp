@@ -169,31 +169,5 @@ namespace ASI.Basecode.WebApp.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("User/CheckUsernameAvailability")]
-        public async Task<IActionResult> CheckUsernameAvailability(string username, int? currentUserId)
-        {
-            if (string.IsNullOrEmpty(username))
-            {
-                return Json(new { isAvailable = false, message = "Username is required" });
-            }
-
-            try
-            {
-                // Skip checking against the current user when editing
-                bool isAvailable = await _userService.IsUsernameAvailable(username, currentUserId);
-
-                return Json(new
-                {
-                    isAvailable = isAvailable,
-                    message = isAvailable ? "" : $"A user with this username already exists!"
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { isAvailable = false, message = "Error checking username" });
-            }
-        }
-
     }
 }

@@ -1,5 +1,4 @@
-﻿.edit-user-container 
-{
+﻿.edit-user-container {
     flex: 1;
     background-color: #f5f5f5;
     min-height: 100vh;
@@ -7,8 +6,7 @@
     padding: 25px;
 }
 
-body 
-{
+body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
@@ -16,19 +14,16 @@ body
 }
 
 edit-user-container,
-.add-user-container 
-{
+.add-user-container {
     transition: margin-left 0.3s ease-in-out;
 }
 
 
-.admin-common-content-wrapper 
-{
+.admin-common-content-wrapper {
     padding: 3rem;
 }
 
-.edit-user-form 
-{
+.edit-user-form {
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
@@ -38,45 +33,40 @@ edit-user-container,
     height: 100%;
 }
 
-.profile-section 
-{
+.profile-section {
     position: relative;
     width: fit-content;
     margin-bottom: 2rem;
 }
 
-.profile-image 
-{
+.profile-image {
     width: 120px;
     height: 120px;
     border-radius: 50%;
     overflow: hidden;
     border: 2px solid #647D7F;
     position: relative;
-    background-color: #f5f5f5; 
+    background-color: #f5f5f5;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
- .profile-image img 
- {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
-    border-radius: 50%; 
-}
+    .profile-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
 
 
-.upload-input 
-{
+.upload-input {
     position: absolute;
     bottom: 0;
     right: -110px;
 }
 
-.browse-btn 
-{
+.browse-btn {
     background: #647D7F;
     color: white;
     padding: 0.5rem 1.25rem;
@@ -88,8 +78,7 @@ edit-user-container,
     display: block;
 }
 
-.form-content 
-{
+.form-content {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -97,16 +86,14 @@ edit-user-container,
     margin-bottom: auto;
 }
 
-.form-row 
-{
+.form-row {
     display: flex;
     gap: 3rem;
     margin-bottom: 1rem;
 }
 
 
-.form-group 
-{
+.form-group {
     flex: 1;
     min-width: 0;
     display: flex;
@@ -114,8 +101,7 @@ edit-user-container,
 }
 
 input[type="text"],
-input[type="email"] 
-{
+input[type="email"] {
     width: 100%;
     padding: 0.5rem;
     border: 1px solid #ddd;
@@ -130,11 +116,11 @@ input[type="email"]
     }
 
 
-    .button-container {
-        width: 100%;
-        display: flex;
-        justify-content: flex-end;
-    }
+.button-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
 
 .button-group {
     display: flex;
@@ -195,39 +181,39 @@ input[type="email"]
 }
 
 
-.custom-switch-lg .form-check-input {
-    width: 3rem;
-    height: 1.5rem;
-    min-width: 3rem;
-    min-height: 1.5rem;
-    margin-top: 0.2rem;
-    background-color: #fff; 
-    border-radius: 1.5rem;
-    transition: background-color 0.2s;
-}
-
-    .custom-switch-lg .form-check-input:checked {
-        background-color: #6b7c7d; 
+    .custom-switch-lg .form-check-input {
+        width: 3rem;
+        height: 1.5rem;
+        min-width: 3rem;
+        min-height: 1.5rem;
+        margin-top: 0.2rem;
+        background-color: #fff;
+        border-radius: 1.5rem;
+        transition: background-color 0.2s;
     }
 
-    .custom-switch-lg .form-check-input:focus {
-        box-shadow: 0 0 0 0.2rem rgba(107,124,125,0.25);
-    }
+        .custom-switch-lg .form-check-input:checked {
+            background-color: #6b7c7d;
+        }
 
-    .custom-switch-lg .form-check-input:after {
-        width: 1.2rem;
-        height: 1.2rem;
-    }
+        .custom-switch-lg .form-check-input:focus {
+            box-shadow: 0 0 0 0.2rem rgba(107,124,125,0.25);
+        }
 
-    .custom-switch-lg .form-check-input:focus:not(:checked) {
-        box-shadow: 0 0 0 0.2rem rgba(107, 124, 125, 0.4);
-        border-color: #6b7c7d;
-    }
+        .custom-switch-lg .form-check-input:after {
+            width: 1.2rem;
+            height: 1.2rem;
+        }
 
-    .custom-switch-lg .form-check-input:focus:checked {
-        box-shadow: 0 0 0 0.2rem rgba(107, 124, 125, 0.7);
-        border-color: #6b7c7d;
-    }
+        .custom-switch-lg .form-check-input:focus:not(:checked) {
+            box-shadow: 0 0 0 0.2rem rgba(107, 124, 125, 0.4);
+            border-color: #6b7c7d;
+        }
+
+        .custom-switch-lg .form-check-input:focus:checked {
+            box-shadow: 0 0 0 0.2rem rgba(107, 124, 125, 0.7);
+            border-color: #6b7c7d;
+        }
 
 .custom-switch-label {
     font-size: 24px;
@@ -244,11 +230,6 @@ input[type="email"]
     margin-top: 10px;
 }
 
-.form-check-input:checked {
-    background-color: #6c757d !important; /* gray */
-    border-color: #6c757d !important;
-}
-
 .custom-tooltip {
     --bs-tooltip-bg: #d9534f;
     --bs-tooltip-color: #fff;
@@ -259,62 +240,35 @@ input[type="email"]
     border-color: #d9534f !important;
 }
 
-.position-relative {
-    position: relative !important;
-}
-
-.form-group.position-relative {
-    position: relative !important;
-}
-
-.valid-tooltip,
-.invalid-tooltip {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 5;
-    max-width: 100%;
-    padding: 0.25rem 0.5rem;
-    margin-top: 0.1rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    border-radius: 0.25rem;
-}
-
-.valid-tooltip {
+.customToast {
+    min-width: 400px;
+    background-color: #d9534f;
     color: #fff;
-    background-color: rgba(40, 167, 69, 0.9);
+    font-size: 1rem;
+    z-index: 1080;
+    min-height: 200px;
 }
 
-.invalid-tooltip {
+.toast-body {
+    text-align: center;
+}
+
+.customToast .toast-body {
     color: #fff;
-    background-color: rgba(220, 53, 69, 0.9);
-    display: none;
 }
 
-.was-validated .form-control:invalid ~ .invalid-tooltip,
-.form-control.is-invalid ~ .invalid-tooltip {
-    display: block;
+.custom-toast-top {
+    margin-top: 100px !important;
+    z-index: 1200 !important;
 }
 
-.form-control.is-invalid ~ .invalid-tooltip {
-    display: block;
-}
-
-.form-control:not(.is-invalid) ~ .invalid-tooltip {
-    display: none;
-}
-
-@media (max-width: 785px) 
-{
-    .form-row 
-    {
+@media (max-width: 785px) {
+    .form-row {
         flex-direction: column;
         gap: 1rem;
     }
 
-    .content-wrapper 
-    {
+    .content-wrapper {
         padding: 1.5rem;
     }
 
@@ -328,30 +282,26 @@ input[type="email"]
             padding: 0.5rem 1rem;
         }
 
-    .profile-section 
-    {
+    .profile-section {
         width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
-    .upload-input 
-    {
+    .upload-input {
         position: relative;
         right: auto;
         margin-top: 1rem;
     }
 
-    .edit-user-container 
-    {
+    .edit-user-container {
         margin-left: 0;
         padding: 1rem;
     }
 
     .edit-user-container,
-    .add-user-container 
-    {
+    .add-user-container {
         margin-left: 0;
     }
 }

@@ -20,26 +20,24 @@
             <p>Edit details of the new user here.</p>
         </div>
 
-        <form class="edit-user-form needs-validation" asp-action="EditUser" asp-controller="User" method="post" novalidate>
+        <form class="edit-user-form" asp-action="EditUser" asp-controller="User" method="post">
             <input type="hidden" name="id" value="@ViewContext.RouteData.Values["id"]" />
             <input type="hidden" asp-for="IsUpdate" value="true" />
             <div class="form-row" style="margin-bottom: 30px">
-                <div class="form-group position-relative">
+                <div class="form-group">
                     <label for="userId">Email</label>
                     <input type="text" id="userId" class="form-control" disabled readonly
                            asp-for="Email" placeholder="sample@gmail.com" />
                     <input type="hidden" asp-for="Email" />
-                    <div class="invalid-tooltip">
-                        Please provide a valid email.
-                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
-                <div class="form-group position-relative">
+                <div class="form-group">
                     <label for="name">Username</label>
-                    <input type="text" id="name" class="form-control @(isUsernameError ? "is-invalid" : "")"
-                           asp-for="UserName" placeholder="Username" required />
-                    <div class="invalid-tooltip">
-                        @(isUsernameError? errorMessage : "Please provide a username.")
-                    </div>
+                    <input type="text" id="name" class="form-control"
+                           asp-for="UserName" placeholder="Username"
+                           data-bs-toggle="tooltip" data-bs-placement="top"
+                           data-bs-custom-class="custom-tooltip" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-row">
@@ -50,29 +48,25 @@
             </div>
 
             <div class="form-row">
-                <div class="form-group position-relative">
+                <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" class="form-control"
                            asp-for="Password" placeholder="••••••••" />
-                    <div class="invalid-tooltip">
-                        Please provide a valid password.
-                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
-                <div class="form-group position-relative">
+                <div class="form-group">
                     <label for="confirmpassword">Confirm password</label>
                     <input type="password" id="confirmpassword" class="form-control"
-                           asp-for="ConfirmPassword" placeholder="••••••••" required />
-                    <div class="invalid-tooltip id=confirmPwdTooltip" style="display: none">
-                        Passwords must match!
-                    </div>
+                           asp-for="ConfirmPassword" placeholder="••••••••" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                 </div>
             </div>
             @Html.AntiForgeryToken()
 
             <div class="button-container">
                 <div class="button-group">
-                    <button type="button" class="cancel-btn" onclick="window.location.href='/User/Index'">CANCEL</button>
-                    <button type="button" class="submit-btn" id="validateAndShowModal">
+                    <button type="button" class="cancel-btn" onclick=" window.location.href='/User/Index'">CANCEL</button>
+                    <button type="button" class="submit-btn" data-bs-toggle="modal" data-bs-target="#saveModal">
                         SAVE CHANGES
                     </button>
                 </div>
@@ -114,220 +108,49 @@
     </div>
 </div>
 
+<div id="customToast" class="toast align-items-center position-fixed top-0 end-0 mt-4 me-4 custom-toast-top"
+     role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+    <div class="d-flex">
+        <div class="toast-body" id="customToastBody">
+            <!-- Message will be injected here -->
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Real-time username validation with debounce
-        let usernameCheckTimeout = null;
-                function checkUsernameAvailability(username) {
-            const usernameField = document.getElementById('name');
-            const tooltip = usernameField.nextElementSibling;
-            const currentUserId = document.querySelector('input[name="id"]').value;
+        function showSuccessModal() {
+            var saveModal = bootstrap.Modal.getInstance(document.getElementById('saveModal'));
+            saveModal.hide();
 
-            if (usernameCheckTimeout) {
-                clearTimeout(usernameCheckTimeout);
-            }
+            setTimeout(function() {
+                var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
 
-            if (!username.trim()) {
-                usernameField.classList.remove('is-invalid', 'is-valid');
-                if (tooltip) tooltip.style.display = 'none';
-                return;
-            }
-
-            usernameCheckTimeout = setTimeout(() => {
-                fetch(`/User/CheckUsernameAvailability?username=${encodeURIComponent(username)}&currentUserId=${currentUserId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.isAvailable) {
-                            // Username not available, show error and keep it until user changes input
-                            usernameField.classList.add('is-invalid');
-                            usernameField.classList.remove('is-valid');
-                            if (tooltip) {
-                                tooltip.textContent = data.message;
-                                tooltip.style.display = 'block';
-                            }
-                        } else {
-                            // Username is available, show success
-                            usernameField.classList.remove('is-invalid');
-                            usernameField.classList.add('is-valid');
-                            if (tooltip) tooltip.style.display = 'none';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error checking username:', error);
-                    });
-            }, 500);
+                // Add redirect after success
+                document.getElementById('successModalOkBtn').addEventListener('click', function() {
+                    window.location.href = '/User/Index';
+                });
+            }, 100);
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get form reference
-            const form = document.querySelector('.edit-user-form');
-
-            // Password field toggling
-            function togglePasswordFields() {
-                const isChecked = document.getElementById('switchToggle').checked;
-                const passwordInput = document.getElementById('password');
-                const confirmPasswordInput = document.getElementById('confirmpassword');
-
-                passwordInput.disabled = !isChecked;
-                confirmPasswordInput.disabled = !isChecked;
-
-                if (!isChecked) {
-                    passwordInput.value = '';
-                    confirmPasswordInput.value = '';
-                    passwordInput.classList.remove('is-invalid');
-                    confirmPasswordInput.classList.remove('is-invalid');
-
-                    const passwordTooltip = passwordInput.nextElementSibling;
-                    const confirmTooltip = confirmPasswordInput.nextElementSibling;
-                    if (passwordTooltip) passwordTooltip.style.display = 'none';
-                    if (confirmTooltip) confirmTooltip.style.display = 'none';
-                }
-            }
-
-            // Initialize password fields
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initial state
             togglePasswordFields();
 
             // Listen for switch changes
             document.getElementById('switchToggle').addEventListener('change', togglePasswordFields);
 
-            // Add username check on input
-            const usernameField = document.getElementById('name');
-            if (usernameField) {
-                usernameField.addEventListener('input', function() {
-                    checkUsernameAvailability(this.value);
-                });
-
-                // Also check initial value for server-side errors
-                const initialUsername = usernameField.value;
-                if (initialUsername.trim()) {
-                    checkUsernameAvailability(initialUsername);
-                }
-            }
-
-                    // Password match tooltip logic
-        const passwordInput = document.getElementById('password');
-        const confirmPasswordInput = document.getElementById('confirmpassword');
-        const confirmPwdTooltip = document.getElementById('confirmPwdTooltip');
-        function validatePasswordMatch() {
-            if (
-                passwordInput.value &&
-                confirmPasswordInput.value &&
-                passwordInput.value !== confirmPasswordInput.value
-            ) {
-                confirmPasswordInput.classList.add('is-invalid');
-                confirmPwdTooltip.style.display = 'block';
-            } else {
-                confirmPasswordInput.classList.remove('is-invalid');
-                confirmPwdTooltip.style.display = 'none';
-            }
-        }
-
-        // Show tooltip when user stops typing (debounced)
-        let confirmPwdTimeout = null;
-        confirmPasswordInput.addEventListener('input', function() {
-            if (confirmPwdTimeout) clearTimeout(confirmPwdTimeout);
-            confirmPwdTimeout = setTimeout(validatePasswordMatch, 400); // 400ms after typing stops
-        });
-
-        // Also validate on password input change
-        passwordInput.addEventListener('input', function() {
-            if (confirmPwdTimeout) clearTimeout(confirmPwdTimeout);
-            confirmPwdTimeout = setTimeout(validatePasswordMatch, 400);
-        });
-
-            // IMPORTANT: Custom validation before showing modal
-            document.getElementById('validateAndShowModal').addEventListener('click', function(event) {
-                event.preventDefault();
-
-                // First, manually call the validation API
-                const isFormValid = form.checkValidity();
-
-                // Add visual feedback regardless of validity
-                form.classList.add('was-validated');
-
-                // Additional custom validation for password match
-                let passwordsMatch = true;
-                const switchToggle = document.getElementById('switchToggle');
-                    if (switchToggle.checked) {
-                    const password = document.getElementById('password');
-                    const confirmPassword = document.getElementById('confirmpassword');
-
-                    if (password.value && confirmPassword.value && password.value !== confirmPassword.value) {
-                        passwordsMatch = false;
-                        confirmPassword.setCustomValidity("Passwords do not match");
-                        confirmPassword.classList.add('is-invalid');
-                        // Show tooltip
-                        var tooltip = bootstrap.Tooltip.getOrCreateInstance(confirmPassword);
-                        tooltip.show();
-                    } else {
-                        confirmPassword.setCustomValidity("");
-                        // Hide tooltip
-                        var tooltip = bootstrap.Tooltip.getOrCreateInstance(confirmPassword);
-                        tooltip.hide();
-                    }
-                }
-
-                // Check for duplicated username (the field will be marked invalid by our AJAX check)
-                const hasUsernameError = usernameField.classList.contains('is-invalid');
-
-                // Only show modal if all validations pass
-                if (isFormValid && passwordsMatch && !hasUsernameError) {
-                    // Show confirmation modal
-                    const modal = new bootstrap.Modal(document.getElementById('saveModal'));
-                    modal.show();
-                } else {
-                    // Focus the first invalid field
-                    const firstInvalid = form.querySelector('.is-invalid');
-                    if (firstInvalid) {
-                        firstInvalid.focus();
-                    }
-                }
-            });
-
-            // Save button in confirmation modal
+            // Setup save button click handler
             document.getElementById('saveConfirmBtn').addEventListener('click', function() {
-                form.submit();
+                document.querySelector('.edit-user-form').submit();
+                // Do not show the success modal immediately - it should be shown after a successful response
             });
 
-            // Implement the auto-hide tooltip functionality
-            document.querySelectorAll('input[required], input.form-control').forEach(input => {
-                input.addEventListener('input', function() {
-                    if (this.value.trim() !== '') {
-                        // If field is no longer empty, remove error after delay
-                        if (this.classList.contains('is-invalid') && this.id !== 'name') {
-                            // Skip username field as it has its own validation
-                            // Clear any existing timeout
-                            if (this.dataset.timeout) {
-                                clearTimeout(parseInt(this.dataset.timeout));
-                            }
-
-                            // Set new timeout
-                            const timeout = setTimeout(() => {
-                                this.classList.remove('is-invalid');
-                                this.setCustomValidity(''); // Clear custom validation message
-                            }, 4000);
-
-                            this.dataset.timeout = timeout;
-                        }
-                    }
-                });
-            });
-
-            // Handle server-side errors
-            var errorMessage = '@(errorMessage ?? "")';
-            var isUsernameError = @isUsernameError.ToString().ToLower();
-
-            if (isUsernameError && errorMessage) {
-                var toastBody = document.getElementById('customToastBody');
-                toastBody.textContent = errorMessage;
-                var toast = new bootstrap.Toast(document.getElementById('customToast'));
-                toast.show();
-            }
-
-            // Show success modal if needed
-            @if (ViewData["SaveSuccess"] != null && (bool)ViewData["SaveSuccess"])
+           @if (ViewData["SaveSuccess"] != null && (bool)ViewData["SaveSuccess"])
             {
                     <text>
                     setTimeout(function() {
@@ -338,6 +161,63 @@
                         });
                     }, 300);
                     </text>
+            }
+        });
+    </script>
+    <script>
+        // On page load and when the switch changes, toggle password fields
+            function togglePasswordFields() {
+            var isChecked = document.getElementById('switchToggle').checked;
+            var passwordInput = document.getElementById('password');
+            var confirmPasswordInput = document.getElementById('confirmpassword');
+
+            passwordInput.disabled = !isChecked;
+            confirmPasswordInput.disabled = !isChecked;
+
+            if (!isChecked) {
+                passwordInput.value = '';
+                confirmPasswordInput.value = '';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initial state
+            togglePasswordFields();
+
+            // Listen for switch changes
+            document.getElementById('switchToggle').addEventListener('change', togglePasswordFields);
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize all tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Show tooltip if username error exists
+            var errorMessage = '@(errorMessage ?? "")';
+            var isUsernameError = @isUsernameError.ToString().ToLower();
+
+            if (isUsernameError) {
+                var usernameInput = document.getElementById('name');
+                usernameInput.setAttribute('data-bs-title', errorMessage);
+                var tooltip = bootstrap.Tooltip.getOrCreateInstance(usernameInput);
+                tooltip.show();
+                usernameInput.classList.add('is-invalid');
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var errorMessage = '@(errorMessage ?? "")';
+            if (errorMessage) {
+                var toastBody = document.getElementById('customToastBody');
+                toastBody.textContent = errorMessage;
+                var toastEl = document.getElementById('customToast');
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
             }
         });
     </script>
