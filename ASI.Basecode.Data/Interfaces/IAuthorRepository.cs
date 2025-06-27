@@ -13,5 +13,7 @@ namespace ASI.Basecode.Data.Interfaces
 
         Task<bool> CheckAuthorExist(string author_name);
 
+        Task<List<Author>> GetAllAuthorList();
+
     }
 }

@@ -35,5 +35,17 @@ namespace ASI.Basecode.Data.Repositories
         {
             return await _dbContext.Authors.AnyAsync(author_name_param => author_name_param.AuthorName.ToLower() == author_name.ToLower());
         }
+
+        public async Task<List<Author>> GetAllAuthorList()
+        {
+            try
+            {
+                return await _dbContext.Authors.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }
