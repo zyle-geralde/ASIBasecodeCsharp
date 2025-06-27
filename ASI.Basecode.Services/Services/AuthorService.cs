@@ -87,5 +87,41 @@ namespace ASI.Basecode.Services.Services
             return view_model_list;
         }
 
+        public async Task EditAuthor(AuthorViewModel author)
+        {
+            if (author == null)
+            {
+                throw new ArgumentNullException(nameof(author), "Author should not be null");
+            }
+
+
+            try
+            {
+                Author existing_author = await _authorRepository.GetAuthorById(author.AuthorId);
+
+                bool check_author_exist = await _authorRepository.CheckAuthorExist(author.AuthorName);
+
+                if (check_author_exist && existing_author.AuthorName != author.AuthorName)
+                {
+                    throw new ArgumentException("Author Name already exist");
+                }
+
+                existing_author.AuthorName = author.AuthorName;
+                existing_author.AuthorDescription = author.AuthorDescription;
+                existing_author.AuthorImageUrl = author.AuthorImageUrl;
+                existing_author.UpdatedDate = DateTime.UtcNow;
+
+                await _authorRepository.EditAuthor();
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to edit Author by id.", ex);
+            }
+        }
+
     }
 }

@@ -15,5 +15,9 @@ namespace ASI.Basecode.Data.Interfaces
 
         Task<List<Author>> GetAllAuthorList();
 
+        Task EditAuthor();
+
+        Task<Author> GetAuthorById(string author_id)
+
     }
 }

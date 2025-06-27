@@ -47,5 +47,29 @@ namespace ASI.Basecode.Data.Repositories
                 throw;
             }
         }
+        public async Task EditAuthor()
+        {
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Author> GetAuthorById(string author_id)
+        {
+            try
+            {
+                return await _dbContext.Authors.FirstOrDefaultAsync(author => author.AuthorId == author_id);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

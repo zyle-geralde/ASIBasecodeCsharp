@@ -11,5 +11,9 @@ namespace ASI.Basecode.Services.Interfaces
     {
         Task AddAuthor(AuthorViewModel author);
         Task<List<AuthorViewModel>> GetAllAuthorList();
+
+        Task EditAuthor(AuthorViewModel author);
+
+
     }
 }
