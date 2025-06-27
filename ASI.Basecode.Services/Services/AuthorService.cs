@@ -123,5 +123,35 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
+
+
+        public async Task<AuthorViewModel> GetAuthorById(string author_id)
+        {
+
+            if (string.IsNullOrEmpty(author_id))
+            {
+                throw new ArgumentNullException(nameof(author_id), "Author Id should not be null");
+            }
+
+            try
+            {
+                Author retreived_author = await _authorRepository.GetAuthorById(author_id);
+
+                AuthorViewModel mapped_author = new AuthorViewModel
+                {
+                    AuthorId = retreived_author.AuthorId,
+                    AuthorName = retreived_author.AuthorName,
+                    AuthorDescription = retreived_author.AuthorDescription,
+                    AuthorImageUrl = retreived_author.AuthorImageUrl,
+                };
+
+                return mapped_author;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to retrieve book author by id.", ex);
+            }
+        }
+
     }
 }

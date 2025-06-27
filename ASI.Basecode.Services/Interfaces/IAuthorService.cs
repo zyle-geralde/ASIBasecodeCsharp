@@ -14,6 +14,8 @@ namespace ASI.Basecode.Services.Interfaces
 
         Task EditAuthor(AuthorViewModel author);
 
+        Task<AuthorViewModel> GetAuthorById(string author_id);
+
 
     }
 }

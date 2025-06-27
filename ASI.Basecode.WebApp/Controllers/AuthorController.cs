@@ -56,11 +56,29 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
-        [Route("Author/EditAuthor")]
+        [Route("Author/EditAuthor/{author_id}")]
         [AllowAnonymous]
-        public IActionResult EditAuthor()
+        public async Task<IActionResult> EditAuthor(string author_id)
         {
-            return View("~/Views/Author/EditAuthor.cshtml");
+            try
+            {
+                AuthorViewModel retreived_author = await _authorService.GetAuthorById(author_id) ;
+
+                return View("~/Views/Author/EditAuthor.cshtml", retreived_author);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = ex.Message });
+            }
+            
         }
 
 
@@ -75,6 +93,38 @@ namespace ASI.Basecode.WebApp.Controllers
                 {
                     await _authorService.AddAuthor(author);
                     return Ok(new { Message ="Author Successfully added" });
+                }
+                catch (ArgumentException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+                catch (ApplicationException ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+
+            }
+
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            return BadRequest(new { errors = errors, Message = "Validation failed." });
+        }
+
+        [HttpPost]
+        [Route("Author/EditAuthor")]
+        [AllowAnonymous]
+        public async Task<IActionResult> EditAuthor(AuthorViewModel author)
+        {
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _authorService.EditAuthor(author);
+                    return Ok(new { Message = "Author Successfully edited" });
                 }
                 catch (ArgumentException ex)
                 {

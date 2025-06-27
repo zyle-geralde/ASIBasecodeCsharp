@@ -171,10 +171,11 @@
             <div class="edit-genre-grid">
                 <div class="image-upload-section">
                     <div class="image-preview-container">
-                        <img id="authorImagePreview" src="" alt="Author Image Preview" style="display:none;">
-                        <span id="imagePlaceholder" class="placeholder-text">No Image</span>
+                        <img id="authorImagePreview" src="@Model?.AuthorImageUrl" style="@(string.IsNullOrEmpty(Model?.AuthorImageUrl) ? "display:none;" : "")">
+                        <span id="imagePlaceholder" class="placeholder-text" style="@( !string.IsNullOrEmpty(Model?.AuthorImageUrl) ? "display:none;" : "")">No Image</span>
                     </div>
 
+                    <input type="text" class="book-master-file-input-text" readonly id="authorImageFileNameDisplay">
                     <button type="button" class="edit-genre-browse-button" onclick="document.getElementById('authorImageFile').click();">BROWSE</button>
                     <input type="file" id="authorImageFile" accept="image/*" name="AuthorImageFile" style="display: none;">
                     @* <input type="text" class="book-master-file-input-text" readonly id="authorImageFileNameDisplay"> *@
@@ -183,6 +184,7 @@
                         <span class="file-size-info">Max file size: 1GB</span>
                         <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                     </p>
+                    <input type="text" id="authorImageUrl" name="AuthorImageUrl" value="@Model?.AuthorImageUrl">
                 </div>
 
                 <div>
