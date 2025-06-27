@@ -13,67 +13,67 @@
     <link rel="stylesheet" href="~/css/admin/users/edituser.css" asp-append-version="true" />
 }
 
-    <div class="admin-common-container">
-        <div class="admin-common-content-wrapper">
-            <div class="header-section">
-                <h1>Edit User Details</h1>
-                <p>Edit details of the new user here.</p>
+<div class="admin-common-container">
+    <div class="admin-common-content-wrapper">
+        <div class="header-section">
+            <h1>Edit User Details</h1>
+            <p>Edit details of the new user here.</p>
+        </div>
+
+        <form class="edit-user-form" asp-action="EditUser" asp-controller="User" method="post">
+            <input type="hidden" name="id" value="@ViewContext.RouteData.Values["id"]" />
+            <input type="hidden" asp-for="IsUpdate" value="true" />
+            <div class="form-row" style="margin-bottom: 30px">
+                <div class="form-group">
+                    <label for="userId">Email</label>
+                    <input type="text" id="userId" class="form-control" disabled readonly
+                           asp-for="Email" placeholder="sample@gmail.com" />
+                    <input type="hidden" asp-for="Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="name">Username</label>
+                    <input type="text" id="name" class="form-control"
+                           asp-for="UserName" placeholder="Username"
+                           data-bs-toggle="tooltip" data-bs-placement="top"
+                           data-bs-custom-class="custom-tooltip" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-check form-switch custom-switch-lg">
+                    <input class="form-check-input" type="checkbox" role="switch" id="switchToggle">
+                    <label class="form-check-label custom-switch-label" for="switchToggle">Update Password</label>
+                </div>
             </div>
 
-            <form class="edit-user-form" asp-action="EditUser" asp-controller="User" method="post">
-                <input type="hidden" name="id" value="@ViewContext.RouteData.Values["id"]" />
-                <input type="hidden" asp-for="IsUpdate" value="true"/>
-                <div class="form-row" style="margin-bottom: 30px">
-                    <div class="form-group">
-                        <label for="userId">Email</label>
-                        <input type="text" id="userId" class="form-control" disabled readonly
-                               asp-for="Email" placeholder="sample@gmail.com" />
-                        <input type="hidden" asp-for="Email" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="name">Username</label>
-                        <input type="text" id="name" class="form-control"
-                               asp-for="UserName" placeholder="Username"
-                               data-bs-toggle="tooltip" data-bs-placement="top"
-                               data-bs-custom-class="custom-tooltip" />
-                        <span asp-validation-for="UserName" class="text-danger"></span>
-                    </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control"
+                           asp-for="Password" placeholder="••••••••" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
-                <div class="form-row">
-                    <div class="form-check form-switch custom-switch-lg">
-                        <input class="form-check-input" type="checkbox" role="switch" id="switchToggle">
-                        <label class="form-check-label custom-switch-label" for="switchToggle">Update Password</label>
-                    </div>
+                <div class="form-group">
+                    <label for="confirmpassword">Confirm password</label>
+                    <input type="password" id="confirmpassword" class="form-control"
+                           asp-for="ConfirmPassword" placeholder="••••••••" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                 </div>
+            </div>
+            @Html.AntiForgeryToken()
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" class="form-control"
-                               asp-for="Password" placeholder="••••••••" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="confirmpassword">Confirm password</label>
-                        <input type="password" id="confirmpassword" class="form-control"
-                               asp-for="ConfirmPassword" placeholder="••••••••" />
-                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                    </div>
+            <div class="button-container">
+                <div class="button-group">
+                    <button type="button" class="cancel-btn" onclick=" window.location.href='/User/Index'">CANCEL</button>
+                    <button type="button" class="submit-btn" data-bs-toggle="modal" data-bs-target="#saveModal">
+                        SAVE CHANGES
+                    </button>
                 </div>
-                @Html.AntiForgeryToken()
-
-                <div class="button-container">
-                    <div class="button-group">
-                        <button type="button" class="cancel-btn" onclick=" window.location.href='/User/Index'">CANCEL</button>
-                        <button type="button" class="submit-btn" data-bs-toggle="modal" data-bs-target="#saveModal">
-                            SAVE CHANGES
-                        </button>
-                    </div>
-                </div>               
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
+</div>
 
 <div class="modal fade confirmation-modal" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -152,15 +152,15 @@
 
            @if (ViewData["SaveSuccess"] != null && (bool)ViewData["SaveSuccess"])
             {
-                <text>
-                setTimeout(function() {
-                    var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                    successModal.show();
-                    document.getElementById('successModalOkBtn').addEventListener('click', function() {
-                        window.location.href = '/User/Index';
-                    });
-                }, 300);
-                </text>
+                    <text>
+                    setTimeout(function() {
+                        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                        successModal.show();
+                        document.getElementById('successModalOkBtn').addEventListener('click', function() {
+                            window.location.href = '/User/Index';
+                        });
+                    }, 300);
+                    </text>
             }
         });
     </script>
@@ -210,15 +210,15 @@
         });
     </script>
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var errorMessage = '@(errorMessage ?? "")';
-        if (errorMessage) {
-            var toastBody = document.getElementById('customToastBody');
-            toastBody.textContent = errorMessage;
-            var toastEl = document.getElementById('customToast');
-            var toast = new bootstrap.Toast(toastEl);
-            toast.show();
-        }
-    });
-</script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var errorMessage = '@(errorMessage ?? "")';
+            if (errorMessage) {
+                var toastBody = document.getElementById('customToastBody');
+                toastBody.textContent = errorMessage;
+                var toastEl = document.getElementById('customToast');
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            }
+        });
+    </script>
 }

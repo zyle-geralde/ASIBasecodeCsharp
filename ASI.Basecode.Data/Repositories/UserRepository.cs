@@ -13,7 +13,7 @@ namespace ASI.Basecode.Data.Repositories
 {
     public class UserRepository : BaseRepository, IUserRepository
     {
-        public UserRepository(IUnitOfWork unitOfWork) : base(unitOfWork) 
+        public UserRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
 
         }
@@ -30,7 +30,7 @@ namespace ASI.Basecode.Data.Repositories
             {
                 var term = searchTerm.Trim();
                 query = query.Where(b =>
-                    (b.Id.ToString() != null && b.Id.ToString().Contains(term))|| (b.UserName != null && b.UserName.Contains(term)) || (b.Email != null && b.Email.Contains(term)));
+                    (b.Id.ToString() != null && b.Id.ToString().Contains(term)) || (b.UserName != null && b.UserName.Contains(term)) || (b.Email != null && b.Email.Contains(term)));
             }
 
             query = query
