@@ -164,9 +164,10 @@
 
         <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
 
-        <form asp-action="EditAuthor" asp-controller="Author" method="post" id="addAuthorForm">
+        <form asp-action="EditAuthor" asp-controller="Author" method="post" id="editAuthorForm">
            
-            <input type="hidden" id="authorImageUrl" name="AuthorImageUrl">
+            @*<input type="hidden" id="authorImageUrl" name="AuthorImageUrl">*@
+            <input type = "hidden" name="AuthorId" value = "@Model.AuthorId"/>
 
             <div class="edit-genre-grid">
                 <div class="image-upload-section">
@@ -177,7 +178,7 @@
 
                     <input type="text" class="book-master-file-input-text" readonly id="authorImageFileNameDisplay">
                     <button type="button" class="edit-genre-browse-button" onclick="document.getElementById('authorImageFile').click();">BROWSE</button>
-                    <input type="file" id="authorImageFile" accept="image/*" name="AuthorImageFile" style="display: none;">
+                    <input type="file" id="authorImageFile" accept="image/*" style="display: none;">
                     @* <input type="text" class="book-master-file-input-text" readonly id="authorImageFileNameDisplay"> *@
 
                     <p id="authorImageUploadStatus" class="edit-genre-upload-status">
@@ -206,7 +207,7 @@
 
             <div class="button-container">
                 <button type="button" class="cancel-button" onclick="window.location.href='/Author/Index';">CANCEL</button>
-                <button type="submit" class="book-master-submit-button" id="addAuthorSubmitButton">SAVE CHANGES</button>
+                <button type="submit" class="book-master-submit-button" id="editAuthorSubmitButton">SAVE CHANGES</button>
             </div>
         </form>
 
@@ -271,12 +272,116 @@
 </div>
 
 @section scripts {
-    <script>
+    <script type = "module">
+        // Your Firebase configuration
+        //Transfer this secretes into AnalyserNode env or file, and include it in gitignore.
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4CTMSbgGQN_yLn9lEZlswbZ_2A2Xhl0k",
+            authDomain: "basabuzz-ca8fe.firebaseapp.com",
+            projectId: "basabuzz-ca8fe",
+            storageBucket: "basabuzz-ca8fe.firebasestorage.app",
+            messagingSenderId: "206533484485",
+            appId: "1:206533484485:web:2c71a06a17d5244efe75ac"
+        };
+
+        // Initialize Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+
+
+        async function deleteFileFromFirebase(fileUrl) {
+            if (!fileUrl) {
+                console.warn("Attempted to delete null or empty file URL.");
+                return;
+            }
+            try {
+                const fileRef = ref(storage, fileUrl);
+                await deleteObject(fileRef);
+                console.log(`Successfully deleted file: ${fileUrl}`);
+            } catch (error) {
+                showStatusModal(`Failed to delete file ${fileUrl}: ${error.message}`, 'Error');
+                console.error(`Failed to delete file ${fileUrl}:`, error);
+            }
+        }
+
+        async function rollbackFileUploads(uploadedGImageUrl, imageUploadStatusElement) {
+            if (uploadedGImageUrl) {
+                await deleteFileFromFirebase(uploadedGImageUrl);
+                if (imageUploadStatusElement) {
+                    const fileSizeInfo = imageUploadStatusElement.querySelector('.file-size-info');
+                    if (fileSizeInfo) {
+                        fileSizeInfo.textContent = 'Upload rolled back due to backend error.';
+                    }
+                    imageUploadStatusElement.classList.add('error-message');
+                }
+            }
+        }
+
+        //Firebase Upload Function
+        async function uploadFileToFirebase(file, path, statusElement) {
+            // Ensure statusElement is valid and contains the target span before trying to update it
+            const fileSizeInfoSpan = statusElement ? statusElement.querySelector('.file-size-info') : null;
+
+            if (!file) {
+                if (fileSizeInfoSpan) { // Only update if the span exists
+                    fileSizeInfoSpan.textContent = 'No file selected.';
+                }
+                return null;
+            }
+
+            const timestamp = new Date().getTime();
+            const randomString = Math.random().toString(36).substring(2, 8);
+            const uniqueFileName = `${timestamp}-${randomString}-${file.name}`;
+
+            const storageRef = ref(storage, path + uniqueFileName);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            return new Promise((resolve, reject) => {
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        if (fileSizeInfoSpan) { // Safely update progress
+                            fileSizeInfoSpan.textContent = `Upload is ${progress.toFixed(2)}% done`;
+                        }
+                    },
+                    (error) => {
+                        showStatusModal(`Genre image upload failed: ${error.message}`, 'Error');
+                        console.error("Upload error:", error);
+                        reject(error);
+                    },
+                    async () => {
+                        try {
+                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            if (fileSizeInfoSpan) { // Safely update success message
+                                fileSizeInfoSpan.textContent = 'Upload successful!';
+                            }
+                            resolve(downloadURL);
+                        } catch (error) {
+                            showStatusModal(`Failed to get download URL: ${error.message}`, 'Error');
+                            console.error("Get Download URL error:", error);
+                            reject(error);
+                        }
+                    }
+                );
+            });
+        }
         document.addEventListener('DOMContentLoaded', function () {
             // Image Preview Logic
             const authorImageFile = document.getElementById('authorImageFile');
             const authorImagePreview = document.getElementById('authorImagePreview');
             const imagePlaceholder = document.getElementById('imagePlaceholder');
+
+
+            const editAuthorForm = document.getElementById("editAuthorForm");
+            const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
+            const authorImageUrlInput = document.getElementById('authorImageUrl');
+
+
+
+
 
             if (authorImageFile) {
                 authorImageFile.addEventListener('change', function () {
@@ -296,6 +401,7 @@
                     }
                 });
             }
+
 
             // Static Pagination Logic
             const bookItems = document.querySelectorAll('#bookGrid .book-item');
@@ -401,6 +507,107 @@
                 noBooksMessage.textContent = 'No books added for this author yet.';
                 document.querySelector('.books-by-author-section').appendChild(noBooksMessage);
             }
+
+
+
+
+            //Edit function
+            document.getElementById('editAuthorForm').addEventListener('submit', async (event) => {
+                
+                event.preventDefault()
+
+                const form = document.getElementById("editAuthorForm");
+                const authorImageFileInstance = document.getElementById('authorImageFile');
+                const authorImageFile = authorImageFileInstance.files[0];
+                const authorImageUrlHiddenInput = document.getElementById('authorImageUrl');
+                const submitButton = document.getElementById('editAuthorSubmitButton');
+                const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
+
+                const originalAuthorImageUrl = authorImageUrlInput.value;
+
+                const fileSizeInfoSpan = authorImageUploadStatusElement.querySelector('.file-size-info');
+                const supportedFormatsInfoSpan = authorImageUploadStatusElement.querySelector('.supported-formats-info');
+                if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 1GB';
+                if (supportedFormatsInfoSpan) supportedFormatsInfoSpan.textContent = 'Supported formats: JPG, PNG, JPEG';
+                authorImageUploadStatusElement.classList.remove('error-message');
+
+
+                submitButton.disabled = true;
+                submitButton.textContent = 'Processing...';
+
+                let uploadedAuthorImageUrl = null;
+
+                try {
+                    if (authorImageFile) {
+                        uploadedAuthorImageUrl = await uploadFileToFirebase(authorImageFile, 'author_covers/', authorImageUploadStatusElement);
+                        if (uploadedAuthorImageUrl) {
+                            authorImageUrlHiddenInput.value = uploadedAuthorImageUrl;
+                        } else {
+                            throw new Error('New image upload failed or was cancelled.');
+                        }
+                    }
+
+                    const formData = new FormData(form);
+                    console.log(form.action)
+
+                    const response = await fetch('/Author/EditAuthor', {
+                        method: form.method,
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const messageData = await response.json();
+                        alert(messageData.message)
+                        if (uploadedAuthorImageUrl && originalAuthorImageUrl && uploadedAuthorImageUrl !== originalAuthorImageUrl) {
+                            await deleteFileFromFirebase(originalAuthorImageUrl);
+                        }
+                        location.reload()
+                    } else {
+                        const errorData = await response.json();
+                        
+                        const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
+                        alert(errorMessage)
+                        if (uploadedAuthorImageUrl && uploadedAuthorImageUrl !== originalAuthorImageUrl) {
+                            await deleteFileFromFirebase(uploadedAuthorImageUrl);
+                            // revert if new upload failed and backend failed
+                            authorImageUrlHiddenInput.value = originalAuthorImageUrl;
+
+                            /*if (uploadedAuthorImageUrl) {
+                                genreImagePreview.src = originalGenreImageUrl;
+                                genreImagePreview.style.display = 'block';
+                                imagePlaceholder.style.display = 'none';
+                            } else {
+                                genreImagePreview.src = '';
+                                genreImagePreview.style.display = 'none';
+                                imagePlaceholder.style.display = 'block';
+                            }*/
+                        }
+                    }
+
+                } catch (error) {
+                    console.error('Submission error:', error);
+                    alert('Submission error:' + error);
+
+                    if (uploadedAuthorImageUrl && uploadedAuthorImageUrl !== originalAuthorImageUrl) {
+                        await deleteFileFromFirebase(uploadedAuthorImageUrl);
+
+                        authorImageUrlHiddenInput.value = originalAuthorImageUrl;
+                        /*updateImagePreview(null);
+                        if (originalGenreImageUrl) {
+                            genreImagePreview.src = originalGenreImageUrl;
+                            genreImagePreview.style.display = 'block';
+                            imagePlaceholder.style.display = 'none';
+                        } else {
+                            genreImagePreview.src = '';
+                            genreImagePreview.style.display = 'none';
+                            imagePlaceholder.style.display = 'block';
+                        }*/
+                    }
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'SAVE CHANGES';
+                }
+            });
         });
     </script>
 }
