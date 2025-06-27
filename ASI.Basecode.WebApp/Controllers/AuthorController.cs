@@ -8,6 +8,7 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Services;
 using System.Linq;
 using ASI.Basecode.Services.Interfaces;
+using Microsoft.CodeAnalysis.Host;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -25,9 +26,24 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpGet]
         [Route("Author/Index")]
         [AllowAnonymous]
-        public IActionResult Index()
+        public async Task<IActionResult> GenreList()
         {
-            return View();
+            try
+            {
+                List<AuthorViewModel> language_list = await _authorService.GetAllAuthorList();
+
+                return View("~/Views/Author/Index.cshtml", language_list);
+            }
+            catch (ApplicationException ex)
+            {
+
+                return View("~/Views/Author/Index.cshtml", new List<LanguageViewModel>());
+            }
+            catch (Exception ex)
+            {
+                return View("~/Views/Author/Index.cshtml", new List<LanguageViewModel>());
+
+            }
         }
 
 

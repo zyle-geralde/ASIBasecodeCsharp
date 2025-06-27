@@ -5,7 +5,7 @@
     Layout = "_AdminSidebarLayout";
 
     // --- TEMPORARY DATA FOR DESIGN VIEWING  ---
-    var tempAuthors = new List<ASI.Basecode.Services.ServiceModels.AuthorViewModel>
+    /*var tempAuthors = new List<ASI.Basecode.Services.ServiceModels.AuthorViewModel>
     {
         new ASI.Basecode.Services.ServiceModels.AuthorViewModel
         {
@@ -37,7 +37,7 @@
             UploadDate = DateTime.Now.AddMonths(-24),
             UpdatedDate = DateTime.Now.AddMonths(-24)
         }
-    };
+    };*/
 }
 
 @section styles {
@@ -98,7 +98,7 @@
         </div>
     </div>
 
-    @if (tempAuthors != null && tempAuthors.Any())
+    @if (Model != null && Model.Any())
     {
         <div class="table-responsive">
             <table class="data-table table table-hover">
@@ -112,7 +112,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var author in tempAuthors)
+                    @foreach (var author in Model)
                     {
                         <tr>
                             <td>
