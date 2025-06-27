@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,11 @@ namespace ASI.Basecode.Data.Repositories
             {
                 throw;
             }
+        }
+
+        public async Task<bool> CheckAuthorExist(string author_name)
+        {
+            return await _dbContext.Authors.AnyAsync(author_name_param => author_name_param.AuthorName.ToLower() == author_name.ToLower());
         }
     }
 }

@@ -58,7 +58,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 try
                 {
                     await _authorService.AddAuthor(author);
-                    return Ok(new { Message = "Genre Successfully added" });
+                    return Ok(new { Message ="Author Successfully added" });
                 }
                 catch (ArgumentException ex)
                 {
@@ -75,7 +75,8 @@ namespace ASI.Basecode.WebApp.Controllers
 
             }
 
-            return View("~/Views/Author/EditAuthor.cshtml");
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            return BadRequest(new { errors = errors, Message = "Validation failed." });
         }
     }
 }
