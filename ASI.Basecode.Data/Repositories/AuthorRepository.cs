@@ -71,5 +71,12 @@ namespace ASI.Basecode.Data.Repositories
             }
         }
 
+        public async Task DeleteAuthor(string auhtor_id)
+        {
+            Author existing_author = await GetAuthorById(auhtor_id);
+
+            _dbContext.Authors.Remove(existing_author);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

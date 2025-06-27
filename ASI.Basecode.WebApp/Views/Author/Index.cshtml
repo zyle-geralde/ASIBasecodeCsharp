@@ -3,41 +3,6 @@
 @{
     ViewData["Title"] = "Authors";
     Layout = "_AdminSidebarLayout";
-
-    // --- TEMPORARY DATA FOR DESIGN VIEWING  ---
-    /*var tempAuthors = new List<ASI.Basecode.Services.ServiceModels.AuthorViewModel>
-    {
-        new ASI.Basecode.Services.ServiceModels.AuthorViewModel
-        {
-            AuthorId = "temp-author-1",
-            AuthorName = "Jane Austen",
-            AuthorDescription = "Prolific English novelist, celebrated for her works which interpret, critique and comment upon the British landed gentry.",
-            AuthorImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Jane_Austen_by_Cassandra_Austen_%28cropped%29.jpg/220px-Jane_Austen_by_Cassandra_Austen_%28cropped%29.jpg",
-            CreatedBy = "System",
-            UploadDate = DateTime.Now.AddMonths(-18),
-            UpdatedDate = DateTime.Now.AddMonths(-18)
-        },
-        new ASI.Basecode.Services.ServiceModels.AuthorViewModel
-        {
-            AuthorId = "temp-author-2",
-            AuthorName = "George Orwell",
-            AuthorDescription = "English novelist, essayist, journalist, and critic. Best known for the dystopian novel 'Nineteen Eighty-Four'.",
-            AuthorImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/George_Orwell_promo_photo.jpg/220px-George_Orwell_promo_photo.jpg",
-            CreatedBy = "System",
-            UploadDate = DateTime.Now.AddMonths(-12),
-            UpdatedDate = DateTime.Now.AddMonths(-12)
-        },
-        new ASI.Basecode.Services.ServiceModels.AuthorViewModel
-        {
-            AuthorId = "temp-author-3",
-            AuthorName = "Agatha Christie",
-            AuthorDescription = "English crime novelist, short story writer, and playwright. She is best known for her 66 detective novels.",
-            AuthorImageUrl = null,
-            CreatedBy = "System",
-            UploadDate = DateTime.Now.AddMonths(-24),
-            UpdatedDate = DateTime.Now.AddMonths(-24)
-        }
-    };*/
 }
 
 @section styles {
@@ -231,7 +196,7 @@
 
         // Initialize Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebase/storage/9.6.1/index.esm.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
 
         const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
@@ -413,6 +378,7 @@
         });
 
         document.getElementById("confirmDeleteAuthorBtn").addEventListener("click", async function () {
+            console.log("Clicked")
             const authorIdToDelete = $('#deleteAuthorId').val();
             const authorImageUrlToDelete = $('#deleteAuthorImageUrl').val();
 
@@ -427,7 +393,7 @@
                     return;
                 }
 
-                const response = await fetch("/Author/Delete", {
+                const response = await fetch("/Author/DeleteAuthor", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',

@@ -153,5 +153,17 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
+        public async Task DeleteAuthor(string author_id)
+        {
+            try
+            {
+                await _authorRepository.DeleteAuthor(author_id);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to delete author: {ex.Message}", ex);
+            }
+        }
+
     }
 }

@@ -19,5 +19,7 @@ namespace ASI.Basecode.Data.Interfaces
 
         Task<Author> GetAuthorById(string author_id);
 
+        Task DeleteAuthor(string auhtor_id);
+
     }
 }

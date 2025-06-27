@@ -9,6 +9,8 @@ using ASI.Basecode.Services.Services;
 using System.Linq;
 using ASI.Basecode.Services.Interfaces;
 using Microsoft.CodeAnalysis.Host;
+using ASI.Basecode.WebApp.Payload.BooksPayload;
+using ASI.Basecode.WebApp.Payload.AuthorPayload;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -143,6 +145,34 @@ namespace ASI.Basecode.WebApp.Controllers
 
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
             return BadRequest(new { errors = errors, Message = "Validation failed." });
+        }
+
+
+
+        [HttpPost]
+        [Route("Author/DeleteAuthor")]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> DeleteAuthor([FromBody] DeleteAuthorPayload author)
+        {
+            if (author == null)
+            {
+                return BadRequest(new { Message = "Payload is null or empty" });
+            }
+
+            try
+            {
+                await _authorService.DeleteAuthor(author.AuthorId);
+                return Ok(new { Message = "Author Deleted successfully!" });
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }
