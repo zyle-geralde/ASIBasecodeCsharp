@@ -1,0 +1,77 @@
+/* Modal styling */
+.confirmation-modal .modal-content,
+.success-modal .modal-content {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.success-modal .modal-body {
+    padding: 2rem;
+}
+
+.success-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #647D7F; /* Changed from #28a745 to #647D7F to match the button */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    font-size: 24px;
+}
+
+.confirmation-modal .modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.confirmation-modal .btn-danger {
+    background-color: #dc3545;
+}
+
+.confirmation-modal .btn-danger-2 {
+    background-color: #647D7F;
+    color: white;
+}
+
+.confirmation-modal .btn-danger:hover {
+    background-color: #c82333;
+}
+
+.confirmation-modal .btn-danger-2:hover {
+    background-color: #556a6c;
+}
+
+/* Add styles for success modal button to ensure consistency */
+.success-modal .btn-secondary {
+    background-color: #647D7F;
+    border: none;
+    color: white;
+    min-width: 100px;
+}
+
+.success-modal .btn-secondary:hover {
+    background-color: #556a6c;
+}
+
+/* Additional styles to ensure success modal has consistent styling */
+.success-modal .modal-content {
+    border-radius: 12px;
+    background-color: #f5f2ef;
+    border: none;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.success-modal .modal-title {
+    color: #333;
+    font-weight: 600;
+}
+
+.success-modal p {
+    color: #666;
+    font-size: 14px !important;
+}
