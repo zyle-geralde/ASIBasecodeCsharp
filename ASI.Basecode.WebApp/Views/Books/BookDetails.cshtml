@@ -157,7 +157,7 @@
 
             <div class="detail-group">
                 <span class="detail-label">Upload Date:</span>
-                <span class="detail-value">@Model.UploadDate</span>
+                <span class="detail-value">@Model.UploadDate?.ToString("MMMM dd, yyyy hh:mm tt")</span>
             </div>
 
             @if (Model.UpdatedDate.HasValue)

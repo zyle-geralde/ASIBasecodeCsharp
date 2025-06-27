@@ -7,14 +7,17 @@ using System.Threading.Tasks;
 
 namespace ASI.Basecode.Services.ServiceModels
 {
-    public class AuthorModel
+    public class AuthorViewModel
     {
-        [Key]
         [StringLength(450)]
         public string AuthorId { get; set; }
 
+        [Required]
+        [StringLength(450)]
         public string AuthorName { get; set; }
+        [StringLength(5000)]
         public string AuthorDescription { get; set; }
+        [StringLength(500)]
         public string AuthorImageUrl { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? UploadDate { get; set; }

@@ -1,7 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model ASI.Basecode.Services.ServiceModels.AuthorModel
+@model ASI.Basecode.Services.ServiceModels.AuthorViewModel
 @{
     ViewData["Title"] = "Add New Author";
     Layout = "_AdminSidebarLayout";
@@ -60,15 +60,16 @@
                         <img id="authorImagePreview" src="" alt="Author Image Preview" style="display:none;">
                         <span id="imagePlaceholder" class="placeholder-text">No Image</span>
                     </div>
-
+                    <input type="text" class="book-master-file-input-text" readonly id="authorImageFileNameDisplay" value="@Model?.AuthorImageUrl">
                     <button type="button" class="edit-genre-browse-button" onclick="document.getElementById('authorImageFile').click();">BROWSE</button> 
-                    <input type="file" id="authorImageFile" accept="image/*" name="AuthorImageFile" style="display: none;">
+                    <input type="file" id="authorImageFile" accept="image/*" name="AuthorImageFile" >
                     @* <input type="text" class="book-master-file-input-text" readonly id="authorImageFileNameDisplay">  *@
 
                     <p id="authorImageUploadStatus" class="edit-genre-upload-status">
                         <span class="file-size-info">Max file size: 1GB</span>
                         <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                     </p>
+                    <input type="text" id="authorImageUrl" name="AuthorImageUrl">
                 </div>
 
                 <div>
@@ -131,5 +132,198 @@
 </div>
 
 @section scripts {
-    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+
+        // Your Firebase configuration
+        //Transfer this secretes into AnalyserNode env or file, and include it in gitignore.
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4CTMSbgGQN_yLn9lEZlswbZ_2A2Xhl0k",
+            authDomain: "basabuzz-ca8fe.firebaseapp.com",
+            projectId: "basabuzz-ca8fe",
+            storageBucket: "basabuzz-ca8fe.firebasestorage.app",
+            messagingSenderId: "206533484485",
+            appId: "1:206533484485:web:2c71a06a17d5244efe75ac"
+        };
+
+        // Initialize Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+
+       
+        async function deleteFileFromFirebase(fileUrl) {
+            if (!fileUrl) {
+                console.warn("Attempted to delete null or empty file URL.");
+                return;
+            }
+            try {
+                const fileRef = ref(storage, fileUrl);
+                await deleteObject(fileRef);
+                console.log(`Successfully deleted file: ${fileUrl}`);
+            } catch (error) {
+                showStatusModal(`Failed to delete file ${fileUrl}: ${error.message}`, 'Error');
+                console.error(`Failed to delete file ${fileUrl}:`, error);
+            }
+        }
+
+        async function rollbackFileUploads(uploadedGImageUrl, imageUploadStatusElement) {
+            if (uploadedGImageUrl) {
+                await deleteFileFromFirebase(uploadedGImageUrl);
+                if (imageUploadStatusElement) {
+                    const fileSizeInfo = imageUploadStatusElement.querySelector('.file-size-info');
+                    if (fileSizeInfo) {
+                        fileSizeInfo.textContent = 'Upload rolled back due to backend error.';
+                    }
+                    imageUploadStatusElement.classList.add('error-message');
+                }
+            }
+        }
+
+        //Firebase Upload Function
+        async function uploadFileToFirebase(file, path, statusElement) {
+            // Ensure statusElement is valid and contains the target span before trying to update it
+            const fileSizeInfoSpan = statusElement ? statusElement.querySelector('.file-size-info') : null;
+
+            if (!file) {
+                if (fileSizeInfoSpan) { // Only update if the span exists
+                    fileSizeInfoSpan.textContent = 'No file selected.';
+                }
+                return null;
+            }
+
+            const timestamp = new Date().getTime();
+            const randomString = Math.random().toString(36).substring(2, 8);
+            const uniqueFileName = `${timestamp}-${randomString}-${file.name}`;
+
+            const storageRef = ref(storage, path + uniqueFileName);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            return new Promise((resolve, reject) => {
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        if (fileSizeInfoSpan) { // Safely update progress
+                            fileSizeInfoSpan.textContent = `Upload is ${progress.toFixed(2)}% done`;
+                        }
+                    },
+                    (error) => {
+                        showStatusModal(`Genre image upload failed: ${error.message}`, 'Error');
+                        console.error("Upload error:", error);
+                        reject(error);
+                    },
+                    async () => {
+                        try {
+                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            if (fileSizeInfoSpan) { // Safely update success message
+                                fileSizeInfoSpan.textContent = 'Upload successful!';
+                            }
+                            resolve(downloadURL);
+                        } catch (error) {
+                            showStatusModal(`Failed to get download URL: ${error.message}`, 'Error');
+                            console.error("Get Download URL error:", error);
+                            reject(error);
+                        }
+                    }
+                );
+            });
+        }
+
+
+        //Setting up the file input
+        document.getElementById('authorImageFile').addEventListener('change', function () {
+            const fileName = this.files[0] ? this.files[0].name : '';
+            document.getElementById('authorImageFileNameDisplay').value = fileName;
+            const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
+
+            if (authorImageUploadStatusElement) {
+                const fileSizeInfo = authorImageUploadStatusElement.querySelector('.file-size-info');
+                const supportedFormatsInfo = authorImageUploadStatusElement.querySelector('.supported-formats-info');
+                if (fileSizeInfo) fileSizeInfo.textContent = 'Max file size: 1GB';
+                if (supportedFormatsInfo) supportedFormatsInfo.textContent = 'Supported formats: JPG, PNG, JPEG';
+                authorImageUploadStatusElement.classList.remove('error-message');
+            }
+        });
+
+         document.getElementById('addAuthorForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const form = document.getElementById('addAuthorForm');
+            const submitButton = document.getElementById('addAuthorSubmitButton');
+            const authorImageFile = document.getElementById('authorImageFile').files[0];
+            const authorImageUploadStatus = document.getElementById('authorImageUploadStatus');
+            const authorImageUrlInput = document.getElementById('authorImageUrl');
+
+
+            //const originalAuthorImageUrl = authorImageUrlInput.value;
+
+
+            const fileSizeInfoSpan = authorImageUploadStatus.querySelector('.file-size-info');
+            const supportedFormatsInfoSpan = authorImageUploadStatus.querySelector('.supported-formats-info');
+
+            if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 1GB';
+            if (supportedFormatsInfoSpan) supportedFormatsInfoSpan.textContent = 'Supported formats: JPG, PNG, JPEG';
+            authorImageUploadStatus.classList.remove('error-message');
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Processing...';
+
+            let uploadedAuthorImageUrl = null;
+
+            try {
+                if (authorImageFile) {
+
+                    uploadedAuthorImageUrl = await uploadFileToFirebase(authorImageFile, 'author_covers/', authorImageUploadStatus);
+                    if (uploadedAuthorImageUrl) {
+                        authorImageUrlInput.value = uploadedAuthorImageUrl;
+                    } else {
+                        throw new Error('Author image upload failed.');
+                    }
+                }
+
+
+                const formData = new FormData(form);
+
+                // Fetch form data to the Controller
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const successData = await response.json();
+                    alert(successData.message)
+                } else {
+                    const errorData = await response.json();
+                    const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
+                    alert(errorMessage)
+
+                    // rollback uploaded file if backend submission fails and it was a new upload
+                    if (uploadedAuthorImageUrl) {
+                        await deleteFileFromFirebase(uploadedAuthorImageUrl);
+                    }
+                }
+
+            } catch (error) {
+                console.error('Submission error:', error);
+                alert('Submission error:', error)
+
+                // rollback: delete uploaded file from Firebase
+                if (uploadedAuthorImageUrl) {
+                    await deleteFileFromFirebase(uploadedAuthorImageUrl);
+                }
+
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'ADD AUTHOR';
+            }
+
+        });
+
+
+
+
+    </script>
 }

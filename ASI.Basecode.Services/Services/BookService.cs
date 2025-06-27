@@ -180,6 +180,7 @@ namespace ASI.Basecode.Services.Services
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
                 UpdatedDate = requestBook.UpdatedDate,
                 PublicationDate = requestBook.PublicationDate,
+                UploadDate = requestBook.UploadDate,
 
 
                 // Handle comma-separated strings

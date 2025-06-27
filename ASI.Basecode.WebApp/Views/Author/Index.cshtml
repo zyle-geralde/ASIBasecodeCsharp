@@ -1,13 +1,13 @@
-﻿@model List<ASI.Basecode.Services.ServiceModels.AuthorModel>
+﻿@model List<ASI.Basecode.Services.ServiceModels.AuthorViewModel>
 
 @{
     ViewData["Title"] = "Authors";
     Layout = "_AdminSidebarLayout";
 
     // --- TEMPORARY DATA FOR DESIGN VIEWING  ---
-    var tempAuthors = new List<ASI.Basecode.Services.ServiceModels.AuthorModel>
+    /*var tempAuthors = new List<ASI.Basecode.Services.ServiceModels.AuthorViewModel>
     {
-        new ASI.Basecode.Services.ServiceModels.AuthorModel
+        new ASI.Basecode.Services.ServiceModels.AuthorViewModel
         {
             AuthorId = "temp-author-1",
             AuthorName = "Jane Austen",
@@ -17,7 +17,7 @@
             UploadDate = DateTime.Now.AddMonths(-18),
             UpdatedDate = DateTime.Now.AddMonths(-18)
         },
-        new ASI.Basecode.Services.ServiceModels.AuthorModel
+        new ASI.Basecode.Services.ServiceModels.AuthorViewModel
         {
             AuthorId = "temp-author-2",
             AuthorName = "George Orwell",
@@ -27,7 +27,7 @@
             UploadDate = DateTime.Now.AddMonths(-12),
             UpdatedDate = DateTime.Now.AddMonths(-12)
         },
-        new ASI.Basecode.Services.ServiceModels.AuthorModel
+        new ASI.Basecode.Services.ServiceModels.AuthorViewModel
         {
             AuthorId = "temp-author-3",
             AuthorName = "Agatha Christie",
@@ -37,7 +37,7 @@
             UploadDate = DateTime.Now.AddMonths(-24),
             UpdatedDate = DateTime.Now.AddMonths(-24)
         }
-    };
+    };*/
 }
 
 @section styles {
@@ -98,7 +98,7 @@
         </div>
     </div>
 
-    @if (tempAuthors != null && tempAuthors.Any())
+    @if (Model != null && Model.Any())
     {
         <div class="table-responsive">
             <table class="data-table table table-hover">
@@ -112,7 +112,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var author in tempAuthors)
+                    @foreach (var author in Model)
                     {
                         <tr>
                             <td>
