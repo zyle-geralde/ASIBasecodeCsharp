@@ -102,10 +102,17 @@
                         <textarea id="seriesDescription" name="SeriesDescription" class="book-master-form-textarea">@Model?.SeriesDescription</textarea>
                         <span asp-validation-for="SeriesDescription" class="text-danger"></span>
                     </div>
-                    <div class="book-master-form-group book-master-form-grid-span-2">
+                    @*<div class="book-master-form-group book-master-form-grid-span-2">
                         <label for="author" class="required-label">Author (comma-separated)</label>
                         <input type="text" id="author" name="Author" class="book-master-form-input" value="@Model?.Author">
                         <span asp-validation-for="Author" class="text-danger"></span>
+                    </div>*@
+
+                    <div class="book-master-form-group">
+                        <label for="author">Author</label>
+                        <select id="author" name="Author" class="book-master-form-select">
+
+                        </select>
                     </div>
                 </div>
 
@@ -269,6 +276,44 @@
         // } catch (backendError) {
         //     alert("Unexpected Error Occured")
         // }
+
+        const authorSelect = document.getElementById('author');
+
+        //Setting Up Author
+         try {
+            const response = await fetch('/Book/GetAuthor', {
+                method: 'GET'
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                const author_list = result.message
+
+
+                //Add a default "Select Author" option 
+                const default_option = document.createElement('option');
+                default_option.value = ""
+                default_option.textContent = "Select Author"
+                authorSelect.appendChild(default_option)
+
+                //Add elements of the author_list to the select tag
+                author_list.forEach(author_name_id => {
+                    const parts = author_name_id.split(',');
+                    console.log("Hello")
+                    console.log(author_name_id)
+
+                    const option = document.createElement('option');
+                    option.value = parts[1].trim();
+                    option.textContent = parts[0].trim();
+
+                    authorSelect.appendChild(option);
+                })
+            } else {
+                alert("Server error")
+            }
+        } catch (backendError) {
+            alert("Unexpected Error Occured")
+        }
 
 
 

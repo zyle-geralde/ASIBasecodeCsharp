@@ -192,6 +192,18 @@ namespace ASI.Basecode.Data.Repositories
             }
         }
 
+        public async Task<List<Author>> GetAllAuthor()
+        {
+            try
+            {
+                return await _dbContext.Authors.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
 
     }
 }

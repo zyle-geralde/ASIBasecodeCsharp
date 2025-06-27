@@ -17,11 +17,13 @@ namespace ASI.Basecode.Services.Services
     {
         private readonly IBookRepository _bookRepository;
         private readonly ILanguageRepository _languageRepository;
+        private readonly IAuthorRepository _authorRepository;
 
-        public BookService(IBookRepository bookRepository,ILanguageRepository languageRepository)
+        public BookService(IBookRepository bookRepository,ILanguageRepository languageRepository, IAuthorRepository authorRepository)
         {
             _bookRepository = bookRepository;
             _languageRepository = languageRepository;
+            _authorRepository = authorRepository;
         }
 
         public async Task AddBook(BookViewModel request)
@@ -295,6 +297,29 @@ namespace ASI.Basecode.Services.Services
             catch (Exception ex)
             {
                 throw new ApplicationException("Failed to retrieve language genres.", ex);
+            }
+        }
+
+        public async Task<List<string>> GetAllAuthor()
+        {
+            try
+            {
+                List<Author> author_list = await _authorRepository.GetAllAuthorList();
+
+
+                if (author_list == null || !author_list.Any())
+                {
+                    return new List<string>();
+                }
+
+                //Mapping
+                List<string> view_model_list = author_list.Select(author_list_element => author_list_element.AuthorName + ',' + author_list_element.AuthorId).ToList();
+
+                return view_model_list;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to retrieve authors.", ex);
             }
         }
 

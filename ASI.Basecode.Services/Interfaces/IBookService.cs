@@ -23,5 +23,7 @@ namespace ASI.Basecode.Services.Interfaces
         Task<List<string>> GetAllGenres();
 
         Task<List<string>> GetAllLanguage();
+
+        Task<List<string>> GetAllAuthor();
     }
 }

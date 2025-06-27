@@ -24,5 +24,7 @@ namespace ASI.Basecode.Data.Interfaces
         Task<List<Book>> GetAllBooks();
 
         Task<List<Language>> GetAllLanguage();
+
+        Task<List<Author>> GetAllAuthor();
     }
 }

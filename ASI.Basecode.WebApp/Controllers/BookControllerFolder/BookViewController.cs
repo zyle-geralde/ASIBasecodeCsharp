@@ -280,5 +280,22 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet]
+        [Route("Book/GetAuthor")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAuthor()
+        {
+            try
+            {
+                List<string> all_author = await _bookService.GetAllAuthor();
+
+                return Ok(new { Message = all_author });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to get all Authors: {ex.Message}");
+            }
+        }
     }
 }
