@@ -78,5 +78,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public bool HasReviewed { get; set; }
         public string? CoverImage { get; set; }
         public string? BookFile { get; set; }
+        public bool? IsFeatured { get; set; } = false;
     }
 }

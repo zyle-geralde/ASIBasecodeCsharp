@@ -47,6 +47,7 @@ namespace ASI.Basecode.Services.Services
                 AverageRating = 0,
                 Likes = 0,
                 GenreList = request.GenreList,
+                IsFeatured= request.IsFeatured,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImage = request.CoverImageUrl,

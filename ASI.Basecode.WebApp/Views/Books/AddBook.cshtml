@@ -114,6 +114,12 @@
 
                         </select>
                     </div>
+
+                     <div class="book-master-form-group">
+                        <label for="IsFeatured">Featured Book</label>
+                        <input type="checkbox" id="isFeatured" name="IsFeatured" value="true" style="width:50px;">
+                        <span asp-validation-for="IsFeatured" class="text-danger"></span>
+                    </div>
                 </div>
 
                 <h3 class="book-master-form-section-title">Categorization</h3>
