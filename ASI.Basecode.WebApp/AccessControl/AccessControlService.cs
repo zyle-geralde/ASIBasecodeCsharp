@@ -1,4 +1,5 @@
 ﻿
+using ASI.Basecode.Services.Manager;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
@@ -7,9 +8,11 @@ namespace ASI.Basecode.WebApp.AccessControl
     public class AccessControlService : IAccessControlInterface
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly SessionManager _sessionManager;
         public AccessControlService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
+            this._sessionManager = new SessionManager(httpContextAccessor.HttpContext.Session);
         }
         public async Task<bool> CheckAdminAccess()
         {
