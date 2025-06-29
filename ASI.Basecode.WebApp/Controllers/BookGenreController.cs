@@ -2,6 +2,7 @@
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
+using ASI.Basecode.WebApp.AccessControl;
 using ASI.Basecode.WebApp.Payload.BookGenrePayload;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
 using Microsoft.AspNetCore.Authorization;
@@ -18,29 +19,37 @@ namespace ASI.Basecode.WebApp.Controllers
     {
         private readonly IBookGenreService BookGenreService;
         private readonly IBookService BookService;
+        private readonly IAccessControlInterface _accessControlInterface;
 
-        public BookGenreController(IBookGenreService book_genre_service,IBookService book_service)
+        public BookGenreController(IBookGenreService book_genre_service,IBookService book_service, IAccessControlInterface accessControlInterface)
         {
             BookGenreService = book_genre_service;
             BookService = book_service;
+            _accessControlInterface = accessControlInterface;
         }
 
         [HttpGet]
         [Route("BookGenre/AddGenre")]
-        [AllowAnonymous]
+        [Authorize]
 
-        public IActionResult AddGenre()
+        public async Task<IActionResult> AddGenre()
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             return View("~/Views/BookGenres/AddGenre.cshtml");
         }
 
         [HttpPost]
         [Route("BookGenre/AddGenre")]
-        [AllowAnonymous]
+        [Authorize]
 
         public async Task<IActionResult> AddGenre(BookGenreViewModel book_genre)
         {
-            if(ModelState.IsValid){
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
+            if (ModelState.IsValid){
                 try
                 {
                     await BookGenreService.AddGenre(book_genre);
@@ -68,7 +77,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
         [HttpGet]
         [Route("BookGenre/ListGenre")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> GetAllBookGenres()
         {
             try
@@ -89,9 +98,12 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpGet]
         [Route("BookGenre/EditGenre/{genre_id}")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> GetBookGenreById(string genre_id)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             try
             {
                 BookGenreViewModel retreived_genre = await BookGenreService.GetBookGenreById(genre_id);
@@ -114,9 +126,11 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [Route("BookGenre/EditGenre")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> EditGenre(BookGenreViewModel book_genre)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
 
             if (ModelState.IsValid)
             {
@@ -147,10 +161,13 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [Route("BookGenre/DeleteGenre")]
-        [AllowAnonymous]
+        [Authorize]
 
         public async Task<IActionResult> DeleteBook([FromBody] DeleteGenrePayload genre)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             if (genre == null)
             {
                 return BadRequest(new { Message = "No data has been passed" });
@@ -174,10 +191,13 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpGet]
         [Route("BookGenre/GenreView/{genre_name}")]
-        [AllowAnonymous]
+        [Authorize]
 
         public async Task<IActionResult> GetBooksByGenre(string genre_name)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             try
             {
                 //Change this during code cleaning

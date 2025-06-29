@@ -1,6 +1,7 @@
 ﻿using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.WebApp.AccessControl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,19 +15,26 @@ namespace ASI.Basecode.WebApp.Controllers
     public class ReviewController : Controller
     {
         private readonly IReviewService _reviewService;
-        
-        public ReviewController(IReviewService reviewService)
+        private readonly IAccessControlInterface _accessControlInterface;
+
+        public ReviewController(IReviewService reviewService, IAccessControlInterface accessControlInterface)
         {
             _reviewService = reviewService;
+            _accessControlInterface = accessControlInterface;
         }
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var model = await _reviewService.GetAllReviews();
             return View("~/Views/Reviews/Index.cshtml", model);
         }
 
-        public IActionResult Add(string? bookId)
+        [Authorize]
+        public async Task<IActionResult> Add(string? bookId)
         {
+            bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
+            if (!checkUserAccess) return RedirectToAction("AdminDashboard", "Account");
+
             var vm = new ReviewViewModel
             {
                 BookId = bookId
@@ -36,8 +44,12 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Add(ReviewViewModel reviewModel)
         {
+            bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
+            if (!checkUserAccess) return RedirectToAction("AdminDashboard", "Account");
+
             if (ModelState.IsValid)
             {
                 await _reviewService.AddReview(reviewModel);
@@ -51,15 +63,21 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Delete(string id)
         {
+
             await _reviewService.DeleteReview(id);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Edit(string id)
         {
+            bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
+            if (!checkUserAccess) return RedirectToAction("AdminDashboard", "Account");
+
             if (string.IsNullOrEmpty(id))
                 return BadRequest();
 
@@ -84,8 +102,12 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(ReviewViewModel model)
         {
+            bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
+            if (!checkUserAccess) return RedirectToAction("AdminDashboard", "Account");
+
             if (!ModelState.IsValid)
                 return View("~/Views/Reviews/Edit.cshtml", model);
 
@@ -98,6 +120,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ReviewByBook(string bookId)
         {
             List<Review> reviews = await _reviewService.GetReviewsByBookId(bookId);
@@ -112,6 +135,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ReviewByUser(string userId=null)
         {
             // in the case that a user might want to see other people's reviews

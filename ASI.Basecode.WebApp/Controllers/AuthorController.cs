@@ -11,6 +11,7 @@ using ASI.Basecode.Services.Interfaces;
 using Microsoft.CodeAnalysis.Host;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
 using ASI.Basecode.WebApp.Payload.AuthorPayload;
+using ASI.Basecode.WebApp.AccessControl;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -18,18 +19,23 @@ namespace ASI.Basecode.WebApp.Controllers
     {
         private readonly IAuthorService _authorService;
         private readonly IBookService _bookService;
+        private readonly IAccessControlInterface _accessControlInterface;
 
-        public AuthorController(IAuthorService authorService, IBookService book_service)
+        public AuthorController(IAuthorService authorService, IBookService book_service, IAccessControlInterface accessControlInterface)
         {
             _authorService = authorService;
             _bookService = book_service;
+            _accessControlInterface = accessControlInterface;
         }
 
         [HttpGet]
         [Route("Author/Index")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> GenreList()
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             try
             {
                 List<AuthorViewModel> language_list = await _authorService.GetAllAuthorList();
@@ -51,17 +57,23 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpGet]
         [Route("Author/AddAuthor")] 
-        [AllowAnonymous]
-        public IActionResult AddAuthor()
+        [Authorize]
+        public async Task<IActionResult> AddAuthor()
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             return View("~/Views/Author/AddAuthor.cshtml");
         }
 
         [HttpGet]
         [Route("Author/EditAuthor/{author_id}")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> EditAuthor(string author_id)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             try
             {
                 AuthorViewModel retreived_author = await _authorService.GetAuthorById(author_id) ;
@@ -86,9 +98,12 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [Route("Author/AddAuthor")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> AddAuthor(AuthorViewModel author)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             if (ModelState.IsValid)
             {
                 try
@@ -117,9 +132,11 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [Route("Author/EditAuthor")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> EditAuthor(AuthorViewModel author)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
 
             if (ModelState.IsValid)
             {
@@ -151,10 +168,13 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [Route("Author/DeleteAuthor")]
-        [AllowAnonymous]
+        [Authorize]
 
         public async Task<IActionResult> DeleteAuthor([FromBody] DeleteAuthorPayload author)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             if (author == null)
             {
                 return BadRequest(new { Message = "Payload is null or empty" });
@@ -177,10 +197,13 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpGet]
         [Route("Author/AuthorView/{authorId}")]
-        [AllowAnonymous]
+        [Authorize]
 
         public async Task<IActionResult> GetBooksByAuthor(string authorId)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             try
             {
                 //Change this during code cleaning
