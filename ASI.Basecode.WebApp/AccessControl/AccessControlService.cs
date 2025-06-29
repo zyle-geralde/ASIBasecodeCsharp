@@ -15,43 +15,6 @@ namespace ASI.Basecode.WebApp.AccessControl
             _httpContextAccessor = httpContextAccessor;
             this._sessionManager = new SessionManager(httpContextAccessor.HttpContext.Session);
         }
-        public async Task<string> CheckAccess()
-        {
-            string userRole = _httpContextAccessor.HttpContext.Session.GetString("UserRole");
-            if (userRole == "Admin")
-            {
-                return "A";
-            }
-            else if(userRole == "User")
-            {
-                return "U";
-            }
-            else
-            {
-                return "N";
-            }
-        }
-
-        public async Task<IActionResult> CheckAdminAccesHelper()
-        {
-            string checkAdminAccess = await CheckAccess();
-            IActionResult result = checkAdminAccess == "U"
-                           ? RedirectToAction("Index", "Home")
-                           : (checkAdminAccess == "N"
-                              ? RedirectToAction("Login", "Account")
-                              : null);
-
-
-            if (result != null)
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-
-        }
 
 
         public async Task<bool> CheckUserAccess()
