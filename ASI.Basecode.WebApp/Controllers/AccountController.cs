@@ -2,6 +2,7 @@
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.Authentication;
 using ASI.Basecode.WebApp.Models;
 using ASI.Basecode.WebApp.Mvc;
@@ -105,6 +106,10 @@ namespace ASI.Basecode.WebApp.Controllers
                 // 認証OK
                 await this._signInManager.SignInAsync(user);
                 this._session.SetString("UserName", user.UserName);
+                this._session.SetString("UserEmail", user.Email);
+                PersonProfile userProfile = await _personProfileService.GetPersonProfile(model.UserId);
+
+                this._session.SetString("UserRole", userProfile.Role);
                 return RedirectToAction("Index", "Home");
             }
             else
