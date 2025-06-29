@@ -4,6 +4,7 @@ using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
+using ASI.Basecode.WebApp.AccessControl;
 using ASI.Basecode.WebApp.Authentication;
 using ASI.Basecode.WebApp.Models;
 using Microsoft.AspNetCore.Http;
@@ -42,6 +43,7 @@ namespace ASI.Basecode.WebApp
             this._services.AddScoped<IEmailSender, EmailSenderService>();
             this._services.AddScoped<ILanguageService, LanguageService>();
             this._services.AddScoped<IAuthorService, AuthorService>();
+            this._services.AddScoped<IAccessControlInterface, AccessControlService>();
 
 
 

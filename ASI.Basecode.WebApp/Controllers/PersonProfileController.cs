@@ -2,6 +2,8 @@
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
+using ASI.Basecode.WebApp.AccessControl;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
@@ -13,14 +15,17 @@ namespace ASI.Basecode.WebApp.Controllers
     {
         private readonly IPersonProfileService _personProfileService;
         private readonly IReviewService _reviewService;
+        private readonly IAccessControlInterface _accessControlInterface;
 
-        public PersonProfileController(IPersonProfileService profileService, IReviewService reviewService)
+        public PersonProfileController(IPersonProfileService profileService, IReviewService reviewService, IAccessControlInterface accessControlInterface)
         {
             _personProfileService = profileService;
             _reviewService = reviewService;
+            _accessControlInterface = accessControlInterface;
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var username = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -63,8 +68,12 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Edit()
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             var username = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(username))
             {
@@ -92,8 +101,11 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(PersonProfileViewModel model)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             //if(!ModelState.IsValid)
             //    return View("~/Views/PersonProfile/Edit.cshtml", model);
 

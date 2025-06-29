@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.WebApp.AccessControl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -12,13 +13,18 @@ namespace ASI.Basecode.WebApp.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IAccessControlInterface _accessControlInterface;
+        public UserController(IUserService userService,IAccessControlInterface accessControlInterface)
         {
             _userService = userService;
+            _accessControlInterface = accessControlInterface;
         }
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Index(string searchTerm, string sortOrder)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             TempData.Remove("SuccessMessage");
             // Remove pagination parameters - get all users
             ViewData["CurrentSearch"] = searchTerm;
@@ -29,10 +35,12 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return View("~/Views/Users/Index.cshtml", users);
         }
-
-        [AllowAnonymous] //To be removed if the flow is finalized
-        public IActionResult AddUser()
+        [Authorize] //To be removed if the flow is finalized
+        public async Task<IActionResult> AddUser()
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             if (!IsPostBack())
             {
                 TempData.Remove("SuccessMessage");
@@ -44,8 +52,12 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> AddUser(UserViewModel model)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "Please correct the errors in the form.";
@@ -77,9 +89,13 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             try
             {
                 bool deleted = await _userService.DeleteUser(id);

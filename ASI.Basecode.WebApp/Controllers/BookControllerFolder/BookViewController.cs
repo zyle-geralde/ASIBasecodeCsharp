@@ -1,7 +1,9 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.WebApp.AccessControl;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -21,29 +23,35 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         private readonly IBookService _bookService;
         private readonly IReviewService _reviewService;
         private readonly IBookGenreService _bookGenreService;
+        private readonly IAccessControlInterface _accessControlInterface;
         //private readonly IBookRepository _bookRepository;
-        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService)
+        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface)
         {
             _bookService = bookService;
             _reviewService = reviewService;
             _bookGenreService = bookGenreService;
+            _accessControlInterface = accessControlInterface;
+            
         }
 
 
         [HttpGet]
         [Route("Book/AddBook")]
-        [AllowAnonymous]// Bypass authorization. No need to Log In 
-        public IActionResult AddBook()
+        [Authorize]// Bypass authorization. No need to Log In 
+        public async Task<IActionResult> AddBook()
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             // This will look for a view at /Views/Books/AddBook.cshtml
             return View("~/Views/Books/AddBook.cshtml");
         }
 
         [HttpGet]
         [Route("Book/GetGenre")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> GetAllGenres()
         {
+
             try
             {
                 List<string> all_genres = await _bookService.GetAllGenres();
@@ -59,9 +67,10 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpGet]
         [Route("Book/GetLanguage")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> GetAllLanguage()
         {
+
             try
             {
                 List<string> all_language = await _bookService.GetAllLanguage();
@@ -131,10 +140,13 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpGet]
         [Route("Book/ListBook")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> ListBook()
         {
-            
+
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             List<BookViewModel> books = await _bookService.GetAllBooks();
 
             return View("~/Views/Books/ListBook.cshtml", books);
@@ -213,18 +225,23 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpGet]
         [Route("Book/EditBook/{bookId}")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> EditBook(string bookId)
         {
-           BookViewModel book = await _bookService.GetBookById(bookId);
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
+            BookViewModel book = await _bookService.GetBookById(bookId);
            return View("~/Views/Books/EditBook.cshtml",book);
         }
 
         [HttpGet]
         [Route("Book/BookDetails/{bookId}", Name="BookDetails")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> GetBook(string bookId)
         {
+
+
             BookViewModel book = await _bookService.GetBookById(bookId);
             if(book == null)
             {
@@ -281,9 +298,12 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpPost]
         [Route("Book/AddBook")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> AddBook(BookViewModel book)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             if (ModelState.IsValid)
             {
                 try
@@ -304,9 +324,12 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpPost]
         [Route("Book/EditBook")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> EditBook(BookViewModel book)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             if (ModelState.IsValid)
             {
                 try
@@ -329,11 +352,15 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpPost]
         [Route("Book/Delete")]
-        [AllowAnonymous]
+        [Authorize]
 
         public async Task<IActionResult> DeleteBook([FromBody] DeleteBookPayload book)
         {
-            if(book == null)
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
+
+            if (book == null)
             {
                 return BadRequest(new { Message = "No data has been passed" });
             }
@@ -355,9 +382,10 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpGet]
         [Route("Book/GetAuthor")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> GetAuthor()
         {
+
             try
             {
                 List<string> all_author = await _bookService.GetAllAuthor();

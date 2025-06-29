@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using ASI.Basecode.WebApp.Payload.LanguagePayload;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
+using ASI.Basecode.WebApp.AccessControl;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -17,18 +18,23 @@ namespace ASI.Basecode.WebApp.Controllers
     {
 
         private readonly ILanguageService _languageService;
+        private readonly IAccessControlInterface _accessControlInterface;
 
-        public LanguageController(ILanguageService languageService)
+        public LanguageController(ILanguageService languageService,IAccessControlInterface accessControlInterface)
         {
             _languageService = languageService;
+            _accessControlInterface = accessControlInterface;
         }
 
 
         [HttpGet]
         [Route("Language/Index")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> LanguageList()
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             try
             {
                 List<LanguageViewModel> language_list = await _languageService.GetAllLanguage();
@@ -49,9 +55,12 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [Route("Language/AddLanguage")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> AddLanguage([FromBody]LanguageViewModel language)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             if (ModelState.IsValid)
             {
                 try
@@ -80,10 +89,13 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [Route("Language/Delete")]
-        [AllowAnonymous]
+        [Authorize]
 
         public async Task<IActionResult> DeleteBook([FromBody] DeleteLanguagePayload language)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             if (language == null)
             {
                 return BadRequest(new { Message = "No data has been passed" });
@@ -107,9 +119,12 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [Route("Language/Edit")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> EditGenre([FromBody]LanguageViewModel language)
         {
+
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
 
             if (ModelState.IsValid)
             {
@@ -140,10 +155,12 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpGet]
         [Route("Language/LanguageView/{languageId}")]
-        [AllowAnonymous]
+        [Authorize]
 
         public async Task<IActionResult> GetBooksByGenre(string languageId)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             try
             {
                 //Change this during code cleaning
