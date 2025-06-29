@@ -35,13 +35,15 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         }
 
 
+
+
         [HttpGet]
         [Route("Book/AddBook")]
         [Authorize]// Bypass authorization. No need to Log In 
         public async Task<IActionResult> AddBook()
         {
-            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
-            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+            
+
             // This will look for a view at /Views/Books/AddBook.cshtml
             return View("~/Views/Books/AddBook.cshtml");
         }
@@ -143,7 +145,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [Authorize]
         public async Task<IActionResult> ListBook()
         {
-
+            //For Routing
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
 
@@ -154,7 +156,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpGet]
         [Route("Book/SearchResults")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> SearchResults(
         string? searchTerm,
         string? author,

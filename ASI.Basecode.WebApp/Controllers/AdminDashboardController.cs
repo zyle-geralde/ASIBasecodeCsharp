@@ -3,7 +3,9 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.WebApp.AccessControl;
 using ASI.Basecode.WebApp.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,23 +21,30 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IBookGenreRepository _bookGenreRepository;
         private readonly IUserRepository _userRepository;
         private readonly IReviewRepository _reviewRepository;
+        private readonly IAccessControlInterface _accessControlInterface;
 
         public AdminDashboardController(IBookService bookService,
             IBookRepository bookRepository,
             IBookGenreRepository bookGenreRepository,
             IUserRepository userRepository,
-            IReviewRepository reviewRepository)
+            IReviewRepository reviewRepository,
+            IAccessControlInterface accessControlInterface)
         {
             _bookService = bookService;
             _bookRepository = bookRepository;
             _bookGenreRepository = bookGenreRepository;
             _userRepository = userRepository;
             _reviewRepository = reviewRepository;
+            _accessControlInterface = accessControlInterface;
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Index()
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             var books = await _bookRepository.GetBooks() ?? new List<Book>();
             var genres = await _bookGenreRepository.GetAllGenreList() ?? new List<BookGenre>();
             var users = _userRepository.GetUsers()?.ToList()?? new List<User>();

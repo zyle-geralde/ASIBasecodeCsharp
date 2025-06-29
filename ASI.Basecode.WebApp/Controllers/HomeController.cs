@@ -53,10 +53,11 @@ namespace ASI.Basecode.WebApp.Controllers
         /// <returns> Home View </returns>
         //[AllowAnonymous] //This is to bypass authentication. Ex. if you want to access this route without loging in
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
-            if (!checkUserAccess) return RedirectToAction("AdminDashboard", "Account");
+            if (!checkUserAccess) return RedirectToAction("Index", "AdminDashboard");
 
             var allGenres = await _bookGenreService.GetAllGenreList();
             var topRatedParams = new BookQueryParams

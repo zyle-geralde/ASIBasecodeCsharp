@@ -80,6 +80,8 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllBookGenres()
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             try
             {
                 List<BookGenreViewModel> book_genre_list = await BookGenreService.GetAllGenreList();

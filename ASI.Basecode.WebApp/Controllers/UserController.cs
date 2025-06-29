@@ -35,11 +35,10 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return View("~/Views/Users/Index.cshtml", users);
         }
-        [Authorize] //To be removed if the flow is finalized
+        [Authorize] 
         public async Task<IActionResult> AddUser()
         {
-            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
-            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
 
             if (!IsPostBack())
             {
@@ -55,8 +54,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> AddUser(UserViewModel model)
         {
-            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
-            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
 
             if (!ModelState.IsValid)
             {
@@ -93,8 +91,7 @@ namespace ASI.Basecode.WebApp.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
-            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
 
             try
             {
@@ -120,8 +117,10 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpGet]
         [Route("User/EditUser/{id}")]
+        [Authorize]
         public async Task<IActionResult> EditUser(int id)
         {
+
             try
             {
                 if (!IsPostBack())
@@ -166,6 +165,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> EditUser(int id, UserViewModel model)
         {
             // Ensure the ID is populated
