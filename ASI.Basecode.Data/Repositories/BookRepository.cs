@@ -124,6 +124,7 @@ namespace ASI.Basecode.Data.Repositories
             existingBook.BookFile = book.BookFile;
             existingBook.GenreList = book.GenreList;
             existingBook.UpdatedBy = book.UpdatedBy;//change to Updated
+            existingBook.IsFeatured = book.IsFeatured;
 
 
             await _dbContext.SaveChangesAsync();

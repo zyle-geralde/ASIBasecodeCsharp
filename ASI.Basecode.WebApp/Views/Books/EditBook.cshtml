@@ -112,6 +112,12 @@
                         <label for="seriesDescription">Series Description:</label>
                         <textarea id="seriesDescription" name="SeriesDescription" asp-for="SeriesDescription" class="edit-book-textarea"></textarea>
                     </div>
+
+                    <div class="book-master-form-group">
+                        <label for="IsFeatured">Featured Book</label>
+                        <input type="checkbox" id="isFeatured" name="IsFeatured" value="true" @(Model?.IsFeatured == true?"checked":"")>
+                        <span asp-validation-for="IsFeatured" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
 

@@ -126,6 +126,7 @@ namespace ASI.Basecode.Services.Services
                     SeriesOrder = book.SeriesOrder,
                     GenreList = book.GenreList,
                     AverageRating = book.AverageRating,
+                    IsFeatured = book.IsFeatured,
 
                     // Firebase Storage URLs are directly mapped
                     CoverImageUrl = book.CoverImage,
@@ -171,6 +172,7 @@ namespace ASI.Basecode.Services.Services
                 SeriesOrder = requestBook.SeriesOrder,
                 GenreList= requestBook.GenreList,
                 AverageRating =requestBook.AverageRating,
+                IsFeatured = requestBook.IsFeatured,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImageUrl = requestBook.CoverImage,
@@ -211,6 +213,7 @@ namespace ASI.Basecode.Services.Services
                 SeriesDescription = request.SeriesDescription,
                 SeriesOrder = request.SeriesOrder,
                 GenreList = request.GenreList,
+                IsFeatured = request.IsFeatured,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImage = request.CoverImageUrl,

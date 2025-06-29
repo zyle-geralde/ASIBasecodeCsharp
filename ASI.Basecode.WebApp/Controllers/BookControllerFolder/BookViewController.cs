@@ -190,6 +190,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 ISBN10 = book.ISBN10,
                 ISBN13 = book.ISBN13,
                 Edition = book.Edition,
+                IsFeatured = book.IsFeatured,
                 HasReviewed = hasReviewed,
                 Reviews = reviews
                             .Select(r => new ReviewViewModel

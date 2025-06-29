@@ -193,6 +193,7 @@ namespace ASI.Basecode.Services.Services
                         SeriesDescription = bookEntity.SeriesDescription,
                         SeriesOrder = bookEntity.SeriesOrder,
                         GenreList = bookEntity.GenreList,
+                        IsFeatured = bookEntity.IsFeatured,
 
                         // Firebase Storage URLs are directly mapped
                         CoverImageUrl = bookEntity.CoverImage,
