@@ -1,5 +1,15 @@
-﻿.users-container {
+﻿/* Make the page not scrollable */
+body, html {
+    height: 100%;
+    overflow: hidden;
+}
+
+.users-container {
     padding: 25px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .avatar-circle {
@@ -17,12 +27,56 @@
 .action-buttons {
     display: flex;
     gap: 0.5rem;
-    justify-content: center;
+    justify-content: center!important;
+    align-items: center !important;
+}
+
+.action-icon-button
+{
+    justify-self: center;
 }
 
 .btn-icon {
     padding: 0.25rem 0.5rem;
     border: none;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.page-item.active .page-link {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.page-link {
+    color: #6c757d;
+}
+
+.table-container {
+    height: 400px; /* Changed from min-height to fixed height */
+    max-height: 400px;
+    overflow-y: auto; /* Add scroll only inside the table if needed */
+}
+
+.table > :not(caption) > * > * {
+    padding: 0.4rem 0.5rem; /* Reduced padding (default is 0.5rem) */
+}
+
+.table tr {
+    height: 45px; /* Set fixed height for rows */
+}
+
+.table thead th {
+    background-color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 @media (max-width: 768px) {
@@ -71,4 +125,63 @@
 .form-control {
     font-size: 14px;
     color: GrayText;
+}
+
+.users-container.p-4 {
+    overflow: hidden;
+}
+
+/* Reduce card body padding */
+.card-body {
+    padding: 1rem;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* Reduce margin after header */
+.header-section {
+    margin-bottom: 0.5rem;
+}
+
+    /* Make header more compact */
+    .header-section h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .header-section p {
+        margin-bottom: 0.5rem;
+    }
+
+/* Make the card fill available space */
+.card {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* Scrollable table container */
+.table-scroll-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 400px; /* Adjust as needed */
+    overflow-y: auto;
+    margin-top: 1rem;
+}
+
+/* Optional: sticky table header */
+.table-scroll-container thead th {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 2;
+}
+
+@media (max-width: 768px) {
+    .users-container {
+        margin-left: 0;
+    }
 }

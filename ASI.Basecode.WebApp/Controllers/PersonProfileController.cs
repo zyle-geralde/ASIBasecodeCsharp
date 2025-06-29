@@ -101,7 +101,7 @@ namespace ASI.Basecode.WebApp.Controllers
             if (!updated)
                 return NotFound();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { success = "personal" });
 
         }
 

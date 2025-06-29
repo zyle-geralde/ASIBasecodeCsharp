@@ -25,9 +25,12 @@ namespace ASI.Basecode.Data.Repositories
             await _dbContext.Books.AddAsync(book);
             await _dbContext.SaveChangesAsync();
         }
-        public async Task<List<Book>> GetBooks(BookQueryParams queryParams) 
+        public async Task<List<Book>> GetBooks(BookQueryParams? queryParams = null) 
         {
+            queryParams ??= new BookQueryParams();
+
             IQueryable<Book> query = _dbContext.Books.AsNoTracking();
+
 
             // SEARCH
             if (!string.IsNullOrEmpty(queryParams.SearchTerm))
@@ -80,7 +83,9 @@ namespace ASI.Basecode.Data.Repositories
                             ? query.OrderByDescending(b => b.AverageRating)
                             : query.OrderBy(b => b.AverageRating);
                         break;
-
+                    case "uploaddate":
+                        query = desc ? query.OrderByDescending(b => b.UploadDate) : query.OrderBy(b => b.UploadDate);
+                        break;
                     default:
                         query = query.OrderBy(b => b.Title);
                         break;
