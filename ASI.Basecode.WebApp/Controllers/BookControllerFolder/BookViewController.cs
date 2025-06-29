@@ -39,25 +39,43 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             return View("~/Views/Books/AddBook.cshtml");
         }
 
-        //[HttpGet]
-        //[Route("Book/GetGenre")]
-        //[AllowAnonymous]
-        //public async Task<IActionResult> GetAllGenres()
-        //{
-        //    try
-        //    {
-        //        List<string> all_genres = await _bookService.GetAllGenres();
+        [HttpGet]
+        [Route("Book/GetGenre")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllGenres()
+        {
+            try
+            {
+                List<string> all_genres = await _bookService.GetAllGenres();
 
-        //        return Ok(new { Message = all_genres });
-        //    }
-        //    catch (Exception ex) 
-        //    {
-        //        return StatusCode(500, $"Failed to get all Genres: {ex.Message}");
-        //    }
-        //}
+                return Ok(new { Message = all_genres });
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, $"Failed to get all Genres: {ex.Message}");
+            }
+        }
 
 
         [HttpGet]
+        [Route("Book/GetLanguage")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllLanguage()
+        {
+            try
+            {
+                List<string> all_language = await _bookService.GetAllLanguage();
+
+                return Ok(new { Message = all_language });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to get all Genres: {ex.Message}");
+            }
+        }
+
+
+        /*[HttpGet]
         [Route("Book/ListBook")]
         [AllowAnonymous]
         public async Task<IActionResult> ListBook(
@@ -108,6 +126,17 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             var books = await _bookService.GetBooks(
                 queryParams );
             //List<Book> books = await _bookService.GetAllBooks();
+            return View("~/Views/Books/ListBook.cshtml", books);
+        }*/
+
+        [HttpGet]
+        [Route("Book/ListBook")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ListBook()
+        {
+            
+            List<BookViewModel> books = await _bookService.GetAllBooks();
+
             return View("~/Views/Books/ListBook.cshtml", books);
         }
 
@@ -161,6 +190,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 ISBN10 = book.ISBN10,
                 ISBN13 = book.ISBN13,
                 Edition = book.Edition,
+                IsFeatured = book.IsFeatured,
                 HasReviewed = hasReviewed,
                 Reviews = reviews
                             .Select(r => new ReviewViewModel
@@ -249,6 +279,23 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        [Route("Book/GetAuthor")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAuthor()
+        {
+            try
+            {
+                List<string> all_author = await _bookService.GetAllAuthor();
+
+                return Ok(new { Message = all_author });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to get all Authors: {ex.Message}");
             }
         }
     }

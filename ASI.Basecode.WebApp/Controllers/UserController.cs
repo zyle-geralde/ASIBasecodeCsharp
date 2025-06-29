@@ -1,8 +1,10 @@
 ﻿using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.ServiceModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace ASI.Basecode.WebApp.Controllers
@@ -36,6 +38,34 @@ namespace ASI.Basecode.WebApp.Controllers
         public IActionResult EditUser()
         {
             return View("~/Views/Users/EditUser.cshtml");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddUser(UserViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Please correct the errors in the form.";
+                return View(model);
+            }
+
+            try
+            {
+                await _userService.AddUserFromAdmin(model);
+                TempData["SuccessMessage"] = "User added successfully!";
+                return RedirectToAction("AddUser");
+            }
+            catch (InvalidDataException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An unexpected error occurred.";
+                return View(model);
+            }
         }
 
 

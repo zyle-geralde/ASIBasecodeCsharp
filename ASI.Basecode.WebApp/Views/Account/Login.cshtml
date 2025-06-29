@@ -1,8 +1,550 @@
 ﻿@model LoginViewModel
 @using static ASI.Basecode.Resources.Views.Screen
+
+
 @section styles {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/login.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        
+        body {
+            background: #f6f3ea; 
+            font-family: 'Montserrat', sans-serif; 
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: block; 
+        }
+
+
+        .back-arrow {
+            position: absolute;
+            top: 32px;
+            left: 32px;
+            z-index: 10;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); 
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .back-arrow:hover {
+            background-color: rgba(255, 255, 255, 0.6); 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .back-arrow svg path {
+            stroke: #333; 
+        }
+
+        .login-main-split {
+            display: flex;
+            height: 100vh; 
+            width: 100vw; 
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .login-left-panel { 
+            flex: 1 1 0;
+            position: relative;
+            background: none;
+            overflow: hidden;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .login-quote-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/img/login_books_bg.jpg') center center/cover no-repeat; 
+            z-index: 0;
+            margin: 0;
+            border-radius: 0;
+        }
+
+        .login-quote-overlay { 
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(246, 243, 234, 0.5);
+            z-index: 1;
+        }
+
+        .login-quote-content { 
+            position: relative;
+            z-index: 2;
+            max-width: 650px;
+            margin: 0 100px;
+            text-align: center;
+            color: #2C3438;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.4rem;
+            line-height: 1.25;
+            display: flex;
+            flex-direction: row;
+            gap: 100px; 
+        }
+
+        .login-quote-mark-left, .login-quote-mark-right { 
+            font-size: 64px;
+            color: #5b7c78;
+            font-family: 'Merriweather', serif;
+            font-weight: 700;
+            margin-bottom: 8px;
+            padding: 20px;
+            flex-shrink: 0;
+        }
+
+        .login-quote-text { 
+            font-size: 1.4rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: #2C3438; 
+            margin: 25px;
+            padding-left: 25px;
+            text-align: center;
+            font-style: italic;
+            align-self: center;
+        }
+
+        .login-right-panel { 
+            flex: 1 1 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f6f3ea; 
+            height: 100vh;
+            width: 50vh; 
+            padding: 0 20px; 
+
+        }
+
+        .login-form-card { 
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+            padding: 32px 64px;
+            overflow-y: hidden;
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+            overflow-y: auto; 
+            max-height: 90vh; 
+        }
+        
+
+        .login-form-card form { 
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+                flex-grow: 1; 
+                justify-content: space-between;
+        }
+
+        .login-logo {
+            margin-bottom: 20px;
+        }
+
+        .form-title { 
+            font-family: 'Merriweather', serif;
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 32px;
+            line-height: 1.2;
+        }
+
+        .title-highlight { 
+            color: #5b7c78;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .form-group {
+            width: 100%;
+            margin-bottom: 18px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label { 
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: #3a4a47;
+            margin-bottom: 4px;
+            display: block;
+            font-size: 14px;
+        }
+
+        .form-control-custom { 
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #bfc8c6;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: 'Montserrat', sans-serif;
+            background: #fafafa;
+            color: #222;
+            margin-bottom: 2px;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .form-control-custom::placeholder {
+            color: #98958E;
+            font-weight: 300;
+        }
+
+        .input-group-with-icon {
+            position: relative;
+        }
+        .input-group-with-icon .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 1rem;
+            z-index: 10;
+        }
+
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none;
+        }
+        input[type="password"]::-webkit-contacts-auto-fill-button {
+            visibility: hidden;
+            pointer-events: none;
+            position: absolute;
+            right: 0;
+        }
+
+        .error-message {
+            font-size: 0.875rem;
+            color: #ef4444;
+            margin-top: 0.25rem;
+        }
+
+        .forgot-password-link {
+            text-align: right;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem; 
+        }
+        .forgot-password-link a {
+            color: #5b7c78;
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 0.9rem; 
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        .forgot-password-link a:hover {
+            color: #3a4a47;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #4b5f5a; 
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            border-radius: 24px;
+            padding: 10px 0;
+            margin: 0 0 8px 0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .login-btn:hover {
+            background: #5b7c78; 
+        }
+
+        .signup-section { 
+            text-align: center;
+            color: #222;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.05rem;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px; 
+        }
+        .signup-section a { 
+            color: #5b7c78;
+            text-decoration: underline;
+            margin-left: 2px;
+        }
+        .signup-section a:hover {
+            color: #3a4a47;
+        }
+
+        @@media (max-width: 599px) {
+            .login-main-split {
+                flex-direction: column;
+                height: auto; 
+                min-height: 100vh;
+                overflow-y: auto;
+            }
+            body {
+                padding-top: 0; 
+            }
+            header {
+                display: none;
+            }
+
+            .login-left-panel, .login-right-panel {
+                min-height: unset;
+                height: auto; 
+                width: 100%;
+                justify-content: center;
+            }
+            .login-left-panel {
+                height: 200px; 
+                min-height: 180px;
+                max-height: 250px;
+                padding: 1rem; 
+            }
+            .login-quote-content {
+                font-size: 1rem;
+                max-width: 95vw;
+                padding: 0 10px;
+                margin: 0 auto;
+                flex-direction: column;
+                gap: 5px;
+            }
+            .login-quote-mark-left, .login-quote-mark-right {
+                font-size: 1.2rem;
+                margin-bottom: 0;
+                padding: 0;
+            }
+
+            .login-quote-text {
+                font-size: 1rem;
+                line-height: 1.2;
+                word-break: break-word;
+                margin: 0;
+                padding: 0;
+            }
+            .login-form-card {
+                width: 95%;
+                max-width: 95%;
+                margin: 24px auto;
+                padding: 18px 24px;
+                max-height: unset; 
+                overflow-y: hidden; 
+                flex-shrink: 0; 
+                flex-grow: 1;
+            }
+            .form-title, .title-highlight {
+                font-size: 1.3rem;
+            }
+            .login-right-panel {
+                width: 100%;
+                padding: 0 10px;
+            }
+
+            .back-arrow {
+                top: 15px; 
+                left: 15px; 
+            }
+        }
+
+
+        @@media (max-height: 768px) and (min-width: 600px) { 
+            .login-form-card {
+                padding: 20px 40px;
+                max-height: 100%;
+            }
+            .login-logo {
+                width: 140px !important;
+                margin-bottom: 15px;
+            }
+            .form-title {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+            .title-highlight {
+                font-size: 20px;
+            }
+            .form-group {
+                margin-bottom: 12px;
+            }
+            .form-label {
+                font-size: 12px;
+            }
+            .form-control-custom {
+                padding: 8px 12px;
+                font-size: 10px;
+            }
+            .forgot-password-link {
+                margin-top: -0.2rem;
+                margin-bottom: 0.8rem;
+            }
+            .forgot-password-link a {
+                font-size: 0.8rem;
+            }
+            .login-btn {
+                padding: 8px 0;
+                font-size: 14px;
+                border-radius: 20px;
+            }
+            .signup-section {
+                font-size: 0.9rem;
+                margin-top: 5px;
+            }
+        }
+
+
+        .modal-content.forgot-modal-content {
+            background-color: #5a7b80;
+            color: #fff;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .forgot-modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .forgot-modal-desc {
+            font-size: 0.875rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        .forgot-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: block;
+            text-align: left;
+        }
+        .forgot-input {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            font-size: 0.875rem;
+            font-weight: 300;
+            box-sizing: border-box;
+        }
+        .forgot-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .forgot-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #ffffff;
+        }
+        .forgot-btn {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            color: #000000;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            background-color: #E0B99C;
+            border: none;
+            cursor: pointer;
+        }
+        .forgot-btn:hover {
+            opacity: 0.9;
+        }
+        .forgot-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #e0b99c, 0 0 0 4px rgba(224, 185, 156, 0.5);
+        }
+        .forgot-back-link {
+            color: #E0B99C;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 400;
+            transition: text-decoration 0.2s;
+        }
+        .forgot-back-link:hover {
+            text-decoration: underline;
+        }
+
+        .verification-modal-content {
+            background-color: #5a7b80;
+            color: #fff;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .verification-input {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            font-size: 0.875rem;
+            font-weight: 300;
+            box-sizing: border-box;
+        }
+
+            .verification-input::placeholder {
+                color: rgba(255, 255, 255, 0.7);
+            }
+
+            .verification-input:focus {
+                outline: none;
+                box-shadow: 0 0 0 2px #ffffff;
+            }
+
+        .verification-btn {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            color: #000000;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            background-color: #E0B99C; 
+            border: none;
+            cursor: pointer;
+        }
+
+            .verification-btn:hover {
+                opacity: 0.9;
+            }
+
+            .verification-btn:focus {
+                outline: none;
+                box-shadow: 0 0 0 2px #e0b99c, 0 0 0 4px rgba(224, 185, 156, 0.5);
+            }
+    </style>
 }
 @{
     ViewBag.LoginView = true;
@@ -10,8 +552,180 @@
 }
 <div>
     @Html.AntiForgeryToken()
+
 </div>
-<div class="container py-5" style="display:flex; align-content:center;height:calc(100vh - 64px)">
+
+
+
+<div class="login-main-split">
+   
+    <div class="login-left-panel">
+        <div class="login-quote-bg"></div>
+        @* <div class="login-quote-overlay"></div> *@
+        @* <div class="login-quote-content">
+            <div class="login-quote-mark-left">"</div>
+            <p class="login-quote-text">
+                Great books deserve more than silent applause. They deserve a reader's voice, a thoughtful review, a shared experience. Sign up and let your voice be heard!
+            </p>
+            <div class="login-quote-mark-right">"</div>
+        </div> *@
+    </div>
+    <div class="login-right-panel">
+        <a href="/Home/Index" class="back-arrow" aria-label="Back">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M20 8L12 16L20 24" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </a>
+        <div class="login-form-card">
+            <img src="~/img/bb_logo_cream.png" class="login-logo" style="width: 185px;" alt="logo">
+            <h2 class="form-title">
+                Sign In To <br /> <span class="title-highlight">BasaBuzz</span>
+            </h2>
+            <form method="post" action="/Account/Login" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="form2Example11">Email</label>
+                    <input type="text" id="form2Example11"
+                           class="form-control-custom"
+                           asp-for="UserId" placeholder="sample@gmail.com" />
+                    <span asp-validation-for="UserId" class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="form2Example22">Password</label>
+                    <div class="input-group-with-icon">
+                        <input type="password" id="form2Example22"
+                               class="form-control-custom"
+                               asp-for="Password" placeholder="********" />
+                        <span class="toggle-password" onclick="togglePasswordVisibility(this)">
+                            <i class="fa fa-eye-slash"></i>
+                        </span>
+                    </div>
+                    <span asp-validation-for="Password" class="error-message"></span>
+                </div>
+                <div class="forgot-password-link">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                    Forgot Password?
+                </a>
+                </div>
+                <button class="login-btn" type="submit">Sign In</button>
+                <div class="signup-section">
+                    Already have an account? <a href="/Account/Register" class="signup-section-link">Sign Up</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content forgot-modal-content">
+            <form method="post" action="/Account/ForgotPassword">
+                <div class="mb-4">
+                    <img src="https://placehold.co/110x30/5a7b80/ffffff?text=BasaBuzz+Logo" alt="Logo" class="mx-auto d-block" style="width: 110px;" />
+                </div>
+
+                <h2 class="forgot-modal-title">Forgot Password</h2>
+                <p class="forgot-modal-desc">
+                    Recover your password if you have forgot the password!
+                </p>
+
+                <div class="mb-4">
+                    <label for="forgotInput" class="forgot-label">Email</label>
+                    <input type="email" class="form-control forgot-input"
+                           id="forgotInput" name="Identifier" placeholder="juan.cruz@gmail.com" required>
+                </div>
+
+                <div class="d-grid mb-4">
+                    <button type="button" class="btn forgot-btn" onclick="showVerificationModal()">
+                        Send Code
+                    </button>
+                </div>
+
+                <a href="#" class="forgot-back-link" data-bs-dismiss="modal">
+                    &lt; Back to login
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="codeVerificationModal" tabindex="-1" aria-labelledby="codeVerificationModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content verification-modal-content">
+            <form method="post" action="/Account/VerifyCode">
+                <div class="mb-4">
+                    <img src="https://placehold.co/110x30/5a7b80/ffffff?text=BasaBuzz+Logo" alt="Logo" class="mx-auto d-block" style="width: 110px;" />
+                </div>
+
+                <h2 class="forgot-modal-title">Enter Verification Code</h2>
+                <p class="forgot-modal-desc">
+                    A verification code has been sent to your email. Please enter it below.
+                </p>
+
+                <div class="mb-4">
+                    <label for="verificationCodeInput" class="forgot-label">Verification Code</label>
+                    <input type="text" class="form-control verification-input"
+                           id="verificationCodeInput" name="VerificationCode" placeholder="Enter code" required>
+                </div>
+
+                <div class="d-grid mb-4">
+                    <button type="submit" class="verification-btn">
+                        Verify Code
+                    </button>
+                </div>
+
+
+                <a href="#" class="forgot-back-link" onclick="showForgotPasswordModal()">
+                    &lt; Back to email
+                </a>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    function togglePasswordVisibility(toggleSpanElement) {
+        const passwordField = document.getElementById('form2Example22');
+        const toggleIcon = toggleSpanElement.querySelector('i');
+
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        } else {
+            passwordField.type = 'password';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        }
+    }
+
+    function showVerificationModal() {
+        $('#forgotPasswordModal').modal('hide');
+        $('#codeVerificationModal').modal('show');
+    }
+
+    function showForgotPasswordModal() {
+        $('#codeVerificationModal').modal('hide');
+        $('#forgotPasswordModal').modal('show');
+    }
+
+    var errorMessage = '@TempData["ErrorMessage"]';
+    if (errorMessage && errorMessage.trim() !== '') {
+        toastr.error(errorMessage);
+    }
+
+    var successMessage = '@TempData["SuccessMessage"]';
+    if (successMessage && successMessage.trim() !== '') {
+        toastr.success(successMessage);
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+@* <div class="container py-5" style="display:flex; align-content:center;height:calc(100vh - 64px)">
     <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-xl-10">
             <div class="card rounded-3 text-black">
@@ -106,4 +820,4 @@
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-}
+} *@

@@ -1,43 +1,8 @@
-﻿@model List<ASI.Basecode.Services.ServiceModels.AuthorModel>
+﻿@model List<ASI.Basecode.Services.ServiceModels.AuthorViewModel>
 
 @{
     ViewData["Title"] = "Authors";
     Layout = "_AdminSidebarLayout";
-
-    // --- TEMPORARY DATA FOR DESIGN VIEWING  ---
-    var tempAuthors = new List<ASI.Basecode.Services.ServiceModels.AuthorModel>
-    {
-        new ASI.Basecode.Services.ServiceModels.AuthorModel
-        {
-            AuthorId = "temp-author-1",
-            AuthorName = "Jane Austen",
-            AuthorDescription = "Prolific English novelist, celebrated for her works which interpret, critique and comment upon the British landed gentry.",
-            AuthorImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Jane_Austen_by_Cassandra_Austen_%28cropped%29.jpg/220px-Jane_Austen_by_Cassandra_Austen_%28cropped%29.jpg",
-            CreatedBy = "System",
-            UploadDate = DateTime.Now.AddMonths(-18),
-            UpdatedDate = DateTime.Now.AddMonths(-18)
-        },
-        new ASI.Basecode.Services.ServiceModels.AuthorModel
-        {
-            AuthorId = "temp-author-2",
-            AuthorName = "George Orwell",
-            AuthorDescription = "English novelist, essayist, journalist, and critic. Best known for the dystopian novel 'Nineteen Eighty-Four'.",
-            AuthorImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/George_Orwell_promo_photo.jpg/220px-George_Orwell_promo_photo.jpg",
-            CreatedBy = "System",
-            UploadDate = DateTime.Now.AddMonths(-12),
-            UpdatedDate = DateTime.Now.AddMonths(-12)
-        },
-        new ASI.Basecode.Services.ServiceModels.AuthorModel
-        {
-            AuthorId = "temp-author-3",
-            AuthorName = "Agatha Christie",
-            AuthorDescription = "English crime novelist, short story writer, and playwright. She is best known for her 66 detective novels.",
-            AuthorImageUrl = null,
-            CreatedBy = "System",
-            UploadDate = DateTime.Now.AddMonths(-24),
-            UpdatedDate = DateTime.Now.AddMonths(-24)
-        }
-    };
 }
 
 @section styles {
@@ -79,10 +44,11 @@
         </div>
 
         <p>
-            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addAuthorModal">
+            <a class="btn btn-secondary" href="/Author/AddAuthor">
                 <i class="fas fa-plus me-2" style="color: #fff"></i> ADD AUTHOR
             </a>
         </p>
+
     </div>
 
     <div class="search-filter-container">
@@ -97,7 +63,7 @@
         </div>
     </div>
 
-    @if (tempAuthors != null && tempAuthors.Any())
+    @if (Model != null && Model.Any())
     {
         <div class="table-responsive">
             <table class="data-table table table-hover">
@@ -111,7 +77,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var author in tempAuthors)
+                    @foreach (var author in Model)
                     {
                         <tr>
                             <td>
@@ -128,15 +94,13 @@
                             <td class="align-middle">@author.AuthorDescription</td>
                             <td class="align-middle">@author.UploadDate?.ToShortDateString()</td>
                             <td class="align-middle" style="white-space:nowrap;">
-                                <div class="action-buttons"> 
-                                    <button type="button" class="btn btn-icon text-primary edit-author-btn"
-                                            data-bs-toggle="modal" data-bs-target="#editAuthorModal"
-                                            data-author-id="@author.AuthorId"
-                                            data-author-name="@author.AuthorName"
-                                            data-author-description="@author.AuthorDescription"
-                                            data-author-image-url="@author.AuthorImageUrl">
+                                <div class="action-buttons">
+                                    <a href="/Author/AuthorView/@author.AuthorId" class="action-icon-button text-secondary">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
+                                    <a @* href="/Author/EditAuthor/@author.AuthorId" *@ href="/Author/EditAuthor/@author.AuthorId"  class="btn btn-icon text-primary">
                                         <i class="fas fa-edit"></i>
-                                    </button>
+                                    </a>
                                     <button type="button" class="btn btn-icon text-danger delete-author-btn"
                                             data-bs-toggle="modal" data-bs-target="#deleteAuthorConfirmModal"
                                             data-author-id="@author.AuthorId"
@@ -159,38 +123,8 @@
 </div>
 
 
-<div class="modal fade" id="addAuthorModal" tabindex="-1" aria-labelledby="addAuthorLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content add-language-modal-content p-4">
-            <div class="modal-header border-0 pb-0 mb-3">
-                <h5 class="modal-title add-language-title" id="addAuthorLabel">Add New Author</h5>
-                <button type="button" class="btn-close add-language-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body pt-2">
-                <form id="addAuthorForm" method="post" action="/Author/Add">
-                    @Html.AntiForgeryToken()
-                    <div class="mb-3">
-                        <label for="newAuthorName" class="form-label">Author Name</label>
-                        <input type="text" class="form-control" id="newAuthorName" name="AuthorName" placeholder="e.g., J.K. Rowling" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newAuthorDescription" class="form-label">Description</label>
-                        <textarea class="form-control" id="newAuthorDescription" name="AuthorDescription" rows="3" placeholder="Brief description"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newAuthorImageFile" class="form-label">Author Image</label>
-                        <input type="file" class="form-control" id="newAuthorImageFile" accept="image/*">
-                        <span id="newAuthorImageUploadStatus" class="form-text"></span>
-                        <input type="hidden" id="newAuthorImageUrl" name="AuthorImageUrl" />
-                    </div>
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn add-language-btn">ADD</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+
+
 
 <div class="modal fade" id="editAuthorModal" tabindex="-1" aria-labelledby="editAuthorLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -265,7 +199,7 @@
 
         // Initialize Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebase/storage/9.6.1/index.esm.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
 
         const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
@@ -322,82 +256,10 @@
             }
         }
 
-        // --- ADD AUTHOR MODAL LOGIC ---
-        const addAuthorForm = document.getElementById("addAuthorForm");
-        const newAuthorImageFile = document.getElementById("newAuthorImageFile");
-        const newAuthorImageUploadStatus = document.getElementById("newAuthorImageUploadStatus");
-        const newAuthorImageUrlInput = document.getElementById("newAuthorImageUrl");
-
-        addAuthorForm.addEventListener("submit", async function (e) {
-            e.preventDefault();
-
-            const antiForgeryToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
-            if (!antiForgeryToken) {
-                toastr.error("Anti-forgery token not found. Cannot proceed.");
-                return;
-            }
-
-            let uploadedImageUrl = newAuthorImageUrlInput.value;
-            if (newAuthorImageFile.files.length > 0) {
-                const file = newAuthorImageFile.files[0];
-                try {
-                    uploadedImageUrl = await uploadFileToFirebase(file, "authors/", newAuthorImageUploadStatus);
-                    newAuthorImageUrlInput.value = uploadedImageUrl;
-                } catch (error) {
-                    toastr.error("Failed to upload image. Please try again.");
-                    console.error("Image upload error:", error);
-                    return;
-                }
-            }
-
-            const authorData = {
-                AuthorName: addAuthorForm.querySelector('[name="AuthorName"]').value,
-                AuthorDescription: addAuthorForm.querySelector('[name="AuthorDescription"]').value,
-                AuthorImageUrl: uploadedImageUrl
-            };
-
-            try {
-                const response = await fetch("/Author/Add", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': antiForgeryToken
-                    },
-                    body: JSON.stringify(authorData)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    toastr.success(result.message || "Author added successfully!");
-                    $('#addAuthorModal').modal('hide');
-                    window.location.reload();
-                } else {
-                    let errorMessage = result.message || "Failed to add author.";
-                    if (result.errors && result.errors.length > 0) {
-                        errorMessage += "<br>" + result.errors.join("<br>");
-                    }
-                    toastr.error(errorMessage);
-                    console.error("Add Author Error:", result);
-                }
-            } catch (error) {
-                toastr.error("An unexpected error occurred while adding the author.");
-                console.error("Add Author Fetch Error:", error);
-                if (uploadedImageUrl && uploadedImageUrl.trim() !== '') {
-                    await deleteFileFromFirebase(uploadedImageUrl);
-                    toastr.warning("Image upload rolled back due to backend error.");
-                }
-            }
-        });
-
-        $('#addAuthorModal').on('hidden.bs.modal', function () {
-            addAuthorForm.reset();
-            newAuthorImageUploadStatus.textContent = '';
-            newAuthorImageUrlInput.value = '';
-        });
+        
 
 
-        // --- EDIT AUTHOR MODAL LOGIC ---
+        // Edit atuhor
         const editAuthorForm = document.getElementById("editAuthorForm");
         const editAuthorImageFile = document.getElementById("editAuthorImageFile");
         const editAuthorImageUploadStatus = document.getElementById("editAuthorImageUploadStatus");
@@ -519,6 +381,7 @@
         });
 
         document.getElementById("confirmDeleteAuthorBtn").addEventListener("click", async function () {
+            console.log("Clicked")
             const authorIdToDelete = $('#deleteAuthorId').val();
             const authorImageUrlToDelete = $('#deleteAuthorImageUrl').val();
 
@@ -533,7 +396,7 @@
                     return;
                 }
 
-                const response = await fetch("/Author/Delete", {
+                const response = await fetch("/Author/DeleteAuthor", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
@@ -561,7 +424,7 @@
         });
 
 
-        // --- GENERAL MODAL CLEANUP ---
+        // modal cleanup
         $(document).ready(function () {
             $('#addAuthorModal, #editAuthorModal, #deleteAuthorConfirmModal').on('hidden.bs.modal', function () {
                 $('body').removeClass('modal-open');

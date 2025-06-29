@@ -124,6 +124,7 @@ namespace ASI.Basecode.Data.Repositories
             existingBook.BookFile = book.BookFile;
             existingBook.GenreList = book.GenreList;
             existingBook.UpdatedBy = book.UpdatedBy;//change to Updated
+            existingBook.IsFeatured = book.IsFeatured;
 
 
             await _dbContext.SaveChangesAsync();
@@ -149,6 +150,18 @@ namespace ASI.Basecode.Data.Repositories
             }
         }
 
+        public async Task<List<Language>> GetAllLanguage()
+        {
+            try
+            {
+                return await _dbContext.Languages.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task calculateAverageRating(string bookId)
         {
             var reviews = _dbContext.Reviews
@@ -166,7 +179,30 @@ namespace ASI.Basecode.Data.Repositories
                 book.AverageRating = (float)avg;
                 await _dbContext.SaveChangesAsync();
             }
+        }
 
+        public async Task<List<Book>> GetAllBooks()
+        {
+            try
+            {
+                return await _dbContext.Books.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<Author>> GetAllAuthor()
+        {
+            try
+            {
+                return await _dbContext.Authors.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
 
