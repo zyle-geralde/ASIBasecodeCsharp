@@ -3,7 +3,7 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
-using ASI.Basecode.WebApp.AccessControl.AdminAccessControl;
+using ASI.Basecode.WebApp.AccessControl;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -24,16 +24,16 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         private readonly IReviewService _reviewService;
         private readonly IBookGenreService _bookGenreService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IAdminAccessInterface _adminAccessInterface;
+        private readonly IAccessControlInterface _accessControlInterface;
         private readonly SessionManager _sessionManager;
         //private readonly IBookRepository _bookRepository;
-        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IHttpContextAccessor httpContextAccessor, IAdminAccessInterface adminAccessInterface)
+        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IHttpContextAccessor httpContextAccessor, IAccessControlInterface accessControlInterface)
         {
             _bookService = bookService;
             _reviewService = reviewService;
             _bookGenreService = bookGenreService;
             _httpContextAccessor = httpContextAccessor;
-            _adminAccessInterface = adminAccessInterface;
+            _accessControlInterface = accessControlInterface;
             this._sessionManager = new SessionManager(httpContextAccessor.HttpContext.Session);
         }
 
@@ -142,7 +142,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [Authorize]
         public async Task<IActionResult> ListBook()
         {
-            bool checkAdminAccess = await _adminAccessInterface.CheckAccess();
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
 
             List<BookViewModel> books = await _bookService.GetAllBooks();
