@@ -23,7 +23,7 @@ namespace ASI.Basecode.Data.Repositories
             return this.GetDbSet<User>();
         }
 
-        public async Task<List<User>> GetUsersQueried(UserQueryParams? queryParams = null)
+        public async Task<PaginatedList<User>> GetUsersQueried(UserQueryParams? queryParams = null)
         {
             queryParams ??= new UserQueryParams();
 
@@ -38,7 +38,10 @@ namespace ASI.Basecode.Data.Repositories
                     (b.UserName != null && b.UserName.Contains(term)) || 
                     (b.Email != null && b.Email.Contains(term)));
             }
-
+            //if (!string.IsNullOrEmpty(queryParams.Role))
+            //{
+            //    query = query.Where(u => u.Role == queryParams.Role);
+            //}
             // Apply sorting if provided
             if (!string.IsNullOrEmpty(queryParams.SortOrder))
             {
@@ -67,18 +70,7 @@ namespace ASI.Basecode.Data.Repositories
                 }
             }
 
-            query = query.Skip((queryParams.PageIndex - 1) * queryParams.PageSize).Take(queryParams.PageSize);
-           
-
-            //// Skip pagination if pageSize is int.MaxValue (to get all users)
-            //if (pageSize < int.MaxValue)
-            //{
-            //    query = query
-            //        .Skip((pageIndex - 1) * pageSize)
-            //        .Take(pageSize);
-            //}
-
-            return await query.ToListAsync();
+            return await GetPaged(query, queryParams.PageIndex, queryParams.PageSize);
         }
 
         public bool UserExists(string userId)

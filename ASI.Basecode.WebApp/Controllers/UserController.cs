@@ -47,7 +47,7 @@ namespace ASI.Basecode.WebApp.Controllers
             ViewData["CurrentSort"] = queryParams.SortOrder;
             ViewData["CurrentSortDescending"] = queryParams.SortDescending;
             ViewData["CurrentRoleFilter"] = queryParams.Role;
-            var users = await _userService.GetUsersQueried(queryParams);
+            PaginatedList<User> users = await _userService.GetUsersQueried(queryParams);
 
             return View("~/Views/Users/Index.cshtml", users);
         }

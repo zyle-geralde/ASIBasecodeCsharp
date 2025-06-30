@@ -1,5 +1,5 @@
-﻿@model IEnumerable<ASI.Basecode.Data.Models.User>
-@using ASI.Basecode.WebApp.Models
+﻿@using ASI.Basecode.Data.Interfaces;
+@model PaginatedList<ASI.Basecode.Data.Models.User>
 
 @{
     ViewData["Title"] = "Users";
@@ -74,8 +74,8 @@
     <select name="sortOrder"
             class="form-select me-2">
         <option value="id"        selected="@(currentSort=="id")">ID</option>
-        <option value="username"  selected="@(currentSort=="username")">Username</option>
-        <option value="email"     selected="@(currentSort=="email")">Email</option>
+        <option value="email"  selected="@(currentSort=="email")">Email</option>
+        <option value="createdtime"     selected="@(currentSort=="createdtime")">Created Date</option>
     </select>
 
     <select name="sortDescending"
@@ -137,6 +137,22 @@
                     </tbody>
                 </table>
             </div>
+            <nav>
+  <ul class="pagination">
+    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+      <a class="page-link" asp-route-page="@(Model.PageIndex-1)">‹ Prev</a>
+    </li>
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+      <li class="page-item @(i==Model.PageIndex ? "active":"")">
+        <a class="page-link" asp-route-page="@i">@i</a>
+      </li>
+    }
+    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+      <a class="page-link" asp-route-page="@(Model.PageIndex+1)">Next ›</a>
+    </li>
+  </ul>
+</nav>
         </div>
     </div>
 </div>
