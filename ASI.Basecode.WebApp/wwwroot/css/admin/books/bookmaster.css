@@ -1,4 +1,5 @@
-﻿.book-master-form-section-title {
+﻿.book-master-form-section-title 
+{
     font-size: 20px;
     font-weight: 600;
     color: #647D7F;
@@ -6,29 +7,35 @@
     margin-bottom: 16px;
 }
 
-.book-master-form-grid {
+.book-master-form-grid 
+{
     display: grid;
     grid-template-columns: 1fr;
     gap: 24px;
 }
 
-@media (min-width: 768px) {
-    .book-master-form-grid {
+@media (min-width: 768px) 
+{
+    .book-master-form-grid
+    {
         grid-template-columns: 1fr 1fr;
     }
 
-    .book-master-form-grid-span-2 {
+    .book-master-form-grid-span-2 
+    {
         grid-column: span 2 / span 2;
     }
 }
 
-.book-master-form-group {
+.book-master-form-group 
+{
     margin-bottom: 0;
 }
 
 .book-master-form-input,
 .book-master-form-textarea,
-.book-master-form-select {
+.book-master-form-select 
+{
     display: block;
     width: 100%;
     padding: 8px 12px;
@@ -45,24 +52,28 @@
 
     .book-master-form-input:focus,
     .book-master-form-textarea:focus,
-    .book-master-form-select:focus {
+    .book-master-form-select:focus 
+    {
         outline: none;
         border-color: #4f46e5;
         box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5);
     }
 
-.book-master-form-textarea {
+.book-master-form-textarea 
+{
     min-height: 100px;
     resize: vertical;
 }
 
-.book-master-file-upload-wrapper {
+.book-master-file-upload-wrapper 
+{
     margin-top: 4px;
     display: flex;
     align-items: center;
 }
 
-.book-master-file-input-text {
+.book-master-file-input-text 
+{
     flex-grow: 1;
     padding: 8px 12px;
     border: 1px solid #d1d5db;
@@ -74,7 +85,8 @@
     box-sizing: border-box;
 }
 
-.book-master-browse-button {
+.book-master-browse-button 
+{
     position: absolute;
     right: 30px;
     margin-top: 32px;
@@ -89,11 +101,13 @@
     white-space: nowrap;
 }
 
-    .book-master-browse-button:hover {
+    .book-master-browse-button:hover 
+    {
         background-color: #435c5e;
     }
 
-.book-master-upload-status {
+.book-master-upload-status 
+{
     color: #6b7280;
     font-size: 12px;
     margin-top: 8px;
@@ -102,12 +116,14 @@
     align-items: center;
 }
 
-    .book-master-upload-status.error-message {
+    .book-master-upload-status.error-message 
+    {
         color: red;
     }
 
 
-.button-container {
+.button-container
+{
     display: flex;
     justify-content: flex-end;
     gap: 10px;
@@ -115,7 +131,8 @@
     margin-bottom: 32px;
 }
 
-.book-master-submit-button {
+.book-master-submit-button 
+{
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -131,12 +148,14 @@
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-    .book-master-submit-button:hover {
+    .book-master-submit-button:hover 
+    {
         background-color: #516a67;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
-.cancel-button {
+.cancel-button 
+{
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -152,16 +171,19 @@
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-    .cancel-button:hover {
+    .cancel-button:hover 
+    {
         background-color: #d0d0d0;
         border-color: #b0b0b0;
     }
 
-.book-master-date-input-wrapper {
+.book-master-date-input-wrapper 
+{
     position: relative;
 }
 
-.book-master-date-input-icon {
+.book-master-date-input-icon 
+{
     position: absolute;
     right: 12px;
     top: 50%;
@@ -172,11 +194,13 @@
     height: 20px;
 }
 
-.book-master-form-input[type="date"] {
+.book-master-form-input[type="date"] 
+{
     cursor: pointer;
 }
 
-    .book-master-form-input[type="date"]::-webkit-calendar-picker-indicator {
+    .book-master-form-input[type="date"]::-webkit-calendar-picker-indicator 
+    {
         opacity: 1;
         display: block;
         cursor: pointer;
@@ -184,3 +208,132 @@
         color: #647D7F;
         filter: invert(30%) sepia(10%) saturate(1000%) hue-rotate(180deg) brightness(90%) contrast(80%);
     }
+
+
+/*-------------------- Add Author and Edit Genre ---------------------------------------*/
+
+.content-master-grid 
+{
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 40px;
+    align-items: start;
+    margin-top: 20px;
+}
+
+.master-browse-button 
+{
+    background: #647D7F;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-block;
+    width: 150px;
+    text-align: center;
+}
+
+    .master-browse-button:hover 
+    {
+        background-color: #435c5e;
+    }
+
+.master-upload-status 
+{
+    font-size: 0.85em;
+    color: #555;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 250px;
+    text-align: center;
+}
+
+    .master-upload-status.error-message 
+    {
+        color: #dc3545;
+    }
+
+
+/*--------------------  Edit Genre Specific ---------------------------------------*/
+
+#generImageFileNameDisplay 
+{
+    display: none;
+}
+
+.image-upload-section 
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 0;
+    margin: 0 auto;
+}
+
+.image-preview-container 
+{
+    width: 150px;
+    height: 200px;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #f9f9f9;
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+    .image-preview-container img 
+    {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border-radius: 4px;
+    }
+
+    .image-preview-container .placeholder-text 
+    {
+        color: #888;
+        font-style: italic;
+        text-align: center;
+        padding: 10px;
+    }
+
+
+/*------------------------ Add Author Specific ----------------------------------*/
+.author-image-preview-container 
+{
+    border-radius: 50%;
+    overflow: hidden;
+    width: 150px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+}
+
+    .author-image-preview-container img 
+    {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .author-image-preview-container .placeholder-text 
+    {
+        color: #888;
+        font-size: 0.9em;
+        text-align: center;
+        padding: 10px;
+    }
+

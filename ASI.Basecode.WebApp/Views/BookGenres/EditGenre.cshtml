@@ -28,18 +28,18 @@
             <input type="hidden" id="hiddenGenreId" name="BookGenreId" value="@Model?.BookGenreId" required>
             <input type="hidden" id="genreImageUrl" name="GenreImageUrl" value="@Model?.GenreImageUrl">
 
-            <div class="edit-genre-grid">
+            <div class="content-master-grid">
                 <div class="image-upload-section">
                     <div class="image-preview-container">
                         <img id="genreImagePreview" src="@Model?.GenreImageUrl" alt="Genre Image Preview" style="@(string.IsNullOrEmpty(Model?.GenreImageUrl) ? "display:none;" : "")">
                         <span id="imagePlaceholder" class="placeholder-text" style="@(string.IsNullOrEmpty(Model?.GenreImageUrl) ? "" : "display:none;")">No Image</span>
                     </div>
 
-                    <button type="button" class="edit-genre-browse-button" onclick="document.getElementById('genreImageFile').click();">BROWSE</button>
+                    <button type="button" class="master-browse-button" onclick="document.getElementById('genreImageFile').click();">BROWSE</button>
                     <input type="file" id="genreImageFile" accept="image/*" name="GenreImageFile" style="display: none;">
                     <input type="text" class="book-master-file-input-text" readonly id="generImageFileNameDisplay">
 
-                    <p id="genreImageUploadStatus" class="edit-genre-upload-status">
+                    <p id="genreImageUploadStatus" class="master-upload-status">
                         <span class="file-size-info">Max file size: 1GB</span>
                         <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                     </p>

@@ -13,36 +13,7 @@
     <link rel="stylesheet" href="~/css/admin/books/bookmaster.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/books/editgenre.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
-
-    <style>
-        .image-preview-container {
-            border-radius: 50%;
-            overflow: hidden;
-            width: 150px;
-            height: 150px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid #ddd;
-            background-color: #f8f8f8;
-        }
-
-            .image-preview-container img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                display: block;
-            }
-
-            .image-preview-container .placeholder-text {
-                color: #888;
-                font-size: 0.9em;
-                text-align: center;
-                padding: 10px;
-            }
-
-        
-    </style>
+    
 }
 
 <div class="admin-common-container">
@@ -57,19 +28,19 @@
         <form asp-action="AddAuthor" asp-controller="Author" method="post" id="addAuthorForm">
             <input type="hidden" id="authorImageUrl" name="AuthorImageUrl">
 
-            <div class="edit-genre-grid">
+            <div class="content-master-grid">
                 <div class="image-upload-section">
-                    <div class="image-preview-container">
+                    <div class="author-image-preview-container">
                         <img id="authorImagePreview" src="" alt="Author Image Preview" style="display:none;">
                         <span id="imagePlaceholder" class="placeholder-text">No Image</span>
                     </div>
 
                     <div class="file-input-group"> </div>
                     <input type="text" class="book-master-file-input-text" readonly id="authorImageFileNameDisplay" value="@Model?.AuthorImageUrl" style="display: none;"> 
-                    <button type="button" class="edit-genre-browse-button" onclick="document.getElementById('authorImageFile').click();">BROWSE</button>
+                    <button type="button" class="master-browse-button" onclick="document.getElementById('authorImageFile').click();">BROWSE</button>
                     <input type="file" id="authorImageFile" accept="image/*" name="AuthorImageFile" style="display: none;"> 
 
-                    <p id="authorImageUploadStatus" class="edit-genre-upload-status">
+                    <p id="authorImageUploadStatus" class="master-upload-status">
                         <span class="file-size-info">Max file size: 1GB</span>
                         <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                     </p>
