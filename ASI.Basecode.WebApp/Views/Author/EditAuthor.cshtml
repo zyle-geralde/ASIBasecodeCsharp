@@ -11,36 +11,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="~/css/admin/books/bookmaster.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/admin/books/editgenre.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
 
     <style>
-        .image-preview-container {
-            border-radius: 50%;
-            overflow: hidden;
-            width: 150px;
-            height: 150px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid #ddd;
-            background-color: #f8f8f8;
-        }
-
-            .image-preview-container img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-
-            .image-preview-container .placeholder-text {
-                color: #888;
-                font-size: 0.9em;
-                text-align: center;
-            }
-
         /* book list */
-        .books-by-author-section {
+        /* .books-by-author-section {
             margin-top: 40px;
         }
 
@@ -107,7 +82,7 @@
                 margin-bottom: 0;
             }
 
-        /* Pagination */
+       
         .pagination-controls {
             display: flex;
             justify-content: center;
@@ -150,7 +125,7 @@
             color: #555;
             min-width: 100px;
             text-align: center;
-        }
+        } */
     </style>
 }
 
@@ -169,19 +144,18 @@
             @*<input type="hidden" id="authorImageUrl" name="AuthorImageUrl">*@
             <input type = "hidden" name="AuthorId" value = "@Model.AuthorId"/>
 
-            <div class="edit-genre-grid">
+            <div class="content-master-grid">
                 <div class="image-upload-section">
-                    <div class="image-preview-container">
+                    <div class="author-image-preview-container">
                         <img id="authorImagePreview" src="@Model?.AuthorImageUrl" style="@(string.IsNullOrEmpty(Model?.AuthorImageUrl) ? "display:none;" : "")">
                         <span id="imagePlaceholder" class="placeholder-text" style="@( !string.IsNullOrEmpty(Model?.AuthorImageUrl) ? "display:none;" : "")">No Image</span>
                     </div>
 
                     <input type="text" class="book-master-file-input-text" readonly id="authorImageFileNameDisplay">
-                    <button type="button" class="edit-genre-browse-button" onclick="document.getElementById('authorImageFile').click();">BROWSE</button>
+                    <button type="button" class="master-browse-button" onclick="document.getElementById('authorImageFile').click();">BROWSE</button>
                     <input type="file" id="authorImageFile" accept="image/*" style="display: none;">
-                    @* <input type="text" class="book-master-file-input-text" readonly id="authorImageFileNameDisplay"> *@
 
-                    <p id="authorImageUploadStatus" class="edit-genre-upload-status">
+                    <p id="authorImageUploadStatus" class="master-upload-status">
                         <span class="file-size-info">Max file size: 1GB</span>
                         <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                     </p>
@@ -191,7 +165,7 @@
                 <div>
                     <div class="book-master-form-grid">
                         <div class="book-master-form-group">
-                            <label for="authorName">Author Name</label>
+                            <label for="authorName" class="required-label">Author Name</label>
                             <input type="text" id="authorName" name="AuthorName" class="book-master-form-input" value="@Model?.AuthorName" required>
                             <span asp-validation-for="AuthorName" class="text-danger"></span>
                         </div>
@@ -211,7 +185,7 @@
             </div>
         </form>
 
-        @* Book List section start - Stati *@
+        @* 
         <div class="books-by-author-section">
             <h2>Books by this Author</h2>
             <div class="book-grid" id="bookGrid">
@@ -291,6 +265,30 @@
         const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
 
+        function showStatusModal(message, title = 'Status', type = 'Success') {
+            document.getElementById('statusModalLabel').textContent = title;
+            document.getElementById('statusModalMessage').textContent = message;
+            const statusIcon = document.querySelector('#statusModal .status-icon i');
+            if (statusIcon) {
+                statusIcon.classList.remove('fa-check', 'fa-times', 'fa-exclamation-triangle');
+                if (type === 'Success') {
+                    statusIcon.classList.add('fa-check');
+                    statusIcon.style.color = '#28a745';
+                } else if (type === 'Error') {
+                    statusIcon.classList.add('fa-times');
+                    statusIcon.style.color = '#dc3545';
+                } else if (type === 'Warning') {
+                    statusIcon.classList.add('fa-exclamation-triangle');
+                    statusIcon.style.color = '#ffc107';
+                } else {
+                    statusIcon.classList.add('fa-check');
+                    statusIcon.style.color = '#28a745';
+                }
+            }
+            const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
+            statusModal.show();
+        }
+
 
         async function deleteFileFromFirebase(fileUrl) {
             if (!fileUrl) {
@@ -302,7 +300,7 @@
                 await deleteObject(fileRef);
                 console.log(`Successfully deleted file: ${fileUrl}`);
             } catch (error) {
-                showStatusModal(`Failed to delete file ${fileUrl}: ${error.message}`, 'Error');
+                showStatusModal(`Failed to delete file ${fileUrl}: ${error.message}`, 'Error', 'Error');
                 console.error(`Failed to delete file ${fileUrl}:`, error);
             }
         }
@@ -348,7 +346,7 @@
                         }
                     },
                     (error) => {
-                        showStatusModal(`Genre image upload failed: ${error.message}`, 'Error');
+                        showStatusModal(`Author image upload failed: ${error.message}`, 'Error', 'Error');
                         console.error("Upload error:", error);
                         reject(error);
                     },
@@ -360,7 +358,7 @@
                             }
                             resolve(downloadURL);
                         } catch (error) {
-                            showStatusModal(`Failed to get download URL: ${error.message}`, 'Error');
+                            showStatusModal(`Failed to get download URL: ${error.message}`, 'Error', 'Error');
                             console.error("Get Download URL error:", error);
                             reject(error);
                         }
@@ -403,112 +401,12 @@
             }
 
 
-            // Static Pagination Logic
-            const bookItems = document.querySelectorAll('#bookGrid .book-item');
-            const paginationControls = document.getElementById('paginationControls');
-            const booksPerPage = 10; // 5 books per row * 2 rows 
-            const totalBooks = bookItems.length;
-            const totalPages = Math.ceil(totalBooks / booksPerPage);
-            let currentPage = 1;
-            let pageInfoSpan;
-
-            function displayPage(page) {
-                currentPage = page;
-
-                bookItems.forEach(item => item.style.display = 'none');
-
-                const startIndex = (currentPage - 1) * booksPerPage;
-                const endIndex = Math.min(startIndex + booksPerPage, totalBooks);
-
-                for (let i = startIndex; i < endIndex; i++) {
-                    bookItems[i].style.display = 'block';
+            document.getElementById('statusModalClose').addEventListener('click', () => {
+                const statusModalLabel = document.getElementById('statusModalLabel').textContent;
+                if (statusModalLabel === 'Success') {
+                    location.reload();
                 }
-
-                const startRange = startIndex + 1;
-                const endRange = endIndex;
-                if (pageInfoSpan) {
-                    pageInfoSpan.textContent = `${startRange}-${endRange} out of ${totalBooks} Books`;
-                }
-                updatePaginationButtons();
-            }
-
-            function updatePaginationButtons() {
-                const buttons = paginationControls.querySelectorAll('.pagination-button');
-                const prevButton = paginationControls.querySelector('.pagination-arrow[data-direction="prev"]');
-                const nextButton = paginationControls.querySelector('.pagination-arrow[data-direction="next"]');
-
-                buttons.forEach(button => {
-                    if (parseInt(button.dataset.page) === currentPage) {
-                        button.classList.add('active');
-                    } else {
-                        button.classList.remove('active');
-                    }
-                });
-
-                // enable/disable 
-                if (prevButton) {
-                    prevButton.disabled = (currentPage === 1);
-                }
-                if (nextButton) {
-                    nextButton.disabled = (currentPage === totalPages);
-                }
-            }
-
-            // pagination buttons
-            function setupPagination() {
-                paginationControls.innerHTML = ''; 
-
-                // page info 
-                pageInfoSpan = document.createElement('span');
-                pageInfoSpan.classList.add('page-info');
-                paginationControls.appendChild(pageInfoSpan); 
-
-                // Previous button
-                const prevButton = document.createElement('button');
-                prevButton.classList.add('pagination-arrow');
-                prevButton.dataset.direction = 'prev';
-                prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
-                prevButton.addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        displayPage(currentPage - 1);
-                    }
-                });
-                paginationControls.appendChild(prevButton);
-
-                // numbered page buttons
-                for (let i = 1; i <= totalPages; i++) {
-                    const button = document.createElement('button');
-                    button.classList.add('pagination-button');
-                    button.dataset.page = i;
-                    button.textContent = i;
-                    button.addEventListener('click', () => displayPage(i));
-                    paginationControls.appendChild(button);
-                }
-
-                // Next button
-                const nextButton = document.createElement('button');
-                nextButton.classList.add('pagination-arrow');
-                nextButton.dataset.direction = 'next';
-                nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
-                nextButton.addEventListener('click', () => {
-                    if (currentPage < totalPages) {
-                        displayPage(currentPage + 1);
-                    }
-                });
-                paginationControls.appendChild(nextButton);
-            }
-
-            if (totalBooks > 0) {
-                setupPagination();
-                displayPage(1); 
-            } else {
-                paginationControls.style.display = 'none';
-                const noBooksMessage = document.createElement('p');
-                noBooksMessage.textContent = 'No books added for this author yet.';
-                document.querySelector('.books-by-author-section').appendChild(noBooksMessage);
-            }
-
-
+            });
 
 
             //Edit function
@@ -517,6 +415,7 @@
                 event.preventDefault()
 
                 const form = document.getElementById("editAuthorForm");
+                const authorNameInput = document.getElementById('authorName');
                 const authorImageFileInstance = document.getElementById('authorImageFile');
                 const authorImageFile = authorImageFileInstance.files[0];
                 const authorImageUrlHiddenInput = document.getElementById('authorImageUrl');
@@ -524,6 +423,16 @@
                 const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
 
                 const originalAuthorImageUrl = authorImageUrlInput.value;
+
+                if (authorNameInput.value.trim() === '') {
+                    showStatusModal('Author Name is required.', 'Validation Error', 'Warning');
+                    return;
+                }
+
+                if (!authorImageFile && !originalAuthorImageUrl) {
+                    showStatusModal('Author image is required.', 'Validation Error', 'Warning');
+                    return;
+                }
 
                 const fileSizeInfoSpan = authorImageUploadStatusElement.querySelector('.file-size-info');
                 const supportedFormatsInfoSpan = authorImageUploadStatusElement.querySelector('.supported-formats-info');
@@ -539,6 +448,15 @@
 
                 try {
                     if (authorImageFile) {
+                        const MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024 * 1024;
+                        if (authorImageFile.size > MAX_FILE_SIZE_BYTES) {
+                            showStatusModal('File size exceeds the 1GB limit.', 'Upload Error', 'Error');
+                            if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'File too large!';
+                            authorImageUploadStatusElement.classList.add('error-message');
+                            submitButton.disabled = false;
+                            submitButton.textContent = 'SAVE CHANGES';
+                            return;
+                        }
                         uploadedAuthorImageUrl = await uploadFileToFirebase(authorImageFile, 'author_covers/', authorImageUploadStatusElement);
                         if (uploadedAuthorImageUrl) {
                             authorImageUrlHiddenInput.value = uploadedAuthorImageUrl;
@@ -557,16 +475,20 @@
 
                     if (response.ok) {
                         const messageData = await response.json();
-                        alert(messageData.message)
+                        // alert(messageData.message)
+                        showStatusModal(messageData.message, 'Success', 'Success');
+
                         if (uploadedAuthorImageUrl && originalAuthorImageUrl && uploadedAuthorImageUrl !== originalAuthorImageUrl) {
                             await deleteFileFromFirebase(originalAuthorImageUrl);
                         }
-                        location.reload()
+                        // location.reload()
                     } else {
                         const errorData = await response.json();
                         
                         const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
-                        alert(errorMessage)
+                        // alert(errorMessage)
+                        showStatusModal(errorMessage, 'Error', 'Error');
+                        
                         if (uploadedAuthorImageUrl && uploadedAuthorImageUrl !== originalAuthorImageUrl) {
                             await deleteFileFromFirebase(uploadedAuthorImageUrl);
                             // revert if new upload failed and backend failed
@@ -586,7 +508,8 @@
 
                 } catch (error) {
                     console.error('Submission error:', error);
-                    alert('Submission error:' + error);
+                    // alert('Submission error:' + error
+                    showStatusModal(`Submission error: ${error.message}`, 'Error', 'Error');
 
                     if (uploadedAuthorImageUrl && uploadedAuthorImageUrl !== originalAuthorImageUrl) {
                         await deleteFileFromFirebase(uploadedAuthorImageUrl);
