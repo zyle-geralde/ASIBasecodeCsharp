@@ -259,9 +259,9 @@
 
 
 /*--------------------  Edit Genre Specific ---------------------------------------*/
-
-#generImageFileNameDisplay 
-{
+#authorImageFileNameDisplay,
+#authorImageUrl,
+#genreImageFileNameDisplay {
     display: none;
 }
 
