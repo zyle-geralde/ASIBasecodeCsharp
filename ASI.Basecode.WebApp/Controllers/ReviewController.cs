@@ -32,8 +32,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Add(string? bookId)
         {
-            bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
-            if (!checkUserAccess) return RedirectToAction("Index", "AdminDashboard");
+
 
             var vm = new ReviewViewModel
             {
@@ -47,8 +46,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Add(ReviewViewModel reviewModel)
         {
-            bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
-            if (!checkUserAccess) return RedirectToAction("Index", "AdminDashboard");
+
 
             if (ModelState.IsValid)
             {
@@ -75,8 +73,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(string id)
         {
-            bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
-            if (!checkUserAccess) return RedirectToAction("Index", "AdminDashboard");
+
 
             if (string.IsNullOrEmpty(id))
                 return BadRequest();
@@ -105,8 +102,6 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(ReviewViewModel model)
         {
-            bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
-            if (!checkUserAccess) return RedirectToAction("Index", "AdminDashboard");
 
             if (!ModelState.IsValid)
                 return View("~/Views/Reviews/Edit.cshtml", model);

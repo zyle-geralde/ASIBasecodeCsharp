@@ -72,8 +72,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Edit()
         {
-            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
-            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
 
             var username = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(username))
@@ -105,8 +104,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(PersonProfileViewModel model)
         {
-            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
-            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             //if(!ModelState.IsValid)
             //    return View("~/Views/PersonProfile/Edit.cshtml", model);
 

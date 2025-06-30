@@ -33,10 +33,40 @@
             gap: 0.5rem; 
             white-space: nowrap; 
         }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 }
 
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+</div>
+
 <div class="content-card p-4">
+    @Html.AntiForgeryToken()
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="header-section">
             <h1>Authors</h1>
@@ -98,7 +128,7 @@
                                     <a href="/Author/AuthorView/@author.AuthorId" class="action-icon-button text-secondary">
                                         <i class="fas fa-info-circle"></i>
                                     </a>
-                                    <a @* href="/Author/EditAuthor/@author.AuthorId" *@ href="/Author/EditAuthor/@author.AuthorId"  class="btn btn-icon text-primary">
+                                    <a href="/Author/EditAuthor/@author.AuthorId"  class="btn btn-icon text-primary">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <button type="button" class="btn btn-icon text-danger delete-author-btn"
@@ -122,45 +152,6 @@
     }
 </div>
 
-
-
-
-
-<div class="modal fade" id="editAuthorModal" tabindex="-1" aria-labelledby="editAuthorLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content edit-author-modal-content p-4">
-            <div class="modal-header border-0 pb-0 mb-3">
-                <h5 class="modal-title edit-author-title" id="editAuthorLabel">Edit Author</h5>
-                <button type="button" class="btn-close edit-author-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body pt-2">
-                <form id="editAuthorForm" method="post" action="/Author/Edit">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" id="editAuthorId" name="AuthorId" />
-                    <div class="mb-3">
-                        <label for="editAuthorName" class="form-label">Author Name</label>
-                        <input type="text" class="form-control" id="editAuthorName" name="AuthorName" placeholder="Text" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editAuthorDescription" class="form-label">Description</label>
-                        <textarea class="form-control" id="editAuthorDescription" name="AuthorDescription" rows="3" placeholder="Brief description"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editAuthorImageFile" class="form-label">Author Image</label>
-                        <input type="file" class="form-control" id="editAuthorImageFile" accept="image/*">
-                        <span id="editAuthorImageUploadStatus" class="form-text"></span>
-                        <input type="hidden" id="editAuthorImageUrl" name="AuthorImageUrl" />
-                        <p class="form-text">Current Image: <span id="currentAuthorImageFileName"></span></p>
-                    </div>
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn edit-author-btn">SAVE CHANGES</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="modal fade confirmation-modal" id="deleteAuthorConfirmModal" tabindex="-1" aria-labelledby="deleteAuthorConfirmModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -169,7 +160,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
-                <p class="mb-4" id="deleteAuthorModalText">Are you sure you want to delete author: <strong id="authorToDeleteName"></strong>? This action cannot be undone and will permanently remove the author and their associated image.</p>
+                <p class="mb-4" id="deleteAuthorModalText">
+                    Are you sure you want to delete author:<br> 
+                    <strong id="authorToDeleteName"></strong>? <br>
+                    This action cannot be undone and will permanently remove the author and their associated details.</p>
                 <input type="hidden" id="deleteAuthorId" />
                 <input type="hidden" id="deleteAuthorImageUrl" />
                 <div class="d-flex justify-content-center gap-2">
@@ -205,42 +199,52 @@
         const storage = getStorage(app);
 
         // Firebase Utility Functions
-        async function uploadFileToFirebase(file, path, statusElement) {
-            if (!file) {
-                statusElement.textContent = 'No file selected.';
-                return null;
-            }
-            const timestamp = new Date().getTime();
-            const randomString = Math.random().toString(36).substring(2, 8);
-            const uniqueFileName = `${path}${timestamp}-${randomString}-${file.name}`;
-            const storageRef = ref(storage, uniqueFileName);
-            const uploadTask = uploadBytesResumable(storageRef, file);
+        // async function uploadFileToFirebase(file, path, statusElement) {
+        //     if (!file) {
+        //         if (statusElement) { 
+        //             statusElement.textContent = 'No file selected.';
+        //         }
+        //         return null;
+        //     }
+        //     const timestamp = new Date().getTime();
+        //     const randomString = Math.random().toString(36).substring(2, 8);
+        //     const uniqueFileName = `${path}${timestamp}-${randomString}-${file.name}`;
+        //     const storageRef = ref(storage, uniqueFileName);
+        //     const uploadTask = uploadBytesResumable(storageRef, file);
 
-            return new Promise((resolve, reject) => {
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        statusElement.textContent = `Upload is ${progress.toFixed(2)}% done`;
-                    },
-                    (error) => {
-                        statusElement.textContent = `Upload failed: ${error.message}`;
-                        console.error("Upload error:", error);
-                        reject(error);
-                    },
-                    async () => {
-                        try {
-                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                            statusElement.textContent = 'Upload successful!';
-                            resolve(downloadURL);
-                        } catch (error) {
-                            statusElement.textContent = `Failed to get download URL: ${error.message}`;
-                            console.error("Get Download URL error:", error);
-                            reject(error);
-                        }
-                    }
-                );
-            });
-        }
+        //     return new Promise((resolve, reject) => {
+        //         uploadTask.on('state_changed',
+        //             (snapshot) => {
+        //                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        //                 if (statusElement) { 
+        //                     statusElement.textContent = `Upload is ${progress.toFixed(2)}% done`;
+        //                 }
+        //             },
+        //             (error) => {
+        //                 if (statusElement) {
+        //                     statusElement.textContent = `Upload failed: ${error.message}`;
+        //                 }
+        //                 console.error("Upload error:", error);
+        //                 reject(error);
+        //             },
+        //             async () => {
+        //                 try {
+        //                     const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        //                     if (statusElement) { 
+        //                         statusElement.textContent = 'Upload successful!';
+        //                     }
+        //                     resolve(downloadURL);
+        //                 } catch (error) {
+        //                     if (statusElement) { 
+        //                         statusElement.textContent = `Failed to get download URL: ${error.message}`;
+        //                     }
+        //                     console.error("Get Download URL error:", error);
+        //                     reject(error);
+        //                 }
+        //             }
+        //         );
+        //     });
+        // }
 
         async function deleteFileFromFirebase(fileUrl) {
             if (!fileUrl) {
@@ -256,118 +260,14 @@
             }
         }
 
-        
+        // Loading Overlay Functions
+        function showLoadingOverlay() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
 
-
-        // Edit atuhor
-        const editAuthorForm = document.getElementById("editAuthorForm");
-        const editAuthorImageFile = document.getElementById("editAuthorImageFile");
-        const editAuthorImageUploadStatus = document.getElementById("editAuthorImageUploadStatus");
-        const editAuthorImageUrlInput = document.getElementById("editAuthorImageUrl");
-        const currentAuthorImageFileName = document.getElementById("currentAuthorImageFileName");
-
-        $('.edit-author-btn').on('click', function () {
-            const authorId = $(this).data('author-id');
-            const authorName = $(this).data('author-name');
-            const authorDescription = $(this).data('author-description');
-            const authorImageUrl = $(this).data('author-image-url');
-
-            $('#editAuthorId').val(authorId);
-            $('#editAuthorName').val(authorName);
-            $('#editAuthorDescription').val(authorDescription);
-            $('#editAuthorImageUrl').val(authorImageUrl);
-            $('#editAuthorImageUrl').data('original-url', authorImageUrl);
-
-            if (authorImageUrl) {
-                const urlParts = authorImageUrl.split('/');
-                currentAuthorImageFileName.textContent = urlParts[urlParts.length - 1].split('?')[0];
-            } else {
-                currentAuthorImageFileName.textContent = 'No image uploaded';
-            }
-
-            editAuthorImageUploadStatus.textContent = '';
-            editAuthorImageFile.value = '';
-        });
-
-        editAuthorForm.addEventListener("submit", async function (e) {
-            e.preventDefault();
-
-            const antiForgeryToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
-            if (!antiForgeryToken) {
-                toastr.error("Anti-forgery token not found. Cannot proceed.");
-                return;
-            }
-
-            let uploadedImageUrl = editAuthorImageUrlInput.value;
-            let originalImageUrl = $('#editAuthorImageUrl').data('original-url');
-
-            if (editAuthorImageFile.files.length > 0) {
-                const file = editAuthorImageFile.files[0];
-                try {
-                    uploadedImageUrl = await uploadFileToFirebase(file, "authors/", editAuthorImageUploadStatus);
-                    editAuthorImageUrlInput.value = uploadedImageUrl;
-                    if (originalImageUrl && originalImageUrl !== uploadedImageUrl) {
-                        await deleteFileFromFirebase(originalImageUrl);
-                    }
-                } catch (error) {
-                    toastr.error("Failed to upload new image. Please try again.");
-                    console.error("Image upload error:", error);
-                    return;
-                }
-            } else if (!editAuthorImageUrlInput.value && originalImageUrl) {
-                await deleteFileFromFirebase(originalImageUrl);
-            }
-
-
-            const authorData = {
-                AuthorId: $('#editAuthorId').val(),
-                AuthorName: $('#editAuthorName').val(),
-                AuthorDescription: $('#editAuthorDescription').val(),
-                AuthorImageUrl: editAuthorImageUrlInput.value
-            };
-
-            try {
-                const response = await fetch("/Author/Edit", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': antiForgeryToken
-                    },
-                    body: JSON.stringify(authorData)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    toastr.success(result.message || "Author updated successfully!");
-                    $('#editAuthorModal').modal('hide');
-                    window.location.reload();
-                } else {
-                    let errorMessage = result.message || "Failed to update author.";
-                    if (result.errors && result.errors.length > 0) {
-                        errorMessage += "<br>" + result.errors.join("<br>");
-                    }
-                    toastr.error(errorMessage);
-                    console.error("Edit Author Error:", result);
-                }
-            } catch (error) {
-                toastr.error("An unexpected error occurred while updating the author.");
-                console.error("Edit Author Fetch Error:", error);
-                if (editAuthorImageFile.files.length > 0 && uploadedImageUrl && uploadedImageUrl.trim() !== '') {
-                    await deleteFileFromFirebase(uploadedImageUrl);
-                    toastr.warning("New image upload rolled back due to backend error.");
-                }
-            }
-        });
-
-        $('#editAuthorModal').on('hidden.bs.modal', function () {
-            editAuthorForm.reset();
-            editAuthorImageUploadStatus.textContent = '';
-            editAuthorImageUrlInput.value = '';
-            currentAuthorImageFileName.textContent = '';
-            $('#editAuthorImageUrl').removeData('original-url');
-        });
-
+        function hideLoadingOverlay() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
 
         // --- DELETE AUTHOR MODAL LOGIC ---
         $('.delete-author-btn').on('click', function () {
@@ -381,20 +281,29 @@
         });
 
         document.getElementById("confirmDeleteAuthorBtn").addEventListener("click", async function () {
-            console.log("Clicked")
+            console.log("Delete button clicked");
             const authorIdToDelete = $('#deleteAuthorId').val();
             const authorImageUrlToDelete = $('#deleteAuthorImageUrl').val();
 
+            if (!authorIdToDelete) {
+                toastr.error("Author ID is missing. Cannot proceed with deletion.");
+                return;
+            }
+
+            showLoadingOverlay();
+            // close modal
             var deleteModalInstance = bootstrap.Modal.getInstance(document.getElementById('deleteAuthorConfirmModal'));
             deleteModalInstance.hide();
 
             try {
-                const antiForgeryToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
-                if (!antiForgeryToken) {
+                const antiForgeryTokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+                if (!antiForgeryTokenElement) {
+                    hideLoadingOverlay();
                     toastr.error("Anti-forgery token not found. Cannot proceed with deletion.");
-                    console.error("Anti-forgery token missing.");
+                    console.error("Anti-forgery token element not found in DOM.");
                     return;
                 }
+                const antiForgeryToken = antiForgeryTokenElement.value;
 
                 const response = await fetch("/Author/DeleteAuthor", {
                     method: "POST",
@@ -407,42 +316,38 @@
 
                 const result = await response.json();
 
+
                 if (response.ok) {
-                    toastr.success(result.message || "Author deleted successfully!");
+
                     if (authorImageUrlToDelete && authorImageUrlToDelete.trim() !== '') {
                         await deleteFileFromFirebase(authorImageUrlToDelete);
                     }
-                    window.location.reload();
+                    toastr.success(result.message || "Author deleted successfully!");
+                    setTimeout(() => {
+                        hideLoadingOverlay();
+                        window.location.reload();
+                    }, 1000);
                 } else {
+                    hideLoadingOverlay();
                     toastr.error(result.message || `Error: ${response.statusText}`);
                     console.error("Server delete error:", result);
                 }
             } catch (error) {
+                hideLoadingOverlay();
                 toastr.error("An unexpected error occurred while deleting the author. Please try again.");
-                console.error(`Error during fetch or Firebase deletion:`, error);
+                console.error("Error during fetch or Firebase deletion:", error);
             }
         });
 
-
-        // modal cleanup
+        // Modal cleanup
         $(document).ready(function () {
-            $('#addAuthorModal, #editAuthorModal, #deleteAuthorConfirmModal').on('hidden.bs.modal', function () {
+            $('#deleteAuthorConfirmModal').on('hidden.bs.modal', function () {
                 $('body').removeClass('modal-open');
                 $('.modal-backdrop').remove();
+                $('#deleteAuthorId').val('');
+                $('#deleteAuthorImageUrl').val('');
+                $('#authorToDeleteName').text('');
             });
-        });
-
-        // Display TempData messages from controller
-        $(document).ready(function () {
-            var successMessage = '@(TempData["SuccessMessage"] ?? string.Empty)';
-            if (successMessage) {
-                toastr.success(successMessage);
-            }
-
-            var errorMessage = '@(TempData["ErrorMessage"] ?? string.Empty)';
-            if (errorMessage) {
-                toastr.error(errorMessage);
-            }
         });
 
         // Search functionality
