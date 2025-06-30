@@ -42,7 +42,7 @@
                     <input type="file" id="authorImageFile" accept="image/*" style="display: none;">
 
                     <p id="authorImageUploadStatus" class="master-upload-status">
-                        <span class="file-size-info">Max file size: 1GB</span>
+                        <span class="file-size-info">Max file size: 10MB</span>
                         <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                     </p>
                     <input type="text" id="authorImageUrl" name="AuthorImageUrl" value="@Model?.AuthorImageUrl">
@@ -201,6 +201,11 @@
             const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
             const authorImageUrlInput = document.getElementById('authorImageUrl');
 
+            const fileSizeInfoSpanInitial = authorImageUploadStatusElement.querySelector('.file-size-info');
+            if (fileSizeInfoSpanInitial) {
+                fileSizeInfoSpanInitial.textContent = 'Max file size: 10MB';
+            }
+
             if (authorImageFile) {
                 authorImageFile.addEventListener('change', function () {
                     const file = this.files[0];
@@ -217,6 +222,12 @@
                         authorImagePreview.style.display = 'none';
                         imagePlaceholder.style.display = 'block';
                     }
+
+                    const fileSizeInfo = authorImageUploadStatusElement.querySelector('.file-size-info');
+                    const supportedFormatsInfo = authorImageUploadStatusElement.querySelector('.supported-formats-info');
+                    if (fileSizeInfo) fileSizeInfo.textContent = 'Max file size: 10MB';
+                    if (supportedFormatsInfo) supportedFormatsInfo.textContent = 'Supported formats: JPG, PNG, JPEG';
+                    authorImageUploadStatusElement.classList.remove('error-message');
                 });
             }
 
@@ -255,7 +266,7 @@
 
                 const fileSizeInfoSpan = authorImageUploadStatusElement.querySelector('.file-size-info');
                 const supportedFormatsInfoSpan = authorImageUploadStatusElement.querySelector('.supported-formats-info');
-                if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 1GB';
+                if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 10MB';
                 if (supportedFormatsInfoSpan) supportedFormatsInfoSpan.textContent = 'Supported formats: JPG, PNG, JPEG';
                 authorImageUploadStatusElement.classList.remove('error-message');
 
@@ -267,9 +278,9 @@
 
                 try {
                     if (authorImageFile) {
-                        const MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024 * 1024;
+                        const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
                         if (authorImageFile.size > MAX_FILE_SIZE_BYTES) {
-                            toastr.error('File size exceeds the 1GB limit.');
+                            toastr.error('File size exceeds the 10MB limit.');
                             if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'File too large!';
                             authorImageUploadStatusElement.classList.add('error-message');
                             submitButton.disabled = false;

@@ -40,7 +40,7 @@
                     <input type="file" id="authorImageFile" accept="image/*" name="AuthorImageFile" style="display: none;">
 
                     <p id="authorImageUploadStatus" class="master-upload-status">
-                        <span class="file-size-info">Max file size: 1GB</span>
+                        <span class="file-size-info">Max file size: 10MB</span>
                         <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                     </p>
                 </div>
@@ -81,7 +81,7 @@
                 <p class="mb-4" id="addConfirmationModalMessage">Are you sure you want to add this author?</p>
                 <div class="d-flex justify-content-center gap-2">
                     <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary px-4" id="confirmAddAuthorAction">Add Author</button>
+                    <button type="button" class="btn btn-danger px-4" id="confirmAddAuthorAction">Add Author</button>
                 </div>
             </div>
         </div>
@@ -246,6 +246,11 @@
             const authorImageUrlInput = document.getElementById('authorImageUrl');
             const submitButton = document.getElementById('addAuthorSubmitButton');
 
+            const fileSizeInfoSpanInitial = authorImageUploadStatusElement.querySelector('.file-size-info');
+            if (fileSizeInfoSpanInitial) {
+                fileSizeInfoSpanInitial.textContent = 'Max file size: 10MB';
+            }
+
             if (authorImageFile) {
                 authorImageFile.addEventListener('change', function () {
                     const file = this.files[0];
@@ -267,7 +272,7 @@
 
                     const fileSizeInfo = authorImageUploadStatusElement.querySelector('.file-size-info');
                     const supportedFormatsInfo = authorImageUploadStatusElement.querySelector('.supported-formats-info');
-                    if (fileSizeInfo) fileSizeInfo.textContent = 'Max file size: 1GB';
+                    if (fileSizeInfo) fileSizeInfo.textContent = 'Max file size: 10MB';
                     if (supportedFormatsInfo) supportedFormatsInfo.textContent = 'Supported formats: JPG, PNG, JPEG';
                     authorImageUploadStatusElement.classList.remove('error-message');
                 });
@@ -387,7 +392,7 @@
                 }
 
                 if (!authorImageFile.files || authorImageFile.files.length === 0) {
-                    toastr.warning('Author image is required.');
+                    toastr.warning('Author Image is required.');
                     return;
                 }
 
@@ -407,10 +412,12 @@
 
                 try {
                     const fileToUpload = authorImageFile.files[0];
-                    const MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024 * 1024;
+                    const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
                     if (fileToUpload.size > MAX_FILE_SIZE_BYTES) {
-                        toastr.error('File size exceeds the 1GB limit.');
+                        toastr.error('File size exceeds the 10MB limit.');
                         authorImageUploadStatusElement.classList.add('error-message');
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'ADD AUTHOR';
                         return;
                     }
 
