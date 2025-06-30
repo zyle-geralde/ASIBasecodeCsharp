@@ -23,14 +23,16 @@ namespace ASI.Basecode.Data.Repositories
             return this.GetDbSet<User>();
         }
 
-        public async Task<List<User>> GetUsersQueried(string searchTerm, string sortOrder, int pageIndex, int pageSize)
+        public async Task<List<User>> GetUsersQueried(UserQueryParams? queryParams = null)
         {
-            IQueryable<User> query = this.GetDbSet<User>().AsNoTracking();
+            queryParams ??= new UserQueryParams();
+
+            IQueryable<User> query = this.GetDbSet<User>().AsNoTracking(); 
             
             // Apply search filter if provided
-            if (!string.IsNullOrEmpty(searchTerm))
+            if (!string.IsNullOrEmpty(queryParams.SearchTerm))
             {
-                var term = searchTerm.Trim();
+                var term = queryParams.SearchTerm.Trim();
                 query = query.Where(b =>
                     (b.Id.ToString() != null && b.Id.ToString().Contains(term)) || 
                     (b.UserName != null && b.UserName.Contains(term)) || 
@@ -38,39 +40,43 @@ namespace ASI.Basecode.Data.Repositories
             }
 
             // Apply sorting if provided
-            if (!string.IsNullOrEmpty(sortOrder))
+            if (!string.IsNullOrEmpty(queryParams.SortOrder))
             {
-                switch (sortOrder.ToLower())
+                bool desc = queryParams.SortDescending;
+                switch (queryParams.SortOrder.ToLower())
                 {
-                    case "name":
-                        query = query.OrderBy(u => u.UserName);
+                    case "id":
+                        query = desc
+                           ? query.OrderByDescending(b => b.Id)
+                           : query.OrderBy(b => b.Id);
                         break;
-                    case "name_desc":
-                        query = query.OrderByDescending(u => u.UserName);
+                    case "createdtime":
+                        query = desc
+                        ? query.OrderByDescending(b => b.CreatedTime)
+                        : query.OrderBy(b => b.CreatedTime);
                         break;
+
                     case "email":
-                        query = query.OrderBy(u => u.Email);
-                        break;
-                    case "email_desc":
-                        query = query.OrderByDescending(u => u.Email);
+                        query = desc
+                           ? query.OrderByDescending(b => b.Email)
+                           : query.OrderBy(b => b.Email);
                         break;
                     default:
                         query = query.OrderBy(u => u.Id); // Default sort by ID
                         break;
                 }
             }
-            else
-            {
-                query = query.OrderBy(u => u.Id); // Default sort by ID if no sortOrder
-            }
 
-            // Skip pagination if pageSize is int.MaxValue (to get all users)
-            if (pageSize < int.MaxValue)
-            {
-                query = query
-                    .Skip((pageIndex - 1) * pageSize)
-                    .Take(pageSize);
-            }
+            query = query.Skip((queryParams.PageIndex - 1) * queryParams.PageSize).Take(queryParams.PageSize);
+           
+
+            //// Skip pagination if pageSize is int.MaxValue (to get all users)
+            //if (pageSize < int.MaxValue)
+            //{
+            //    query = query
+            //        .Skip((pageIndex - 1) * pageSize)
+            //        .Take(pageSize);
+            //}
 
             return await query.ToListAsync();
         }

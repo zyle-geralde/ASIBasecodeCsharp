@@ -5,6 +5,12 @@
     ViewData["Title"] = "Users";
     Layout = "_AdminSidebarLayout";
 
+    var currentSearch = (string?)ViewData["CurrentSearch"];
+    var currentSort = (string?)ViewData["CurrentSort"];
+    var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
+    var currentRoleFilter = (string?)ViewData["CurrentRoleFilter"];
+
+
     var deleteConfirmationModal = new ConfirmationModalModel
     {
         Id = "deleteModal",
@@ -50,27 +56,37 @@
 
     <div class="card">
         <div class="card-body">
-            <form asp-action="Index"
-                  asp-controller="User"
-                  method="get"
-                  id="searchForm"
-                  class="d-flex align-items-center w-100">
-                <div class="search-filter-container">
-                    <div style="position: relative; flex-grow: 1;">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text"
-                               name="searchTerm"
-                               value="@ViewData["CurrentSearch"]"
-                               class="form-control search-field"
-                               placeholder="Search users…" />
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-secondary">
-                            <i class="fas fa-sort"></i> Sort
-                        </button>
-                    </div>
-                </div>
-            </form>
+          
+            <form asp-action="Index" asp-controller="User" method="get" class="d-flex align-items-center mb-3">
+    <input type="text"
+           name="searchTerm"
+           value="@currentSearch"
+           class="form-control me-2"
+           placeholder="Search users…" />
+
+    <select name="role"
+            class="form-select me-2">
+        <option value="">All Roles</option>
+        <option value="Admin" selected="@(currentRoleFilter=="Admin")">Admin</option>
+        <option value="User"  selected="@(currentRoleFilter=="User")">User</option>
+    </select>
+
+    <select name="sortOrder"
+            class="form-select me-2">
+        <option value="id"        selected="@(currentSort=="id")">ID</option>
+        <option value="username"  selected="@(currentSort=="username")">Username</option>
+        <option value="email"     selected="@(currentSort=="email")">Email</option>
+    </select>
+
+    <select name="sortDescending"
+            class="form-select me-2">
+        <option value="false" selected="@(currentSortDescending==false)">Ascending</option>
+        <option value="true"  selected="@(currentSortDescending==true)">Descending</option>
+    </select>
+
+    <button type="submit" class="btn btn-primary">Apply</button>
+</form>
+
 
             <div class="table-responsive justify-content-around scrollable-table-container">
                 <table class="table table-hover user-table">

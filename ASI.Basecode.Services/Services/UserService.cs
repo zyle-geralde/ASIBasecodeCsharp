@@ -52,9 +52,9 @@ namespace ASI.Basecode.Services.Services
             return user.IsEmailVerified == true ? LoginResult.Success : LoginResult.Failed;
         }
 
-        public async Task<List<User>> GetUsersQueried(string searchTerm, string sortOrder, int pageIndex, int pageSize)
+        public async Task<List<User>> GetUsersQueried(UserQueryParams queryParams)
         {
-            var users = await _repository.GetUsersQueried(searchTerm, sortOrder, pageIndex, pageSize);
+            var users = await _repository.GetUsersQueried(queryParams);
             return users.ToList();
 
         }
