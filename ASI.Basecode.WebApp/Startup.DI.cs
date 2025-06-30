@@ -4,6 +4,7 @@ using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
+using ASI.Basecode.WebApp.AccessControl;
 using ASI.Basecode.WebApp.Authentication;
 using ASI.Basecode.WebApp.Models;
 using Microsoft.AspNetCore.Http;
@@ -40,6 +41,9 @@ namespace ASI.Basecode.WebApp
             this._services.AddScoped<IPersonProfileService, PersonProfileService>();
             this._services.AddScoped<IBookGenreService, BookGenreService>();
             this._services.AddScoped<IEmailSender, EmailSenderService>();
+            this._services.AddScoped<ILanguageService, LanguageService>();
+            this._services.AddScoped<IAuthorService, AuthorService>();
+            this._services.AddScoped<IAccessControlInterface, AccessControlService>();
 
 
 
@@ -51,6 +55,8 @@ namespace ASI.Basecode.WebApp
             this._services.AddScoped<IReviewRepository, ReviewRepository>();
             this._services.AddScoped<IPersonProfileRepository, PersonProfileRepository>();
             this._services.AddScoped<IBookGenreRepository, BookGenreRepository>();
+            this._services.AddScoped<ILanguageRepository, LanguageRepository>();
+            this._services.AddScoped<IAuthorRepository, AuthorRepository>();
 
 
             // Manager Class

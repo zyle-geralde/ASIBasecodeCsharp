@@ -88,6 +88,9 @@ namespace ASI.Basecode.Data.Migrations
                     b.Property<string>("ISBN13")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool?>("IsFeatured")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Language")
                         .HasColumnType("nvarchar(max)");
 

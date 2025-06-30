@@ -2,6 +2,8 @@
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.Services.Services;
+using ASI.Basecode.WebApp.AccessControl;
 using ASI.Basecode.WebApp.Authentication;
 using ASI.Basecode.WebApp.Models;
 using ASI.Basecode.WebApp.Mvc;
@@ -29,6 +31,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IUserService _userService;
         private readonly IPersonProfileService _personProfileService;
         private readonly IMapper _mapper;
+        private readonly IAccessControlInterface _accessControlInterface;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -50,6 +53,7 @@ namespace ASI.Basecode.WebApp.Controllers
                             IMapper mapper,
                             IUserService userService,
                             IPersonProfileService profileService,
+                            IAccessControlInterface accessControlInterface,
                             TokenValidationParametersFactory tokenValidationParametersFactory,
                             TokenProviderOptionsFactory tokenProviderOptionsFactory) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
@@ -61,6 +65,7 @@ namespace ASI.Basecode.WebApp.Controllers
             this._userService = userService;
             this._personProfileService = profileService;
             this._mapper = mapper;
+            this._accessControlInterface = accessControlInterface;
 
         }
 
@@ -105,6 +110,10 @@ namespace ASI.Basecode.WebApp.Controllers
                 // 認証OK
                 await this._signInManager.SignInAsync(user);
                 this._session.SetString("UserName", user.UserName);
+                this._session.SetString("UserEmail", user.Email);
+                PersonProfile userProfile = await _personProfileService.GetPersonProfile(model.UserId);
+
+                this._session.SetString("UserRole", userProfile.Role);
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -168,9 +177,11 @@ namespace ASI.Basecode.WebApp.Controllers
             return View("~/Views/Account/RegisterAdmin.cshtml");
         }
 
-        [AllowAnonymous]
-        public IActionResult AdminDashboard()
+        [Authorize]
+        public async Task<IActionResult> AdminDashboard()
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             return View();
         }
 

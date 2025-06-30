@@ -10,12 +10,14 @@ namespace ASI.Basecode.Data.Interfaces
     {
         public string? SearchTerm { get; set; }
 
-        public List<string>? GenreNames { get; set; }
+        public List<string>? GenreNames { get; set; } = new();
 
         public string? Author { get; set; }
         public int? Rating { get; set; }
         public DateTime? PublishedFrom { get; set; }
         public DateTime? PublishedTo { get; set; }
+        public DateTime? UploadDate { get; set; }
+
 
         public string? Language { get; set; }
         public string? Publisher { get; set; }

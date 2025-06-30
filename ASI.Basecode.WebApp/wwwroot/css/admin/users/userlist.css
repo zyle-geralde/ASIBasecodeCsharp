@@ -16,6 +16,49 @@
     font-weight: bold;
 }
 
+/* ASI.Basecode.WebApp/wwwroot/css/admin/users/userlist.css */
+.scrollable-table-container {
+    max-height: 400px; /* Adjust as needed */
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 8px;
+    border: none; /* Remove the outer border */
+}
+
+/* Remove the table's own border */
+.user-table {
+    border: none !important;
+}
+
+/* Remove table cell borders except for horizontal row separators */
+    .user-table th,
+    .user-table td {
+        /*border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;*/
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+.user-table tr {
+    border-left: none !important;
+    border-right: none !important;
+}
+
+/* Keep only the horizontal row separators */
+    .user-table tbody tr {
+        border-bottom: 1px solid #e0e0e0;
+        border-top: 1px solid #e0e0e0;
+    }
+
+.user-table thead th {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 2;
+    /* Optional: add a subtle shadow for clarity */
+    box-shadow: 0 2px 2px -1px rgba(0,0,0,0.04);
+}
+
 .action-buttons 
 {
     display: flex;

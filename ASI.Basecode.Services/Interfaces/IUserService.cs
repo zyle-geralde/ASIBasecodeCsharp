@@ -11,6 +11,9 @@ namespace ASI.Basecode.Services.Interfaces
         LoginResult AuthenticateUser(string userid, string password, ref User user);
         //Task<User> AddUser(UserViewModel model);
         Task<User> AddUser(UserViewModel model);
+        Task<User> AddUserFromAdmin(UserViewModel model);
+        Task<User> GetUserById(int id);
+        Task<bool> UpdateUser(UserViewModel model);
         Task<User> AddUserFromRegister(UserViewModel model);
         Task<User> AddAdminFromRegister(UserViewModel model);
         IEnumerable<User> GetAllUsers();

@@ -1,7 +1,9 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.WebApp.AccessControl;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -21,43 +23,70 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         private readonly IBookService _bookService;
         private readonly IReviewService _reviewService;
         private readonly IBookGenreService _bookGenreService;
+        private readonly IAccessControlInterface _accessControlInterface;
         //private readonly IBookRepository _bookRepository;
-        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService)
+        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface)
         {
             _bookService = bookService;
             _reviewService = reviewService;
             _bookGenreService = bookGenreService;
+            _accessControlInterface = accessControlInterface;
+            
         }
+
+
 
 
         [HttpGet]
         [Route("Book/AddBook")]
-        [AllowAnonymous]// Bypass authorization. No need to Log In 
-        public IActionResult AddBook()
+        [Authorize]// Bypass authorization. No need to Log In 
+        public async Task<IActionResult> AddBook()
         {
+            
+
             // This will look for a view at /Views/Books/AddBook.cshtml
             return View("~/Views/Books/AddBook.cshtml");
         }
 
-        //[HttpGet]
-        //[Route("Book/GetGenre")]
-        //[AllowAnonymous]
-        //public async Task<IActionResult> GetAllGenres()
-        //{
-        //    try
-        //    {
-        //        List<string> all_genres = await _bookService.GetAllGenres();
+        [HttpGet]
+        [Route("Book/GetGenre")]
+        [Authorize]
+        public async Task<IActionResult> GetAllGenres()
+        {
 
-        //        return Ok(new { Message = all_genres });
-        //    }
-        //    catch (Exception ex) 
-        //    {
-        //        return StatusCode(500, $"Failed to get all Genres: {ex.Message}");
-        //    }
-        //}
+            try
+            {
+                List<string> all_genres = await _bookService.GetAllGenres();
+
+                return Ok(new { Message = all_genres });
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, $"Failed to get all Genres: {ex.Message}");
+            }
+        }
 
 
         [HttpGet]
+        [Route("Book/GetLanguage")]
+        [Authorize]
+        public async Task<IActionResult> GetAllLanguage()
+        {
+
+            try
+            {
+                List<string> all_language = await _bookService.GetAllLanguage();
+
+                return Ok(new { Message = all_language });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to get all Genres: {ex.Message}");
+            }
+        }
+
+
+        /*[HttpGet]
         [Route("Book/ListBook")]
         [AllowAnonymous]
         public async Task<IActionResult> ListBook(
@@ -109,22 +138,112 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 queryParams );
             //List<Book> books = await _bookService.GetAllBooks();
             return View("~/Views/Books/ListBook.cshtml", books);
+        }*/
+
+        [HttpGet]
+        [Route("Book/ListBook")]
+        [Authorize]
+        public async Task<IActionResult> ListBook()
+        {
+            //For Routing
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
+            List<BookViewModel> books = await _bookService.GetAllBooks();
+
+            return View("~/Views/Books/ListBook.cshtml", books);
         }
 
         [HttpGet]
+        [Route("Book/SearchResults")]
+        [Authorize]
+        public async Task<IActionResult> SearchResults(
+        string? searchTerm,
+        string? author,
+        int? rating,
+        DateTime? publishedFrom,
+        DateTime? publishedTo,
+        string[]? genreFilter,
+        string? sortOrder,
+        bool sortDescending = false,
+        int? page = 1,
+        string? category = null
+        )
+        {
+                const int PageSize = 10;
+                int pageIndex = page.GetValueOrDefault(1);
+
+                var queryParams = new BookQueryParams
+                {
+                    SearchTerm = searchTerm,
+                    Author = author,
+                    Rating = rating,
+                    PublishedFrom = publishedFrom,
+                    PublishedTo = publishedTo,
+                    GenreNames = genreFilter?.ToList(),
+                    SortDescending = sortDescending,
+                    PageIndex = page.GetValueOrDefault(1),
+                    SortOrder = sortOrder ?? "title",
+                    PageSize = PageSize,
+
+
+                };
+
+
+                ViewData["CurrentSearch"] = searchTerm;
+                ViewData["CurrentAuthor"] = author;
+                ViewData["CurrentRating"] = rating;
+                ViewData["CurrentFromDate"] = publishedFrom?.ToString("yyyy-MM-dd");
+                ViewData["CurrentToDate"] = publishedTo?.ToString("yyyy-MM-dd");
+                ViewData["CurrentGenres"] = genreFilter ?? Array.Empty<string>();
+                ViewData["CurrentSort"] = queryParams.SortOrder;
+                ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+
+                var allGenres = await _bookGenreService.GetAllGenreList();
+                ViewData["AllGenres"] = allGenres;
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                ViewData["CategoryTitle"] = category;
+            }
+            else if (sortOrder?.Equals("AverageRating", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                ViewData["CategoryTitle"] = "Top Rated";
+            }
+            else if (sortOrder?.Equals("UploadDate", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                ViewData["CategoryTitle"] = "Newly Added";
+            }
+            else
+            {
+                ViewData["CategoryTitle"] = "Search Results";
+            }
+            var books = await _bookService.GetBooks(
+                    queryParams);
+                //List<Book> books = await _bookService.GetAllBooks();
+                return View("~/Views/Books/BookSearchResults.cshtml", books);
+            }
+
+
+        [HttpGet]
         [Route("Book/EditBook/{bookId}")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> EditBook(string bookId)
         {
-           BookViewModel book = await _bookService.GetBookById(bookId);
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
+            BookViewModel book = await _bookService.GetBookById(bookId);
            return View("~/Views/Books/EditBook.cshtml",book);
         }
 
         [HttpGet]
         [Route("Book/BookDetails/{bookId}", Name="BookDetails")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> GetBook(string bookId)
         {
+
+
             BookViewModel book = await _bookService.GetBookById(bookId);
             if(book == null)
             {
@@ -161,6 +280,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 ISBN10 = book.ISBN10,
                 ISBN13 = book.ISBN13,
                 Edition = book.Edition,
+                IsFeatured = book.IsFeatured,
                 HasReviewed = hasReviewed,
                 Reviews = reviews
                             .Select(r => new ReviewViewModel
@@ -180,9 +300,12 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpPost]
         [Route("Book/AddBook")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> AddBook(BookViewModel book)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             if (ModelState.IsValid)
             {
                 try
@@ -203,9 +326,12 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpPost]
         [Route("Book/EditBook")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> EditBook(BookViewModel book)
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
             if (ModelState.IsValid)
             {
                 try
@@ -228,11 +354,15 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpPost]
         [Route("Book/Delete")]
-        [AllowAnonymous]
+        [Authorize]
 
         public async Task<IActionResult> DeleteBook([FromBody] DeleteBookPayload book)
         {
-            if(book == null)
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
+
+            if (book == null)
             {
                 return BadRequest(new { Message = "No data has been passed" });
             }
@@ -249,6 +379,24 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        [Route("Book/GetAuthor")]
+        [Authorize]
+        public async Task<IActionResult> GetAuthor()
+        {
+
+            try
+            {
+                List<string> all_author = await _bookService.GetAllAuthor();
+
+                return Ok(new { Message = all_author });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to get all Authors: {ex.Message}");
             }
         }
     }

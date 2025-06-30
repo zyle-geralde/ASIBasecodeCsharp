@@ -25,9 +25,12 @@ namespace ASI.Basecode.Data.Repositories
             await _dbContext.Books.AddAsync(book);
             await _dbContext.SaveChangesAsync();
         }
-        public async Task<List<Book>> GetBooks(BookQueryParams queryParams) 
+        public async Task<List<Book>> GetBooks(BookQueryParams? queryParams = null) 
         {
+            queryParams ??= new BookQueryParams();
+
             IQueryable<Book> query = _dbContext.Books.AsNoTracking();
+
 
             // SEARCH
             if (!string.IsNullOrEmpty(queryParams.SearchTerm))
@@ -80,7 +83,9 @@ namespace ASI.Basecode.Data.Repositories
                             ? query.OrderByDescending(b => b.AverageRating)
                             : query.OrderBy(b => b.AverageRating);
                         break;
-
+                    case "uploaddate":
+                        query = desc ? query.OrderByDescending(b => b.UploadDate) : query.OrderBy(b => b.UploadDate);
+                        break;
                     default:
                         query = query.OrderBy(b => b.Title);
                         break;
@@ -124,6 +129,7 @@ namespace ASI.Basecode.Data.Repositories
             existingBook.BookFile = book.BookFile;
             existingBook.GenreList = book.GenreList;
             existingBook.UpdatedBy = book.UpdatedBy;//change to Updated
+            existingBook.IsFeatured = book.IsFeatured;
 
 
             await _dbContext.SaveChangesAsync();
@@ -149,6 +155,18 @@ namespace ASI.Basecode.Data.Repositories
             }
         }
 
+        public async Task<List<Language>> GetAllLanguage()
+        {
+            try
+            {
+                return await _dbContext.Languages.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task calculateAverageRating(string bookId)
         {
             var reviews = _dbContext.Reviews
@@ -166,7 +184,30 @@ namespace ASI.Basecode.Data.Repositories
                 book.AverageRating = (float)avg;
                 await _dbContext.SaveChangesAsync();
             }
+        }
 
+        public async Task<List<Book>> GetAllBooks()
+        {
+            try
+            {
+                return await _dbContext.Books.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<Author>> GetAllAuthor()
+        {
+            try
+            {
+                return await _dbContext.Authors.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
 

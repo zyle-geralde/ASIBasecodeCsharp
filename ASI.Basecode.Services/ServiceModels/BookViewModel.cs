@@ -21,7 +21,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public string? GenreList { get; set; }
 
         [DataType(DataType.Date)]
-        public string? UploadDate { get; set; }
+        public DateTime? UploadDate { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? UpdatedDate { get; set; }
@@ -40,7 +40,7 @@ namespace ASI.Basecode.Services.ServiceModels
 
         public int? NumberOfPages { get; set; }
 
-        [StringLength(20)]
+        [StringLength(500)]
         public string? Language { get; set; }
 
         [StringLength(1000)]
@@ -78,5 +78,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public bool HasReviewed { get; set; }
         public string? CoverImage { get; set; }
         public string? BookFile { get; set; }
+        public bool? IsFeatured { get; set; } = false;
     }
 }

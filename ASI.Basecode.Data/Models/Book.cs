@@ -35,5 +35,7 @@ namespace ASI.Basecode.Data.Models
         public string? Edition { get; set; }
         public string CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
+
+        public bool? IsFeatured { get; set; } = false;
     }
 }

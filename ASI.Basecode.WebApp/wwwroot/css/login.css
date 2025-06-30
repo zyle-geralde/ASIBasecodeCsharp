@@ -28,9 +28,16 @@ body
     box-sizing: border-box;
 }
 
+.main
+{
+    width: 100%;
+}
+
 .container
 {
     max-width: 1980px;
+    padding: 0;
+    margin: 0;
 }
 
 .main-container 
@@ -376,8 +383,7 @@ body
     align-self: center;
 }
 
-.back-arrow 
-{
+.back-arrow {
     position: absolute;
     top: 32px;
     left: 32px;
@@ -388,6 +394,10 @@ body
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* Responsive: stack vertically on small screens */
@@ -439,7 +449,18 @@ body
     {
         overflow-y: auto;
         height: 100vh;
+        flex-direction: column !important;
     }
+
+        .register-main-split .register-left {
+            order: 0;
+        }
+
+        .register-main-split .register-right {
+            order: 1;
+        }
+
+
 }
 
 @media (min-width: 768px) 

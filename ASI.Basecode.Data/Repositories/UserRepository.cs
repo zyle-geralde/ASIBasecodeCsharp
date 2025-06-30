@@ -13,7 +13,7 @@ namespace ASI.Basecode.Data.Repositories
 {
     public class UserRepository : BaseRepository, IUserRepository
     {
-        public UserRepository(IUnitOfWork unitOfWork) : base(unitOfWork) 
+        public UserRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
 
         }
@@ -26,16 +26,51 @@ namespace ASI.Basecode.Data.Repositories
         public async Task<List<User>> GetUsersQueried(string searchTerm, string sortOrder, int pageIndex, int pageSize)
         {
             IQueryable<User> query = this.GetDbSet<User>().AsNoTracking();
+            
+            // Apply search filter if provided
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 var term = searchTerm.Trim();
                 query = query.Where(b =>
-                    (b.Id.ToString() != null && b.Id.ToString().Contains(term))|| (b.UserName != null && b.UserName.Contains(term)) || (b.Email != null && b.Email.Contains(term)));
+                    (b.Id.ToString() != null && b.Id.ToString().Contains(term)) || 
+                    (b.UserName != null && b.UserName.Contains(term)) || 
+                    (b.Email != null && b.Email.Contains(term)));
             }
 
-            query = query
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize);
+            // Apply sorting if provided
+            if (!string.IsNullOrEmpty(sortOrder))
+            {
+                switch (sortOrder.ToLower())
+                {
+                    case "name":
+                        query = query.OrderBy(u => u.UserName);
+                        break;
+                    case "name_desc":
+                        query = query.OrderByDescending(u => u.UserName);
+                        break;
+                    case "email":
+                        query = query.OrderBy(u => u.Email);
+                        break;
+                    case "email_desc":
+                        query = query.OrderByDescending(u => u.Email);
+                        break;
+                    default:
+                        query = query.OrderBy(u => u.Id); // Default sort by ID
+                        break;
+                }
+            }
+            else
+            {
+                query = query.OrderBy(u => u.Id); // Default sort by ID if no sortOrder
+            }
+
+            // Skip pagination if pageSize is int.MaxValue (to get all users)
+            if (pageSize < int.MaxValue)
+            {
+                query = query
+                    .Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize);
+            }
 
             return await query.ToListAsync();
         }
@@ -44,6 +79,7 @@ namespace ASI.Basecode.Data.Repositories
         {
             return this.GetDbSet<User>().Any(x => x.Email == userId);
         }
+        
         public async Task<bool> CheckEmailVerified(string email)
         {
             User existing_user = await FindUserByEmail(email);
@@ -74,6 +110,11 @@ namespace ASI.Basecode.Data.Repositories
         public async Task<User> FindUserByEmail(string email)
         {
             return await this.GetDbSet<User>().FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public bool UserNameExists(string userName)
+        {
+            return this.GetDbSet<User>().Any(x => x.UserName == userName);
         }
 
         public async Task UpdateUser(User user)

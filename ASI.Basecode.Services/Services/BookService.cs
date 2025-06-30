@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,10 +16,14 @@ namespace ASI.Basecode.Services.Services
     public class BookService : IBookService
     {
         private readonly IBookRepository _bookRepository;
+        private readonly ILanguageRepository _languageRepository;
+        private readonly IAuthorRepository _authorRepository;
 
-        public BookService(IBookRepository bookRepository)
+        public BookService(IBookRepository bookRepository,ILanguageRepository languageRepository, IAuthorRepository authorRepository)
         {
             _bookRepository = bookRepository;
+            _languageRepository = languageRepository;
+            _authorRepository = authorRepository;
         }
 
         public async Task AddBook(BookViewModel request)
@@ -42,6 +47,7 @@ namespace ASI.Basecode.Services.Services
                 AverageRating = 0,
                 Likes = 0,
                 GenreList = request.GenreList,
+                IsFeatured= request.IsFeatured,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImage = request.CoverImageUrl,
@@ -83,14 +89,78 @@ namespace ASI.Basecode.Services.Services
                 BookId = b.BookId,
                 Title = b.Title,
                 Subtitle = b.Subtitle,
+                UploadDate = b.UploadDate,
                 GenreList = b.GenreList,
                 PublicationDate = b.PublicationDate,
                 Author = b.Author,
                 AverageRating = b.AverageRating,
                 CoverImage =b.CoverImage,
-                BookFile=b.BookFile
+                BookFile=b.BookFile,
+                Description = b.Description
+
             }).ToList();
+
+
         }
+
+        public async Task<List<BookViewModel>> GetAllBooks()
+        {
+            List<Book> book_list = await _bookRepository.GetAllBooks();
+
+            if (book_list == null || !book_list.Any())
+            {
+                return new List<BookViewModel>();
+            }
+
+            List<BookViewModel> bookViewModel_list = new List<BookViewModel>();
+
+            foreach (var book in book_list)
+            {
+                Language languageName = await _languageRepository.GetLanguageByName(book.Language!=null?book.Language:"");
+                Author authorName = await _authorRepository.GetAuthorById(book.Author != null ? book.Author : "");
+                var viewModel = new BookViewModel
+                {
+                    BookId = book.BookId,
+                    Title = book.Title,
+                    Subtitle = book.Subtitle,
+                    Description = book.Description,
+                    NumberOfPages = book.NumberOfPages,
+                    Language = languageName!=null?languageName.LanguageName:"",
+                    SeriesName = book.SeriesName,
+                    SeriesDescription = book.SeriesDescription,
+                    SeriesOrder = book.SeriesOrder,
+                    GenreList = book.GenreList,
+                    AverageRating = book.AverageRating,
+                    IsFeatured = book.IsFeatured,
+
+                    // Firebase Storage URLs are directly mapped
+                    CoverImageUrl = book.CoverImage,
+                    BookFileUrl = book.BookFile,
+
+                    // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
+                    UpdatedDate = book.UpdatedDate,
+                    PublicationDate = book.PublicationDate,
+
+
+                    // Handle comma-separated strings
+                    Publisher = book.Publisher, // Store as string
+                    PublicationLocation = book.PublicationLocation, // Store as string
+                    Author = authorName != null ? authorName.AuthorName : "", // Store as string
+                    ISBN10 = book.ISBN10,
+                    ISBN13 = book.ISBN13,
+                    Edition = book.Edition,
+                    CreatedBy = "admin1",
+                    UpdatedBy = "Logged Admin",
+
+                };
+                bookViewModel_list.Add(viewModel);
+            }
+
+            return bookViewModel_list;
+        }
+    
+
+
         public async Task<BookViewModel?> GetBookById(string bookId)
         {
             Book requestBook= await _bookRepository.GetBookById(bookId);
@@ -107,6 +177,7 @@ namespace ASI.Basecode.Services.Services
                 SeriesOrder = requestBook.SeriesOrder,
                 GenreList= requestBook.GenreList,
                 AverageRating =requestBook.AverageRating,
+                IsFeatured = requestBook.IsFeatured,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImageUrl = requestBook.CoverImage,
@@ -115,6 +186,7 @@ namespace ASI.Basecode.Services.Services
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
                 UpdatedDate = requestBook.UpdatedDate,
                 PublicationDate = requestBook.PublicationDate,
+                UploadDate = requestBook.UploadDate,
 
 
                 // Handle comma-separated strings
@@ -146,6 +218,7 @@ namespace ASI.Basecode.Services.Services
                 SeriesDescription = request.SeriesDescription,
                 SeriesOrder = request.SeriesOrder,
                 GenreList = request.GenreList,
+                IsFeatured = request.IsFeatured,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImage = request.CoverImageUrl,
@@ -211,6 +284,52 @@ namespace ASI.Basecode.Services.Services
             catch (Exception ex)
             {
                 throw new ApplicationException("Failed to retrieve book genres.", ex);
+            }
+        }
+
+        public async Task<List<string>> GetAllLanguage()
+        {
+            try
+            {
+                List<Language> language_list = await _bookRepository.GetAllLanguage();
+
+
+                if (language_list == null || !language_list.Any())
+                {
+                    return new List<string>();
+                }
+
+                //Mapping
+                List<string> view_model_list = language_list.Select(book_language_element => book_language_element.LanguageName + ',' + book_language_element.LanguageId).ToList();
+
+                return view_model_list;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to retrieve language genres.", ex);
+            }
+        }
+
+        public async Task<List<string>> GetAllAuthor()
+        {
+            try
+            {
+                List<Author> author_list = await _authorRepository.GetAllAuthorList();
+
+
+                if (author_list == null || !author_list.Any())
+                {
+                    return new List<string>();
+                }
+
+                //Mapping
+                List<string> view_model_list = author_list.Select(author_list_element => author_list_element.AuthorName + ',' + author_list_element.AuthorId).ToList();
+
+                return view_model_list;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to retrieve authors.", ex);
             }
         }
 

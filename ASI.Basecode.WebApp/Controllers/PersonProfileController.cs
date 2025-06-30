@@ -2,6 +2,8 @@
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
+using ASI.Basecode.WebApp.AccessControl;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
@@ -13,14 +15,17 @@ namespace ASI.Basecode.WebApp.Controllers
     {
         private readonly IPersonProfileService _personProfileService;
         private readonly IReviewService _reviewService;
+        private readonly IAccessControlInterface _accessControlInterface;
 
-        public PersonProfileController(IPersonProfileService profileService, IReviewService reviewService)
+        public PersonProfileController(IPersonProfileService profileService, IReviewService reviewService, IAccessControlInterface accessControlInterface)
         {
             _personProfileService = profileService;
             _reviewService = reviewService;
+            _accessControlInterface = accessControlInterface;
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var username = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -63,8 +68,11 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Edit()
         {
+
+
             var username = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(username))
             {
@@ -92,8 +100,10 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(PersonProfileViewModel model)
         {
+
             //if(!ModelState.IsValid)
             //    return View("~/Views/PersonProfile/Edit.cshtml", model);
 
@@ -101,7 +111,7 @@ namespace ASI.Basecode.WebApp.Controllers
             if (!updated)
                 return NotFound();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { success = "personal" });
 
         }
 

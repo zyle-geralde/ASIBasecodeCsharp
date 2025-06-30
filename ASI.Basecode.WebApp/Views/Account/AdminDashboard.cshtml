@@ -1,17 +1,23 @@
-﻿@{
+﻿@using ASI.Basecode.Services.ServiceModels
+@model AdminDashboardViewModel
+
+@{
     Layout = "_AdminSidebarLayout";
 
     // Example data for demonstration
-    var books = Enumerable.Range(1, 10).Select(i => new
-    {
-        Title = "The Lost Expedition",
-        Author = "Tom Hardy, 2020",
-        Image = Url.Content("~/img/bookcover_container.png"),
-        Rating = 5
-    }).ToList();
+    // var books = Enumerable.Range(1, 10).Select(i => new
+    // {
+    //     Title = "The Lost Expedition",
+    //     Author = "Tom Hardy, 2020",
+    //     Image = Url.Content("~/img/bookcover_container.png"),
+    //     Rating = 5
+    // }).ToList();
 
     int cardsPerSlide = 5;
-    int totalSlides = (int)Math.Ceiling(books.Count / (double)cardsPerSlide);
+    int totalSlides = 2;
+    var newBooks = Model.NewBooks ?? new List<BookViewModel>();
+    var topRatedBooks = Model.TopRatedBooks ?? new List<BookViewModel>();
+    // int totalSlides = (int)Math.Ceiling(books.Count / (double)cardsPerSlide);
 }
 
 @section styles {
@@ -39,7 +45,7 @@
                 <div class="stats-card a" onclick="window.location.href='@Url.Action("Index", "Review")'">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">367K</h3>
+                            <h3 class="mb-0">@Model.TotalReviews</h3>
                             <p class="text-muted mb-0">Total Reviews</p>
                         </div>
                         <i class="fas fa-star stats-icon"></i>
@@ -50,7 +56,7 @@
                 <div class="stats-card b" onclick="window.location.href='@Url.Action("ListBook", "Book")'">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">12K</h3>
+                            <h3 class="mb-0">@Model.TotalBooks</h3>
                             <p class="text-muted mb-0">Total Books</p>
                         </div>
                         <i class="fas fa-book stats-icon"></i>
@@ -61,7 +67,7 @@
                 <div class="stats-card a" onclick="window.location.href='@Url.Action("Index", "User")'">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">123K</h3>
+                            <h3 class="mb-0">@Model.TotalUsers</h3>
                             <p class="text-muted mb-0">Total Users</p>
                         </div>
                         <i class="fas fa-users stats-icon"></i>
@@ -72,7 +78,7 @@
                 <div class="stats-card b" onclick="window.location.href='@Url.Action("ListGenre", "BookGenre")'">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">25</h3>
+                            <h3 class="mb-0">@Model.TotalGenres</h3>
                             <p class="text-muted mb-0">Total Genres</p>
                         </div>
                         <i class="fas fa-tags stats-icon"></i>
@@ -84,7 +90,7 @@
         <!-- Newly Added Books Section -->
         <div class="section mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="section-title">Newly Added Books</h2>
+                <h2 class="section-title">Newly Added Booksdsfds</h2>
                 <a href="#" class="view-more">View more <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="carousel-container">
@@ -97,16 +103,17 @@
                                     @for (int card = 0; card < cardsPerSlide; card++)
                                     {
                                         int bookIndex = slide * cardsPerSlide + card;
-                                        if (bookIndex >= books.Count) { break; }
-                                        var book = books[bookIndex];
+                                        if (bookIndex >= newBooks.Count) { break; }
+                                        var book = newBooks[bookIndex];
                                         <div class="book-card-wrapper">
+                                            <p>@book.Author</p>
                                             <div class="book-card">
-                                                <img src="@book.Image" class="book-cover" alt="Book cover">
+                                                <img src="@book.CoverImageUrl" class="book-cover" alt="Book cover">
                                                 <div class="book-info">
                                                     <h5>@book.Title</h5>
                                                     <p class="author">@book.Author</p>
                                                     <div class="rating">
-                                                        @for (int star = 0; star < book.Rating; star++)
+                                                        @for (int star = 0; star < book.AverageRating; star++)
                                                         {
                                                             <i class="fas fa-star"></i>
                                                         }
@@ -147,16 +154,16 @@
                                     @for (int card = 0; card < cardsPerSlide; card++)
                                     {
                                         int bookIndex = slide * cardsPerSlide + card;
-                                        if (bookIndex >= books.Count) { break; }
-                                        var book = books[bookIndex];
+                                        if (bookIndex >= 10) { break; }
+                                        var book = topRatedBooks[bookIndex];
                                         <div class="book-card-wrapper">
                                             <div class="book-card">
-                                                <img src="@book.Image" class="book-cover" alt="Book cover">
+                                                <img src="@book.CoverImage" class="book-cover" alt="Book cover">
                                                 <div class="book-info">
                                                     <h5>@book.Title</h5>
                                                     <p class="author">@book.Author</p>
                                                     <div class="rating">
-                                                        @for (int star = 0; star < book.Rating; star++)
+                                                        @for (int star = 0; star < book.AverageRating; star++)
                                                         {
                                                             <i class="fas fa-star"></i>
                                                         }
@@ -186,3 +193,4 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 }
+vvv
