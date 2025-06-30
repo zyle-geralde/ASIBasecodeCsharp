@@ -272,6 +272,13 @@
             }
         });
 
+        document.getElementById('statusModalClose').addEventListener('click', () => {
+            const statusModalLabel = document.getElementById('statusModalLabel').textContent;
+            if (statusModalLabel === 'Status' || statusModalLabel === 'Success') {
+                window.location.href = '/Author/Index';
+            }
+        });
+
          document.getElementById('addAuthorForm').addEventListener('submit', async (event) => {
             event.preventDefault();
 
