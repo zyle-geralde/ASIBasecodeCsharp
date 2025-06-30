@@ -11,6 +11,7 @@ namespace ASI.Basecode.Data.Interfaces
     {
         Task AddPersonProfile(PersonProfile personProfile);
         Task EditPersonProfile(PersonProfile personProfile);
+        Task DeletePersonProfile(string profileId);
         Task<PersonProfile> GetPersonProfile(string username);
     }
 }

@@ -88,9 +88,6 @@ namespace ASI.Basecode.Services.Services
             if (_repository.UserExists(model.Email))
                 throw new InvalidDataException("A user with this email already exists!");
 
-            if (_repository.UserNameExists(model.UserName))
-                throw new InvalidDataException("A user with this username already exists!");
-
             var user = new User();
             if (!_repository.UserExists(model.Email))
             {
@@ -144,9 +141,6 @@ namespace ASI.Basecode.Services.Services
                 {
                     throw new InvalidDataException("User not found.");
                 }
-
-                if (_repository.GetUsers().Any(u => u.UserName == model.UserName && u.Id != model.Id))
-                    throw new InvalidDataException("A user with this username already exists.");
 
                 user.UserName = model.UserName;
                 user.UpdatedTime = DateTime.Now;
@@ -446,6 +440,10 @@ namespace ASI.Basecode.Services.Services
             }
 
             await _repository.DeleteUser(id);
+            if (!string.IsNullOrEmpty(user.Email))
+            {
+                await _personProfileService.DeletePersonProfile(user.Email);
+            }
             return true;
         }
 

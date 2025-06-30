@@ -8,6 +8,7 @@ namespace ASI.Basecode.Services.Interfaces
     {
         Task AddPersonProfile(PersonProfile personProfile);
         Task<bool> EditPersonProfile(PersonProfileViewModel personProfile);
+        Task DeletePersonProfile(string profileId);
         Task<PersonProfile> GetPersonProfile(string username);
     }
 }
