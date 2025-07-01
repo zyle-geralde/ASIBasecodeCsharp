@@ -113,24 +113,32 @@
         </div>
     </div>
     <div class="profile-reviews-section mt-5">
-  <h3>My Reviews</h3>
+        <h3>My Reviews (@Model.Reviews.Count)</h3>
 
-
-    @foreach (var review in Model.Reviews)
-    {
-      <div class="review-box border p-3 mb-3 rounded bg-light">
-        <div><strong>Book:</strong> 
-          <a asp-route="BookDetails" asp-route-bookId="@review.BookId">
-            @review.BookId
-          </a>
-        </div>
-        <div><strong>Rating:</strong> @review.Rating / 5</div>
-        <div><strong>Comment:</strong> @review.Comment</div>
-        <div class="small text-muted">Posted on: @review.UploadDate</div>
-      </div>
-    
-  }
-</div>
+        @if (Model.Reviews == null || !Model.Reviews.Any())
+        {
+            <div class="alert alert-info">
+                You haven't written any reviews yet.
+            </div>
+        }
+        else
+        {
+            @foreach (var review in Model.Reviews)
+            {
+                <div class="review-box border p-3 mb-3 rounded bg-light">
+                    <div>
+                        <strong>Book:</strong>
+                        <a asp-route="BookDetails" asp-route-bookId="@review.BookId">
+                            @review.BookId
+                        </a>
+                    </div>
+                    <div><strong>Rating:</strong> @review.Rating / 5</div>
+                    <div><strong>Comment:</strong> @review.Comment</div>
+                    <div class="small text-muted">Posted on: @review.UploadDate</div>
+                </div>
+            }
+        }
+    </div>
 
 </div>
 

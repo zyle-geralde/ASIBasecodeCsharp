@@ -4,78 +4,6 @@
 
 @{
     ViewData["Title"] = "Home Page";
-    // Genre
-    var genres = new List<Tuple<string, string>>
-    {
-        Tuple.Create("Romance", "/img/Books.jpg"),
-        Tuple.Create("Horror", "/img/Books.jpg"),
-        Tuple.Create("Photography", "/img/Books.jpg"),
-        Tuple.Create("Science Fiction", "/img/Books.jpg"),
-        Tuple.Create("Fantasy", "/img/Books.jpg")
-    };
-
-    // Top Rated Books
-    var topRatedBooks = new List<dynamic>
-    {
-        new {
-            Title = "The Midnight Library",
-            Author = "Matt Haig",
-            Description = "Between life and death, Nora Seed finds a library where she can try out different lives she could have lived. She must search for the perfect life as she tries to decide what makes a life truly fulfilling.",
-            ImageUrl = "https://placehold.co/120x180/D1D5DB/4B5563?text=Midnight+Library",
-            Rating = 5,
-            Tags = new List<string> { "Fiction", "Fantasy", "Philosophy" }
-        }
-    };
-
-    // New Books
-    var newBooks = new List<dynamic>
-    {
-        new {
-            Title = "Fourth Wing",
-            Author = "Rebecca Yarros",
-            Description = "Violet Sorrengail was supposed to enter the Scribe Quadrant, but her commanding general mother forces her to join the brutal, dragon-riding Basgiath War College.",
-            ImageUrl = "https://placehold.co/120x180/D1D5DB/4B5563?text=Fourth+Wing",
-            Rating = 4,
-            Tags = new List<string> { "Fantasy", "Romance", "Adventure" }
-        }
-    };
-
-    // Featured Books
-    var featuredBooks = new List<dynamic>
-    {
-        new {
-            Title = "Normal People",
-            Author = "Sally Rooney",
-            Description = "Two Irish teens from different social classes navigate a deep, complicated relationship through high school and college, defined by miscommunication, insecurity, and personal growth.",
-            ImageUrl = "https://placehold.co/120x180/7F8C8D/ECF0F1?text=Normal+People",
-            Rating = 4,
-            Tags = new List<string> { "Fiction", "Horror", "Coming-of-Age" }
-        },
-        new {
-            Title = "The Silent Patient",
-            Author = "Alex Michaelides",
-            Description = "A famous painter who murders her husband, and the psychotherapist obsessed with uncovering her motive. A gripping psychological thriller that will keep you guessing.",
-            ImageUrl = "https://placehold.co/120x180/7F8C8D/ECF0F1?text=Silent+Patient",
-            Rating = 5,
-            Tags = new List<string> { "Thriller", "Mystery" }
-        },
-        new {
-            Title = "Project Hail Mary",
-            Author = "Andy Weir",
-            Description = "Ryland Grace is the sole survivor on a desperate, last-chance mission to save humanity—and he can't remember any of it. An astrophsyicist and school teacher, he's tasked with figuring out how to save humanity from a dying sun.",
-            ImageUrl = "https://placehold.co/120x180/7F8C8D/ECF0F1?text=Project+Hail+Mary",
-            Rating = 5,
-            Tags = new List<string> { "Sci-Fi", "Adventure" }
-        },
-        new {
-            Title = "Where the Crawdads Sing",
-            Author = "Delia Owens",
-            Description = "A young woman who raised herself in the marshes of North Carolina becomes a suspect in a murder case. A poignant coming-of-age story interwoven with a mystery.",
-            ImageUrl = "https://placehold.co/120x180/D1D5DB/4B5563?text=Crawdads+Sing",
-            Rating = 4,
-            Tags = new List<string> { "Fiction", "Mystery", "Coming-of-Age" }
-        }
-    };
 }
 
 
@@ -84,152 +12,51 @@
 }
 
 
-        <div class="main-grid">
-            <!-- Left Column -->
-            <div class="left-column">
-                <!-- What Do You Feel Like Reading? Section -->
-                <section class="section-card-genre">
-                    <h2>What Do You Feel Like Reading?</h2>
-                    <p>Find books that match your mood!</p>
-                    <div class="category-scroll-container">
-                                         @foreach (var genre in Model.Genres)
-                    {
+<div class="main-grid">
+    <!-- Left Column -->
+    <div class="left-column">
+        <!-- What Do You Feel Like Reading? Section -->
+        <section class="section-card-genre">
+            <h2>What Do You Feel Like Reading?</h2>
+            <p>Find books that match your mood!</p>
+            <div class="category-scroll-container">
+                @foreach (var genre in Model.Genres)
+                {
                     <a asp-controller="Book"
                        asp-action="SearchResults"
                        asp-route-genreFilter="@genre.BookGenreId"
                        asp-route-category="@genre.GenreName"
                        class="category-card">
-                       <img src="@genre.GenreImageUrl" 
-                                 alt="@genre.GenreName Books" 
-                                 style="width:120px;height:180px;" />
-                            <div class="category-card-overlay">
-                                <span>@genre.GenreName</span>
-                            </div>
-                        </a>
-                    }
-                    </div>
-                </section>
-                <ul>
-                  
-
-                <!-- View Books Top Rated By Users? Section -->
-                <section class="section-card">
-                    <div class="book-list-header">
-                        <h2>View Books Top Rated By Users?</h2>
-                        <a asp-controller="Book" asp-action="SearchResults" asp-route-sortOrder="rating" asp-route-sortDescending="true" asp-route-category="Top Rated">See More</a>
-                    </div>
-                    @foreach (var book in Model.TopRatedBooks) 
-                    {
-                        <a  class="book-card"
-                          href="/Book/BookDetails/@book.BookId" >
-                            <img src="@book.CoverImage" alt="@book.Title Book Cover">
-                            <div class="book-card-content">
-                                <h3>@book.Title</h3>
-                                <p class="author">by @book.Author</p>
-                                <p class="description"><i>@book.Description</i></p>
-                                <div class="star-rating">
-                                    <div class="stars">
-                                        @for (int i = 0; i < 5; i++)
-                                        {
-                                            if (i < book.AverageRating)
-                                            {
-                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-                                            }
-                                            else
-                                            {
-                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-                                            }
-                                        }
-                                    </div>
-                                    <span class="rating-text">@book.AverageRating/5</span> 
-                                </div>
-                                <div class="genre-tags">
-                                                                    <span class="genre-tag">@book.GenreList</span>
-
-                                @* @if (!book.GenreList.Any())
-                                {
-                                                             @foreach (var tag in book.GenreList)
-                                    {
-                                        <span class="genre-tag @tag">@tag</span>
-                                    }
-                                }
-                                else
-                                {
-                                    <p>stay a while</p>
-                                } *@
-
-                                </div>
-                            </div>
-                        </a>
-                    }
-                </section>
-                <ul>
-
-                <!-- View New Books Section -->
-                <section class="section-card">
-                    <div class="book-list-header">
-                        <h2>View New Books</h2>
-                        <a asp-controller="Book" asp-action="SearchResults" asp-route-sortOrder="uploaddate" asp-route-sortDescending="true" asp-route-category="New Books">See More</a>
-                    </div>
-                    @foreach (var book in Model.NewBooks) 
-                    {
-                        <a  class="book-card"
-                          href="/Book/BookDetails/@book.BookId" >
-                            <img src="@book.CoverImage" alt="@book.Title Book Cover">
-                            <div class="book-card-content">
-                                <h3>@book.Title</h3>
-                                <p class="author">by @book.Author</p>
-                                <p class="description"><i>@book.Description</i></p>
-                                <div class="star-rating">
-                                    <div class="stars">
-                                        @for (int i = 0; i < 5; i++)
-                                        {
-                                            if (i < book.AverageRating)
-                                            {
-                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-                                            }
-                                            else
-                                            {
-                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-                                            }
-                                        }
-                                    </div>
-                                    <span class="rating-text">@book.AverageRating/5</span> 
-                                </div>
-
-                            <div class="genre-tags">
-                                <span class="">@book.GenreList</span>
-                                @* @foreach (var tag in book.)
-                                {
-                                    <span class="genre-tag">@tag</span>
-                                } *@
-                            </div>
-                            </div>
-                        </a>
-                    }
-                </section>
+                        <img src="@genre.GenreImageUrl"
+                             alt="@genre.GenreName Books" />
+                        <div class="category-card-overlay">
+                            <span>@genre.GenreName</span>
+                        </div>
+                    </a>
+                }
             </div>
-
-            <!-- Right Column - Featured Reads -->
-            <div class="featured-column">
+        </section>
+        @* <ul>
+            <!-- View Books Top Rated By Users? Section -->
+            <section class="section-card">
                 <div class="book-list-header">
-                    <h2>Featured Reads</h2>
-                    <a href="#">See More</a>
+                    <h2>View Books Top Rated By Users?</h2>
+                    <a asp-controller="Book" asp-action="SearchResults" asp-route-sortOrder="rating" asp-route-sortDescending="true" asp-route-category="Top Rated">See More</a>
                 </div>
-
-                @foreach (var book in featuredBooks)
+                @foreach (var book in Model.TopRatedBooks)
                 {
-                    <div class="featured-book-card">
-                        <img src="@book.ImageUrl" alt="@book.Title Book Cover">
-                        <div class="featured-book-card-content">
+                    <a class="book-card"
+                       href="/Book/BookDetails/@book.BookId">
+                        <img src="@book.CoverImage" alt="@book.Title Book Cover">
+                        <div class="book-card-content">
                             <h3>@book.Title</h3>
                             <p class="author">by @book.Author</p>
-                            <p class="description">@book.Description</p>
-                            <div class="star-rating featured-star-rating">
+                            <p class="description"><i>@book.Description</i></p>
+                            <div class="star-rating">
                                 <div class="stars">
                                     @for (int i = 0; i < 5; i++)
                                     {
-                                        if (i < book.Rating)
+                                        if (i < book.AverageRating)
                                         {
                                             <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
                                         }
@@ -239,25 +66,293 @@
                                         }
                                     }
                                 </div>
+                                <span class="rating-text">@book.AverageRating/5</span>
                             </div>
-
                             <div class="genre-tags">
-                                                                @* <spa class="genre-tag">@book.GenreList</spa> *@
+                                <span class="genre-tag">@book.GenreList</span>
 
-                                @* @foreach (var tag in book.GenreNames)
-                                {
-                                    <span class="genre-tag">@tag</span>
-                                } *@
+                                @* @if (!book.GenreList.Any())
+                            {
+                            @foreach (var tag in book.GenreList)
+                            {
+                            <span class="genre-tag @tag">@tag</span>
+                            }
+                            }
+                            else
+                            {
+                            <p>stay a while</p>
+                            } 
+
                             </div>
+                        </div>
+                    </a>
+                }
+            </section>
+            <ul> *@
 
+        <section class="section-card">
+            <div class="book-list-header">
+                <h2>View Books Top Rated By Users?</h2>
+                <a asp-controller="Book" asp-action="SearchResults" asp-route-sortOrder="rating" asp-route-sortDescending="true" asp-route-category="Top Rated">See More</a>
+            </div>
+            <div class="book-carousel-container top-rated-carousel">
+                <button class="carousel-button prev-button">❮</button>
+                <div class="book-display-wrapper">
+                    @for (int i = 0; i < Model.TopRatedBooks.Count; i++)
+                    {
+                        var book = Model.TopRatedBooks[i];
+                        <a class="book-card-single @(i == 0 ? "" : "hidden-book-card")" 
+                           href="/Book/BookDetails/@book.BookId">
+                            <img src="@book.CoverImage" alt="@book.Title Book Cover">
+                            <div class="book-card-content">
+                                <h3>@book.Title</h3>
+                                <p class="author">by @book.Author</p>
+                                <p class="description"><i>@book.Description</i></p>
+                                <div class="star-rating">
+                                    <div class="stars">
+                                        @for (int j = 0; j < 5; j++)
+                                        {
+                                            if (j < book.AverageRating)
+                                            {
+                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                            else
+                                            {
+                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                        }
+                                    </div>
+                                    <span class="rating-text">@book.AverageRating/5</span>
+                                </div>
+                                <div class="genre-tags">
+                                    <span class="genre-tag">@book.GenreList</span>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+                <button class="carousel-button next-button">❯</button>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <div class="book-list-header">
+                <h2>View New Books</h2>
+                <a asp-controller="Book" asp-action="SearchResults" asp-route-sortOrder="uploaddate" asp-route-sortDescending="true" asp-route-category="New Books">See More</a>
+            </div>
+            <div class="book-carousel-container new-books-carousel">
+                <button class="carousel-button prev-button">❮</button>
+                <div class="book-display-wrapper">
+                    @for (int i = 0; i < Model.NewBooks.Count; i++)
+                    {
+                        var book = Model.NewBooks[i];
+                        <a class="book-card-single @(i == 0 ? "" : "hidden-book-card")" 
+                           href="/Book/BookDetails/@book.BookId">
+                            <img src="@book.CoverImage" alt="@book.Title Book Cover">
+                            <div class="book-card-content">
+                                <h3>@book.Title</h3>
+                                <p class="author">by @book.Author</p>
+                                <p class="description"><i>@book.Description</i></p>
+                                <div class="star-rating">
+                                    <div class="stars">
+                                        @for (int j = 0; j < 5; j++)
+                                        {
+                                            if (j < book.AverageRating)
+                                            {
+                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                            else
+                                            {
+                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                        }
+                                    </div>
+                                    <span class="rating-text">@book.AverageRating/5</span>
+                                </div>
+                                <div class="genre-tags">
+                                    <span class="genre-tag">@book.GenreList</span>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+                <button class="carousel-button next-button">❯</button>
+            </div>
+            
+        </section>
+                <!-- View New Books Section -->
+                @* <section class="section-card">
+                    <div class="book-list-header">
+                        <h2>View New Books</h2>
+                        <a asp-controller="Book" asp-action="SearchResults" asp-route-sortOrder="uploaddate" asp-route-sortDescending="true" asp-route-category="New Books">See More</a>
+                    </div>
+                    @foreach (var book in Model.NewBooks)
+                    {
+                        <a class="book-card"
+                           href="/Book/BookDetails/@book.BookId">
+                            <img src="@book.CoverImage" alt="@book.Title Book Cover">
+                            <div class="book-card-content">
+                                <h3>@book.Title</h3>
+                                <p class="author">by @book.Author</p>
+                                <p class="description"><i>@book.Description</i></p>
+                                <div class="star-rating">
+                                    <div class="stars">
+                                        @for (int i = 0; i < 5; i++)
+                                        {
+                                            if (i < book.AverageRating)
+                                            {
+                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                            else
+                                            {
+                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                        }
+                                    </div>
+                                    <span class="rating-text">@book.AverageRating/5</span>
+                                </div>
+
+                                <div class="genre-tags">
+                                    <span class="">@book.GenreList</span>
+                                    
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </section> *@
+    </div>
+
+    <!-- Right Column - Featured Reads -->
+    <div class="featured-column">
+        <div class="book-list-header">
+            <h2>Featured Reads</h2>
+            <a href="#">See More</a>
+        </div>
+
+        @foreach (var book in Model.FeaturedBooks) 
+        {
+            <div class="featured-book-card">
+                <img src="@book.CoverImage" alt="@book.Title Book Cover"> 
+                <div class="featured-book-card-content">
+                    <h3>@book.Title</h3>
+                    <p class="author">by @book.Author</p>
+                    <p class="description">@book.Description</p>
+                    <div class="star-rating featured-star-rating">
+                        <div class="stars">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                if (i < book.AverageRating) 
+                                {
+                                    <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                }
+                                else
+                                {
+                                    <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                }
+                            }
                         </div>
                     </div>
-                }
+                    <div class="genre-tags">
+                        <span class="genre-tag">@book.GenreList</span> 
+                    </div>
+                </div>
             </div>
+        }
+    </div>
+
+    @* <div class="featured-column">
+        <div class="book-list-header">
+            <h2>Featured Reads</h2>
+            <a href="#">See More</a>
         </div>
-  
 
+        @foreach (var book in featuredBooks)
+        {
+            <div class="featured-book-card">
+                <img src="@book.ImageUrl" alt="@book.Title Book Cover">
+                <div class="featured-book-card-content">
+                    <h3>@book.Title</h3>
+                    <p class="author">by @book.Author</p>
+                    <p class="description">@book.Description</p>
+                    <div class="star-rating featured-star-rating">
+                        <div class="stars">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                if (i < book.Rating)
+                                {
+                                    <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                }
+                                else
+                                {
+                                    <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                }
+                            }
+                        </div>
+                    </div>
 
+                    <div class="genre-tags">
+                        @* <spa class="genre-tag">@book.GenreList</spa> *@
 
+                        @* @foreach (var tag in book.GenreNames)
+                    {
+                    <span class="genre-tag">@tag</span>
+                    } 
+                    </div>
 
+                </div>
+            </div>
+        }
+    </div> *@
+</div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // single book carousel
+        function setupSingleBookCarousel(containerClass) {
+            const container = $(containerClass);
+            const bookCards = container.find('.book-card-single');
+            const prevButton = container.find('.prev-button');
+            const nextButton = container.find('.next-button');
+
+            let currentIndex = 0;
+
+            function showCurrentBook() {
+                bookCards.addClass('hidden-book-card');
+
+                if (bookCards.length > 0 && currentIndex >= 0 && currentIndex < bookCards.length) {
+                    const bookToShow = bookCards.eq(currentIndex);
+                    bookToShow.removeClass('hidden-book-card');
+                }
+
+                // disable/hide buttons
+                if (bookCards.length <= 1) {
+                    prevButton.prop('disabled', true);
+                    nextButton.prop('disabled', true);
+                } else {
+                    prevButton.prop('disabled', currentIndex === 0);
+                    nextButton.prop('disabled', currentIndex >= bookCards.length - 1);
+                }
+            }
+
+            nextButton.on('click', function () {
+                if (currentIndex < bookCards.length - 1) {
+                    currentIndex++;
+                    showCurrentBook();
+                }
+            });
+
+            prevButton.on('click', function () {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    showCurrentBook();
+                }
+            });
+
+            showCurrentBook();
+        }
+
+        setupSingleBookCarousel('.top-rated-carousel');
+        setupSingleBookCarousel('.new-books-carousel');
+    });
+</script>

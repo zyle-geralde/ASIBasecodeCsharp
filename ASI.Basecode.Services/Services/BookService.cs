@@ -80,11 +80,10 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
-        public async Task<List<BookViewModel>> GetBooks(
-          BookQueryParams queryParams)
+        public async Task<PaginatedList<BookViewModel>> GetBooks(BookQueryParams queryParams)
         {
             var books = await _bookRepository.GetBooks(queryParams);
-            return books.Select(b => new BookViewModel
+            var bookList =  books.Select(b => new BookViewModel
             {
                 BookId = b.BookId,
                 Title = b.Title,
@@ -96,9 +95,17 @@ namespace ASI.Basecode.Services.Services
                 AverageRating = b.AverageRating,
                 CoverImage =b.CoverImage,
                 BookFile=b.BookFile,
-                Description = b.Description
+                Description = b.Description,
+                IsFeatured = b.IsFeatured
 
             }).ToList();
+
+            return new PaginatedList<BookViewModel>(
+               bookList,
+               books.TotalCount,
+               books.PageIndex,
+               queryParams.PageSize
+                );
 
 
         }
