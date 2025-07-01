@@ -44,8 +44,9 @@
 @{
     ViewData["Title"] = "Book List";
     Layout = "_AdminSidebarLayout";
-    string display_name = "Users";
-    string description = "Manage users";
+    string display_name = "Books";
+    string description = "Manage books";
+    var currentCategory  = (string?)ViewContext.HttpContext.Request.Query["category"];
     var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
     var currentSearch    = (string?)ViewData["CurrentSearch"];
     var currentAuthor    = (string?)ViewData["CurrentAuthor"];
@@ -56,18 +57,30 @@
     var currentSort = (string?)ViewData["CurrentSort"];
     var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
 
-    var routeValues = new Dictionary<string, string> {
-        ["searchTerm"]     = currentSearch?? string.Empty,
-        ["author"]         = currentAuthor?? string.Empty,
-        ["rating"]         = currentRating?.ToString()?? string.Empty,
-        ["publishedFrom"]  = currentFromDate?? string.Empty,
-        ["publishedTo"]    = currentToDate?? string.Empty,
-        ["genreFilter"]    = string.Join(",", currentGenres),
-        ["sortOrder"]      = currentSort?? string.Empty,
-        ["sortDescending"] = currentSortDescending
-                                 .ToString()
-                                 .ToLowerInvariant()
-    };
+   var routeValues = new Dictionary<string,string>();
+
+    if (!string.IsNullOrWhiteSpace(currentCategory))
+        routeValues["category"] = currentCategory;
+    if (!string.IsNullOrWhiteSpace(currentSearch))
+        routeValues["searchTerm"] = currentSearch!;
+    if (!string.IsNullOrWhiteSpace(currentAuthor))
+        routeValues["author"] = currentAuthor!;
+    if (currentRating.HasValue)
+        routeValues["rating"] = currentRating.Value.ToString();
+    if (!string.IsNullOrWhiteSpace(currentFromDate))
+        routeValues["publishedFrom"] = currentFromDate!;
+    if (!string.IsNullOrWhiteSpace(currentToDate))
+        routeValues["publishedTo"] = currentToDate!;
+    if (currentGenres.Any())
+        routeValues["genreFilter"] = string.Join(",", currentGenres);
+    if (!string.IsNullOrEmpty(currentSort) && currentSort != "title")
+        routeValues["sortOrder"] = currentSort!;
+    if (currentSortDescending) 
+        routeValues["sortDescending"] = "true";
+
+        var categoryTitle = (string?)ViewData["CategoryTitle"] ?? "Search Results";
+
+
 }
 
 }
