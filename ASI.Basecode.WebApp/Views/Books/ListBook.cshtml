@@ -7,42 +7,45 @@
 @using ASI.Basecode.Services.ServiceModels;
 
 @{
-    var current_genre_details = ViewBag.CurrentGenreDetails as ASI.Basecode.Services.ServiceModels.BookGenreViewModel;
-    var current_language_details = ViewBag.CurrentLanguageDetails as ASI.Basecode.Services.ServiceModels.LanguageViewModel;
-    var current_author_details = ViewBag.CurrentAuthorDetails as ASI.Basecode.Services.ServiceModels.AuthorViewModel;
-    string display_name = null;
-    string description = null;
+    // var current_genre_details = ViewBag.CurrentGenreDetails as ASI.Basecode.Services.ServiceModels.BookGenreViewModel;
+    // var current_language_details = ViewBag.CurrentLanguageDetails as ASI.Basecode.Services.ServiceModels.LanguageViewModel;
+    // var current_author_details = ViewBag.CurrentAuthorDetails as ASI.Basecode.Services.ServiceModels.AuthorViewModel;
+    // string display_name = null;
+    // string description = null;
 
 
-    if(current_genre_details != null)
-    {
-        display_name = current_genre_details?.GenreName ?? ViewBag.CurrentGenreDetails as string ?? "Books";
-        description = current_genre_details?.GenreDescription ?? ViewBag.CurrentGenreDetails as string ?? "";
-    }
-    else if(current_language_details != null){
-        display_name = current_language_details?.LanguageName ?? ViewBag.CurrentLanguageDetails as string ?? "Books";
-        description = "Language";
-    }
-    else if (current_author_details != null)
-    {
-        display_name = current_author_details?.AuthorName ?? ViewBag.CurrentAuthorDetails as string ?? "Books";
-        description = current_author_details?.AuthorDescription ?? ViewBag.CurrentAuthorDetails as string ?? "";
-    }
-    else
-    {
-        display_name = "Books";
-        description = "Manage Your Book Collection";
+    // if(current_genre_details != null)
+    // {
+    //     display_name = current_genre_details?.GenreName ?? ViewBag.CurrentGenreDetails as string ?? "Books";
+    //     description = current_genre_details?.GenreDescription ?? ViewBag.CurrentGenreDetails as string ?? "";
+    // }
+    // else if(current_language_details != null){
+    //     display_name = current_language_details?.LanguageName ?? ViewBag.CurrentLanguageDetails as string ?? "Books";
+    //     description = "Language";
+    // }
+    // else if (current_author_details != null)
+    // {
+    //     display_name = current_author_details?.AuthorName ?? ViewBag.CurrentAuthorDetails as string ?? "Books";
+    //     description = current_author_details?.AuthorDescription ?? ViewBag.CurrentAuthorDetails as string ?? "";
+    // }
+    // else
+    // {
+    //     display_name = "Books";
+    //     description = "Manage Your Book Collection";
 
-    }
+    // }
 
 
 
-    ViewData["Title"] = "Book List";
-    Layout = "_AdminSidebarLayout";
+    // ViewData["Title"] = "Book List";
+    // Layout = "_AdminSidebarLayout";
 }
 
 @{
-
+    ViewData["Title"] = "Book List";
+    Layout = "_AdminSidebarLayout";
+    string display_name = "Users";
+    string description = "Manage users";
     var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
     var currentSearch    = (string?)ViewData["CurrentSearch"];
     var currentAuthor    = (string?)ViewData["CurrentAuthor"];
@@ -246,7 +249,7 @@
                         <td>
                             @if (!string.IsNullOrWhiteSpace(book.CoverImageUrl))
                             {
-                                <img src="@book.CoverImageUrl" alt="Cover Image" class="cover-image" /> 
+                                <img src="@book.CoverImage" alt="Cover Image" class="cover-image" /> 
                             }
                             else
                             {
