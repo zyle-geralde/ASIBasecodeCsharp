@@ -1,0 +1,90 @@
+@using ASI.Basecode.Data.Interfaces
+@{
+    var routeValues = (Dictionary<string, string>)ViewData["RouteValues"] ?? new Dictionary<string, string>();
+    var pageIndex = (int)ViewData["CurrentPage"];
+    var totalPages = (int)ViewData["TotalPages"];
+    var hasPreviousPage = pageIndex > 1;
+    var hasNextPage = pageIndex < totalPages;
+}
+
+<div class="custom-pagination-container">
+    <div class="custom-pagination">
+        <!-- First page button -->
+        <a class="page-btn pagination-link @(pageIndex > 2 ? "" : "disabled")"
+           asp-all-route-data="@(pageIndex > 2 ? new Dictionary<string,string>(routeValues) { ["page"] = "1" } : null)">
+            <i class="fas fa-angle-double-left"></i>
+        </a>
+        
+        <!-- Previous page button -->
+        <a class="page-btn pagination-link @(hasPreviousPage ? "" : "disabled")"
+           asp-all-route-data="@(hasPreviousPage ? new Dictionary<string,string>(routeValues) { ["page"] = (pageIndex - 1).ToString() } : null)">
+            <i class="fas fa-angle-left"></i>
+        </a>
+        
+        <!-- Page numbers -->
+        @{
+            var startPage = Math.Max(1, pageIndex - 2);
+            var endPage = Math.Min(totalPages, startPage + 4);
+            
+            // Ensure we show 5 page buttons if possible
+            if (endPage - startPage < 4 && totalPages > 4)
+            {
+                if (startPage == 1)
+                {
+                    endPage = Math.Min(5, totalPages);
+                }
+                else
+                {
+                    startPage = Math.Max(1, endPage - 4);
+                }
+            }
+            
+            for (int i = startPage; i <= endPage; i++)
+            {
+                <a class="page-btn pagination-link @(i == pageIndex ? "active" : "")"
+                   asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = i.ToString() })">
+                    @i
+                </a>
+            }
+        }
+        
+        <!-- Next page button -->
+        <a class="page-btn pagination-link @(hasNextPage ? "" : "disabled")"
+           asp-all-route-data="@(hasNextPage ? new Dictionary<string,string>(routeValues) { ["page"] = (pageIndex + 1).ToString() } : null)">
+            <i class="fas fa-angle-right"></i>
+        </a>
+        
+        <!-- Last page button -->
+        <a class="page-btn pagination-link @(pageIndex < totalPages - 1 ? "" : "disabled")"
+           asp-all-route-data="@(pageIndex < totalPages - 1 ? new Dictionary<string,string>(routeValues) { ["page"] = totalPages.ToString() } : null)">
+            <i class="fas fa-angle-double-right"></i>
+        </a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add page reload with hash for fresh page load
+        document.querySelectorAll('.pagination-link:not(.disabled)').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                // Store that we want to scroll to top on page load
+                sessionStorage.setItem('scrollToTop', 'true');
+            });
+        });
+        
+        // Check if we need to scroll to top after page load
+        if (sessionStorage.getItem('scrollToTop')) {
+            // Remove the flag
+            sessionStorage.removeItem('scrollToTop');
+            
+            // Scroll to top of page
+            window.scrollTo(0, 0);
+            
+            // Scroll the table container to top as well (if it exists)
+            const tableContainer = document.querySelector('.scrollable-table-container');
+            if (tableContainer) {
+                tableContainer.scrollTop = 0;
+            }
+        }
+    });
+</script>

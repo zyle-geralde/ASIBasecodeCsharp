@@ -18,6 +18,9 @@
         ["sortDescending"] = currentSortDescending.ToString().ToLowerInvariant()
     };
 
+    ViewData["CurrentPage"] = Model.PageIndex;
+    ViewData["TotalPages"] = Model.TotalPages;
+
     var deleteConfirmationModal = new ConfirmationModalModel
     {
         Id = "deleteModal",
@@ -47,6 +50,7 @@
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/users/userlist.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pagination.css" asp-append-version="true" />
 }
 
 <div class="users-container p-4">
@@ -62,113 +66,146 @@
     </div>
 
     <div class="card">
-        <div class="card-body">
-          
+        <div class="card-body">  
             <form asp-action="Index" asp-controller="User" method="get" class="d-flex align-items-center mb-3">
-    <input type="text"
-           name="searchTerm"
-           value="@currentSearch"
-           class="form-control me-2"
-           placeholder="Search users…" />
+                <input type="text"
+                       name="searchTerm"
+                       value="@currentSearch"
+                       class="form-control me-2"
+                       placeholder="Search users…" />
 
-    <select name="role"
-            class="form-select me-2">
-        <option value="">All Roles</option>
-        <option value="Admin" selected="@(currentRoleFilter=="Admin")">Admin</option>
-        <option value="User"  selected="@(currentRoleFilter=="User")">User</option>
-    </select>
+                <select name="role"
+                        class="form-select me-2">
+                    <option value="">All Roles</option>
+                    <option value="Admin" selected="@(currentRoleFilter=="Admin")">Admin</option>
+                    <option value="User"  selected="@(currentRoleFilter=="User")">User</option>
+                </select>
 
-    <select name="sortOrder"
-            class="form-select me-2">
-        <option value="id"        selected="@(currentSort=="id")">ID</option>
-        <option value="email"  selected="@(currentSort=="email")">Email</option>
-        <option value="createdtime"     selected="@(currentSort=="createdtime")">Created Date</option>
-    </select>
+                <select name="sortOrder"
+                        class="form-select me-2">
+                    <option value="id"        selected="@(currentSort=="id")">ID</option>
+                    <option value="email"  selected="@(currentSort=="email")">Email</option>
+                    <option value="createdtime"     selected="@(currentSort=="createdtime")">Created Date</option>
+                </select>
 
-    <select name="sortDescending"
-            class="form-select me-2">
-        <option value="false" selected="@(currentSortDescending==false)">Ascending</option>
-        <option value="true"  selected="@(currentSortDescending==true)">Descending</option>
-    </select>
+                <select name="sortDescending"
+                        class="form-select me-2">
+                    <option value="false" selected="@(currentSortDescending==false)">Ascending</option>
+                    <option value="true"  selected="@(currentSortDescending==true)">Descending</option>
+                </select>
 
-    <button type="submit" class="btn btn-primary">Apply</button>
-</form>
+                <button type="submit" class="btn btn-primary">Apply</button>
+            </form>
 
-
-            <div class="table-responsive justify-content-around scrollable-table-container">
-                <table class="table table-hover user-table">
-                    <colgroup>
-                        <col style="width: 20%;">
-                        <col style="width: 30%;">
-                        <col style="width: 40%;">
-                        <col style="width: 10%;">
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>
-                                <a asp-action="Index" asp-route-searchTerm=@ViewData["CurrentSearch"]>
-                                    Username
-                                </a>
-                            </th>
-                            <th>
-                                <a asp-action="Index" asp-route-searchTerm=@ViewData["CurrentSearch"]>
-                                    Email
-                                </a>
-                            </th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var u in Model)
-                        {
+            <div class="table-container">
+                <div class="scrollable-table-container">
+                    <table class="table table-hover user-table">
+                        <colgroup>
+                            <col style="width: 20%;">
+                            <col style="width: 30%;">
+                            <col style="width: 40%;">
+                            <col style="width: 10%;">
+                        </colgroup>
+                        <thead>
                             <tr>
-                                <td>@u.Id</td>
-                                <td>@u.UserName</td>
-                                <td>@u.Email</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button type="button" class="btn btn-icon text-danger"
-                                                onclick="setupDeleteModal(this)"
-                                                data-user-id="@u.Id"
-                                                data-user-name="@u.Email">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                        <a href="/User/EditUser/@u.Id" class="btn btn-icon text-primary">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                    </div>
-                                </td>
+                                <th>User ID</th>
+                                <th>
+                                    <a asp-action="Index" asp-route-searchTerm=@ViewData["CurrentSearch"]>
+                                        Username
+                                    </a>
+                                </th>
+                                <th>
+                                    <a asp-action="Index" asp-route-searchTerm=@ViewData["CurrentSearch"]>
+                                        Email
+                                    </a>
+                                </th>
+                                <th>Actions</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var u in Model)
+                            {
+                                <tr>
+                                    <td>@u.Id</td>
+                                    <td>@u.UserName</td>
+                                    <td>@u.Email</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button type="button" class="btn btn-icon text-danger"
+                                                    onclick="setupDeleteModal(this)"
+                                                    data-user-id="@u.Id"
+                                                    data-user-name="@u.Email">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            <a href="/User/EditUser/@u.Id" class="btn btn-icon text-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <partial name="_PaginationPartial" />
             </div>
-            <nav>
-  <ul class="pagination">
-    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-        <a class="page-link"
-         asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = (Model.PageIndex - 1).ToString() })">
-        ‹ Prev
-      </a>
 
-    </li>
-    @for (int i = 1; i <= Model.TotalPages; i++)
-    {
-      <li class="page-item @(i==Model.PageIndex ? "active":"")">
-<a class="page-link"
-           asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = i.ToString() })">
-          @i
-        </a>      </li>
-    }
-    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-     <a class="page-link"
-         asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = (Model.PageIndex + 1).ToString() })">
-        Next ›
-
-      </a>    </li>
-  </ul>
-</nav>
+            
+            
+        @*    <div class="custom-pagination-container">
+                <div class="custom-pagination">
+                    <!-- First page button -->
+                    <a class="page-btn @(Model.PageIndex > 2 ? "" : "disabled")"
+                       asp-all-route-data="@(Model.PageIndex > 2 ? new Dictionary<string,string>(routeValues) { ["page"] = "1" } : null)">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                    
+                    <!-- Previous page button -->
+                    <a class="page-btn @(Model.HasPreviousPage ? "" : "disabled")"
+                       asp-all-route-data="@(Model.HasPreviousPage ? new Dictionary<string,string>(routeValues) { ["page"] = (Model.PageIndex - 1).ToString() } : null)">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                    
+                    <!-- Page numbers -->
+                    @{
+                        var startPage = Math.Max(1, Model.PageIndex - 2);
+                        var endPage = Math.Min(Model.TotalPages, startPage + 4);
+                        
+                        // Ensure we show 5 page buttons if possible
+                        if (endPage - startPage < 4 && Model.TotalPages > 4)
+                        {
+                            if (startPage == 1)
+                            {
+                                endPage = Math.Min(5, Model.TotalPages);
+                            }
+                            else
+                            {
+                                startPage = Math.Max(1, endPage - 4);
+                            }
+                        }
+                        
+                        for (int i = startPage; i <= endPage; i++)
+                        {
+                            <a class="page-btn @(i == Model.PageIndex ? "active" : "")"
+                               asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = i.ToString() })">
+                                @i
+                            </a>
+                        }
+                    }
+                    
+                    <!-- Next page button -->
+                    <a class="page-btn @(Model.HasNextPage ? "" : "disabled")"
+                       asp-all-route-data="@(Model.HasNextPage ? new Dictionary<string,string>(routeValues) { ["page"] = (Model.PageIndex + 1).ToString() } : null)">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                    
+                    <!-- Last page button -->
+                    <a class="page-btn @(Model.PageIndex < Model.TotalPages - 1 ? "" : "disabled")"
+                       asp-all-route-data="@(Model.PageIndex < Model.TotalPages - 1 ? new Dictionary<string,string>(routeValues) { ["page"] = Model.TotalPages.ToString() } : null)">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </div>
+            </div> *@
         </div>
     </div>
 </div>
