@@ -610,32 +610,54 @@
 }
 
 .review-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 8px; /* Optional: adds space between buttons */
     position: absolute;
     top: 20px;
     right: 20px;
 }
 
-.btn-edit-review {
-    background-color: #495e53;
-    color: white;
+.btn-edit-review,
+.btn-delete-review {
+    padding: 8px 16px;
     border: none;
     border-radius: 6px;
-    padding: 5px 12px;
-    font-size: 0.85rem;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
     transition: all 0.2s ease;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
 }
 
-.btn-edit-review:hover {
-    background-color: #3d4f45;
-    color: white;
+.btn-edit-review {
+    background: #e3f2fd;
+    color: #1976d2;
 }
+
+    .btn-edit-review:hover {
+        background: #bbdefb;
+        color: #1565c0;
+    }
+
+.btn-delete-review {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+    .btn-delete-review:hover {
+        background: #ffcdd2;
+        color: #c62828;
+    }
 
 .btn-edit-review i {
     font-size: 0.8rem;
 }
+    .btn-delete-review i {
+        font-size: 0.8rem;
+    }
 
 .no-reviews {
     text-align: center;
@@ -645,6 +667,18 @@
     border-radius: 8px;
     font-style: italic;
 }
+
+.confirmation-modal .modal-body {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    padding-bottom: 1rem !important;
+    padding-top: 1.5rem !important;
+}
+
+p.text-muted {
+    margin-bottom: 0;
+}
+
 
 @media (max-width: 992px) {
     .book-details-header {

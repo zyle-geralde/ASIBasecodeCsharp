@@ -400,6 +400,9 @@
                                                 <button class="btn btn-edit-review" onclick="editReview('@userReview.ReviewId', '@Model.BookId', @(userReview.Rating), '@Html.Raw(Html.Encode(userReview.Comment))', '@userReview.UploadDate?.ToString("yyyy-MM-ddTHH:mm:ss")')">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </button>
+                                                <button class="btn btn-delete-review" onclick="deleteBookReview('@userReview.ReviewId')">
+                                                    <i class="fas fa-trash-alt"></i> Delete
+                                                </button>
                                             </div>
                                         </div>
                                     }
@@ -569,6 +572,25 @@
                         <button type="button" id="updateReviewBtn" class="btn btn-submit">Update Review</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade confirmation-modal" id="deleteBookReviewModal" tabindex="-1" aria-labelledby="deleteBookReviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="deleteBookReviewModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <h6>Are you sure you want to delete your review?</h6>
+                <p class="text-muted">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteBookReview" class="btn btn-danger-2">Delete Review</button>
             </div>
         </div>
     </div>
@@ -1097,4 +1119,44 @@ $('#updateReviewBtn').click(function() {
             };
         });
     </script>
+    <script>
+    let reviewIdToDelete = null;
+
+    function deleteBookReview(reviewId) {
+        reviewIdToDelete = reviewId;
+        var deleteModal = new bootstrap.Modal(document.getElementById('deleteBookReviewModal'));
+        deleteModal.show();
+    }
+
+    $('#confirmDeleteBookReview').click(function () {
+        if (reviewIdToDelete) {
+            const token = $('input[name="__RequestVerificationToken"]').first().val();
+
+            $.ajax({
+                url: '@Url.Action("Delete", "Review")',
+                type: 'POST',
+                data: {
+                    id: reviewIdToDelete,
+                    __RequestVerificationToken: token
+                },
+                success: function (response) {
+                    var deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteBookReviewModal'));
+                    deleteModal.hide();
+
+                    toastr.success("Review deleted successfully!");
+
+                    // Optionally, reload the page or remove the review from DOM
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1200);
+
+                    reviewIdToDelete = null;
+                },
+                error: function (xhr, status, error) {
+                    toastr.error("Error deleting review: " + error);
+                }
+            });
+        }
+    });
+</script>
 }
