@@ -18,6 +18,24 @@
     margin-bottom: 20px;
 }
 
+.fas.fa-star, .far.fa-star, .fas.fa-star-half-alt {
+    color: #FFD700 !important; 
+}
+
+.book-header-rating .stars {
+    display: inline-block;
+    margin-right: 8px;
+}
+
+    .book-header-rating .stars i {
+        font-size: 18px; 
+    }
+
+.rating .stars i {
+    font-size: 24px;
+    cursor: pointer;
+}
+
 .book-cover-header-container {
     flex-shrink: 0;
     width: 150px;

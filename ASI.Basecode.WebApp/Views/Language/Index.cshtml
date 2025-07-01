@@ -33,13 +33,6 @@
         ConfirmButtonId = "edit-button-submit",
         ConfirmButtonClass = "add-language-btn"
     };
-
-   /* var successLanguageModal = new SuccessModalModel
-    {
-        Id = "successLanguageModal",
-        Title = "Success!",
-        Message = "Operation completed successfully!"
-     };*/
 }
 
 
@@ -138,7 +131,6 @@
 
 <partial name="_ConfirmationModal" model="deleteLanguageModal" />
 <partial name="_Notification" />
-@*<partial name="_SuccessModal" model="successLanguageModal" />*@
 
 <div class="modal fade" id="addLanguageModal" tabindex="-1" aria-labelledby="addLanguageLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -193,7 +185,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Initialize toastr options
             toastr.options = {
                 "closeButton": true,
                 "debug": false,
