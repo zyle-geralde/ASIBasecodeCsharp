@@ -9,7 +9,8 @@ namespace ASI.Basecode.Data.Interfaces
 {
     public interface IUserRepository
     {
-        Task<List<User>> GetUsersQueried(string searchTerm, string sortOrder, int pageIndex, int pageSize);
+        //Task<List<User>> GetUsersQueried(UserQueryParams queryParams);
+        Task<PaginatedList<User>> GetUsersQueried(UserQueryParams? queryParams = null);
         IQueryable<User> GetUsers();
         bool UserExists(string userId);
         Task AddUser(User user);
@@ -19,5 +20,6 @@ namespace ASI.Basecode.Data.Interfaces
         Task UpdateUser(User user);
         bool UserNameExists(string userName);
         Task<bool> CheckEmailVerified(string email);
+
     }
 }

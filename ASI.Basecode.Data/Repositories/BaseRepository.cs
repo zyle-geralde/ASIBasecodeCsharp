@@ -2,6 +2,8 @@
 using ASI.Basecode.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Basecode.Data.Repositories
 {
@@ -25,6 +27,15 @@ namespace Basecode.Data.Repositories
         protected virtual void SetEntityState(object entity, EntityState entityState)
         {
             Context.Entry(entity).State = entityState;
+        }
+
+        protected Task<PaginatedList<T>> GetPaged<T>(
+            IQueryable<T> query,
+            int pageIndex,
+            int pageSize)
+            where T : class
+        {
+            return PaginatedList<T>.Create(query, pageIndex, pageSize);
         }
     }
 }

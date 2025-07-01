@@ -1,10 +1,14 @@
-﻿using ASI.Basecode.Services.Interfaces;
+﻿using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
+using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.AccessControl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -21,17 +25,29 @@ namespace ASI.Basecode.WebApp.Controllers
         }
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Index(string searchTerm, string sortOrder)
+        public async Task<IActionResult> Index(string? searchTerm, string? role, string? sortOrder, bool sortDescending = false, int? page = 1)
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             TempData.Remove("SuccessMessage");
             // Remove pagination parameters - get all users
-            ViewData["CurrentSearch"] = searchTerm;
-            ViewData["CurrentSort"] = sortOrder;
+            const int PageSize = 10;
+            int pageIndex = page.GetValueOrDefault(1);
 
-            // Pass a large number or 0 to get all users
-            var users = await _userService.GetUsersQueried(searchTerm, sortOrder, 1, int.MaxValue);
+            var queryParams = new UserQueryParams
+            {
+                SearchTerm = searchTerm,
+                Role = role,
+                SortOrder = sortOrder ?? "id",
+                SortDescending = sortDescending,
+                PageIndex = pageIndex,
+                PageSize = PageSize
+            };
+            ViewData["CurrentSearch"] = searchTerm;
+            ViewData["CurrentSort"] = queryParams.SortOrder;
+            ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+            ViewData["CurrentRoleFilter"] = queryParams.Role;
+            PaginatedList<User> users = await _userService.GetUsersQueried(queryParams);
 
             return View("~/Views/Users/Index.cshtml", users);
         }
