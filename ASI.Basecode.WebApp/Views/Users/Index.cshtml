@@ -1,5 +1,6 @@
 ﻿@using ASI.Basecode.Data.Interfaces;
 @model PaginatedList<ASI.Basecode.Data.Models.User>
+@using Microsoft.AspNetCore.Routing;
 
 @{
     ViewData["Title"] = "Users";
@@ -10,6 +11,12 @@
     var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
     var currentRoleFilter = (string?)ViewData["CurrentRoleFilter"];
 
+    var routeValues = new Dictionary<string, string> {
+        ["searchTerm"]     = currentSearch,
+        ["role"]           = currentRoleFilter,
+        ["sortOrder"]      = currentSort,
+        ["sortDescending"] = currentSortDescending.ToString().ToLowerInvariant()
+    };
 
     var deleteConfirmationModal = new ConfirmationModalModel
     {
@@ -140,17 +147,26 @@
             <nav>
   <ul class="pagination">
     <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-      <a class="page-link" asp-route-page="@(Model.PageIndex-1)">‹ Prev</a>
+        <a class="page-link"
+         asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = (Model.PageIndex - 1).ToString() })">
+        ‹ Prev
+      </a>
+
     </li>
     @for (int i = 1; i <= Model.TotalPages; i++)
     {
       <li class="page-item @(i==Model.PageIndex ? "active":"")">
-        <a class="page-link" asp-route-page="@i">@i</a>
-      </li>
+<a class="page-link"
+           asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = i.ToString() })">
+          @i
+        </a>      </li>
     }
     <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-      <a class="page-link" asp-route-page="@(Model.PageIndex+1)">Next ›</a>
-    </li>
+     <a class="page-link"
+         asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = (Model.PageIndex + 1).ToString() })">
+        Next ›
+
+      </a>    </li>
   </ul>
 </nav>
         </div>

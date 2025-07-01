@@ -24,14 +24,15 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         private readonly IReviewService _reviewService;
         private readonly IBookGenreService _bookGenreService;
         private readonly IAccessControlInterface _accessControlInterface;
+        private readonly IAuthorRepository _authorRepository;
         //private readonly IBookRepository _bookRepository;
-        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface)
+        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface, IAuthorRepository authorRepository)
         {
             _bookService = bookService;
             _reviewService = reviewService;
             _bookGenreService = bookGenreService;
             _accessControlInterface = accessControlInterface;
-            
+            _authorRepository = authorRepository;
         }
 
 
@@ -86,9 +87,9 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         }
 
 
-        /*[HttpGet]
+        [HttpGet]
         [Route("Book/ListBook")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> ListBook(
             string? searchTerm,
             string? author,
@@ -134,25 +135,26 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             ViewData["AllGenres"] = allGenres;
 
 
-            var books = await _bookService.GetBooks(
-                queryParams );
+            //var books = await _bookService.GetBooks(
+            //    queryParams );
+            PaginatedList<BookViewModel> books = await _bookService.GetBooks(queryParams);
             //List<Book> books = await _bookService.GetAllBooks();
             return View("~/Views/Books/ListBook.cshtml", books);
-        }*/
-
-        [HttpGet]
-        [Route("Book/ListBook")]
-        [Authorize]
-        public async Task<IActionResult> ListBook()
-        {
-            //For Routing
-            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
-            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
-
-            List<BookViewModel> books = await _bookService.GetAllBooks();
-
-            return View("~/Views/Books/ListBook.cshtml", books);
         }
+
+        //[HttpGet]
+        //[Route("Book/ListBook")]
+        //[Authorize]
+        //public async Task<IActionResult> ListBook()
+        //{
+        //    //For Routing
+        //    bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+        //    if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
+        //    List<BookViewModel> books = await _bookService.GetAllBooks();
+
+        //    return View("~/Views/Books/ListBook.cshtml", books);
+        //}
 
         [HttpGet]
         [Route("Book/SearchResults")]
@@ -170,7 +172,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         string? category = null
         )
         {
-                const int PageSize = 10;
+                const int PageSize = 4;
                 int pageIndex = page.GetValueOrDefault(1);
 
                 var queryParams = new BookQueryParams
@@ -218,10 +220,9 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             {
                 ViewData["CategoryTitle"] = "Search Results";
             }
-            var books = await _bookService.GetBooks(
-                    queryParams);
-                //List<Book> books = await _bookService.GetAllBooks();
-                return View("~/Views/Books/BookSearchResults.cshtml", books);
+            PaginatedList<BookViewModel> books = await _bookService.GetBooks(queryParams);
+            //List<Book> books = await _bookService.GetAllBooks();
+            return View("~/Views/Books/BookSearchResults.cshtml", books);
             }
 
 
@@ -253,6 +254,9 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             var reviews= await _reviewService.GetReviewsByBookId(bookId);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             bool hasReviewed = reviews.Any(r => r.UserId == userId);
+
+            Author authorName = await _authorRepository.GetAuthorById(book.Author != null ? book.Author : "");
+
             var bookDetails = new BookViewModel
             {
                 BookId = book.BookId,
@@ -275,7 +279,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 AverageRating = book.AverageRating,
                 CreatedBy = book.CreatedBy,
                 UpdatedBy = book.UpdatedBy,
-                Author = book.Author,
+                Author = authorName != null ? authorName.AuthorName : "",
                 Likes = book.Likes,
                 ISBN10 = book.ISBN10,
                 ISBN13 = book.ISBN13,
