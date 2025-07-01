@@ -1,4 +1,5 @@
-﻿using ASI.Basecode.Data.Models;
+﻿using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.ServiceModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace ASI.Basecode.Services.Interfaces
         Task<User> AddAdminFromRegister(UserViewModel model);
         IEnumerable<User> GetAllUsers();
         Task<bool> DeleteUser(int id);
-        Task<List<User>> GetUsersQueried(string searchTerm, string sortOrder, int pageIndex, int pageSize);
+        Task<PaginatedList<User>> GetUsersQueried(UserQueryParams queryParams);
         Task VerifyOtp(OtpViewModel model);
 
         Task<OtpViewModel> GetUserbyEmail(string email);

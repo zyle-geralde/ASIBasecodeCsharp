@@ -10,9 +10,10 @@
 @section styles {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <link rel="stylesheet" href="~/css/admin/books/bookmaster.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
-    
+
 }
 
 <div class="admin-common-container">
@@ -34,13 +35,12 @@
                         <span id="imagePlaceholder" class="placeholder-text">No Image</span>
                     </div>
 
-                    <div class="file-input-group"> </div>
-                    <input type="text" class="book-master-file-input-text" readonly id="authorImageFileNameDisplay" value="@Model?.AuthorImageUrl" style="display: none;"> 
+                    <input type="text" class="book-master-file-input-text" readonly id="authorImageFileNameDisplay">
                     <button type="button" class="master-browse-button" onclick="document.getElementById('authorImageFile').click();">BROWSE</button>
-                    <input type="file" id="authorImageFile" accept="image/*" name="AuthorImageFile" style="display: none;"> 
+                    <input type="file" id="authorImageFile" accept="image/*" name="AuthorImageFile" style="display: none;">
 
                     <p id="authorImageUploadStatus" class="master-upload-status">
-                        <span class="file-size-info">Max file size: 1GB</span>
+                        <span class="file-size-info">Max file size: 10MB</span>
                         <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                     </p>
                 </div>
@@ -54,7 +54,7 @@
                         </div>
                         <div class="book-master-form-group">
                             <label for="authorDescription">Description</label>
-                            <input type="text" id="authorDescription" name="AuthorDescription" class="book-master-form-input" value="@Model?.AuthorDescription" required>
+                            <input type="text" id="authorDescription" name="AuthorDescription" class="book-master-form-input" value="@Model?.AuthorDescription">
 
                             <span asp-validation-for="AuthorDescription" class="text-danger"></span>
                         </div>
@@ -88,21 +88,6 @@
     </div>
 </div>
 
-<div class="modal fade status-modal" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body text-center py-4">
-                <div class="status-icon mb-3">
-                    <i class="fas fa-check"></i>
-                </div>
-                <h5 class="modal-title mb-2" id="statusModalLabel">Status</h5>
-                <p class="mb-4" id="statusModalMessage">Operation completed successfully!</p>
-                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" id="statusModalClose">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
@@ -125,31 +110,6 @@
         const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
 
-
-        function showStatusModal(message, title = 'Status', type = 'Success') {
-            document.getElementById('statusModalLabel').textContent = title;
-            document.getElementById('statusModalMessage').textContent = message;
-            const statusIcon = document.querySelector('#statusModal .status-icon i');
-            if (statusIcon) {
-                statusIcon.classList.remove('fa-check', 'fa-times', 'fa-exclamation-triangle');
-                if (type === 'Success') {
-                    statusIcon.classList.add('fa-check');
-                    statusIcon.style.color = '#28a745';
-                } else if (type === 'Error') {
-                    statusIcon.classList.add('fa-times');
-                    statusIcon.style.color = '#dc3545';
-                } else if (type === 'Warning') {
-                    statusIcon.classList.add('fa-exclamation-triangle');
-                    statusIcon.style.color = '#ffc107';
-                } else {
-                    statusIcon.classList.add('fa-check');
-                    statusIcon.style.color = '#28a745';
-                }
-            }
-            const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
-            statusModal.show();
-        }
-       
         async function deleteFileFromFirebase(fileUrl) {
             if (!fileUrl) {
                 console.warn("Attempted to delete null or empty file URL.");
@@ -180,11 +140,11 @@
 
         //Firebase Upload Function
         async function uploadFileToFirebase(file, path, statusElement) {
-            // Ensure statusElement is valid and contains the target span before trying to update it
+
             const fileSizeInfoSpan = statusElement ? statusElement.querySelector('.file-size-info') : null;
 
             if (!file) {
-                if (fileSizeInfoSpan) { // Only update if the span exists
+                if (fileSizeInfoSpan) {
                     fileSizeInfoSpan.textContent = 'No file selected.';
                 }
                 return null;
@@ -201,24 +161,24 @@
                 uploadTask.on('state_changed',
                     (snapshot) => {
                         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        if (fileSizeInfoSpan) { // Safely update progress
+                        if (fileSizeInfoSpan) {
                             fileSizeInfoSpan.textContent = `Upload is ${progress.toFixed(2)}% done`;
                         }
                     },
                     (error) => {
-                        showStatusModal(`Author image upload failed: ${error.message}`, 'Error', 'Error');
+                        toastr.error(`Author image upload failed: ${error.message}`);
                         console.error("Upload error:", error);
                         reject(error);
                     },
                     async () => {
                         try {
                             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                            if (fileSizeInfoSpan) { // Safely update success message
+                            if (fileSizeInfoSpan) {
                                 fileSizeInfoSpan.textContent = 'Upload successful!';
                             }
                             resolve(downloadURL);
                         } catch (error) {
-                            showStatusModal(`Failed to get download URL: ${error.message}`, 'Error', 'Error');
+                            toastr.error(`Failed to get download URL: ${error.message}`);
                             console.error("Get Download URL error:", error);
                             reject(error);
                         }
@@ -229,185 +189,295 @@
 
 
         //Setting up the file input
-        document.getElementById('authorImageFile').addEventListener('change', function () {
-            const fileNameDisplay = document.getElementById('authorImageFileNameDisplay');
+        // document.getElementById('authorImageFile').addEventListener('change', function () {
+        //     const fileNameDisplay = document.getElementById('authorImageFileNameDisplay');
+        //     const authorImagePreview = document.getElementById('authorImagePreview');
+        //     const imagePlaceholder = document.getElementById('imagePlaceholder');
+        //     const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
+        //     // const fileName = this.files[0] ? this.files[0].name : '';
+        //     // document.getElementById('authorImageFileNameDisplay').value = fileName;
+        //     // const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
+
+        //     // if (authorImageUploadStatusElement) {
+        //     //     const fileSizeInfo = authorImageUploadStatusElement.querySelector('.file-size-info');
+        //     //     const supportedFormatsInfo = authorImageUploadStatusElement.querySelector('.supported-formats-info');
+        //     //     if (fileSizeInfo) fileSizeInfo.textContent = 'Max file size: 1GB';
+        //     //     if (supportedFormatsInfo) supportedFormatsInfo.textContent = 'Supported formats: JPG, PNG, JPEG';
+        //     //     authorImageUploadStatusElement.classList.remove('error-message');
+        //     // }
+        //     if (this.files && this.files[0]) {
+        //         const file = this.files[0];
+        //         fileNameDisplay.textContent = file.name;
+        //         const reader = new FileReader();
+
+        //         reader.onload = function (e) {
+        //             authorImagePreview.src = e.target.result;
+        //             authorImagePreview.style.display = 'block';
+        //             imagePlaceholder.style.display = 'none';
+        //         };
+        //         reader.readAsDataURL(file);
+        //     } else {
+        //         fileNameDisplay.textContent = '';
+        //         authorImagePreview.src = '';
+        //         authorImagePreview.style.display = 'none';
+        //         imagePlaceholder.style.display = 'block';
+        //     }
+
+        //     if (authorImageUploadStatusElement) {
+        //         const fileSizeInfo = authorImageUploadStatusElement.querySelector('.file-size-info');
+        //         const supportedFormatsInfo = authorImageUploadStatusElement.querySelector('.supported-formats-info');
+        //         if (fileSizeInfo) fileSizeInfo.textContent = 'Max file size: 1GB';
+        //         if (supportedFormatsInfo) supportedFormatsInfo.textContent = 'Supported formats: JPG, PNG, JPEG';
+        //         authorImageUploadStatusElement.classList.remove('error-message');
+        //     }
+        // });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // image preview
+            const authorImageFile = document.getElementById('authorImageFile');
             const authorImagePreview = document.getElementById('authorImagePreview');
             const imagePlaceholder = document.getElementById('imagePlaceholder');
-            const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
-            // const fileName = this.files[0] ? this.files[0].name : '';
-            // document.getElementById('authorImageFileNameDisplay').value = fileName;
-            // const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
+            const authorImageFileNameDisplay = document.getElementById('authorImageFileNameDisplay');
 
-            // if (authorImageUploadStatusElement) {
-            //     const fileSizeInfo = authorImageUploadStatusElement.querySelector('.file-size-info');
-            //     const supportedFormatsInfo = authorImageUploadStatusElement.querySelector('.supported-formats-info');
-            //     if (fileSizeInfo) fileSizeInfo.textContent = 'Max file size: 1GB';
-            //     if (supportedFormatsInfo) supportedFormatsInfo.textContent = 'Supported formats: JPG, PNG, JPEG';
-            //     authorImageUploadStatusElement.classList.remove('error-message');
-            // }
-            if (this.files && this.files[0]) {
-                const file = this.files[0];
-                fileNameDisplay.textContent = file.name; 
-                const reader = new FileReader();
 
-                reader.onload = function (e) {
-                    authorImagePreview.src = e.target.result;
-                    authorImagePreview.style.display = 'block';
-                    imagePlaceholder.style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                fileNameDisplay.textContent = '';
-                authorImagePreview.src = '';
-                authorImagePreview.style.display = 'none';
-                imagePlaceholder.style.display = 'block';
-            }
-
-            if (authorImageUploadStatusElement) {
-                const fileSizeInfo = authorImageUploadStatusElement.querySelector('.file-size-info');
-                const supportedFormatsInfo = authorImageUploadStatusElement.querySelector('.supported-formats-info');
-                if (fileSizeInfo) fileSizeInfo.textContent = 'Max file size: 1GB';
-                if (supportedFormatsInfo) supportedFormatsInfo.textContent = 'Supported formats: JPG, PNG, JPEG';
-                authorImageUploadStatusElement.classList.remove('error-message');
-            }
-        });
-
-        document.getElementById('statusModalClose').addEventListener('click', () => {
-            const statusModalLabel = document.getElementById('statusModalLabel').textContent;
-            if (statusModalLabel === 'Status' || statusModalLabel === 'Success') {
-                window.location.href = '/Author/Index';
-            }
-        });
-
-         document.getElementById('addAuthorForm').addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            const form = document.getElementById('addAuthorForm');
-            const submitButton = document.getElementById('addAuthorSubmitButton');
+            const addAuthorForm = document.getElementById("addAuthorForm");
             const authorNameInput = document.getElementById('authorName');
-            const authorImageFile = document.getElementById('authorImageFile').files[0];
-            const authorImageUploadStatus = document.getElementById('authorImageUploadStatus');
+            const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
             const authorImageUrlInput = document.getElementById('authorImageUrl');
+            const submitButton = document.getElementById('addAuthorSubmitButton');
 
-
-            //const originalAuthorImageUrl = authorImageUrlInput.value;
-            if (authorNameInput.value.trim() === '') {
-                showStatusModal('Author Name is required.', 'Validation Error', 'Warning');
-                return;
+            const fileSizeInfoSpanInitial = authorImageUploadStatusElement.querySelector('.file-size-info');
+            if (fileSizeInfoSpanInitial) {
+                fileSizeInfoSpanInitial.textContent = 'Max file size: 10MB';
             }
 
-            if (!authorImageFile) {
-                showStatusModal('Author image is required.', 'Validation Error', 'Warning');
-                return;
-            }
-
-            const fileSizeInfoSpan = authorImageUploadStatus.querySelector('.file-size-info');
-            const supportedFormatsInfoSpan = authorImageUploadStatus.querySelector('.supported-formats-info');
-
-            if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 1GB';
-            if (supportedFormatsInfoSpan) supportedFormatsInfoSpan.textContent = 'Supported formats: JPG, PNG, JPEG';
-            authorImageUploadStatus.classList.remove('error-message');
-
-            submitButton.disabled = true;
-            submitButton.textContent = 'Processing...';
-
-            let uploadedAuthorImageUrl = null;
-
-            try {
-                if (authorImageFile) {
-                    // max file size checking
-                    const MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024 * 1024; // 1GB
-                    if (authorImageFile.size > MAX_FILE_SIZE_BYTES) {
-                        showStatusModal('File size exceeds the 1GB limit.', 'Upload Error', 'Error');
-                        if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'File too large!';
-                        authorImageUploadStatus.classList.add('error-message');
-                        submitButton.disabled = false;
-                        submitButton.textContent = 'ADD AUTHOR';
-                        return; 
-                    }
-
-                    uploadedAuthorImageUrl = await uploadFileToFirebase(authorImageFile, 'author_covers/', authorImageUploadStatus);
-                    if (uploadedAuthorImageUrl) {
-                        authorImageUrlInput.value = uploadedAuthorImageUrl;
+            if (authorImageFile) {
+                authorImageFile.addEventListener('change', function () {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            authorImagePreview.src = e.target.result;
+                            authorImagePreview.style.display = 'block';
+                            imagePlaceholder.style.display = 'none';
+                            authorImageFileNameDisplay.value = file.name;
+                        };
+                        reader.readAsDataURL(file);
                     } else {
-                        throw new Error('Author image upload failed.');
+                        authorImagePreview.src = '';
+                        authorImagePreview.style.display = 'none';
+                        imagePlaceholder.style.display = 'block';
+                        authorImageFileNameDisplay.value = '';
                     }
-                } 
 
-
-                const formData = new FormData(form);
-
-                // Fetch form data to the Controller
-                const response = await fetch(form.action, {
-                    method: form.method,
-                    body: formData
+                    const fileSizeInfo = authorImageUploadStatusElement.querySelector('.file-size-info');
+                    const supportedFormatsInfo = authorImageUploadStatusElement.querySelector('.supported-formats-info');
+                    if (fileSizeInfo) fileSizeInfo.textContent = 'Max file size: 10MB';
+                    if (supportedFormatsInfo) supportedFormatsInfo.textContent = 'Supported formats: JPG, PNG, JPEG';
+                    authorImageUploadStatusElement.classList.remove('error-message');
                 });
-
-                if (response.ok) {
-                    const successData = await response.json();
-                    // alert(successData.message)
-                    showStatusModal(successData.message, 'Success', 'Success');
-                    form.reset();
-                    document.getElementById('authorImageFileNameDisplay').textContent = 'No file chosen';
-                    document.getElementById('authorImagePreview').src = '';
-                    document.getElementById('authorImagePreview').style.display = 'none';
-                    document.getElementById('imagePlaceholder').style.display = 'block';
-                } else {
-                    const errorData = await response.json();
-                    const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
-                    // alert(errorMessage)
-                    showStatusModal(errorMessage, 'Error', 'Error');
-
-                    // rollback uploaded file if backend submission fails and it was a new upload
-                    if (uploadedAuthorImageUrl) {
-                        await deleteFileFromFirebase(uploadedAuthorImageUrl);
-                    }
-                }
-
-            } catch (error) {
-                console.error('Submission error:', error);
-                // alert('Submission error:', error)
-                showStatusModal(`Submission error: ${error.message}`, 'Error', 'Error');
-
-                // rollback: delete uploaded file from Firebase
-                if (uploadedAuthorImageUrl) {
-                    await deleteFileFromFirebase(uploadedAuthorImageUrl);
-                }
-
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = 'ADD AUTHOR';
             }
 
-        });
 
 
-        // Handle confirmation modal for submission
-        document.getElementById('addAuthorSubmitButton').addEventListener('click', (event) => {
-            if (event.target.id === 'addAuthorSubmitButton') {
+            //  document.getElementById('addAuthorForm').addEventListener('submit', async (event) => {
+            //     event.preventDefault();
+
+            //     const form = document.getElementById('addAuthorForm');
+            //     const submitButton = document.getElementById('addAuthorSubmitButton');
+            //     const authorNameInput = document.getElementById('authorName');
+            //     const authorImageFile = document.getElementById('authorImageFile').files[0];
+            //     const authorImageUploadStatus = document.getElementById('authorImageUploadStatus');
+            //     const authorImageUrlInput = document.getElementById('authorImageUrl');
+
+
+            //     //const originalAuthorImageUrl = authorImageUrlInput.value;
+            //     if (authorNameInput.value.trim() === '') {
+            //         showStatusModal('Author Name is required.', 'Validation Error', 'Warning');
+            //         return;
+            //     }
+
+            //     if (!authorImageFile) {
+            //         showStatusModal('Author image is required.', 'Validation Error', 'Warning');
+            //         return;
+            //     }
+
+            //     const fileSizeInfoSpan = authorImageUploadStatus.querySelector('.file-size-info');
+            //     const supportedFormatsInfoSpan = authorImageUploadStatus.querySelector('.supported-formats-info');
+
+            //     if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 1GB';
+            //     if (supportedFormatsInfoSpan) supportedFormatsInfoSpan.textContent = 'Supported formats: JPG, PNG, JPEG';
+            //     authorImageUploadStatus.classList.remove('error-message');
+
+            //     submitButton.disabled = true;
+            //     submitButton.textContent = 'Processing...';
+
+            //     let uploadedAuthorImageUrl = null;
+
+            //     try {
+            //         if (authorImageFile) {
+            //             // max file size checking
+            //             const MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024 * 1024; // 1GB
+            //             if (authorImageFile.size > MAX_FILE_SIZE_BYTES) {
+            //                 showStatusModal('File size exceeds the 1GB limit.', 'Upload Error', 'Error');
+            //                 if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'File too large!';
+            //                 authorImageUploadStatus.classList.add('error-message');
+            //                 submitButton.disabled = false;
+            //                 submitButton.textContent = 'ADD AUTHOR';
+            //                 return;
+            //             }
+
+            //             uploadedAuthorImageUrl = await uploadFileToFirebase(authorImageFile, 'author_covers/', authorImageUploadStatus);
+            //             if (uploadedAuthorImageUrl) {
+            //                 authorImageUrlInput.value = uploadedAuthorImageUrl;
+            //             } else {
+            //                 throw new Error('Author image upload failed.');
+            //             }
+            //         }
+
+
+            //         const formData = new FormData(form);
+
+            //         // Fetch form data to the Controller
+            //         const response = await fetch(form.action, {
+            //             method: form.method,
+            //             body: formData
+            //         });
+
+            //         if (response.ok) {
+            //             const successData = await response.json();
+            //             // alert(successData.message)
+            //             showStatusModal(successData.message, 'Success', 'Success');
+            //             form.reset();
+            //             document.getElementById('authorImageFileNameDisplay').textContent = 'No file chosen';
+            //             document.getElementById('authorImagePreview').src = '';
+            //             document.getElementById('authorImagePreview').style.display = 'none';
+            //             document.getElementById('imagePlaceholder').style.display = 'block';
+            //         } else {
+            //             const errorData = await response.json();
+            //             const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
+            //             // alert(errorMessage)
+            //             showStatusModal(errorMessage, 'Error', 'Error');
+
+            //             // rollback uploaded file if backend submission fails and it was a new upload
+            //             if (uploadedAuthorImageUrl) {
+            //                 await deleteFileFromFirebase(uploadedAuthorImageUrl);
+            //             }
+            //         }
+
+            //     } catch (error) {
+            //         console.error('Submission error:', error);
+            //         // alert('Submission error:', error)
+            //         showStatusModal(`Submission error: ${error.message}`, 'Error', 'Error');
+
+            //         // rollback: delete uploaded file from Firebase
+            //         if (uploadedAuthorImageUrl) {
+            //             await deleteFileFromFirebase(uploadedAuthorImageUrl);
+            //         }
+
+            //     } finally {
+            //         submitButton.disabled = false;
+            //         submitButton.textContent = 'ADD AUTHOR';
+            //     }
+
+            // });
+
+
+            // confirmation modal for submission
+            document.getElementById('addAuthorSubmitButton').addEventListener('click', (event) => {
                 event.preventDefault();
-                const authorNameInput = document.getElementById('authorName');
                 if (authorNameInput.value.trim() === '') {
-                    showStatusModal('Author Name is required.', 'Validation Error', 'Warning');
+                    toastr.warning('Author Name is required.');
                     return;
                 }
 
-                if (!authorImageFile) {
-                    showStatusModal('Author image is required.', 'Validation Error', 'Warning');
+                if (!authorImageFile.files || authorImageFile.files.length === 0) {
+                    toastr.warning('Author Image is required.');
                     return;
                 }
-
 
                 const confirmationModal = new bootstrap.Modal(document.getElementById('addAuthorConfirmationModal'));
                 confirmationModal.show();
-            }
-        });
+            });
 
-        document.getElementById('confirmAddAuthorAction').addEventListener('click', () => {
-            const form = document.getElementById('addAuthorForm');
-            const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('addAuthorConfirmationModal'));
-            confirmationModal.hide();
-            form.dispatchEvent(new Event('submit', { cancelable: true }));
+            document.getElementById('confirmAddAuthorAction').addEventListener('click', async () => {
+
+                const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('addAuthorConfirmationModal'));
+                confirmationModal.hide();
+
+                submitButton.disabled = true;
+                submitButton.textContent = 'Processing...';
+
+                let uploadedAuthorImageUrl = null;
+
+                try {
+                    const fileToUpload = authorImageFile.files[0];
+                    const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+                    if (fileToUpload.size > MAX_FILE_SIZE_BYTES) {
+                        toastr.error('File size exceeds the 10MB limit.');
+                        authorImageUploadStatusElement.classList.add('error-message');
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'ADD AUTHOR';
+                        return;
+                    }
+
+                    // Upload image to Firebase
+                    uploadedAuthorImageUrl = await uploadFileToFirebase(fileToUpload, 'author_covers/', authorImageUploadStatusElement);
+                    if (uploadedAuthorImageUrl) {
+                        authorImageUrlInput.value = uploadedAuthorImageUrl;
+                    } else {
+                        throw new Error('Author image upload failed during Firebase process.');
+                    }
+
+                    const formData = new FormData(addAuthorForm);
+                    formData.set('AuthorImageUrl', authorImageUrlInput.value);
+
+                    // submit form data to the controller
+                    const response = await fetch(addAuthorForm.action, {
+                        method: addAuthorForm.method,
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const successData = await response.json();
+                        toastr.success(successData.message || 'Author added successfully!');
+
+                        addAuthorForm.reset();
+                        document.getElementById('authorImagePreview').src = '';
+                        document.getElementById('authorImagePreview').style.display = 'none';
+                        document.getElementById('imagePlaceholder').style.display = 'block';
+                        authorImageFileNameDisplay.value = '';
+
+                        setTimeout(() => {
+                            window.location.href = '/Author/Index';
+                        }, 1500);
+
+                    } else {
+                        const errorData = await response.json();
+                        const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
+                        toastr.error(errorMessage);
+
+                        //rollback the Firebase upload
+                        if (uploadedAuthorImageUrl) {
+                            await deleteFileFromFirebase(uploadedAuthorImageUrl);
+                            // toastr.warning("Image upload rolled back due to backend error.");
+                        }
+                    }
+
+                } catch (error) {
+                    console.error('Submission error:', error);
+                    toastr.error(`Submission error: ${error.message}`);
+
+                    if (uploadedAuthorImageUrl) {
+                        await deleteFileFromFirebase(uploadedAuthorImageUrl);
+                        toastr.warning("Image upload rolled back due to unexpected error.");
+                    }
+
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'ADD AUTHOR';
+                }
+            });
         });
 
 
