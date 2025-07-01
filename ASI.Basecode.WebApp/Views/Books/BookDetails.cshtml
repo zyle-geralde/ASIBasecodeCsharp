@@ -397,7 +397,7 @@
                                                 Updated last: @userReview.UploadDate?.ToString("MMMM dd, yyyy")
                                             </div>
                                             <div class="review-actions">
-                                                <button class="btn btn-edit-review" onclick="editReview('@userReview.ReviewId')">
+                                                <button class="btn btn-edit-review" onclick="editReview('@userReview.ReviewId', '@Model.BookId', @(userReview.Rating), '@Html.Raw(Html.Encode(userReview.Comment))', '@userReview.UploadDate?.ToString("yyyy-MM-ddTHH:mm:ss")')">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </button>
                                             </div>
@@ -664,74 +664,63 @@
         }
 
         // Updated JavaScript function to properly capture and send the upload date
-function editReview(reviewId) {
-    // Find the user review
-    const userReview = $('.review-box.user-review');
-    if (userReview.length) {
-        try {
-            // Extract the data we need
-            const ratingText = userReview.find('.review-rating span').text();
-            const rating = extractRatingValue(ratingText);
-            const comment = userReview.find('.review-comment').text().trim();
-            const bookId = '@Model.BookId';
-            const bookTitle = '@Model.Title';
-            const bookAuthor = '@Model.Author';
-            
-            // Get the original upload date - IMPORTANT FIX
-            const uploadDateText = userReview.find('.review-date').text()
-                .replace('Updated last:', '')
-                .replace('Posted on:', '')
-                .trim();
-                
-            console.log("Review data for edit:", {
-                reviewId: reviewId,
-                bookId: bookId, 
-                rating: rating,
-                comment: comment,
-                uploadDate: uploadDateText
-            });
+function editReview(reviewId, bookId, rating, comment, uploadDate) {
+    try {
+        // Add debug logging
+        console.log("Edit Review Function Called with parameters:");
+        console.log("- reviewId:", reviewId);
+        console.log("- bookId:", bookId);
+        console.log("- rating:", rating, "type:", typeof rating);
+        console.log("- comment:", comment);
+        console.log("- uploadDate:", uploadDate);
 
-            // Populate the edit form
-            $('#edit-reviewId').val(reviewId);
-            $('#edit-bookId').val(bookId);
-            $('#edit-comment').val(comment);
-            $('#edit-rating-value').val(rating);
-            
-            // IMPORTANT: Ensure we properly set the uploadDate
-            $('#edit-uploadDate').val(uploadDateText);
-            
-            // Set book title and author in the modal
-            $('.edit-book-title').text(bookTitle);
-            $('.edit-book-author').text('by ' + bookAuthor);
-            
-            // Reset any previously selected stars
-            resetStars(editStars, '#editStarsRating');
-            
-            // Store the selected rating value
-            editSelectedRating = rating;
-            
-            // Highlight stars based on the rating
-            highlightStars(Math.floor(rating), editStars);
-            
-            // Handle half stars for more accurate display
-            const hasHalfStar = (rating - Math.floor(rating)) >= 0.5;
-            if (hasHalfStar && Math.floor(rating) < 5) {
-                const halfStarIndex = Math.floor(rating);
-                editStars.eq(halfStarIndex).removeClass('fas far').addClass('fas fa-star-half-alt');
-            }
-            
-            // Mark stars as selected
-            $('#editStarsRating').addClass('selection-locked');
-            
-            // Open the edit modal
-            var editModal = new bootstrap.Modal(document.getElementById('editReview'));
-            editModal.show();
-        } catch (error) {
-            console.error("Error preparing review edit:", error);
-            toastr.error("Error preparing review for editing: " + error.message);
+        // Make sure bookId isn't empty
+        if (!bookId) {
+            bookId = '@Model.BookId';  // Use the book ID from the page model as fallback
+            console.log("Using fallback BookId:", bookId);
         }
-    } else {
-        toastr.error("Could not find your review to edit.");
+
+        // Make sure the rating is a number
+        const numericRating = parseFloat(rating);
+        
+        // Set values in form
+        $('#edit-reviewId').val(reviewId);
+        $('#edit-bookId').val(bookId);
+        $('#edit-comment').val(comment);
+        $('#edit-rating-value').val(numericRating);
+        $('#edit-uploadDate').val(uploadDate);
+        
+        // Store the rating for later use
+        editSelectedRating = numericRating;
+        
+        // Set book information
+        $('.edit-book-title').text('@Model.Title');
+        $('.edit-book-author').text('by @Model.Author');
+        
+        // Open the modal
+        var editModal = new bootstrap.Modal(document.getElementById('editReview'));
+        editModal.show();
+        
+        // Wait for modal to be fully visible before handling stars
+        $('#editReview').one('shown.bs.modal', function() {
+            console.log("Modal shown, setting stars to rating:", numericRating);
+            
+            // Reset stars first
+            editStars.removeClass('fas').addClass('far');
+            
+            // Then apply the correct rating
+            editStars.each(function(index) {
+                if (index < numericRating) {
+                    $(this).removeClass('far').addClass('fas');
+                }
+            });
+            
+            // Lock the selection
+            $('#editStarsRating').addClass('selection-locked');
+        });
+    } catch (error) {
+        console.error("Error preparing review edit:", error);
+        toastr.error("Error preparing review for editing: " + error.message);
     }
 }
 
@@ -741,15 +730,16 @@ $('#updateReviewBtn').click(function() {
     const rating = $('#edit-rating-value').val();
     const comment = $('#edit-comment').val().trim();
     const reviewId = $('#edit-reviewId').val();
-    const bookId = $('#edit-bookId').val();
+    const bookId = $('#edit-bookId').val() || '@Model.BookId';  // Use fallback if empty
     const uploadDate = $('#edit-uploadDate').val();
 
+    // Debug logging
     console.log("Submitting review update:", {
         reviewId: reviewId,
         bookId: bookId,
         rating: rating,
         comment: comment,
-        uploadDate: uploadDate // Log the upload date for debugging
+        uploadDate: uploadDate
     });
 
     if (!rating || rating == 0) {
@@ -772,7 +762,7 @@ $('#updateReviewBtn').click(function() {
         Rating: rating,
         Comment: comment,
         UserId: $('#edit-userId').val(),
-        UploadDate: uploadDate, // Ensure UploadDate is included
+        UploadDate: uploadDate,
         __RequestVerificationToken: token
     };
 

@@ -1,4 +1,5 @@
-﻿@model ASI.Basecode.Services.ServiceModels.PersonProfileViewModel;
+﻿@using System.Security.Claims
+@model ASI.Basecode.Services.ServiceModels.PersonProfileViewModel;
 @{
     ViewData["Title"] = "My Profile";
 }
@@ -6,7 +7,8 @@
 @section styles {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css"
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/userui/viewuser.css" asp-append-version="true" />
 }
@@ -15,20 +17,20 @@
     <h1 class="header-section h1">My Profile</h1>
     <div class="profile-main-row">
         <div class="profile-card">
-        <div class="profile-avatar">
-            @if (!string.IsNullOrEmpty(Model?.ProfilePicture))
-            {
-                <img id="avatarImg"
-                        src="@(Model.ProfilePicture)"
-                        alt="Profile picture"
-                        class="w-100 h-100 rounded-circle object-fit-cover" />
-            }
-            else
-            {
-                <i class="fas fa-user fa-5x text-secondary"></i>
-            }
+            <div class="profile-avatar">
+                @if (!string.IsNullOrEmpty(Model?.ProfilePicture))
+                {
+                    <img id="avatarImg"
+                         src="@(Model.ProfilePicture)"
+                         alt="Profile picture"
+                         class="w-100 h-100 rounded-circle object-fit-cover" />
+                }
+                else
+                {
+                    <i class="fas fa-user fa-5x text-secondary"></i>
+                }
 
-        </div>
+            </div>
             <div class="profile-name">@(Model?.FirstName ?? "") @(Model?.LastName ?? "")</div>
             <div class="profile-username">@(Model?.UserId ?? "")</div>
             <div class="profile-bio">
@@ -59,10 +61,11 @@
                         <div class="info-field-col">
                             <div class="info-label">Birthdate</div>
                             <div class="info-value">
-                              @( Model.Birthdate
-                                   ?.ToString("MM/dd/yyyy")
-                                 ?? "MM/DD/YYYY" )
-                            </div>                        </div>
+                                @(Model.Birthdate
+                                                                ?.ToString("MM/dd/yyyy")
+                                                                ?? "MM/DD/YYYY" )
+                            </div>
+                        </div>
                         <div class="info-field-col">
                             <div class="info-label">Gender</div>
                             <div class="info-value">@Model.Gender</div>
@@ -112,34 +115,94 @@
             </div>
         </div>
     </div>
-    <div class="profile-reviews-section mt-5">
-        <h3>My Reviews (@Model.Reviews.Count)</h3>
 
-        @if (Model.Reviews == null || !Model.Reviews.Any())
-        {
-            <div class="alert alert-info">
-                You haven't written any reviews yet.
+    <!-- Enhanced Reviews Section -->
+    <section id="my-reviews" class="profile-reviews-section mt-5">
+        <div class="section-header">
+            <div class="section-icon">
+                <i class="fas fa-comments"></i>
             </div>
-        }
-        else
-        {
-            @foreach (var review in Model.Reviews)
+            <h2>My Reviews (@Model.Reviews.Count)</h2>
+        </div>
+        <div class="section-content">
+            @if (Model.Reviews == null || !Model.Reviews.Any())
             {
-                <div class="review-box border p-3 mb-3 rounded bg-light">
-                    <div>
-                        <strong>Book:</strong>
-                        <a asp-route="BookDetails" asp-route-bookId="@review.BookId">
-                            @review.BookId
-                        </a>
-                    </div>
-                    <div><strong>Rating:</strong> @review.Rating / 5</div>
-                    <div><strong>Comment:</strong> @review.Comment</div>
-                    <div class="small text-muted">Posted on: @review.UploadDate</div>
+                <div class="no-reviews">
+                    <i class="far fa-comment-alt"></i>
+                    <p>You haven't written any reviews yet.</p>
+                    <small class="text-muted">Start exploring books and share your thoughts!</small>
                 </div>
             }
-        }
-    </div>
+            else
+            {
+                <div class="reviews-container">
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <div class="modern-review-box" data-review-id="@review.ReviewId">
+                            <div class="review-header">
+                                <div class="book-info">
+                                    <div class="book-title">
+                                        <a asp-route="BookDetails" asp-route-bookId="@review.BookId" class="book-link">
+                                            Book ID: @review.BookId
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="review-rating">
+                                    <div class="stars">
+                                        @for (var i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= review.Rating)
+                                            {
+                                                <i class="fas fa-star"></i>
+                                            }
+                                            else if (i - 0.5 <= review.Rating)
+                                            {
+                                                <i class="fas fa-star-half-alt"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-star"></i>
+                                            }
+                                        }
+                                    </div>
+                                    <span class="rating-value">@review.Rating / 5</span>
+                                </div>
+                            </div>
 
+                            <div class="review-content">
+                                <div class="review-comment">@review.Comment</div>
+                            </div>
+
+                            <div class="review-footer">
+                                <div class="review-meta">
+                                    <div class="review-date">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        Posted: @review.UploadDate?.ToString("MMMM dd, yyyy")
+                                    </div>
+                                    @if (review.UpdatedDate.HasValue && review.UpdatedDate != review.UploadDate)
+                                    {
+                                        <div class="review-updated">
+                                            <i class="fas fa-edit"></i>
+                                            Updated: @review.UpdatedDate?.ToString("MMMM dd, yyyy")
+                                        </div>
+                                    }
+                                    
+                                </div>
+                                <div class="review-actions">
+                                    <button class="btn btn-edit-review" onclick="editUserReview('@review.ReviewId', '@review.BookId', '@review.Rating', '@Html.Raw(Html.Encode(review.Comment))', '@review.UploadDate?.ToString("yyyy-MM-ddTHH:mm:ss")')">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-delete-review" onclick="deleteUserReview('@review.ReviewId')">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </section>
 </div>
 
 <!-- Personal Information Edit Modal -->
@@ -180,7 +243,7 @@
                                 <span class="supported-formats-info" style="font-size:10px">  Supported formats: JPG, PNG, JPEG</span>
                             </p>
                         </div>
-                        
+
                     </div>
                     <div class="mb-3">
                         <label asp-for="FirstName" class="form-label"></label>
@@ -199,21 +262,21 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="birthdate" class="form-label">Birthdate</label>                           
+                            <label for="birthdate" class="form-label">Birthdate</label>
                             <div class="input-group date">
                                 <input asp-for="Birthdate" type="text" class="form-control" id="birthdate" placeholder="MM/DD/YYYY">
                                 <button type="button" class="input-group-text" id="calendarButton">
                                     <i class="fas fa-calendar"></i>
                                 </button>
                             </div>
-                        <span asp-validation-for="Birthdate" class="text-danger"></span>
+                            <span asp-validation-for="Birthdate" class="text-danger"></span>
                         </div>
                         <div class="col">
                             <label asp-for="Gender" class="form-label"></label>
                             <select asp-for="Gender" class="form-select">
                                 <option value="">Select gender</option>
-                                <option value="male" selected="@(Model.Gender=="male")">Male</option>
-                                <option value="female" selected="@(Model.Gender=="female")">Female</option>
+                                <option value="male" selected="@(Model.Gender == "male")">Male</option>
+                                <option value="female" selected="@(Model.Gender == "female")">Female</option>
                             </select>
                             <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
@@ -222,7 +285,7 @@
                         <label asp-for="AboutMe" class="form-label">About Me</label>
                         <textarea asp-for="AboutMe" class="form-control" id="aboutme" rows="4" placeholder="Tell us about yourself"></textarea>
                         <span asp-validation-for="AboutMe" class="text-danger"></span>
-                    </div>                    
+                    </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
                     </div>
@@ -320,14 +383,177 @@
     </div>
 </div>
 
+<!-- Edit Review Modal -->
+<div class="modal fade review-modal" id="editUserReview" tabindex="-1" aria-labelledby="editUserReviewLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <button class="btn border-0 back-button" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+            <div class="modal-body pt-0">
+                <div class="book-details text-center mb-4">
+                    <h2 class="edit-book-title">Edit Your Review</h2>
+                    <p class="edit-book-id">Book ID: <span id="editBookId"></span></p>
+                </div>
+
+                <form id="editUserReviewForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="edit-user-bookId" name="BookId">
+                    <input type="hidden" id="edit-user-userId" name="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
+                    <input type="hidden" id="edit-user-reviewId" name="ReviewId">
+                    <input type="hidden" id="edit-user-uploadDate" name="UploadDate">
+
+                    <div class="mb-4">
+                        <label class="form-label">What do you think of the book?</label>
+                        <textarea class="form-control" id="edit-user-comment" name="Comment" rows="5" placeholder="Share your thoughts about this book"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">How would you rate the book?</label>
+                        <div class="rating">
+                            <div class="stars" id="editUserStarsRating">
+                                <i class="far fa-star" data-rating="1"></i>
+                                <i class="far fa-star" data-rating="2"></i>
+                                <i class="far fa-star" data-rating="3"></i>
+                                <i class="far fa-star" data-rating="4"></i>
+                                <i class="far fa-star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" name="Rating" id="edit-user-rating-value">
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="button" id="updateUserReviewBtn" class="btn btn-submit">Update Review</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade confirmation-modal" id="deleteUserReviewModal" tabindex="-1" aria-labelledby="deleteUserReviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="deleteUserReviewModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <h6>Are you sure you want to delete this review?</h6>
+                 <p class="text-muted">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteUserReview" class="btn btn-danger-2">Delete Review</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
+        let editUserStars;
+        let editUserSelectedRating = 0;
+
+        // Function to highlight stars up to a certain rating
+        function highlightStars(rating, starsSelector) {
+            starsSelector.each(function() {
+                const star = $(this);
+                const starRating = parseInt(star.data('rating'));
+
+                if (starRating <= rating) {
+                    star.removeClass('far').addClass('fas');
+                } else {
+                    star.removeClass('fas').addClass('far');
+                }
+            });
+        }
+
+        // Function to reset all stars
+        function resetStars(starsSelector, containerSelector) {
+            if (starsSelector) {
+                starsSelector.removeClass('fas').addClass('far');
+                $(containerSelector).removeClass('selection-locked');
+            }
+        }
+
+        // Function to extract rating value from text
+        function extractRatingValue(ratingText) {
+            if (!ratingText) return 0;
+            const match = ratingText.match(/(\d+(?:\.\d+)?)/);
+            const rating = match ? parseFloat(match[1]) : 0;
+            return rating;
+        }
+
+        // Edit user review function
+        function editUserReview(reviewId, bookId, rating, comment, uploadDate) {
+            try {
+                console.log("Edit review data:", { reviewId, bookId, rating, comment, uploadDate });
+
+                // Populate the edit form
+                $('#edit-user-reviewId').val(reviewId);
+                $('#edit-user-bookId').val(bookId);
+                $('#edit-user-comment').val(comment);
+                $('#edit-user-rating-value').val(rating);
+                $('#edit-user-uploadDate').val(uploadDate);
+
+                // Set book info in modal
+                $('#editBookId').text(bookId);
+
+                // Reset stars and set rating
+                resetStars(editUserStars, '#editUserStarsRating');
+                editUserSelectedRating = parseFloat(rating);
+                highlightStars(Math.floor(editUserSelectedRating), editUserStars);
+                $('#editUserStarsRating').addClass('selection-locked');
+
+                // Open the edit modal
+                var editModal = new bootstrap.Modal(document.getElementById('editUserReview'));
+                editModal.show();
+            } catch (error) {
+                console.error("Error preparing review edit:", error);
+                toastr.error("Error preparing review for editing: " + error.message);
+            }
+        }
+
+        // Delete user review function
+        let reviewToDelete = null;
+
+        function deleteUserReview(reviewId) {
+            reviewToDelete = reviewId;
+            var deleteModal = new bootstrap.Modal(document.getElementById('deleteUserReviewModal'));
+            deleteModal.show();
+        }
+
         $(document).ready(function() {
-            // Initialize datepicker with specific configuration
+            // Initialize stars variables
+            editUserStars = $('#editUserStarsRating i');
+
+            // Set toastr options
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            // Initialize datepicker
             $('#birthdate').datepicker({
                 format: 'mm/dd/yyyy',
                 autoclose: true,
@@ -350,10 +576,17 @@
                 e.stopPropagation();
             });
 
-            // Proper modal handling
-            $('#personalInfoEdit','#userInfoEdit', '#passwordEdit').on('hidden.bs.modal', function () {
+            // Modal handling
+            $('#personalInfoEdit','#userInfoEdit', '#passwordEdit', '#editUserReview').on('hidden.bs.modal', function () {
                 $('body').removeClass('modal-open');
                 $('.modal-backdrop').remove();
+
+                // Reset edit review form when closed
+                if ($(this).attr('id') === 'editUserReview') {
+                    $('#editUserReviewForm')[0].reset();
+                    resetStars(editUserStars, '#editUserStarsRating');
+                    editUserSelectedRating = 0;
+                }
             });
 
             // Password toggle functionality
@@ -371,26 +604,164 @@
                 }
             });
 
-        });
+            // Handle star hover effect for edit review
+            editUserStars.hover(
+                function() { // mouseenter
+                    if (!$('#editUserStarsRating').hasClass('selection-locked')) {
+                        const star = $(this);
+                        const hoverRating = parseInt(star.data('rating'));
+                        highlightStars(hoverRating, editUserStars);
+                    }
+                },
+                function() { // mouseleave
+                    if (!$('#editUserStarsRating').hasClass('selection-locked')) {
+                        highlightStars(editUserSelectedRating, editUserStars);
+                    }
+                }
+            );
 
-        // Only update the modal preview, not the main avatar
-        document.getElementById('profilePictureFile').addEventListener('change', function () {
-            const file = this.files[0];
-            const preview = document.getElementById('profilePicturePreview');
-            const defaultIcon = document.getElementById('profilePictureDefaultIcon');
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    defaultIcon.style.display = 'none';
+            // Handle star click for edit review
+            editUserStars.click(function() {
+                const star = $(this);
+                const clickedRating = parseInt(star.data('rating'));
+
+                if (editUserSelectedRating === clickedRating) {
+                    editUserSelectedRating = 0;
+                    $('#edit-user-rating-value').val(editUserSelectedRating);
+                    resetStars(editUserStars, '#editUserStarsRating');
+                } else {
+                    editUserSelectedRating = clickedRating;
+                    $('#edit-user-rating-value').val(editUserSelectedRating);
+                    highlightStars(editUserSelectedRating, editUserStars);
+                    $('#editUserStarsRating').addClass('selection-locked');
+                }
+            });
+
+            // Update review button click handler
+            $('#updateUserReviewBtn').click(function() {
+                const rating = $('#edit-user-rating-value').val();
+                const comment = $('#edit-user-comment').val().trim();
+                const reviewId = $('#edit-user-reviewId').val();
+                const bookId = $('#edit-user-bookId').val();
+                const uploadDate = $('#edit-user-uploadDate').val();
+
+                if (!rating || rating == 0) {
+                    toastr.warning("Please select a rating for the book.");
+                    return;
+                }
+
+                if (!comment) {
+                    toastr.warning("Please provide a comment about the book.");
+                    return;
+                }
+
+                const token = $('#editUserReviewForm input[name="__RequestVerificationToken"]').val();
+
+                const formData = {
+                    ReviewId: reviewId,
+                    BookId: bookId,
+                    Rating: rating,
+                    Comment: comment,
+                    UserId: $('#edit-user-userId').val(),
+                    UploadDate: uploadDate,
+                    __RequestVerificationToken: token
                 };
-                reader.readAsDataURL(file);
-            } else {
-                preview.src = '';
-                preview.style.display = 'none';
-                defaultIcon.style.display = 'flex';
-            }
+
+                $.ajax({
+                    url: '@Url.Action("Edit", "Review")',
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function(response) {
+                        if (response && response.success) {
+                            var editReviewModal = bootstrap.Modal.getInstance(document.getElementById('editUserReview'));
+                            editReviewModal.hide();
+
+                            toastr.success("Review updated successfully!");
+
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            toastr.error("Error: " + ((response && response.errors) ? response.errors.join(", ") : "Unknown error"));
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error details:", xhr.responseText);
+                        toastr.error("Error updating review: " + error);
+                    }
+                });
+            });
+
+            // Confirm delete review
+            $('#confirmDeleteUserReview').click(function() {
+                if (reviewToDelete) {
+                    const token = $('input[name="__RequestVerificationToken"]').first().val();
+
+                    $.ajax({
+                        url: '@Url.Action("Delete", "Review")',
+                        type: 'POST',
+                        data: {
+                            id: reviewToDelete,
+                            __RequestVerificationToken: token
+                        },
+                        success: function(response) {
+                            var deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteUserReviewModal'));
+                            deleteModal.hide();
+
+                            toastr.success("Review deleted successfully!");
+
+                            // Remove the review from the page
+                            $(`[data-review-id="${reviewToDelete}"]`).fadeOut(500, function() {
+                                $(this).remove();
+
+                                // Update review count
+                                const remainingReviews = $('.modern-review-box').length;
+                                $('.section-header h2').text(`My Reviews (${remainingReviews})`);
+
+                                // Show no reviews message if none left
+                                if (remainingReviews === 0) {
+                                    $('.reviews-container').html(`
+                                        <div class="no-reviews">
+                                            <i class="far fa-comment-alt"></i>
+                                            <p>You haven't written any reviews yet.</p>
+                                            <small class="text-muted">Start exploring books and share your thoughts!</small>
+                                        </div>
+                                    `);
+                                }
+                            });
+
+                            reviewToDelete = null;
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error details:", xhr.responseText);
+                            toastr.error("Error deleting review: " + error);
+                        }
+                    });
+                }
+            });
+
+            // Profile picture change handling
+            document.getElementById('profilePictureFile').addEventListener('change', function () {
+                const file = this.files[0];
+                const preview = document.getElementById('profilePicturePreview');
+                const defaultIcon = document.getElementById('profilePictureDefaultIcon');
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                        defaultIcon.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = '';
+                    preview.style.display = 'none';
+                    defaultIcon.style.display = 'flex';
+                }
+            });
         });
     </script>
 
@@ -434,32 +805,27 @@
             }
         }
 
-        // Firebase Upload Function
-        // This function returns the download URL or null on failure/no file
         async function uploadFileToFirebase(file, path, statusElement) {
             if (!file) {
                 statusElement.textContent = 'No file selected.';
-                return null; // Indicates no file was provided
+                return null;
             }
 
-            // Show spinner while uploading
             statusElement.innerHTML = `
                 <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true" style="width: 20px; height: 10px"></span>
                 <span class="ms-1" style="font-size: 12px">Uploading…</span>
             `;
 
-            // Generate New File Name
             const timestamp = new Date().getTime();
             const randomString = Math.random().toString(36).substring(2, 8);
-            const uniqueFileName = `${path}${timestamp}-${randomString}-${file.name}`; // Unique Path
+            const uniqueFileName = `${path}${timestamp}-${randomString}-${file.name}`;
 
-            const storageRef = ref(storage, uniqueFileName); // Use full unique path
+            const storageRef = ref(storage, uniqueFileName);
             const uploadTask = uploadBytesResumable(storageRef, file);
 
             return new Promise((resolve, reject) => {
                 uploadTask.on('state_changed',
                     (snapshot) => {
-                        // Show spinner and progress
                         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                         statusElement.innerHTML = `
                             <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>
@@ -473,7 +839,6 @@
                     async () => {
                         try {
                             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                            // Show animated check icon on success
                             statusElement.innerHTML = `
                                 <span class="fa-stack" style="vertical-align: middle; font-size:12px">
                                     <i class="fas fa-circle fa-stack-2x text-success" style="height: 10px; weight: 10px"></i>
@@ -491,9 +856,9 @@
             });
         }
 
-        const picker      = document.getElementById('profilePictureFile');
+        const picker = document.getElementById('profilePictureFile');
         const displayName = document.getElementById('profilePictureNameDisplay');
-        const statusEl    = document.getElementById('profilePictureUploadStatus');
+        const statusEl = document.getElementById('profilePictureUploadStatus');
         const hiddenInput = document.getElementById('ProfilePictureHidden');
 
         picker.addEventListener('change', async () => {
@@ -501,7 +866,6 @@
             if (!file) return;
 
             displayName.value = file.name;
-            // The spinner and progress will be handled by uploadFileToFirebase
             try {
                 const downloadURL = await uploadFileToFirebase(file, 'profile-images/', statusEl);
                 console.log('Download URL:', downloadURL);
@@ -512,116 +876,8 @@
         });
     </script>
 
-       <script type="module">
-            document.getElementById('profilePictureFile').addEventListener('change', function () {
-            const fileName = this.files[0] ? this.files[0].name : '';
-            document.getElementById('profilePictureNameDisplay').value = fileName;
-            const profilePictureUploadStatus = document.getElementById('profilePictureUploadStatus');
-           profilePictureUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
-           profilePictureUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: JPG, PNG, JPEG';
-           profilePictureUploadStatus.classList.remove('error-message');
-        });
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyA4CTMSbgGQN_yLn9lEZlswbZ_2A2Xhl0k",
-            authDomain: "basabuzz-ca8fe.firebaseapp.com",
-            projectId: "basabuzz-ca8fe",
-            storageBucket: "basabuzz-ca8fe.firebasestorage.app",
-            messagingSenderId: "206533484485",
-            appId: "1:206533484485:web:2c71a06a17d5244efe75ac"
-        };
-        
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
-
-        const app = initializeApp(firebaseConfig);
-        const storage = getStorage(app);
-
-        async function deleteFileFromFirebase(fileUrl) {
-            if (!fileUrl) {
-                console.warn("Attempted to delete null or empty file URL.");
-                return;
-            }
-            try {
-
-                const fileRef = ref(storage, fileUrl);
-                await deleteObject(fileRef);
-                console.log(`Successfully deleted file: ${fileUrl}`);
-            } catch (error) {
-                alert(`Failed to delete file ${fileUrl}: ${error.message}`);
-                console.error(`Failed to delete file ${fileUrl}:`, error);
-            }
-        }
-
-
-
-        // Firebase Upload Function
-        // This function returns the download URL or null on failure/no file
-        async function uploadFileToFirebase(file, path, statusElement) {
-            if (!file) {
-                statusElement.textContent = 'No file selected.';
-                return null; // Indicates no file was provided
-            }
-
-            // Generate New File Namef
-            const timestamp = new Date().getTime();
-            const randomString = Math.random().toString(36).substring(2, 8);
-            const uniqueFileName = `${path}${timestamp}-${randomString}-${file.name}`; // Unique Path
-
-            const storageRef = ref(storage, uniqueFileName); // Use full unique path
-            const uploadTask = uploadBytesResumable(storageRef, file);
-
-            return new Promise((resolve, reject) => {
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        statusElement.querySelector('.file-size-info').textContent = `Upload is ${progress.toFixed(2)}% done`;
-                    },
-                    (error) => {
-                        statusElement.textContent = `Upload failed: ${error.message}`;
-                        console.error("Upload error:", error);
-                        reject(error); // Reject the promise on upload error
-                    },
-                    async () => {
-                        try {
-                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                            statusElement.textContent = 'Upload successful!';
-                            resolve(downloadURL); // Resolve with the download URL
-                        } catch (error) {
-                            statusElement.textContent = `Failed to get download URL: ${error.message}`;
-                            console.error("Get Download URL error:", error);
-                            reject(error); // Reject the promise if getting URL fails
-                        }
-                    }
-                );
-            });
-        }
-
-    const picker      = document.getElementById('profilePictureFile');
-    const displayName = document.getElementById('profilePictureNameDisplay');
-    const statusEl    = document.getElementById('profilePictureUploadStatus');
-    const hiddenInput = document.getElementById('ProfilePictureHidden');
-
-    picker.addEventListener('change', async () => {
-      const file = picker.files[0];
-      if (!file) return;
-
-      displayName.value = file.name;
-      statusEl.querySelector('.file-size-info').textContent = 'Uploading…';
-
-      try {
-        const downloadURL = await uploadFileToFirebase(file, 'profile-images/', statusEl);
-        console.log('Download URL:', downloadURL);
-        hiddenInput.value = downloadURL;
-      } catch {
-      }
-    });
-  
-
-  </script>
     <script>
-                document.addEventListener('DOMContentLoaded', function () {
-            // Get query string parameter
+        document.addEventListener('DOMContentLoaded', function () {
             function getQueryParam(name) {
                 const url = new URL(window.location.href);
                 return url.searchParams.get(name);
@@ -645,7 +901,6 @@
                 var modal = new bootstrap.Modal(document.getElementById('successLanguageModal'));
                 modal.show();
 
-                // Remove the query parameter from the URL (without reloading)
                 if (window.history.replaceState) {
                     const url = new URL(window.location);
                     url.searchParams.delete('success');
@@ -655,4 +910,3 @@
         });
     </script>
 }
-

@@ -25,7 +25,8 @@
 
 .confirmation-modal .modal-header {
     border-bottom: none;
-    padding-bottom: 0;
+    padding-bottom: 15px;
+    height: 60px;
 }
 
 .confirmation-modal .btn-danger {
