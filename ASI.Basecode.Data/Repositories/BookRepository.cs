@@ -42,13 +42,15 @@ namespace ASI.Basecode.Data.Repositories
             if (!string.IsNullOrEmpty(queryParams.SearchTerm))
             {
                 var term = queryParams.SearchTerm.Trim();
+                var authorTerm = queryParams.SearchAuhtor.Trim();
                 query = query.Where(b =>
-                (b.Title != null && b.Title.Contains(term) || (b.Subtitle != null && b.Subtitle.Contains(term)) || (b.Author != null && b.Author.Contains(term))));
+                (b.Title != null && b.Title.Contains(term) || (b.Subtitle != null && b.Subtitle.Contains(term)) || (b.Author != null && authorTerm.Trim().Contains(b.Author))));
 
             }
 
             if (!string.IsNullOrEmpty(queryParams.Author))
-                query = query.Where(b => b.Author != null && b.Author.Contains(queryParams.Author.Trim()));
+                //query = query.Where(b => b.Author != null && b.Author.Contains(queryParams.Author.Trim()));
+                query = query.Where(b => b.Author != null && queryParams.Author.Trim().Contains(b.Author));
 
             if (queryParams.Rating.HasValue)
                 query = query.Where(b => b.AverageRating >= queryParams.Rating.Value);

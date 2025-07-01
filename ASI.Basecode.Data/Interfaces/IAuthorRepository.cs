@@ -24,5 +24,8 @@ namespace ASI.Basecode.Data.Interfaces
 
         Task<List<Book>> GetBooksByAuthor();
 
+        Task<string> GetAuthorByName(string author_name);
+
+
     }
 }

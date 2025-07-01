@@ -104,11 +104,16 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         {
             const int PageSize = 10;
             int pageIndex = page.GetValueOrDefault(1);
+            string authorId = await _authorRepository.GetAuthorByName(author != null ? author : "");
+            string authorIdFromSearch = await _authorRepository.GetAuthorByName(searchTerm != null ? searchTerm : "");
+            //string authorIdForSearch = await _authorRepository.GetAuthorByName(searchTerm != null ? searchTerm : "");
+            // authorName != null ? authorName.AuthorName : ""
 
             var queryParams = new BookQueryParams
             {
                 SearchTerm = searchTerm,
-                Author = author,
+                SearchAuhtor = !string.IsNullOrEmpty(authorIdFromSearch) ? authorIdFromSearch : "",
+                Author = !string.IsNullOrEmpty(authorId)?authorId:"",
                 Rating = rating,
                 PublishedFrom = publishedFrom,
                 PublishedTo = publishedTo,
@@ -123,7 +128,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
 
             ViewData["CurrentSearch"] = searchTerm;
-            ViewData["CurrentAuthor"] = author;
+            ViewData["CurrentAuthor"] = "";
             ViewData["CurrentRating"] = rating;
             ViewData["CurrentFromDate"] = publishedFrom?.ToString("yyyy-MM-dd");
             ViewData["CurrentToDate"] = publishedTo?.ToString("yyyy-MM-dd");
