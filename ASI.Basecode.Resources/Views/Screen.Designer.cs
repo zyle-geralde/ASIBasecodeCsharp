@@ -61,7 +61,7 @@ namespace ASI.Basecode.Resources.Views {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ©2023 Alliance Software Inc. All rights reserved..
+        ///   Looks up a localized string similar to ©2025 Narra8six. All rights reserved..
         /// </summary>
         public static string Copyright {
             get {
