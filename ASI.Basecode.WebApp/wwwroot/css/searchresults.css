@@ -129,6 +129,29 @@
     display: flex;
 }
 
+/* Add this to your existing CSS */
+.stars svg.partial-star {
+    position: relative;
+    overflow: hidden;
+}
+
+.stars svg.partial-star::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--percent);
+    height: 100%;
+    background-color: #FFD700;
+    z-index: -1;
+}
+
+/* Add this to your existing CSS for half-stars */
+.stars svg.half-star {
+    position: relative;
+}
+
+/* Keep your existing stars styling */
 .stars svg {
     width: 14px;
     height: 14px;

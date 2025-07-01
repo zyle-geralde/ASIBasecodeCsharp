@@ -65,15 +65,35 @@
                             <p class="author">@book.Author, @(book.UploadDate?.Year ?? 0)</p>
                             <div class="star-rating">
                                 <div class="stars">
-                                    @for (int i = 0; i < 5; i++)
-                                    {
-                                        if (i < book.AverageRating)
+                                    @{
+                                        float rating = book.AverageRating ?? 0;
+                                        int fullStars = (int)Math.Floor(rating);
+                                        bool hasHalfStar = (rating - fullStars) >= 0.25 && (rating - fullStars) < 0.75;
+                                        bool hasFullStar = (rating - fullStars) >= 0.75;
+                                        int totalFullStars = fullStars + (hasFullStar ? 1 : 0);
+                                        
+                                        for (int i = 0; i < 5; i++)
                                         {
-                                            <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-                                        }
-                                        else
-                                        {
-                                            <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            if (i < totalFullStars)
+                                            {
+                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                            else if (i == totalFullStars && hasHalfStar)
+                                            {
+                                                <svg class="half-star" viewBox="0 0 24 24">
+                                                    <defs>
+                                                        <linearGradient id="half@(book.BookId)_@(i)" x1="0%" y1="0%" x2="100%" y1="0%">
+                                                            <stop offset="50%" stop-color="#FFD700" />
+                                                            <stop offset="50%" stop-color="#ddd" />
+                                                        </linearGradient>
+                                                    </defs>
+                                                    <path fill="url(#half@(book.BookId)_@(i))" d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" />
+                                                </svg>
+                                            }
+                                            else
+                                            {
+                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
                                         }
                                     }
                                 </div>
