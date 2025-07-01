@@ -252,53 +252,6 @@
 }
 
 
-
-
-
-
-
-/*-----Modal Styles (To adjusted if there is the same styling in the common.css)----*/
-
-/* Modal Styles */
-/*.modal-dialog 
-{
-    max-width: 500px;
-}
-
-.modal-content 
-{
-    border-radius: 12px;
-    border: none;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-}
-
-.modal-header 
-{
-    padding: 1.5rem 1.5rem 1rem;
-}
-
-.modal-title 
-{
-    color: #A37B5D;
-    font-size: 1.25rem;
-    font-weight: 600;
-}
-
-.btn-close 
-{
-    opacity: 0.5;
-}
-
-    .btn-close:hover 
-    {
-        opacity: 0.75;
-    }
-
-.modal-body 
-{
-    padding: 1rem 1.5rem 1.5rem;
-}*/
-
 /* Modal Styles for Profile Edit Modals */
 .profile-edit-modal .modal-dialog 
 {

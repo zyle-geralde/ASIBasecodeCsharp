@@ -68,6 +68,15 @@ namespace ASI.Basecode.Services.Services
 
             return profile;
         }
+
+        public async Task DeletePersonProfile(string profileId)
+        {
+            var profile = await _repository.GetPersonProfile(profileId);
+            if (profile != null)
+            {
+                await _repository.DeletePersonProfile(profileId);
+            }
+        }
     }
 
 }

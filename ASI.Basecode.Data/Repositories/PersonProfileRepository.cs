@@ -43,6 +43,15 @@ namespace ASI.Basecode.Data.Repositories
             await UnitOfWork.SaveChangesAsync();
         }
 
-        
+        public async Task DeletePersonProfile(string profileId)
+        {
+            var dbSet = this.GetDbSet<PersonProfile>();
+            var profile = await dbSet.FirstOrDefaultAsync(p => p.ProfileID == profileId);
+            if (profile != null)
+            {
+                dbSet.Remove(profile);
+                await UnitOfWork.SaveChangesAsync();
+            }
+        }
     }
 }

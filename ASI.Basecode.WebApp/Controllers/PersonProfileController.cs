@@ -28,15 +28,16 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
+            var userid = User.Identity.Name;
             var username = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if(string.IsNullOrEmpty(username))
+            if (string.IsNullOrEmpty(username))
             {
                 return Challenge();
             }
             var profile = await _personProfileService.GetPersonProfile(username);
             if (profile == null)
                 return NotFound("Profile not found.");
-            var reviews = await _reviewService.GetReviewByUser(username);
+            var reviews = await _reviewService.GetReviewByUser(userid);
 
             var vm = new PersonProfileViewModel
             {

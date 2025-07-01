@@ -446,6 +446,10 @@ namespace ASI.Basecode.Services.Services
             }
 
             await _repository.DeleteUser(id);
+            if (!string.IsNullOrEmpty(user.Email))
+            {
+                await _personProfileService.DeletePersonProfile(user.Email);
+            }
             return true;
         }
 
