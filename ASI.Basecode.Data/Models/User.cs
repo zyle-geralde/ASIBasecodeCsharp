@@ -5,6 +5,7 @@ namespace ASI.Basecode.Data.Models
 {
     public partial class User : Person
     {
+// set to primary key
         public int Id { get; set; }
         public string Email { get; set; }
         public string CreatedBy { get; set; }
