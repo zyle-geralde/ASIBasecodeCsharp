@@ -9,6 +9,7 @@ namespace ASI.Basecode.Data.Interfaces
     public class BookQueryParams
     {
         public string? SearchTerm { get; set; }
+        public string? SearchAuhtor {  get; set; }
 
         public List<string>? GenreNames { get; set; } = new();
 

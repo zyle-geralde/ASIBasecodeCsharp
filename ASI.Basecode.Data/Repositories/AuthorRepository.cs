@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ASI.Basecode.Data.Repositories
 {
-    public class AuthorRepository:IAuthorRepository
+    public class AuthorRepository : IAuthorRepository
     {
         private readonly AsiBasecodeDBContext _dbContext;
 
@@ -82,7 +82,7 @@ namespace ASI.Basecode.Data.Repositories
         public async Task<List<Book>> GetBooksByAuthor()
         {
             try
-            { 
+            {
                 return await _dbContext.Books.ToListAsync();
             }
             catch (Exception ex)
@@ -90,5 +90,28 @@ namespace ASI.Basecode.Data.Repositories
                 throw;
             }
         }
+
+        public async Task<string> GetAuthorByName(string author_name)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(author_name))
+                {
+                    return "";
+                }
+
+                var matchingAuthorIds = await _dbContext.Authors
+                                                        .Where(author => author.AuthorName != null && author.AuthorName.Contains(author_name))
+                                                        .Select(author => author.AuthorId)
+                                                        .ToListAsync();
+
+                return string.Join(",", matchingAuthorIds);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
+
 }
