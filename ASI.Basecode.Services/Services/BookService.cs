@@ -96,7 +96,8 @@ namespace ASI.Basecode.Services.Services
                 AverageRating = b.AverageRating,
                 CoverImage =b.CoverImage,
                 BookFile=b.BookFile,
-                Description = b.Description
+                Description = b.Description,
+                IsFeatured = b.IsFeatured
 
             }).ToList();
 

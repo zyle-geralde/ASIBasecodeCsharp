@@ -11,6 +11,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public List<BookGenreViewModel> Genres { get; set; }
         public List<BookViewModel> TopRatedBooks { get; set; }
         public List<BookViewModel> NewBooks { get; set; }
-        //public List<BookViewModel> FeaturedBooks { get; set; }
+        public List<BookViewModel> FeaturedBooks { get; set; }
     }
 }

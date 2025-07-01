@@ -76,11 +76,19 @@ namespace ASI.Basecode.WebApp.Controllers
             };
             var newlyAddedBooks = await _bookService.GetBooks(newlyAddedParams);
 
+            var featuredBooksParams = new BookQueryParams
+            {
+                IsFeatured = true,
+                PageSize = 5
+            };
+            var featuredBooks = await _bookService.GetBooks(featuredBooksParams);
+
             var vm = new HomeViewModel
             {
                 Genres = allGenres,
                 TopRatedBooks = topRatedBooks,
-                NewBooks = newlyAddedBooks
+                NewBooks = newlyAddedBooks,
+                FeaturedBooks = featuredBooks
             };
             return View(vm);
         }

@@ -31,6 +31,10 @@ namespace ASI.Basecode.Data.Repositories
 
             IQueryable<Book> query = _dbContext.Books.AsNoTracking();
 
+            if (queryParams.IsFeatured.HasValue)
+            {
+                query = query.Where(b => b.IsFeatured == queryParams.IsFeatured.Value);
+            }
 
             // SEARCH
             if (!string.IsNullOrEmpty(queryParams.SearchTerm))
