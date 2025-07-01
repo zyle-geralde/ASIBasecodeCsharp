@@ -17,6 +17,11 @@
     padding-top: 60px;
 }
 
+.container::-webkit-scrollbar 
+{
+    display: none;
+}
+
 .main-grid 
 {
     display: grid;
@@ -44,7 +49,7 @@
     background-color: #F7F4ED;
     padding: 23px;
     border: 1.5px solid #DCD7C9;
-    border-radius: 12px;
+    border-radius: 32px;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
@@ -52,7 +57,7 @@
     {
         font-size: 24px;
         font-weight: 600;
-        margin-bottom: 8px;
+
     }
 
     .section-card p 
@@ -136,19 +141,35 @@
         font-weight: 700;
     }
 
+
+.see-more-link-wrapper 
+{
+    padding: 8px 15px; 
+    border-radius: 5px;
+    display: flex; 
+    align-items: center;
+    height: fit-content;
+    margin-bottom: 16px;
+}
+
 /* Book Cards */
 .book-list-header 
 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
 }
+
+    .book-list-header h2 
+    {
+        margin-bottom: 0px; 
+    }
 
     .book-list-header a 
     {
-        color: #2563eb;
+        color: #3E4F4E;
         text-decoration: none;
+        font-weight: 500;
     }
 
         .book-list-header a:hover 
@@ -335,64 +356,56 @@
     border-radius: 9999px;
 }
 
-    .genre-tag.fiction 
-    {
-        background-color: #dbeafe;
-        color: #1e40af;
+    .genre-tag.dynamic-genre-1 {
+        background-color: #8C78D8; 
+        color: #FFFFFF;
     }
 
-    .genre-tag.horror 
-    {
-        background-color: #fee2e2;
-        color: #991b1b;
+    .genre-tag.dynamic-genre-2 {
+        background-color: #5BA8A0; 
+        color: #FFFFFF;
     }
 
-    .genre-tag.coming-of-age 
-    {
-        background-color: #dcfce7;
-        color: #166534;
+    .genre-tag.dynamic-genre-3 {
+        background-color: #D8A46B; 
+        color: #3E4F4E; 
     }
 
-    .genre-tag.thriller 
-    {
-        background-color: #ede9fe;
-        color: #6d28d9;
+    .genre-tag.dynamic-genre-4 {
+        background-color: #AA647D; 
+        color: #FFFFFF;
     }
 
-    .genre-tag.mystery 
-    {
-        background-color: #fef9c3;
-        color: #a16207;
+    .genre-tag.dynamic-genre-5 {
+        background-color: #6C8EBF; 
+        color: #FFFFFF;
     }
 
-    .genre-tag.sci-fi 
-    {
-        background-color: #e0e7ff;
-        color: #3730a3;
+    .genre-tag.dynamic-genre-6 {
+        background-color: #7BCC70; 
+        color: #FFFFFF;
     }
 
-    .genre-tag.adventure 
-    {
-        background-color: #ecfccb;
-        color: #4d7c0f;
-    }
-    .genre-tag.fantasy 
-    {
-        background-color: #37e837;
-        color: #4d7c0f;
+    .genre-tag.dynamic-genre-7 {
+        background-color: #FF7F50;
+        color: #FFFFFF;
     }
 
-    .genre-tag.romance 
-    {
-        background-color: #ded404;
-        color: #4d7c0f;
+    .genre-tag.dynamic-genre-8 {
+        background-color: #8A2BE2;
+        color: #FFFFFF;
     }
 
-    .genre-tag.philosophy 
-    {
-        background-color: #f0970e;
-        color: #4d7c0f;
+    .genre-tag.dynamic-genre-9 {
+        background-color: #DDA0DD; 
+        color: #3E4F4E;
     }
+
+    .genre-tag.dynamic-genre-10 {
+        background-color: #4682B4;
+        color: #FFFFFF;
+    }
+
 
 /* Right Column - Featured Reads */
 .featured-column 
@@ -408,6 +421,8 @@
     max-height: 1090px;
     overflow-y: auto;
     height: auto;
+    -ms-overflow-style: none; 
+    scrollbar-width: none;
 }
 
     .featured-column h2 
@@ -426,6 +441,11 @@
         {
             text-decoration: underline;
         }
+
+    .featured-column::-webkit-scrollbar 
+    {
+        display: none;
+    }
 
 /* Featured Book Card */
 .featured-book-card 
@@ -507,7 +527,7 @@
     {
         display: flex;
         flex-direction: column;
-        gap: 32px;
+        gap: 58px;
     }
 
     .featured-book-card 

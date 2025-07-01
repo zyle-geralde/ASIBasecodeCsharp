@@ -13,10 +13,10 @@
     <link rel="stylesheet" href="~/css/main.css" />
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/login.css" />
-    
-    
+
+
     @RenderSection("styles", required: false)
-    
+
 
 </head>
 <body>
@@ -26,11 +26,13 @@
             @RenderBody()
         </main>
     </div>
-    @*<footer class="border-top footer text-muted">
-        <div class="container">
-            @Copyright
+
+    <footer class="border-top footer text-muted site-footer">
+        <div class="container-footer">
+            <partial name="_Footer" />
         </div>
-    </footer>*@
+    </footer>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
