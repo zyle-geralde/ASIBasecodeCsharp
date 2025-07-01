@@ -48,11 +48,24 @@
                         <input type="text" id="author" name="Author" asp-for="Author" class="edit-book-input">
                     </div>*@
 
-                    <div class="book-master-form-group">
+                   @* <div class="book-master-form-group">
                         <label for="author">Author</label>
                         <select id="author" name="Author" class="book-master-form-select">
 
                         </select>
+                    </div>*@
+                    <div class="book-master-form-group">
+                        <label for="authorContainer">Author</label>
+                        <div class="custom-multi-select" id="authorContainer">
+                            <div class="custom-select-btn">
+                                <span>Select Author</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="custom-dropdown" id="authorDropdown">
+                            </div>
+                        </div>
+                        <input type="hidden" id="author" name="Author" value="@Model.Author">
+                        <input type="hidden" id="hiddenAuthor" value="@Model.Author">
                     </div>
                     <div class="edit-book-form-group">
                         <label for="isbn10">ISBN</label>
@@ -219,52 +232,85 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
 
-        const authorSelect = document.getElementById('author');
+                async function initializeSingleSelectAuthor() {
+            const authorContainer = document.getElementById('authorContainer');
+            const authorDropdown = document.getElementById('authorDropdown');
+            const selectButton = authorContainer.querySelector('.custom-select-btn');
+            const hiddenInput = document.getElementById('author');
+            const hiddenAuthorValue = document.getElementById('hiddenAuthor').value;
 
-        //Setting Up Author
-         try {
-            const response = await fetch('/Book/GetAuthor', {
-                method: 'GET'
+            // Set up dropdown toggling
+            selectButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                authorDropdown.classList.toggle('show');
             });
 
-            if (response.ok) {
-                const result = await response.json();
-                const author_list = result.message
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!authorContainer.contains(event.target)) {
+                    authorDropdown.classList.remove('show');
+                }
+            });
 
-
-                //Add a default "Select Author" option 
-                const default_option = document.createElement('option');
-                default_option.value = ""
-                default_option.textContent = "Select Author"
-                authorSelect.appendChild(default_option)
-                const authorName= document.getElementById('hiddenAuthor')
-
-                //Add elements of the author_list to the select tag
-                author_list.forEach(author_name_id => {
-                    const parts = author_name_id.split(',');
-                    console.log("Hello")
-                    console.log(author_name_id)
-
-                    const option = document.createElement('option');
-                    option.value = parts[1].trim();
-                    option.textContent = parts[0].trim();
-                    
-
-
-                    if(authorName.value && authorName.value.trim() != "" && authorName.value.trim() == parts[1].trim())
-                    {
-                        option.selected = true;
-                    }
-                     
-
-                    authorSelect.appendChild(option);
-                })
-            } else {
-                alert("Server error")
+            // Function to update the selected author
+            function selectAuthor(value, text) {
+                hiddenInput.value = value;
+                selectButton.querySelector('span').textContent = text;
+                authorDropdown.classList.remove('show');
             }
-        } catch (backendError) {
-            alert("Unexpected Error Occured"+backendError)
+
+            try {
+                const response = await fetch('/Book/GetAuthor', {
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const author_list = result.message;
+
+                    // Add a default option
+                    const defaultOption = document.createElement('div');
+                    defaultOption.className = 'dropdown-item';
+                    defaultOption.innerHTML = `
+                        <label>Select Author</label>
+                    `;
+                    defaultOption.addEventListener('click', () => {
+                        selectAuthor('', 'Select Author');
+                    });
+                    authorDropdown.appendChild(defaultOption);
+
+                    // Add author options
+                    author_list.forEach(author_name_id => {
+                        const parts = author_name_id.split(',');
+                        const authorName = parts[0].trim();
+                        const authorId = parts[1].trim();
+
+                        const option = document.createElement('div');
+                        option.className = 'dropdown-item';
+                        option.innerHTML = `
+                            <label>${authorName}</label>
+                        `;
+                        option.addEventListener('click', () => {
+                            selectAuthor(authorId, authorName);
+                        });
+                        authorDropdown.appendChild(option);
+
+                        // If this is the pre-selected author, update the button text
+                        if (hiddenAuthorValue && hiddenAuthorValue.trim() === authorId) {
+                            selectButton.querySelector('span').textContent = authorName;
+                        }
+                    });
+
+                } else {
+                    console.error("Server error fetching authors");
+                }
+            } catch (error) {
+                console.error("Unexpected error occurred:", error);
+            }
         }
+
+        // Call this function after the DOM is loaded
+        initializeSingleSelectAuthor();
 
 
         // reusable function to initialize multi-select dropdowns with preselected items (for genre and language dropdowns)

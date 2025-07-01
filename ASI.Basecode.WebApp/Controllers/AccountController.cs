@@ -246,7 +246,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 
                 await _userService.VerifyOtp(model);
-                TempData["SuccessMessage"] = "Verified";
+                TempData["SuccessMessage"] = "Your account has been verified successfully! You can now login!";
 
                 return RedirectToAction("Login", "Account");
             }

@@ -24,15 +24,14 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         private readonly IReviewService _reviewService;
         private readonly IBookGenreService _bookGenreService;
         private readonly IAccessControlInterface _accessControlInterface;
-        private readonly IAuthorRepository _authorRepository;
         //private readonly IBookRepository _bookRepository;
-        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface, IAuthorRepository authorRepository)
+        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface)
         {
             _bookService = bookService;
             _reviewService = reviewService;
             _bookGenreService = bookGenreService;
             _accessControlInterface = accessControlInterface;
-            _authorRepository = authorRepository;
+            
         }
 
 
@@ -259,9 +258,6 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             var reviews= await _reviewService.GetReviewsByBookId(bookId);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             bool hasReviewed = reviews.Any(r => r.UserId == userId);
-
-            Author authorName = await _authorRepository.GetAuthorById(book.Author != null ? book.Author : "");
-
             var bookDetails = new BookViewModel
             {
                 BookId = book.BookId,
@@ -284,7 +280,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 AverageRating = book.AverageRating,
                 CreatedBy = book.CreatedBy,
                 UpdatedBy = book.UpdatedBy,
-                Author = authorName != null ? authorName.AuthorName : "",
+                Author = book.Author,
                 Likes = book.Likes,
                 ISBN10 = book.ISBN10,
                 ISBN13 = book.ISBN13,

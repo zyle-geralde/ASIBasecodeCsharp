@@ -1,33 +1,28 @@
-﻿body 
-{
+﻿body {
     background: #F7F4ED;
 }
 
-.container.profile-container 
-{
+.container.profile-container {
     max-width: 1400px;
     margin: 100px auto;
     padding: 0 24px;
-    align-content:center;
+    align-content: center;
 }
 
-.header-section.h1 
-{
+.header-section.h1 {
     color: #495057;
     font-size: 2rem;
     margin-bottom: 2rem;
 }
 
-.profile-main-row 
-{
+.profile-main-row {
     display: grid;
     grid-template-columns: 350px 1fr;
     gap: 32px;
     align-items: stretch;
 }
 
-.profile-card 
-{
+.profile-card {
     background: #495e53;
     border-radius: 16px;
     padding: clamp(24px, 5vw, 40px);
@@ -35,12 +30,11 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    height: 100%; 
-    justify-content: center; 
+    height: 100%;
+    justify-content: center;
 }
 
-.profile-avatar 
-{
+.profile-avatar {
     width: clamp(120px, 15vw, 160px);
     height: clamp(120px, 15vw, 160px);
     background: #fff;
@@ -51,61 +45,53 @@
     margin-bottom: clamp(16px, 3vw, 24px);
 }
 
-    .profile-avatar i 
-    {
+    .profile-avatar i {
         font-size: clamp(60px, 7vw, 80px);
         color: #495e53;
     }
 
-.profile-name 
-{
+.profile-name {
     font-size: clamp(20px, 2.5vw, 24px);
     font-weight: 600;
     color: #fff;
     margin-bottom: 4px;
 }
 
-.profile-username 
-{
+.profile-username {
     font-size: clamp(14px, 1.5vw, 16px);
     color: #ccc;
     margin-bottom: clamp(16px, 1.5vw, 24px);
 }
 
-.profile-bio 
-{
+.profile-bio {
     color: #e6e6e6;
     font-size: clamp(14px, 1.5vw, 15px);
     line-height: 1.5;
-    max-width: 90%; 
+    max-width: 90%;
     margin: 0 auto;
 }
 
-.profile-info-stack 
-{
+.profile-info-stack {
     display: flex;
     flex-direction: column;
     gap: 24px;
     align-content: space-between !important;
-    height: 100%; 
+    height: 100%;
 }
 
-.info-card 
-{
+.info-card {
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    height: 100%; 
-}
-
-.info-card::after first-child
-{
     height: 100%;
 }
 
-.info-card-header 
-{
+    .info-card::after first-child {
+        height: 100%;
+    }
+
+.info-card-header {
     background: #555350;
     color: #fff;
     padding: 16px 24px;
@@ -116,214 +102,592 @@
     align-items: center;
 }
 
-    .info-card-header .fa-pen 
-    {
+    .info-card-header .fa-pen {
         font-size: 14px;
         cursor: pointer;
     }
 
-.info-card-body 
-{
+.info-card-body {
     padding: 24px;
-    height: 100%; 
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.info-fields-row 
-{
+.info-fields-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
 }
 
-.info-field-col 
-{
+.info-field-col {
     display: flex;
     flex-direction: column;
     gap: 12px;
     padding-bottom: 12px;
 }
 
-.info-label 
-{
+.info-label {
     color: #6c757d;
     font-size: 14px;
 }
 
-.info-value 
-{
+.info-value {
     color: #212529;
     font-size: 16px;
     font-weight: 500;
 }
 
-.info-cards-bottom-row 
-{
+.info-cards-bottom-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
 }
 
-@media (max-width: 1200px) 
-{
-    .profile-main-row 
-    {
+/* Enhanced Reviews Section Styles */
+.profile-reviews-section {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-top: 2rem;
+}
+
+    .profile-reviews-section .section-header {
+        background: linear-gradient(135deg, #495e53 0%, #3d4f45 100%);
+        color: #fff;
+        padding: 24px 32px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .profile-reviews-section .section-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .profile-reviews-section .section-header h2 {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 600;
+    }
+
+    .profile-reviews-section .section-content {
+        padding: 32px;
+    }
+
+.no-reviews {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6c757d;
+}
+
+    .no-reviews i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: #dee2e6;
+    }
+
+    .no-reviews p {
+        font-size: 1.125rem;
+        margin-bottom: 0.5rem;
+        color: #495057;
+    }
+
+.reviews-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.modern-review-box {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+    .modern-review-box:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+    }
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.book-info .book-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.book-link {
+    color: #495e53;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+    .book-link:hover {
+        color: #3d4f45;
+        text-decoration: underline;
+    }
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+    .review-rating .stars {
+        display: flex;
+        gap: 2px;
+    }
+
+        .review-rating .stars i {
+            color: #ffc107;
+            font-size: 16px;
+        }
+
+    .review-rating .rating-value {
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+.review-content {
+    margin-bottom: 20px;
+}
+
+.review-comment {
+    color: #495057;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.review-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.review-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: #6c757d;
+}
+
+    .review-meta div {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .review-meta i {
+        font-size: 12px;
+    }
+
+.review-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-edit-review,
+.btn-delete-review {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-edit-review {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+    .btn-edit-review:hover {
+        background: #bbdefb;
+        color: #1565c0;
+    }
+
+.btn-delete-review {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+    .btn-delete-review:hover {
+        background: #ffcdd2;
+        color: #c62828;
+    }
+
+/* Review Modal Styles */
+.review-modal .modal-dialog {
+    max-width: 500px;
+}
+
+.review-modal .modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.review-modal .modal-header {
+    border: none;
+    padding: 24px 24px 0;
+}
+
+.review-modal .back-button {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    transition: all 0.2s ease;
+}
+
+    .review-modal .back-button:hover {
+        background: #e9ecef;
+        color: #495057;
+    }
+
+.review-modal .book-details {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.review-modal .edit-book-title {
+    color: #495057;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.review-modal .edit-book-id {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.review-modal .form-label {
+    color: #495057;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.review-modal .form-control {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+    .review-modal .form-control:focus {
+        border-color: #495e53;
+        box-shadow: 0 0 0 0.2rem rgba(73, 94, 83, 0.25);
+    }
+
+.review-modal .rating {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.review-modal .stars {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+    .review-modal .stars i {
+        font-size: 28px;
+        color: #dee2e6;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+        .review-modal .stars i:hover,
+        .review-modal .stars i.fas {
+            color: #ffc107;
+        }
+
+.review-modal .btn-submit {
+    background: linear-gradient(135deg, #495e53 0%, #3d4f45 100%);
+    border: none;
+    color: #fff;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+    .review-modal .btn-submit:hover {
+        background: linear-gradient(135deg, #3d4f45 0%, #2d3f35 100%);
+        transform: translateY(-1px);
+    }
+
+/* Delete Modal Styles */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header.border-0 {
+    border-bottom: none !important;
+}
+
+.modal-footer.border-0 {
+    border-top: none !important;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    border: none;
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+        transform: translateY(-1px);
+    }
+
+.btn-secondary {
+    background: #6c757d;
+    border: none;
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+    .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-1px);
+    }
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .profile-main-row {
         grid-template-columns: 1fr;
     }
 
-    .profile-card 
-    {
+    .profile-card {
         max-width: 400px;
         margin: 0 auto;
-        min-height: 400px; 
+        min-height: 400px;
     }
 
-    .profile-avatar 
-    {
+    .profile-avatar {
         margin-bottom: 16px;
     }
 
-    .profile-bio 
-    {
+    .profile-bio {
         max-width: 80%;
     }
-
 }
 
-@media (max-width: 768px) 
-{
-    .info-fields-row 
-    {
+@media (max-width: 768px) {
+    .info-fields-row {
         grid-template-columns: 1fr 1fr;
     }
 
-    .info-cards-bottom-row 
-    {
+    .info-cards-bottom-row {
         grid-template-columns: 1fr;
     }
 
-    .profile-card 
-    {
+    .profile-card {
         padding: 32px 24px;
         min-height: 350px;
     }
 
-    .profile-bio 
-    {
+    .profile-bio {
         font-size: 14px;
         max-width: 100%;
     }
+
+    .profile-reviews-section .section-content {
+        padding: 20px;
+    }
+
+    .modern-review-box {
+        padding: 20px;
+    }
+
+    .review-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .review-meta {
+        order: 2;
+        margin-top: 12px;
+    }
+
+    .review-actions {
+        order: 1;
+        align-self: stretch;
+        justify-content: center;
+    }
+
+    .profile-reviews-section .section-header {
+        padding: 20px;
+    }
 }
 
-@media (max-width: 576px) 
-{
-    .info-fields-row 
-    {
+@media (max-width: 576px) {
+    .info-fields-row {
         grid-template-columns: 1fr;
     }
 
-    .container.profile-container 
-    {
+    .container.profile-container {
         padding: 0 16px;
+        margin: 60px auto;
     }
 
-    .profile-card 
-    {
+    .profile-card {
         padding: 24px 20px;
         min-height: 300px;
     }
 
-    .container.profile-container
-    {
-        padding: 0 16px;
-        margin: 60px auto; 
-    }
-
-    .profile-avatar 
-    {
+    .profile-avatar {
         margin-bottom: 12px;
     }
 
-    .profile-username 
-    {
+    .profile-username {
         margin-bottom: 16px;
+    }
+
+    .profile-reviews-section .section-header {
+        padding: 20px;
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+
+        .profile-reviews-section .section-header h2 {
+            font-size: 1.5rem;
+        }
+
+    .review-meta {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .review-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-edit-review,
+    .btn-delete-review {
+        justify-content: center;
+        padding: 10px 16px;
+        width: 100%;
+    }
+
+    .review-modal .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    .review-modal .stars i {
+        font-size: 24px;
     }
 }
 
-
 /* Modal Styles for Profile Edit Modals */
-.profile-edit-modal .modal-dialog 
-{
+.profile-edit-modal .modal-dialog {
     max-width: 500px;
 }
 
-.profile-edit-modal .modal-content 
-{
+.profile-edit-modal .modal-content {
     border-radius: 12px;
     border: none;
     box-shadow: 0 2px 20px rgba(0,0,0,0.1);
 }
 
-.profile-edit-modal .modal-header 
-{
+.profile-edit-modal .modal-header {
     padding: 1.5rem 1.5rem 1rem;
 }
 
-.profile-edit-modal .modal-title 
-{
+.profile-edit-modal .modal-title {
     color: #A37B5D;
     font-size: 1.25rem;
     font-weight: 600;
 }
 
-.profile-edit-modal .btn-close 
-{
+.profile-edit-modal .btn-close {
     opacity: 0.5;
 }
 
-.profile-edit-modal .btn-close:hover 
-{
-    opacity: 0.75;
-}
+    .profile-edit-modal .btn-close:hover {
+        opacity: 0.75;
+    }
 
-.profile-edit-modal .modal-body 
-{
+.profile-edit-modal .modal-body {
     padding: 1rem 1.5rem 1.5rem;
 }
 
 /* Form Styles */
-.form-label 
-{
+.form-label {
     color: #647D7F;
     font-size: 14px;
     font-weight: 500;
     margin-bottom: 8px;
 }
 
-.form-control, .form-select 
-{
+.form-control, .form-select {
     padding: 0.625rem 1rem;
     border: 1px solid #ced4da;
     border-radius: 6px;
     font-size: 12px;
 }
 
-    .form-control:focus, .form-select:focus
-    {
+    .form-control:focus, .form-select:focus {
         border-color: #495e53;
         box-shadow: 0 0 0 0.25rem rgba(73, 94, 83, 0.25);
     }
 
-.input-group-text 
-{
+.input-group-text {
     background-color: #fff;
     border: 1px solid #ced4da;
     color: #6c757d;
 }
 
-.btn-primary 
-{
+.btn-primary {
     background-color: #495e53;
     border: none;
     padding: 0.625rem 2rem;
@@ -332,30 +696,26 @@
     font-size: 14px;
 }
 
-    .btn-primary:hover 
-    {
+    .btn-primary:hover {
         background-color: #3d4f45;
     }
 
 /*----Datepicker inside the modal*/
 
 /* Datepicker Styles */
-.datepicker 
-{
+.datepicker {
     padding: 8px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     border: 1px solid #ced4da;
 }
 
-    .datepicker table 
-    {
+    .datepicker table {
         width: 100%;
     }
 
         .datepicker table tr td,
-        .datepicker table tr th 
-        {
+        .datepicker table tr th {
             text-align: center;
             width: 40px;
             height: 40px;
@@ -363,65 +723,54 @@
         }
 
             .datepicker table tr td.active,
-            .datepicker table tr td.active:hover 
-            {
+            .datepicker table tr td.active:hover {
                 background-color: #495e53 !important;
                 background-image: none;
             }
 
-            .datepicker table tr td.today 
-            {
+            .datepicker table tr td.today {
                 background-color: #e9ecef;
                 background-image: none;
             }
 
-.input-group-text 
-{
+.input-group-text {
     cursor: pointer;
     background-color: #fff;
 }
 
-    .input-group-text:hover 
-    {
+    .input-group-text:hover {
         background-color: #f8f9fa;
     }
 
 /* Make input readonly when needed */
-.datepicker-readonly 
-{
+.datepicker-readonly {
     background-color: #fff !important;
     cursor: default;
 }
 
-
 /*----- Password Toggle styles ------*/
 /* Password toggle button styles */
-.password-toggle 
-{
+.password-toggle {
     border-color: #ced4da;
     color: #6c757d;
 }
 
-    .password-toggle:hover 
-    {
+    .password-toggle:hover {
         background-color: #f8f9fa;
         color: #495057;
         border-color: #ced4da;
     }
 
-    .password-toggle:focus 
-    {
+    .password-toggle:focus {
         box-shadow: none;
         border-color: #ced4da;
     }
 
-.input-group > .form-control:focus ~ .password-toggle 
-{
+.input-group > .form-control:focus ~ .password-toggle {
     border-color: #495e53;
 }
 
-.password-toggle i 
-{
+.password-toggle i {
     width: 16px;
     height: 16px;
     display: inline-flex;
@@ -429,13 +778,27 @@
     justify-content: center;
 }
 
-/* wwwroot/css/userui/viewuser.css or a global CSS file */
+/* Profile Avatar Edit Button Animation */
 @keyframes bounceIn {
-    0% { transform: scale(0.3); opacity: 0; }
-    50% { transform: scale(1.05); opacity: 1; }
-    70% { transform: scale(0.9); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+
+    70% {
+        transform: scale(0.9);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
+
 .fa-bounce {
     animation: bounceIn 0.6s;
 }
@@ -466,21 +829,22 @@
         color: #fff;
     }
 
-.edit-avatar-btn i {
-    font-size: 1.1rem;
-    line-height: 1;
-}
+    .edit-avatar-btn i {
+        font-size: 1.1rem;
+        line-height: 1;
+    }
 
-.edit-avatar-btn i.fas.fa-pen {
-    font-size: 14px;      /* Make the icon smaller */
-    width: 14px;          /* Ensure the icon is not stretched */
-    height: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-}
+        .edit-avatar-btn i.fas.fa-pen {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
 
+/* Success Modal Styles */
 .success-modal .modal-content {
     border-radius: 12px;
     background-color: #f5f2ef;
@@ -529,3 +893,232 @@
     .success-modal .btn-secondary:hover {
         background-color: #4f6466;
     }
+
+/* Loading States */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Fade Animations */
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease-in-out;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* Focus and Accessibility */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(73, 94, 83, 0.25);
+}
+
+/* Tooltip Styles */
+.tooltip {
+    font-size: 12px;
+}
+
+.tooltip-inner {
+    background-color: #495057;
+    color: #fff;
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+
+/* Custom Scrollbar */
+.reviews-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.reviews-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.reviews-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+    .reviews-container::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+.review-modal .modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    background-color: #fff;
+}
+
+.review-modal .modal-dialog {
+    max-width: 500px;
+    margin: 1.75rem auto;
+}
+
+.review-modal .back-button {
+    padding: 5px;
+    margin-left: 5px;
+}
+
+    .review-modal .back-button i {
+        font-size: 20px;
+        color: #333;
+    }
+
+/* Book details */
+.book-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.book-author {
+    font-size: 18px;
+    color: #666;
+    font-style: italic;
+}
+
+.review-modal .form-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.review-modal textarea.form-control {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    min-height: 120px;
+    font-size: 14px;
+}
+
+/* Stars styling */
+.review-modal .stars {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 10px 0 20px;
+}
+
+    .review-modal .stars i {
+        font-size: 24px;
+        color: #ccc;
+        cursor: pointer;
+    }
+
+        .review-modal .stars i.fas {
+            color: #495e53;
+        }
+
+        .review-modal .stars i.far {
+            color: #ccc;
+        }
+
+/* Submit button */
+.btn-submit {
+    background-color: #495e53;
+    color: white;
+    border-radius: 25px;
+    padding: 10px 40px;
+    font-weight: 500;
+    min-width: 180px;
+    transition: all 0.2s;
+    border: none;
+}
+
+    .btn-submit:hover {
+        background-color: #3d4f45;
+        color: white;
+    }
+
+/* For the active rating state */
+.stars-active i.fas {
+    color: #495e53;
+}
+
+
+
+
+
+.confirmation-modal .modal-content {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.confirmation-modal .modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.confirmation-modal .btn-danger {
+    background-color: #dc3545;
+}
+
+.confirmation-modal .btn-danger-2 {
+    background-color: #647D7F;
+    color: white;
+    height: 40px;
+}
+
+.confirmation-modal .btn-danger:hover {
+    background-color: #c82333;
+}
+
+.confirmation-modal .btn-danger-2:hover {
+    background-color: #556a6c;
+}
+
+.confirmation-modal .modal-body {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    padding-bottom: 1rem !important;
+    padding-top: 1.5rem !important;
+}
+
+p.text-muted {
+    margin-bottom: 0;
+}
+

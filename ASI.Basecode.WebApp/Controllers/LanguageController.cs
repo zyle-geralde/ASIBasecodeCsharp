@@ -1,16 +1,17 @@
 ﻿using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
+using ASI.Basecode.WebApp.AccessControl;
+using ASI.Basecode.WebApp.Payload.BooksPayload;
+using ASI.Basecode.WebApp.Payload.LanguagePayload;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using System;
-using ASI.Basecode.Services.ServiceModels;
-using System.Threading.Tasks;
 using System.Collections.Generic;
-using ASI.Basecode.WebApp.Payload.LanguagePayload;
-using ASI.Basecode.WebApp.Payload.BooksPayload;
-using ASI.Basecode.WebApp.AccessControl;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -19,11 +20,13 @@ namespace ASI.Basecode.WebApp.Controllers
 
         private readonly ILanguageService _languageService;
         private readonly IAccessControlInterface _accessControlInterface;
+        private readonly IBookGenreService _bookGenreService;
 
-        public LanguageController(ILanguageService languageService,IAccessControlInterface accessControlInterface)
+        public LanguageController(ILanguageService languageService,IAccessControlInterface accessControlInterface, IBookGenreService bookGenreService)
         {
             _languageService = languageService;
             _accessControlInterface = accessControlInterface;
+            _bookGenreService = bookGenreService;
         }
 
 
@@ -169,20 +172,54 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpGet]
         [Route("Language/LanguageView/{languageId}")]
         [Authorize]
-
         public async Task<IActionResult> GetBooksByGenre(string languageId)
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             try
             {
-                //Change this during code cleaning
-                List<BookViewModel> retreived_books_by_language = await _languageService.GetBooksByLanguage(languageId);
-                LanguageViewModel retreived_language_by_Id = await _languageService.GetLanguageByName(languageId);
+                // Get the books by language
+                List<BookViewModel> retrievedBooksByLanguage = await _languageService.GetBooksByLanguage(languageId);
+                LanguageViewModel retrievedLanguageById = await _languageService.GetLanguageByName(languageId);
 
-                ViewBag.CurrentLanguageDetails = retreived_language_by_Id;
+                // Create a paginated list from the regular list
+                const int pageSize = 10;
+                int pageIndex = 1;
 
-                return View("~/Views/Books/ListBook.cshtml", retreived_books_by_language);
+                // Create a PaginatedList using the constructor
+                PaginatedList<BookViewModel> paginatedBooks =
+                    new PaginatedList<BookViewModel>(
+                        retrievedBooksByLanguage,
+                        retrievedBooksByLanguage.Count,
+                        pageIndex,
+                        pageSize);
+
+                // Get all genres to avoid null reference exception in the view
+                var bookGenreService = HttpContext.RequestServices.GetService<IBookGenreService>();
+                if (bookGenreService != null)
+                {
+                    ViewData["AllGenres"] = await bookGenreService.GetAllGenreList();
+                }
+                else
+                {
+                    // Provide an empty list if the service is unavailable
+                    ViewData["AllGenres"] = new List<BookGenreViewModel>();
+                }
+
+                // Set other ViewData properties that the view expects
+                ViewData["CurrentSearch"] = null;
+                ViewData["CurrentAuthor"] = null;
+                ViewData["CurrentRating"] = null;
+                ViewData["CurrentFromDate"] = null;
+                ViewData["CurrentToDate"] = null;
+                ViewData["CurrentGenres"] = Array.Empty<string>();
+                ViewData["CurrentSort"] = "title";
+                ViewData["CurrentSortDescending"] = false;
+
+                ViewBag.CurrentLanguageDetails = retrievedLanguageById;
+
+                // Pass the paginated list to the view
+                return View("~/Views/Books/ListBook.cshtml", paginatedBooks);
             }
             catch (ApplicationException ex)
             {

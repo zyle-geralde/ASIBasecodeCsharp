@@ -19,7 +19,7 @@ namespace ASI.Basecode.Services.Services
         private readonly ILanguageRepository _languageRepository;
         private readonly IAuthorRepository _authorRepository;
 
-        public BookService(IBookRepository bookRepository,ILanguageRepository languageRepository, IAuthorRepository authorRepository)
+        public BookService(IBookRepository bookRepository, ILanguageRepository languageRepository, IAuthorRepository authorRepository)
         {
             _bookRepository = bookRepository;
             _languageRepository = languageRepository;
@@ -47,7 +47,7 @@ namespace ASI.Basecode.Services.Services
                 AverageRating = 0,
                 Likes = 0,
                 GenreList = request.GenreList,
-                IsFeatured= request.IsFeatured,
+                IsFeatured = request.IsFeatured,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImage = request.CoverImageUrl,
@@ -68,11 +68,9 @@ namespace ASI.Basecode.Services.Services
                 CreatedBy = "admin1"
             };
 
-
             try
             {
                 await _bookRepository.AddBook(book);
-                
             }
             catch (Exception ex)
             {
@@ -83,97 +81,52 @@ namespace ASI.Basecode.Services.Services
         public async Task<PaginatedList<BookViewModel>> GetBooks(BookQueryParams queryParams)
         {
             var books = await _bookRepository.GetBooks(queryParams);
-
             var bookList = new List<BookViewModel>();
 
-            foreach (var book in books)
+            foreach (var b in books)
             {
+                // Get language name if available
+                Language languageName = null;
+                if (!string.IsNullOrEmpty(b.Language))
+                {
+                    languageName = await _languageRepository.GetLanguageByName(b.Language);
+                }
 
-                Language languageName = await _languageRepository.GetLanguageByName(book.Language != null ? book.Language : "");
-                Author authorName = await _authorRepository.GetAuthorById(book.Author != null ? book.Author : "");
+                // Get author name if available
+                Author authorName = null;
+                if (!string.IsNullOrEmpty(b.Author))
+                {
+                    authorName = await _authorRepository.GetAuthorById(b.Author);
+                }
 
                 bookList.Add(new BookViewModel
                 {
-                    BookId = book.BookId,
-                    Title = book.Title,
-                    Subtitle = book.Subtitle,
-                    Description = book.Description,
-                    NumberOfPages = book.NumberOfPages,
-                    Language = languageName != null ? languageName.LanguageName : "", 
-                    SeriesName = book.SeriesName,
-                    SeriesDescription = book.SeriesDescription,
-                    SeriesOrder = book.SeriesOrder,
-                    GenreList = book.GenreList,
-                    AverageRating = book.AverageRating,
-                    IsFeatured = book.IsFeatured,
-
-                    
-                    CoverImageUrl = book.CoverImage,
-                    BookFileUrl = book.BookFile,
-
-                    
-                    UpdatedDate = book.UpdatedDate,
-                    PublicationDate = book.PublicationDate,
-
-                    
-                    Publisher = book.Publisher, 
-                    PublicationLocation = book.PublicationLocation, 
-                    Author = authorName != null ? authorName.AuthorName : "", 
-                    ISBN10 = book.ISBN10,
-                    ISBN13 = book.ISBN13,
-                    Edition = book.Edition,
-                    CreatedBy = "admin1",
-                    UpdatedBy = "Logged Admin", 
+                    BookId = b.BookId,
+                    Title = b.Title,
+                    Subtitle = b.Subtitle,
+                    UploadDate = b.UploadDate,
+                    GenreList = b.GenreList,
+                    PublicationDate = b.PublicationDate,
+                    Author = authorName != null ? authorName.AuthorName : b.Author,
+                    AverageRating = b.AverageRating,
+                    CoverImage = b.CoverImage,
+                    BookFile = b.BookFile,
+                    Description = b.Description,
+                    IsFeatured = b.IsFeatured,
+                    Language = languageName != null ? languageName.LanguageName : b.Language,
+                    NumberOfPages = b.NumberOfPages,
+                    Publisher = b.Publisher,
+                    PublicationLocation = b.PublicationLocation,
+                    SeriesName = b.SeriesName
                 });
             }
-
-            /*var bookList =  books.Select(book => new BookViewModel
-            {
-                    Language languageName = await _languageRepository.GetLanguageByName(book.Language != null ? book.Language : "");
-                    Author authorName = await _authorRepository.GetAuthorById(book.Author != null ? book.Author : "");
-
-                    BookId = book.BookId,
-                    Title = book.Title,
-                    Subtitle = book.Subtitle,
-                    Description = book.Description,
-                    NumberOfPages = book.NumberOfPages,
-                    Language = languageName!=null?languageName.LanguageName:"",
-                    SeriesName = book.SeriesName,
-                    SeriesDescription = book.SeriesDescription,
-                    SeriesOrder = book.SeriesOrder,
-                    GenreList = book.GenreList,
-                    AverageRating = book.AverageRating,
-                    IsFeatured = book.IsFeatured,
-
-                    // Firebase Storage URLs are directly mapped
-                    CoverImageUrl = book.CoverImage,
-                    BookFileUrl = book.BookFile,
-
-                    // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
-                    UpdatedDate = book.UpdatedDate,
-                    PublicationDate = book.PublicationDate,
-
-
-                    // Handle comma-separated strings
-                    Publisher = book.Publisher, // Store as string
-                    PublicationLocation = book.PublicationLocation, // Store as string
-                    Author = authorName != null ? authorName.AuthorName : "", // Store as string
-                    ISBN10 = book.ISBN10,
-                    ISBN13 = book.ISBN13,
-                    Edition = book.Edition,
-                    CreatedBy = "admin1",
-                    UpdatedBy = "Logged Admin",
-
-            }).ToList();*/
 
             return new PaginatedList<BookViewModel>(
                bookList,
                books.TotalCount,
                books.PageIndex,
                queryParams.PageSize
-                );
-
-
+            );
         }
 
         public async Task<List<BookViewModel>> GetAllBooks()
