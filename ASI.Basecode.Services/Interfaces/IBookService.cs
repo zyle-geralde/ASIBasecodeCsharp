@@ -12,7 +12,8 @@ namespace ASI.Basecode.Services.Interfaces
     public interface IBookService
     {
         Task AddBook(BookViewModel book);
-        Task<List<BookViewModel>> GetBooks(BookQueryParams queryParams);
+        //Task<List<BookViewModel>> GetBooks(BookQueryParams queryParams);
+        Task<PaginatedList<BookViewModel>> GetBooks(BookQueryParams queryParams);
         Task<List<BookViewModel>> GetAllBooks();
         Task<BookViewModel?> GetBookById(string bookId);
 

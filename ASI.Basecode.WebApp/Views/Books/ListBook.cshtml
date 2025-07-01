@@ -1,45 +1,51 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@using ASI.Basecode.Services.ServiceModels
-@model List<BookViewModel>
+﻿@using ASI.Basecode.Data.Interfaces;
+@model PaginatedList<ASI.Basecode.Services.ServiceModels.BookViewModel>
+@using Microsoft.AspNetCore.Routing;
+@using ASI.Basecode.Services.ServiceModels;
 
 @{
-    var current_genre_details = ViewBag.CurrentGenreDetails as ASI.Basecode.Services.ServiceModels.BookGenreViewModel;
-    var current_language_details = ViewBag.CurrentLanguageDetails as ASI.Basecode.Services.ServiceModels.LanguageViewModel;
-    var current_author_details = ViewBag.CurrentAuthorDetails as ASI.Basecode.Services.ServiceModels.AuthorViewModel;
-    string display_name = null;
-    string description = null;
+    // var current_genre_details = ViewBag.CurrentGenreDetails as ASI.Basecode.Services.ServiceModels.BookGenreViewModel;
+    // var current_language_details = ViewBag.CurrentLanguageDetails as ASI.Basecode.Services.ServiceModels.LanguageViewModel;
+    // var current_author_details = ViewBag.CurrentAuthorDetails as ASI.Basecode.Services.ServiceModels.AuthorViewModel;
+    // string display_name = null;
+    // string description = null;
 
 
-    if(current_genre_details != null)
-    {
-        display_name = current_genre_details?.GenreName ?? ViewBag.CurrentGenreDetails as string ?? "Books";
-        description = current_genre_details?.GenreDescription ?? ViewBag.CurrentGenreDetails as string ?? "";
-    }
-    else if(current_language_details != null){
-        display_name = current_language_details?.LanguageName ?? ViewBag.CurrentLanguageDetails as string ?? "Books";
-        description = "Language";
-    }
-    else if (current_author_details != null)
-    {
-        display_name = current_author_details?.AuthorName ?? ViewBag.CurrentAuthorDetails as string ?? "Books";
-        description = current_author_details?.AuthorDescription ?? ViewBag.CurrentAuthorDetails as string ?? "";
-    }
-    else
-    {
-        display_name = "Books";
-        description = "Manage Your Book Collection";
+    // if(current_genre_details != null)
+    // {
+    //     display_name = current_genre_details?.GenreName ?? ViewBag.CurrentGenreDetails as string ?? "Books";
+    //     description = current_genre_details?.GenreDescription ?? ViewBag.CurrentGenreDetails as string ?? "";
+    // }
+    // else if(current_language_details != null){
+    //     display_name = current_language_details?.LanguageName ?? ViewBag.CurrentLanguageDetails as string ?? "Books";
+    //     description = "Language";
+    // }
+    // else if (current_author_details != null)
+    // {
+    //     display_name = current_author_details?.AuthorName ?? ViewBag.CurrentAuthorDetails as string ?? "Books";
+    //     description = current_author_details?.AuthorDescription ?? ViewBag.CurrentAuthorDetails as string ?? "";
+    // }
+    // else
+    // {
+    //     display_name = "Books";
+    //     description = "Manage Your Book Collection";
 
-    }
+    // }
 
 
 
-    ViewData["Title"] = "Book List";
-    Layout = "_AdminSidebarLayout";
+    // ViewData["Title"] = "Book List";
+    // Layout = "_AdminSidebarLayout";
 }
 
-@*@{
+@{
+    ViewData["Title"] = "Book List";
+    Layout = "_AdminSidebarLayout";
+    string display_name = "Users";
+    string description = "Manage users";
     var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
     var currentSearch    = (string?)ViewData["CurrentSearch"];
     var currentAuthor    = (string?)ViewData["CurrentAuthor"];
@@ -50,7 +56,21 @@
     var currentSort = (string?)ViewData["CurrentSort"];
     var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
 
-}*@
+    var routeValues = new Dictionary<string, string> {
+        ["searchTerm"]     = currentSearch?? string.Empty,
+        ["author"]         = currentAuthor?? string.Empty,
+        ["rating"]         = currentRating?.ToString()?? string.Empty,
+        ["publishedFrom"]  = currentFromDate?? string.Empty,
+        ["publishedTo"]    = currentToDate?? string.Empty,
+        ["genreFilter"]    = string.Join(",", currentGenres),
+        ["sortOrder"]      = currentSort?? string.Empty,
+        ["sortDescending"] = currentSortDescending
+                                 .ToString()
+                                 .ToLowerInvariant()
+    };
+}
+
+}
 
 @section styles {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -73,7 +93,7 @@
         </p>
     </div>
 
-    @*<form asp-action="ListBook" method="get" class="mb-3">
+    <form asp-action="ListBook" method="get" class="mb-3">
 
 <div class="row g-3 align-items-end">
     <div class="col-md-4">
@@ -181,7 +201,7 @@
     </button>
   </div>
 
-</form>*@
+</form>
 
     
 
@@ -229,7 +249,7 @@
                         <td>
                             @if (!string.IsNullOrWhiteSpace(book.CoverImageUrl))
                             {
-                                <img src="@book.CoverImageUrl" alt="Cover Image" class="cover-image" /> 
+                                <img src="@book.CoverImage" alt="Cover Image" class="cover-image" /> 
                             }
                             else
                             {
@@ -280,6 +300,29 @@
     {
         <p class="empty-message">No books found. Why not add some?</p>
     }
+      <ul class="pagination">
+    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+        <a class="page-link"
+         asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = (Model.PageIndex - 1).ToString() })">
+        ‹ Prev
+      </a>
+
+    </li>
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+      <li class="page-item @(i==Model.PageIndex ? "active":"")">
+<a class="page-link"
+           asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = i.ToString() })">
+          @i
+        </a>      </li>
+    }
+    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+     <a class="page-link"
+         asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = (Model.PageIndex + 1).ToString() })">
+        Next ›
+
+      </a>    </li>
+  </ul>
 </div>
 
 
