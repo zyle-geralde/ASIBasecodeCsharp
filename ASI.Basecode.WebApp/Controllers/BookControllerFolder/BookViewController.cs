@@ -171,7 +171,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         string? category = null
         )
         {
-                const int PageSize = 10;
+                const int PageSize = 4;
                 int pageIndex = page.GetValueOrDefault(1);
 
                 var queryParams = new BookQueryParams
@@ -219,10 +219,9 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             {
                 ViewData["CategoryTitle"] = "Search Results";
             }
-            var books = await _bookService.GetBooks(
-                    queryParams);
-                //List<Book> books = await _bookService.GetAllBooks();
-                return View("~/Views/Books/BookSearchResults.cshtml", books);
+            PaginatedList<BookViewModel> books = await _bookService.GetBooks(queryParams);
+            //List<Book> books = await _bookService.GetAllBooks();
+            return View("~/Views/Books/BookSearchResults.cshtml", books);
             }
 
 

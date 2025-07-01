@@ -11,6 +11,11 @@ namespace ASI.Basecode.Services.ServiceModels
         public List<BookGenreViewModel> Genres { get; set; }
         public List<BookViewModel> TopRatedBooks { get; set; }
         public List<BookViewModel> NewBooks { get; set; }
-        //public List<BookViewModel> FeaturedBooks { get; set; }
+        public PaginatedList<BookViewModel> SearchResults { get; set; }
+        public string? SearchTerm { get; set; }
+        public int PageIndex { get; set; }
+        public string SortOrder { get; set; }
+        public bool SortDescending { get; set; }
+        public int PageSize { get; set; }
     }
 }
