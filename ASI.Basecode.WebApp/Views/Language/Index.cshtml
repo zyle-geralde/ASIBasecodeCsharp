@@ -34,17 +34,19 @@
         ConfirmButtonClass = "add-language-btn"
     };
 
-    var successLanguageModal = new SuccessModalModel
+   /* var successLanguageModal = new SuccessModalModel
     {
         Id = "successLanguageModal",
         Title = "Success!",
         Message = "Operation completed successfully!"
-    };
+     };*/
 }
+
 
 @section styles {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/language.css" asp-append-version="true" />
 }
@@ -123,7 +125,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="2" class="text-center">No languages found.</td>
+                                    <td colspan="3" class="text-center">No languages found.</td>
                                 </tr>
                             }
                         </tbody>
@@ -135,7 +137,8 @@
 </div>
 
 <partial name="_ConfirmationModal" model="deleteLanguageModal" />
-<partial name="_SuccessModal" model="successLanguageModal" />
+<partial name="_Notification" />
+@*<partial name="_SuccessModal" model="successLanguageModal" />*@
 
 <div class="modal fade" id="addLanguageModal" tabindex="-1" aria-labelledby="addLanguageLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -186,92 +189,137 @@
 
 @section Scripts {
     <script src="~/js/modal-helper.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
         $(document).ready(function() {
+            // Initialize toastr options
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "1500",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut",
+                "opacity": 0.8
+            };
+
             // Add Language
-            $('#submitAddLanguageBtn').on('click', async function(e) {
+            $('#submitAddLanguageBtn').on('click', function(e) {
                 e.preventDefault();
                 $('#languageNameError').text('');
                 $('#addLanguageErrorAlert').empty();
                 var languageName = $('#newLanguage').val();
 
-                try {
-                    const response = await fetch('/Language/AddLanguage', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ LanguageName: languageName })
-                    });
-
-                    var data = await response.json();
-                    if (response.ok) {
-                        showSuccessModal("successLanguageModal", "Success!", "Language added successfully!", true);
-                    } else {
-                        alert(data.message);
+                $.ajax({
+                    url: '/Language/AddLanguage',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ LanguageName: languageName }),
+                    success: function() {
+                        $('#addLanguageModal').modal('hide');
+                        toastr.success('Language added successfully!');
+                        setTimeout(function() {
+                            window.location.href = '/Language/Index';
+                        }, 500);
+                    },
+                    error: function(xhr) {
+                        try {
+                            var errorResponse = JSON.parse(xhr.responseText);
+                            toastr.error(errorResponse.message || 'An error occurred while adding the language.');
+                        } catch (e) {
+                            toastr.error('An error occurred while adding the language.');
+                        }
                     }
-                } catch (error) {
-                    alert(error);
-                }
+                });
             });
 
             // Delete Language
-            const show_delete_modal = document.querySelectorAll("#delete_language_button")
-            let languageIdToDelete = null
-            show_delete_modal.forEach(button => {
-                button.addEventListener("click", function (event) {
-                    languageIdToDelete = this.dataset.id;
-                })
-            })
+            const deleteButtons = document.querySelectorAll(".delete-language-btn");
+            let languageIdToDelete = null;
+            
+            deleteButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    languageIdToDelete = this.getAttribute("data-id");
+                });
+            });
 
-            $("#delete-button-submit").on("click", async function(event) {
-                event.preventDefault();
-                try {
-                    const response = await fetch('/Language/Delete', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ LanguageId: languageIdToDelete })
-                    });
-
-                    var data = await response.json();
-                    if (response.ok) {
-                        showSuccessModal("successLanguageModal", "Deleted!", "Language deleted successfully!", true);
-                    } else {
-                        alert(data.message);
+            $("#delete-button-submit").on("click", function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: '/Language/Delete',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ LanguageId: languageIdToDelete }),
+                    success: function() {
+                        $('#deleteLanguageModal').modal('hide');
+                        toastr.success('Language deleted successfully!');
+                        setTimeout(function() {
+                            window.location.href = '/Language/Index';
+                        }, 1500);
+                        
+                        
+                    },
+                    error: function(xhr) {
+                        try {
+                            var errorResponse = JSON.parse(xhr.responseText);
+                            toastr.error(errorResponse.message || 'An error occurred while deleting the language.');
+                        } catch (e) {
+                            toastr.error('An error occurred while deleting the language.');
+                        }
                     }
-                } catch (error) {
-                    alert(error);
-                }
+                });
             });
 
             // Edit Language
-            const show_edit_modal = document.querySelectorAll("#edit_language_button");
-            let languageIdToEdit = null
-            let languageNameToEdit = null
-            show_edit_modal.forEach(button => {
-                button.addEventListener("click", function (event) {
-                    languageIdToEdit = this.dataset.id;
-                    languageNameToEdit = this.dataset.name
-                    $("#editLanguage").val(languageNameToEdit)
-                })
-            })
+            const editButtons = document.querySelectorAll(".edit-language-btn");
+            let languageIdToEdit = null;
+            
+            editButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    languageIdToEdit = this.getAttribute("data-id");
+                    const languageName = this.getAttribute("data-name");
+                    $("#editLanguage").val(languageName);
+                });
+            });
 
-            $("#edit-button-submit").on("click", async function(event) {
-                event.preventDefault();
-                try {
-                    const response = await fetch('/Language/Edit', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ LanguageId: languageIdToEdit, LanguageName: $("#editLanguage").val() })
-                    });
-
-                    var data = await response.json();
-                    if (response.ok) {
-                        showSuccessModal("successLanguageModal", "Success!", "Language saved successfully!", true);
-                    } else {
-                        alert(data.message);
+            $("#edit-button-submit").on("click", function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: '/Language/Edit',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ 
+                        LanguageId: languageIdToEdit, 
+                        LanguageName: $("#editLanguage").val() 
+                    }),
+                    success: function() {
+                        $('#editLanguageModal').modal('hide');
+                        toastr.success('Language updated successfully!');
+                        setTimeout(function() {
+                            window.location.href = '/Language/Index';
+                        }, 500);
+                    },
+                    error: function(xhr) {
+                        try {
+                            var errorResponse = JSON.parse(xhr.responseText);
+                            toastr.error(errorResponse.message || 'An error occurred while updating the language.');
+                        } catch (e) {
+                            toastr.error('An error occurred while updating the language.');
+                        }
                     }
-                } catch (error) {
-                    alert(error);
-                }
+                });
             });
         });
     </script>
