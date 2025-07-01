@@ -4,91 +4,121 @@
     ViewData["Title"] = "Search Results";
     var categoryTitle = (string?)ViewData["CategoryTitle"] ?? "Search Results";
 
-    var currentSearch    = (string?)ViewData["CurrentSearch"];
-    var currentAuthor    = (string?)ViewData["CurrentAuthor"];
-    var currentRating    = (int?)ViewData["CurrentRating"];
-    var currentFromDate  = (string?)ViewData["CurrentFromDate"];
-    var currentToDate    = (string?)ViewData["CurrentToDate"];
-    var currentGenres    = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>();
-    var currentSort      = (string?)ViewData["CurrentSort"];
-    var currentDesc      = (bool)(ViewData["CurrentSortDescending"] ?? false);
+    var currentSearch = (string?)ViewData["CurrentSearch"];
+    var currentAuthor = (string?)ViewData["CurrentAuthor"];
+    var currentRating = (int?)ViewData["CurrentRating"];
+    var currentFromDate = (string?)ViewData["CurrentFromDate"];
+    var currentToDate = (string?)ViewData["CurrentToDate"];
+    var currentGenres = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>();
+    var currentSort = (string?)ViewData["CurrentSort"];
+    var currentDesc = (bool)(ViewData["CurrentSortDescending"] ?? false);
     var currentCategory = (string?)ViewContext.HttpContext.Request.Query["category"] ?? string.Empty;
 
     var routeValues = new Dictionary<string, string>
-            {
-                ["searchTerm"] = currentSearch ?? string.Empty,
-                ["author"] = currentAuthor ?? string.Empty,
-                ["rating"] = currentRating?.ToString() ?? string.Empty,
-                ["publishedFrom"] = currentFromDate ?? string.Empty,
-                ["publishedTo"] = currentToDate ?? string.Empty,
-                ["genreFilter"] = string.Join(",", currentGenres),
-                ["sortOrder"] = currentSort ?? string.Empty,
-                ["sortDescending"] = currentDesc
-                                         .ToString()
-                                         .ToLowerInvariant(),
-                ["category"] = currentCategory
-            };
-
-}
-    <h1>Search Results for: @categoryTitle</h1>
-
-<h1>Search Results for: @categoryTitle</h1>
-
-
-<div class="book-grid">
-    <div class="category-scroll-container">
-        @if(Model == null || !Model.Any())
-        {
-            <p>No books match your category.</p>
-
-        }
-        else
-        {
-                    @foreach(var book in Model) {
-    <a class="book-card"  href="/Book/BookDetails/@book.BookId">
-
-      <img src="@book.CoverImage" alt="@book.Title" />
-      <h3>@book.Title</h3>
-      <p>by @book.Author</p>
-        <p>Upload date: @book.UploadDate</p>
-        <p>Average rating: @book.AverageRating</p>
-    </a>
-        }
-
-  }
-</div>
-
-<nav aria-label="Search results pages">
-  <ul class="pagination">
-    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-      <a class="page-link"
-         asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
-            ["page"] = (Model.PageIndex - 1).ToString()
-         })">
-        ‹ Prev
-      </a>
-    </li>
-
-    @for (int i = 1; i <= Model.TotalPages; i++)
     {
-      <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-        <a class="page-link"
-           asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
-              ["page"] = i.ToString()
-           })">
-          @i
-        </a>
-      </li>
-    }
+        ["searchTerm"] = currentSearch ?? string.Empty,
+        ["author"] = currentAuthor ?? string.Empty,
+        ["rating"] = currentRating?.ToString() ?? string.Empty,
+        ["publishedFrom"] = currentFromDate ?? string.Empty,
+        ["publishedTo"] = currentToDate ?? string.Empty,
+        ["genreFilter"] = string.Join(",", currentGenres),
+        ["sortOrder"] = currentSort ?? string.Empty,
+        ["sortDescending"] = currentDesc.ToString().ToLowerInvariant(),
+        ["category"] = currentCategory
+    };
+}
 
-    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-      <a class="page-link"
-         asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
-            ["page"] = (Model.PageIndex + 1).ToString()
-         })">
-        Next ›
-      </a>
-    </li>
-  </ul>
-</nav>
+@section styles {
+    <link rel="stylesheet" href="~/css/searchresults.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+}
 
+<div class="search-results-container">
+    <!-- Left Side - Scrollable Book Results -->
+    <div class="search-results-left">
+        <div class="search-header">
+            <h2>Results for: @categoryTitle</h2>
+            <p>Displaying @Model.PageIndex of @Model.TotalPages out of @Model.TotalCount results</p>
+        </div>
+
+        <div class="search-filters">
+            <div class="filter-group">
+                <button class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
+                <button class="filter-btn">Filter <i class="fas fa-caret-down"></i></button>
+            </div>
+        </div>
+
+        <div class="search-results-grid">
+            @if(Model == null || !Model.Any())
+            {
+                <p class="no-results">No books match your search criteria.</p>
+            }
+            else
+            {
+                @foreach(var book in Model) {
+                    <div class="book-card">
+                        <a href="/Book/BookDetails/@book.BookId">
+                            <img src="@book.CoverImage" alt="@book.Title" />
+                        </a>
+                        <div class="book-info">
+                            <h3>@book.Title</h3>
+                            <p class="author">@book.Author, @(book.UploadDate?.Year ?? 0)</p>
+                            <div class="star-rating">
+                                <div class="stars">
+                                    @for (int i = 0; i < 5; i++)
+                                    {
+                                        if (i < book.AverageRating)
+                                        {
+                                            <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                        }
+                                        else
+                                        {
+                                            <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                        }
+                                    }
+                                </div>
+                                <span class="rating-text">@book.AverageRating/5</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="pagination-container">
+            <nav aria-label="Search results pages">
+                <ul class="pagination">
+                    <li class="page-nav @(Model.HasPreviousPage ? "" : "disabled")">
+                        <a class="page-link"
+                           asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
+                                ["page"] = (Model.PageIndex - 1).ToString()
+                           })">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                            <a class="page-link"
+                               asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
+                                    ["page"] = i.ToString()
+                               })">
+                                @i
+                            </a>
+                        </li>
+                    }
+
+                    <li class="page-nav @(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link"
+                           asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
+                                ["page"] = (Model.PageIndex + 1).ToString()
+                           })">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
