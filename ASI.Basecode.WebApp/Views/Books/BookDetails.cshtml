@@ -1,5 +1,4 @@
-﻿@using System.Security.Claims
-@*
+﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @model ASI.Basecode.Services.ServiceModels.BookViewModel;
@@ -11,8 +10,6 @@
 @section styles {
     <link rel="stylesheet" href="~/css/admin/book-details.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <link rel="stylesheet" href="~/css/userui/review.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/books/bookdetails.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
 }
@@ -42,13 +39,6 @@
 
                 @* ---------------------star ratinggggg------------------ *@
                 <div class="book-header-rating" id="bookHeaderRating">
-                    <div class="stars header-stars">
-                        <i class="far fa-star" data-rating="1"></i>
-                        <i class="far fa-star" data-rating="2"></i>
-                        <i class="far fa-star" data-rating="3"></i>
-                        <i class="far fa-star" data-rating="4"></i>
-                        <i class="far fa-star" data-rating="5"></i>
-                    </div>
                     <span class="rating-text">@Model.AverageRating?.ToString("0.0") / 5.0</span>
                 </div>
             </div>
@@ -202,10 +192,12 @@
                 @if (!Model.HasReviewed && User.Identity.IsAuthenticated)
                 {
                     <div class="mb-4">
-                        <button type="button" class="btn btn-primary"
-                                onclick="openReviewModal('@Model.BookId', '@Model.Title', '@Model.Author')">
+                        <a class="btn btn-primary"
+                           asp-controller="Review"
+                           asp-action="Add"
+                           asp-route-bookId="@Model.BookId">
                             Leave a Review
-                        </button>
+                        </a>
                     </div>
                 }
 
@@ -236,137 +228,73 @@
     }
 </div>
 
-<!-- Add Review Modal -->
-<div class="modal fade review-modal" id="addReview" tabindex="-1" aria-labelledby="addReviewLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <button class="btn border-0 back-button" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-            </div>
-            <div class="modal-body pt-0">
-                <div class="book-details text-center mb-4">
-                    <h2 class="book-title">Book Title</h2>
-                    <p class="book-author">Author</p>
-                </div>
-
-                <form id="addReviewForm">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" id="bookId" name="BookId">
-                    <input type="hidden" id="userId" name="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
-
-                    <div class="mb-4">
-                        <label class="form-label">What do you think of the book?</label>
-                        <textarea class="form-control" name="Comment" rows="5" placeholder="Add feedback"></textarea>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label">How would you rate the book?</label>
-                        <div class="rating">
-                            <div class="stars" id="starsRating">
-                                <i class="far fa-star" data-rating="1"></i>
-                                <i class="far fa-star" data-rating="2"></i>
-                                <i class="far fa-star" data-rating="3"></i>
-                                <i class="far fa-star" data-rating="4"></i>
-                                <i class="far fa-star" data-rating="5"></i>
-                            </div>
-                            <input type="hidden" name="Rating" id="rating-value">
-                        </div>
-                    </div>
-
-                    <div class="text-center">
-                        <button type="button" id="submitReviewBtn" class="btn btn-submit">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script type = "module">
-        // Define resetStars outside the document.ready to make it globally accessible
-        let stars;
-        let selectedRating = 0;
+@section scripts {
+    <script type="module">
         const genre_tag = document.getElementById("genre-tags")
         const concatenatedGenreInput = document.getElementById('book-genre-tags');
         const languageHidden = document.getElementById('language-hidden');
+        
+            
+        function renderStars(rating, targetElementId) {
+            const container = document.getElementById(targetElementId);
+            if (!container) {
+                console.error(`Star rating container with ID '${targetElementId}' not found.`);
+                return;
+            }
 
-        // Function to render stars for a static rating display
-        function renderStars(rating, container) {
-            if (!container) return;
-
-            const stars = container.find('i');
-            const fullStars = Math.floor(rating);
-            const hasHalfStar = (rating - fullStars) >= 0.5;
-
-            stars.each(function(index) {
-                const star = $(this);
-                if (index < fullStars) {
-                    star.removeClass('far').addClass('fas'); // Full star
-                } else if (index === fullStars && hasHalfStar) {
-                    star.removeClass('far fas').addClass('fas fa-star-half-alt'); // Half star
-                } else {
-                    star.removeClass('fas fa-star-half-alt').addClass('far'); // Empty star
+            const ratingTextSpan = container.querySelector('.rating-text');
+            if (ratingTextSpan) {
+                while (container.firstChild && container.firstChild !== ratingTextSpan) {
+                    container.removeChild(container.firstChild);
                 }
-            });
-        }
+            } else {
+                container.innerHTML = '';
+            }
 
-        // Function to highlight stars up to a certain rating
-        function highlightStars(rating) {
-            stars.each(function() {
-                const star = $(this);
-                const starRating = parseInt(star.data('rating'));
+            const maxStars = 5;
+            let starsHtml = '';
 
-                if (starRating <= rating) {
-                    star.removeClass('far').addClass('fas');
-                } else {
-                    star.removeClass('fas').addClass('far');
-                }
-            });
-        }
+            const normalizedRating = Math.max(0, Math.min(maxStars, parseFloat(rating) || 0));
 
-        // Function to reset all stars - moved outside document.ready
-        function resetStars() {
-            if (stars) {
-                stars.removeClass('fas').addClass('far');
-                $('#starsRating').removeClass('selection-locked');
+            const fullStars = Math.floor(normalizedRating);
+            const hasHalfStar = normalizedRating % 1 >= 0.5;
+
+            // Full stars
+            for (let i = 0; i < fullStars; i++) {
+                starsHtml += '<i class="fas fa-star"></i>';
+            }
+
+            // Half star
+            if (hasHalfStar) {
+                starsHtml += '<i class="fas fa-star-half-alt"></i>';
+            }
+
+            // Empty stars
+            const emptyStars = maxStars - fullStars - (hasHalfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                starsHtml += '<i class="far fa-star"></i>';
+            }
+
+            if (ratingTextSpan) {
+                ratingTextSpan.insertAdjacentHTML('beforebegin', starsHtml);
+            } else {
+                container.innerHTML = starsHtml + container.innerHTML;
             }
         }
 
-        // Function to show success notification - modified to use toastr
-        function showSuccessNotification() {
-            var addReviewModal = bootstrap.Modal.getInstance(document.getElementById('addReview'));
-            addReviewModal.hide();
+        // Get the average rating from the model and call the function on page load
+        const averageRatingStringFromModel = '@(Model.AverageRating?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "0.0")';
 
-            // Show toastr notification
-            toastr.success('Review submitted successfully!');
-        }
+        // Log both the string and the parsed number for debugging
+        console.log("C# Model AverageRating (as string):", averageRatingStringFromModel);
 
-        // Function to open the modal with book details
-        function openReviewModal(bookId, bookTitle, bookAuthor) {
-            console.log("Opening modal for book:", bookId, bookTitle, bookAuthor);
+        const averageRatingParsed = parseFloat(averageRatingStringFromModel);
+        console.log("Parsed AverageRating (as number):", averageRatingParsed);
 
-            // Set the book details in the modal
-            $('#bookId').val(bookId);
-            $('.book-title').text(bookTitle);
-            $('.book-author').text(bookAuthor);
-
-            // Reset the form
-            $('#addReviewForm')[0].reset();
-            resetStars();
-
-            // Open the modal
-            var reviewModal = new bootstrap.Modal(document.getElementById('addReview'));
-            reviewModal.show();
-        }
-
-        $(document).ready(async function() {
-            //Get Language and Genre
-            try {
+        document.addEventListener('DOMContentLoaded', async function () {
+            renderStars(averageRatingParsed, 'bookHeaderRating');
+            //Get Book Language
+        try {
                 const response = await fetch('/Book/GetLanguage', { method: 'GET' });
                 let itemsToPopulate = [];
 
@@ -436,140 +364,9 @@
                 console.error(`Error initializing`, error);
             }
 
-            // Initialize stars variable for the review form
-            stars = $('#starsRating i');
-
-            // Render the average rating stars in the header
-            const averageRating = @(Model.AverageRating?.ToString("F1") ?? "0.0");
-            renderStars(averageRating, $('.book-header-rating .header-stars'));
-
-            // Modal handling
-            $('#addReview').on('hidden.bs.modal', function () {
-                $('body').removeClass('modal-open');
-                $('.modal-backdrop').remove();
-
-                // Reset form when modal is closed
-                $('#addReviewForm')[0].reset();
-                resetStars();
-            });
-
-            // Handle star hover effect
-            stars.hover(
-                function() { // mouseenter
-                    if (!$('#starsRating').hasClass('selection-locked')) {
-                        const star = $(this);
-                        const hoverRating = parseInt(star.data('rating'));
-                        highlightStars(hoverRating);
-                    }
-                },
-                function() { // mouseleave
-                    if (!$('#starsRating').hasClass('selection-locked')) {
-                        highlightStars(selectedRating);
-                    }
-                }
-            );
-
-            // Handle star click
-            stars.click(function() {
-                const star = $(this);
-                const clickedRating = parseInt(star.data('rating'));
-
-                // If clicking the same star that's already selected, deselect all
-                if (selectedRating === clickedRating) {
-                    selectedRating = 0;
-                    $('#rating-value').val(selectedRating);
-                    resetStars();
-                    $('#starsRating').removeClass('selection-locked');
-                } else {
-                    selectedRating = clickedRating;
-                    $('#rating-value').val(selectedRating);
-                    highlightStars(selectedRating);
-                    $('#starsRating').addClass('selection-locked');
-                }
-            });
-
-            // Handle clicking outside the stars to deselect
-            $(document).on('click', function(event) {
-                // If click is outside the stars
-                if (!$(event.target).closest('.stars').length &&
-                    !$(event.target).is('.stars') &&
-                    selectedRating !== 0) {
-                    selectedRating = 0;
-                    $('#rating-value').val(selectedRating);
-                    resetStars();
-                    $('#starsRating').removeClass('selection-locked');
-                }
-            });
-
-            // Prevent clicks inside the modal from triggering the document click handler
-            $('.modal-content').on('click', function(event) {
-                event.stopPropagation();
-            });
-
-            // Submit review button
-            $('#submitReviewBtn').click(function() {
-                // Validate the form
-                const rating = $('#rating-value').val();
-                const comment = $('textarea[name="Comment"]').val();
-
-                if (!rating || rating == 0) {
-                    alert("Please select a rating for the book.");
-                    return;
-                }
-
-                if (!comment.trim()) {
-                    alert("Please provide a comment about the book.");
-                    return;
-                }
-
-                // Get the token
-                const token = $('input[name="__RequestVerificationToken"]').val();
-
-                // Submit the form via AJAX
-                $.ajax({
-                    url: '@Url.Action("Add", "Review")',
-                    type: 'POST',
-                    data: $('#addReviewForm').serialize(),
-                    headers: {
-                        'RequestVerificationToken': token
-                    },
-                    success: function(response) {
-                        if (response && response.success) {
-                            showSuccessNotification(); // Changed to use toastr
-
-                            // Refresh the page after a short delay to show the new review
-                            setTimeout(function() {
-                                location.reload();
-                            }, 2000);
-                        } else {
-                            toastr.error("Error: " + ((response && response.errors) ? response.errors.join(", ") : "Unknown error"));
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        toastr.error("Error submitting review: " + error);
-                    }
-                });
-            });
-
-            console.log("Review modal functionality initialized");
-
-            // Set toastr options specifically for this page if needed
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": true,
-                "positionClass": "toast-top-right",
-                "preventDuplicates": false,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "5000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            };
         });
+
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 }

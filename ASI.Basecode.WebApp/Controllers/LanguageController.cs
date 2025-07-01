@@ -66,11 +66,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 try
                 {
                     await _languageService.AddLanguage(language);
-                    TempData["message"] = "Language Added successfully!";
-                    TempData["showToastrAfterTableLoads"] = true;
-
-                    return RedirectToAction(nameof(LanguageList)); // Redirect to the LanguageList action
-                    // return Ok(new { Message = "Language Added successfully!" });
+                    return Ok(new { Message = "Language Added successfully!" });
                 }
                 catch (ArgumentException ex)
                 {
@@ -108,11 +104,7 @@ namespace ASI.Basecode.WebApp.Controllers
             try
             {
                 await _languageService.DeleteLanguage(language.LanguageId);
-                TempData["message"] = "Language deleted successfully!";
-                TempData["showToastrAfterTableLoads"] = true;
-
-                return RedirectToAction(nameof(LanguageList));
-               // return Ok(new { Message = "Language Deleted successfully!" });
+                return Ok(new { Message = "Language Deleted successfully!" });
             }
             catch (ApplicationException ex)
             {
@@ -139,12 +131,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 try
                 {
                     await _languageService.EditLanguage(language);
-                    TempData["message"] = "Language updated successfully!";
-                    TempData["showToastrAfterTableLoads"] = true;
-
-                    return RedirectToAction(nameof(LanguageList));
-                   // return Ok(new { Message = "Language Successfully edited" });
-
+                    return Ok(new { Message = "Language Successfully edited" });
                 }
                 catch (ArgumentException ex)
                 {

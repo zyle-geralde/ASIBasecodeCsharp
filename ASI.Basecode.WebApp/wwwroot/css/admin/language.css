@@ -6,8 +6,7 @@ body, html {
 
 .users-container {
     padding: 25px;
-    height: auto; /* Changed from 100vh */
-    min-height: calc(100vh - 80px); /* Use min-height instead to account for header */
+    height: 100vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -129,16 +128,16 @@ body, html {
 }
 
 .users-container.p-4 {
-    overflow: ;
+    overflow: hidden;
 }
 
 /* Reduce card body padding */
 .card-body {
     padding: 1rem;
-    flex: 1;
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    min-height: 0;
 }
 
 /* Reduce margin after header */
@@ -158,34 +157,27 @@ body, html {
 
 /* Make the card fill available space */
 .card {
-    flex: 1;
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
-    margin-bottom: 0;
-    overflow: hidden; /* Add this to prevent overflow */
+    min-height: 0;
 }
 
-/* Make sure the table takes full width */
+/* Scrollable table container */
 .table-scroll-container {
-    flex: 1;
-    min-height: 0; /* Important for flex containers */
-    height: calc(100vh - 350px); /* Adjust based on header + search bar + pagination height */
-    max-height: calc(100vh - 350px);
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 400px; /* Adjust as needed */
     overflow-y: auto;
-    margin-bottom: 15px; /* Add margin at bottom to create space for pagination */
-    border-radius: 0.25rem;
+    margin-top: 1rem;
 }
+
 /* Optional: sticky table header */
 .table-scroll-container thead th {
     position: sticky;
     top: 0;
-    background-color: white;
-    z-index: 10;
-    box-shadow: 0 2px 3px -3px rgba(0, 0, 0, 0.1);
-}
-
-.table-responsive {
-    overflow: visible !important; /* Override Bootstrap's overflow behavior */
+    background: #fff;
+    z-index: 2;
 }
 
 @media (max-width: 768px) {

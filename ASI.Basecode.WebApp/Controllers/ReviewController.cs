@@ -46,58 +46,6 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Add(ReviewViewModel reviewModel)
         {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    // Get current user ID if not set
-                    if (string.IsNullOrEmpty(reviewModel.UserId))
-                    {
-                        reviewModel.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    }
-
-                    // Set timestamp and initialize likes
-                    reviewModel.UploadDate = DateTime.Now;
-                    reviewModel.Likes = 0;
-
-                    await _reviewService.AddReview(reviewModel);
-
-                    // Handle AJAX requests
-                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                    {
-                        return Json(new { success = true });
-                    }
-
-                    // Handle normal form submission
-                    return RedirectToRoute(
-                        routeName: "BookDetails",
-                        routeValues: new { bookId = reviewModel.BookId }
-                    );
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "Error adding review: " + ex.Message);
-                }
-            }
-
-            // Handle AJAX requests with errors
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = ModelState.Values
-                        .SelectMany(v => v.Errors)
-                        .Select(e => e.ErrorMessage)
-                        .ToList()
-                });
-            }
-
-            // Return to form view with errors
-            return View("~/Views/Reviews/Add.cshtml", reviewModel);
-        }
-        /*public async Task<IActionResult> Add(ReviewViewModel reviewModel)
-        {
 
 
             if (ModelState.IsValid)
@@ -109,7 +57,7 @@ namespace ASI.Basecode.WebApp.Controllers
                    );
             }
             return View("~/Views/Reviews/Add.cshtml", reviewModel);
-        }*/
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
