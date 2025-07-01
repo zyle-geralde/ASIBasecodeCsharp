@@ -1,11 +1,36 @@
 ﻿@using ASI.Basecode.Services.ServiceModels
-@model List<BookViewModel>
+@model PaginatedList<BookViewModel>
 @{
     ViewData["Title"] = "Search Results";
     var categoryTitle = (string?)ViewData["CategoryTitle"] ?? "Search Results";
 
+    var currentSearch    = (string?)ViewData["CurrentSearch"];
+    var currentAuthor    = (string?)ViewData["CurrentAuthor"];
+    var currentRating    = (int?)ViewData["CurrentRating"];
+    var currentFromDate  = (string?)ViewData["CurrentFromDate"];
+    var currentToDate    = (string?)ViewData["CurrentToDate"];
+    var currentGenres    = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>();
+    var currentSort      = (string?)ViewData["CurrentSort"];
+    var currentDesc      = (bool)(ViewData["CurrentSortDescending"] ?? false);
+    var currentCategory = (string?)ViewContext.HttpContext.Request.Query["category"] ?? string.Empty;
+
+    var routeValues = new Dictionary<string, string>
+            {
+                ["searchTerm"] = currentSearch ?? string.Empty,
+                ["author"] = currentAuthor ?? string.Empty,
+                ["rating"] = currentRating?.ToString() ?? string.Empty,
+                ["publishedFrom"] = currentFromDate ?? string.Empty,
+                ["publishedTo"] = currentToDate ?? string.Empty,
+                ["genreFilter"] = string.Join(",", currentGenres),
+                ["sortOrder"] = currentSort ?? string.Empty,
+                ["sortDescending"] = currentDesc
+                                         .ToString()
+                                         .ToLowerInvariant(),
+                ["category"] = currentCategory
+            };
+
 }
-<h1>Search Results for: @categoryTitle</h1>
+    <h1>Search Results for: @categoryTitle</h1>
 
 <h1>Search Results for: @categoryTitle</h1>
 
@@ -32,4 +57,38 @@
 
   }
 </div>
+
+<nav aria-label="Search results pages">
+  <ul class="pagination">
+    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+      <a class="page-link"
+         asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
+            ["page"] = (Model.PageIndex - 1).ToString()
+         })">
+        ‹ Prev
+      </a>
+    </li>
+
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+      <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+        <a class="page-link"
+           asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
+              ["page"] = i.ToString()
+           })">
+          @i
+        </a>
+      </li>
+    }
+
+    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+      <a class="page-link"
+         asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
+            ["page"] = (Model.PageIndex + 1).ToString()
+         })">
+        Next ›
+      </a>
+    </li>
+  </ul>
+</nav>
 
