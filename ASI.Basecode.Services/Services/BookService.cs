@@ -19,7 +19,7 @@ namespace ASI.Basecode.Services.Services
         private readonly ILanguageRepository _languageRepository;
         private readonly IAuthorRepository _authorRepository;
 
-        public BookService(IBookRepository bookRepository,ILanguageRepository languageRepository, IAuthorRepository authorRepository)
+        public BookService(IBookRepository bookRepository, ILanguageRepository languageRepository, IAuthorRepository authorRepository)
         {
             _bookRepository = bookRepository;
             _languageRepository = languageRepository;
@@ -47,7 +47,7 @@ namespace ASI.Basecode.Services.Services
                 AverageRating = 0,
                 Likes = 0,
                 GenreList = request.GenreList,
-                IsFeatured= request.IsFeatured,
+                IsFeatured = request.IsFeatured,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImage = request.CoverImageUrl,
@@ -68,11 +68,9 @@ namespace ASI.Basecode.Services.Services
                 CreatedBy = "admin1"
             };
 
-
             try
             {
                 await _bookRepository.AddBook(book);
-                
             }
             catch (Exception ex)
             {
@@ -83,31 +81,52 @@ namespace ASI.Basecode.Services.Services
         public async Task<PaginatedList<BookViewModel>> GetBooks(BookQueryParams queryParams)
         {
             var books = await _bookRepository.GetBooks(queryParams);
-            var bookList =  books.Select(b => new BookViewModel
-            {
-                BookId = b.BookId,
-                Title = b.Title,
-                Subtitle = b.Subtitle,
-                UploadDate = b.UploadDate,
-                GenreList = b.GenreList,
-                PublicationDate = b.PublicationDate,
-                Author = b.Author,
-                AverageRating = b.AverageRating,
-                CoverImage =b.CoverImage,
-                BookFile=b.BookFile,
-                Description = b.Description,
-                IsFeatured = b.IsFeatured
+            var bookList = new List<BookViewModel>();
 
-            }).ToList();
+            foreach (var b in books)
+            {
+                // Get language name if available
+                Language languageName = null;
+                if (!string.IsNullOrEmpty(b.Language))
+                {
+                    languageName = await _languageRepository.GetLanguageByName(b.Language);
+                }
+
+                // Get author name if available
+                Author authorName = null;
+                if (!string.IsNullOrEmpty(b.Author))
+                {
+                    authorName = await _authorRepository.GetAuthorById(b.Author);
+                }
+
+                bookList.Add(new BookViewModel
+                {
+                    BookId = b.BookId,
+                    Title = b.Title,
+                    Subtitle = b.Subtitle,
+                    UploadDate = b.UploadDate,
+                    GenreList = b.GenreList,
+                    PublicationDate = b.PublicationDate,
+                    Author = authorName != null ? authorName.AuthorName : b.Author,
+                    AverageRating = b.AverageRating,
+                    CoverImage = b.CoverImage,
+                    BookFile = b.BookFile,
+                    Description = b.Description,
+                    IsFeatured = b.IsFeatured,
+                    Language = languageName != null ? languageName.LanguageName : b.Language,
+                    NumberOfPages = b.NumberOfPages,
+                    Publisher = b.Publisher,
+                    PublicationLocation = b.PublicationLocation,
+                    SeriesName = b.SeriesName
+                });
+            }
 
             return new PaginatedList<BookViewModel>(
                bookList,
                books.TotalCount,
                books.PageIndex,
                queryParams.PageSize
-                );
-
-
+            );
         }
 
         public async Task<List<BookViewModel>> GetAllBooks()

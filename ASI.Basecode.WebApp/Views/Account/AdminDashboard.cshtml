@@ -88,10 +88,15 @@
         </div>
 
         <!-- Newly Added Books Section -->
-        <div class="section mb-4">
+        <div class="section mb-4">           
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="section-title">Newly Added Booksdsfds</h2>
-                <a href="#" class="view-more">View more <i class="fas fa-arrow-right"></i></a>
+                <h2 class="section-title">Newly Added Books</h2>
+                <a asp-controller="Book"
+                   asp-action="SearchResults"
+                   asp-route-sortOrder="uploaddate"
+                   asp-route-sortDescending="true"
+                   asp-route-category="New Books"
+                   class="view-more">View more <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="carousel-container">
                 <div id="newBooksCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
@@ -142,7 +147,12 @@
         <div class="section">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="section-title">Top 10 Rated Books</h2>
-                <a href="#" class="view-more">View more <i class="fas fa-arrow-right"></i></a>
+                <a asp-controller="Book"
+                   asp-action="SearchResults"
+                   asp-route-sortOrder="rating"
+                   asp-route-sortDescending="true"
+                   asp-route-category="Top Rated"
+                   class="view-more">View more <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="carousel-container">
                 <div id="topBooksCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
