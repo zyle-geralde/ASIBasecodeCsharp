@@ -31,9 +31,9 @@
 
 .top-border 
 {
-    height: 2px;
-    background-color: #657271;
-    margin-bottom: 5px;
+    height: 2px; 
+    background-color: #7B68EE;
+    margin-bottom: 5px; 
 }
 
 .site-footer .container-footer .row 
@@ -85,8 +85,8 @@
 
     .social-icon-circle:hover 
     {
-        background-color: #657271;
-        border-color: #657271;
+        background-color: #7B68EE;
+        border-color: #7B68EE;
         color: #FFFFFF;
     }
 

@@ -1,0 +1,28 @@
+/* Custom toastr styles to modify opacity */
+#toast-container > .toast-success {
+    background-color: rgba(81, 163, 81, 0.8) !important; /* Green with 80% opacity */
+}
+
+#toast-container > .toast-error {
+    background-color: rgba(189, 54, 47, 0.8) !important; /* Red with 80% opacity */
+}
+
+#toast-container > .toast-info {
+    background-color: rgba(47, 150, 180, 0.8) !important; /* Blue with 80% opacity */
+}
+
+#toast-container > .toast-warning {
+    background-color: rgba(238, 162, 54, 0.8) !important; /* Orange with 80% opacity */
+}
+
+/* Additional styling options */
+#toast-container > div {
+    opacity: 0.9 !important;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.3) !important;
+    border-radius: 4px !important;
+}
+
+/* Optional: Add hover effect to increase opacity when hovering */
+#toast-container > div:hover {
+    opacity: 1.0 !important;
+}

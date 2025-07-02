@@ -78,8 +78,7 @@ namespace ASI.Basecode.Services.Services
             }
         }
 
-        public async Task<List<BookViewModel>> GetBooks(
-          BookQueryParams queryParams)
+        public async Task<PaginatedList<BookViewModel>> GetBooks(BookQueryParams queryParams)
         {
             var books = await _bookRepository.GetBooks(queryParams);
             var bookList = new List<BookViewModel>();
