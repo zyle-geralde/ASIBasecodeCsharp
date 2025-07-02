@@ -147,7 +147,7 @@
                         </tbody>
                     </table>
                 </div>
-                <partial name="_PaginationPartial" />
+                <partial name="_PaginationPartial" view-data='@new ViewDataDictionary(ViewData) { { "RouteValues", routeValues } }' />
             </div>
 
             
