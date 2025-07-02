@@ -368,12 +368,24 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        // carousel
+        console.log("Document ready, jQuery loaded");
+
+        // Carousel setup function
         function setupSingleBookCarousel(containerClass) {
             const container = $(containerClass);
             const bookCards = container.find('.book-card-single');
             const prevButton = container.find('.prev-button');
             const nextButton = container.find('.next-button');
+
+            console.log(`Setting up ${containerClass}, found ${bookCards.length} book cards`);
+
+            if (bookCards.length <= 1) {
+                console.log(`${containerClass} has <= 1 book, hiding buttons`);
+                prevButton.hide();
+                nextButton.hide();
+                bookCards.removeClass('hidden-book-card');
+                return;
+            }
 
             let currentIndex = 0;
 
@@ -384,9 +396,16 @@
                 }
                 prevButton.prop('disabled', currentIndex === 0);
                 nextButton.prop('disabled', currentIndex >= bookCards.length - 1);
+                prevButton.show();
+                nextButton.show();
+                console.log(`${containerClass} showing book at index ${currentIndex}, prev disabled: ${currentIndex === 0}, next disabled: ${currentIndex >= bookCards.length - 1}`);
+
+                // Update genre tags overflow for the newly visible book
+                setupGenreTagsOverflow();
             }
 
             nextButton.on('click', function () {
+                console.log(`${containerClass} next button clicked, currentIndex: ${currentIndex}`);
                 if (currentIndex < bookCards.length - 1) {
                     currentIndex++;
                     showCurrentBook();
@@ -394,19 +413,21 @@
             });
 
             prevButton.on('click', function () {
+                console.log(`${containerClass} prev button clicked, currentIndex: ${currentIndex}`);
                 if (currentIndex > 0) {
                     currentIndex--;
                     showCurrentBook();
                 }
             });
 
-            showCurrentBook();
+            showCurrentBook(); // Initialize carousel
         }
 
+        // Initialize carousels
         setupSingleBookCarousel('.top-rated-carousel');
         setupSingleBookCarousel('.new-books-carousel');
 
-        //genre tag overflow
+        // Genre tags overflow
         function setupGenreTagsOverflow() {
             $('.genre-tags').each(function () {
                 const $container = $(this);
@@ -464,7 +485,7 @@
         }
 
         setupGenreTagsOverflow();
-
         $(window).on('resize', setupGenreTagsOverflow);
     });
+
 </script>
