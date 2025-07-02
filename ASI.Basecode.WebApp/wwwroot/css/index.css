@@ -667,14 +667,9 @@ body
 }
 
 
-@media (min-width: 1440px) 
-{
-    .main-grid {
-        grid-template-columns: 60% 40%;
-    }
-}
 
-@media (min-width: 1024px) 
+
+@media (min-width: 1024px)
 {
     .main-grid 
     {
@@ -725,7 +720,7 @@ body
 }
 
 
-@media (min-width: 701px) 
+@media (min-width: 701px) and (max-width: 1023px)
 {
     .main-grid 
     {
@@ -884,10 +879,10 @@ body
     .section-card,
     .section-card-genre 
     {
-        width: 100%;
+        /*width: 100%;*/
         max-width: 300px;
         margin-left: auto;
-        margin-right: auto;
+        /*margin-right: auto;*/
         box-sizing: border-box;
         margin-top: 25px;
     }
@@ -1009,6 +1004,10 @@ body
         transition: background-color 0.3s ease, color 0.3s ease;
         max-width: 100%;
         flex-shrink: 0;
+    }
+
+    .featured-column{
+        margin-left: 10px;
     }
 
     .featured-book-card 
