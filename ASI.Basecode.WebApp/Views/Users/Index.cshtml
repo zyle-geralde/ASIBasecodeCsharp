@@ -74,28 +74,76 @@
                        class="form-control me-2"
                        placeholder="Search users…" />
 
-                <select name="role"
-                        class="form-select me-2">
-                    <option value="">All Roles</option>
-                    <option value="Admin" selected="@(currentRoleFilter=="Admin")">Admin</option>
-                    <option value="User"  selected="@(currentRoleFilter=="User")">User</option>
-                </select>
-
-                <select name="sortOrder"
-                        class="form-select me-2">
-                    <option value="id"        selected="@(currentSort=="id")">ID</option>
-                    <option value="email"  selected="@(currentSort=="email")">Email</option>
-                    <option value="createdtime"     selected="@(currentSort=="createdtime")">Created Date</option>
-                </select>
-
-                <select name="sortDescending"
-                        class="form-select me-2">
-                    <option value="false" selected="@(currentSortDescending==false)">Ascending</option>
-                    <option value="true"  selected="@(currentSortDescending==true)">Descending</option>
-                </select>
+                <input type="hidden" id="roleField" name="role" value="@currentRoleFilter" />
+                <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
+                <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
 
                 <button type="submit" class="btn btn-primary">Apply</button>
+
+                <button type="button" id="sortButton" class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
+
             </form>
+            <div class="sort-popup card shadow" id="sortPopup" style="display: none;">
+                <div class="card-header bg-secondary text-white justify-center">
+                    <h6 class="mb-0" style="margin-top: 6px;">Sort By:</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Role:</label>
+                        <div class="ms-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupRole" id="roleAll" value="" @(string.IsNullOrEmpty(currentRoleFilter) ? "checked" : "")>
+                                <label class="form-check-label" for="roleAll">All Roles</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupRole" id="roleAdmin" value="Admin" @(currentRoleFilter == "Admin" ? "checked" : "")>
+                                <label class="form-check-label" for="roleAdmin">Admin</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupRole" id="roleUser" value="User" @(currentRoleFilter == "User" ? "checked" : "")>
+                                <label class="form-check-label" for="roleUser">User</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Sort By:</label>
+                        <div class="ms-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortId" value="id" @(currentSort == "id" ? "checked" : "")>
+                                <label class="form-check-label" for="sortId">ID</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortEmail" value="email" @(currentSort == "email" ? "checked" : "")>
+                                <label class="form-check-label" for="sortEmail">Email</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortDate" value="createdtime" @(currentSort == "createdtime" ? "checked" : "")>
+                                <label class="form-check-label" for="sortDate">Created Date</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Direction:</label>
+                        <div class="ms-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortDirection" id="sortAsc" value="false" @(!currentSortDescending ? "checked" : "")>
+                                <label class="form-check-label" for="sortAsc">Ascending <i class="fas fa-arrow-up"></i></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortDirection" id="sortDesc" value="true" @(currentSortDescending ? "checked" : "")>
+                                <label class="form-check-label" for="sortDesc">Descending <i class="fas fa-arrow-down"></i></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end">                       
+                        <button type="button" class="btn btn-outline-secondary" style="margin-right: 10px" id="closeSortButton">Cancel</button>
+                        <button type="button" class="btn btn-secondary me-2" id="applySortButton">Apply</button>
+                    </div>
+                </div>
+            </div>
 
             <div class="table-container">
                 <div class="scrollable-table-container">
@@ -232,10 +280,10 @@
         function setupDeleteModal(button) {
             const userId = button.getAttribute('data-user-id');
             const userName = button.getAttribute('data-user-name');
-            
+
             // Set the user ID to the hidden form
             document.getElementById('deleteUserId').value = userId;
-            
+
             // Show confirmation modal with dynamic message
             showConfirmationModal(
                 'deleteModal',
@@ -250,7 +298,7 @@
             const form = document.getElementById('deleteUserForm');
             const userId = document.getElementById('deleteUserId').value;
             const token = form.querySelector('input[name="__RequestVerificationToken"]').value;
-            
+
             fetch('/User/Delete', {
                 method: 'POST',
                 headers: {
@@ -274,15 +322,62 @@
                 alert('An error occurred while trying to delete the user.');
             });
         }
-        
+
         document.addEventListener('DOMContentLoaded', function() {
             // Check if there's a success message from a delete operation only
             const successMessage = document.getElementById('tempDataSuccessMessage');
-            if (successMessage && successMessage.value && 
-                (window.location.href.includes('User/Index') || 
+            if (successMessage && successMessage.value &&
+                (window.location.href.includes('User/Index') ||
                  document.referrer.includes('User/Delete'))) {
                 showSuccessModal('successModal', 'Success!', successMessage.value, false);
             }
+
+            // Sort popup functionality
+            const sortButton = document.getElementById('sortButton');
+            const sortPopup = document.getElementById('sortPopup');
+            const closeSortButton = document.getElementById('closeSortButton');
+            const applySortButton = document.getElementById('applySortButton');
+
+            // Toggle the sort popup when the sort button is clicked
+            sortButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (sortPopup.style.display === 'none') {
+                    sortPopup.style.display = 'block';
+                } else {
+                    sortPopup.style.display = 'none';
+                }
+            });
+
+            // Close the sort popup when clicked outside
+            document.addEventListener('click', function(e) {
+                if (!sortButton.contains(e.target) &&
+                    !sortPopup.contains(e.target) &&
+                    sortPopup.style.display === 'block') {
+                    sortPopup.style.display = 'none';
+                }
+            });
+
+            // Close button
+            closeSortButton.addEventListener('click', function() {
+                sortPopup.style.display = 'none';
+            });
+
+            // Apply button
+                    // Apply button
+            applySortButton.addEventListener('click', function() {
+                // Get selected values
+                const roleValue = document.querySelector('input[name="popupRole"]:checked').value;
+                const sortOrderValue = document.querySelector('input[name="popupSortOrder"]:checked').value;
+                const sortDirectionValue = document.querySelector('input[name="popupSortDirection"]:checked').value;
+
+                // Update hidden form fields
+                document.getElementById('roleField').value = roleValue;
+                document.getElementById('sortOrderField').value = sortOrderValue;
+                document.getElementById('sortDescendingField').value = sortDirectionValue;
+
+                // Find the main form and submit it
+                document.querySelector('.card-body form').submit();
+            });
         });
     </script>
 }
