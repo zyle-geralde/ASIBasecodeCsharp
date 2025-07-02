@@ -4,6 +4,10 @@
     ViewData["Title"] = "My Profile";
 }
 
+@if (TempData["Success"] is string msg) {
+  <div class="alert alert-success">@msg</div>
+}
+
 @section styles {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -32,7 +36,7 @@
 
             </div>
             <div class="profile-name">@(Model?.FirstName ?? "") @(Model?.LastName ?? "")</div>
-            <div class="profile-username">@(Model?.UserId ?? "")</div>
+            <div class="profile-username">@(Model?.Username ?? "")</div>
             <div class="profile-bio">
                 @(Model?.AboutMe ?? "No bio available")
             </div>
@@ -88,11 +92,11 @@
                         <div class="info-fields-stack">
                             <div class="info-field-col">
                                 <div class="info-label">Username</div>
-                                <div class="info-value">marawr_97</div>
+                                <div class="info-value">@Model.Username</div>
                             </div>
                             <div class="info-field-col">
                                 <div class="info-label">Email</div>
-                                <div class="info-value">maria.garcia@gmail.com</div>
+                                <div class="info-value">@Model.Email</div>
                             </div>
                         </div>
                     </div>
@@ -304,7 +308,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-0">
-                <form id="userInfoForm">
+                <form id="userInfoForm" asp-controller="PersonProfile" asp-action="UpdateUserInfo" method="post" asp-route-id="@Model.Id">
+                    <input asp-for="UserId" type="hidden" />
+                    <div class="mb-3">
+                        <label for="userName" class="form-label">Username</label>
+                        <input asp-for="Username" type="text" class="form-control" id="userName" placeholder="Text">
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
+                    </div>
+                </form>
+                @* <form id="userInfoForm">
                     <div class="mb-3">
                         <label for="userName" class="form-label">Username</label>
                         <input type="text" class="form-control" id="userName" placeholder="Text">
@@ -316,7 +331,7 @@
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
                     </div>
-                </form>
+                </form> *@
             </div>
         </div>
     </div>
