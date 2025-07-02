@@ -7,6 +7,7 @@ using ASI.Basecode.WebApp.AccessControl;
 using ASI.Basecode.WebApp.Authentication;
 using ASI.Basecode.WebApp.Models;
 using ASI.Basecode.WebApp.Mvc;
+using ASI.Basecode.WebApp.Payload.OtpPayload;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -295,6 +296,31 @@ namespace ASI.Basecode.WebApp.Controllers
                 return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
             }
 
+        }
+
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("Account/ForgotPassword")]
+        public async Task<IActionResult> SendOtpForForgotPassword([FromBody] ForgotPasswordOtpPayload emailObject)
+        {
+            if(emailObject == null)
+            {
+                return BadRequest(new { Message = "No data has been passed" });
+            }
+            try
+            {
+                string generatedOTP = await _userService.SendOTPForResetPassword(emailObject.Email);
+                return Ok(new { Message = generatedOTP });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message});
+            }
         }
     }
 }

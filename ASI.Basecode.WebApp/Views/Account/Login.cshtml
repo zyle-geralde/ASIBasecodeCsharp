@@ -559,7 +559,7 @@
 
 
 <div class="login-main-split">
-   
+   <input type = "hidden" id="hiddenOTP"/>
     <div class="login-left-panel">
         <div class="login-quote-bg"></div>
         @* <div class="login-quote-overlay"></div> *@
@@ -619,7 +619,7 @@
 <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content forgot-modal-content">
-            <form method="post" action="/Account/ForgotPassword">
+            <form method="post" id="forgotPasswordForm">
                 <div class="mb-4">
                     <img src="https://placehold.co/110x30/5a7b80/ffffff?text=BasaBuzz+Logo" alt="Logo" class="mx-auto d-block" style="width: 110px;" />
                 </div>
@@ -636,7 +636,7 @@
                 </div>
 
                 <div class="d-grid mb-4">
-                    <button type="button" class="btn forgot-btn" onclick="showVerificationModal()">
+                    <button type="submit" id = "sendCodeForgotPassword" class="btn forgot-btn" @*onclick="showVerificationModal()"*@>
                         Send Code
                     </button>
                 </div>
@@ -653,7 +653,7 @@
 <div class="modal fade" id="codeVerificationModal" tabindex="-1" aria-labelledby="codeVerificationModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content verification-modal-content">
-            <form method="post" action="/Account/VerifyCode">
+            <form id="verifyEmailForm">
                 <div class="mb-4">
                     <img src="https://placehold.co/110x30/5a7b80/ffffff?text=BasaBuzz+Logo" alt="Logo" class="mx-auto d-block" style="width: 110px;" />
                 </div>
@@ -670,7 +670,7 @@
                 </div>
 
                 <div class="d-grid mb-4">
-                    <button type="submit" class="verification-btn">
+                    <button type="submit" class="verification-btn" id="verifyCodeButton">
                         Verify Code
                     </button>
                 </div>
@@ -757,6 +757,83 @@
                 toastr.success(successMessage);
             }
         });
+    </script>
+    <script type ="module">
+        const sendCodeForgotPassword = document.getElementById("sendCodeForgotPassword");
+        const forgotInput = document.getElementById("forgotInput");
+        const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+        const verifyEmailForm = document.getElementById("verifyEmailForm");
+        const verificationCodeInput = document.getElementById("verificationCodeInput");
+        const verifyCodeButton = document.getElementById("verifyCodeButton");
+
+
+        function showVerificationModal() {
+            $('#forgotPasswordModal').modal('hide');
+            $('#codeVerificationModal').modal('show');
+        }
+
+        forgotPasswordForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            if (!forgotInput.checkValidity()) {
+                forgotInput.reportValidity(); 
+                return; 
+            }
+
+            if (sendCodeForgotPassword) {
+                sendCodeForgotPassword.disabled = true;
+                sendCodeForgotPassword.textContent = 'Sending...';
+            }
+
+            try {
+                console.log(forgotInput.value.trim())
+                const response = await fetch('/Account/ForgotPassword', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ Email: forgotInput.value.trim() })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    localStorage.setItem('otpMessage', result.message);
+                    showVerificationModal()
+                } else {
+                    const result = await response.json();
+                    alert(result.message)
+                }
+            } catch (backendError) {
+                alert("Unexpected Error Occured"+backendError)
+            }
+            finally {
+                
+                if (sendCodeForgotPassword) {
+                    sendCodeForgotPassword.disabled = false;
+                    sendCodeForgotPassword.textContent = 'Send Code';
+                }
+            }
+
+        })
+
+        verifyEmailForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            if (!verificationCodeInput.checkValidity()) {
+                verificationCodeInput.reportValidity();
+                return;
+            }
+
+            if (localStorage.getItem('otpMessage') == verificationCodeInput.value.trim()){
+                alert("Successful")
+            }
+            else{
+                alert("Invalid OTP")
+            }
+
+        })
+        
+        
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 }
