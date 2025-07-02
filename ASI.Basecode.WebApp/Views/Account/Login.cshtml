@@ -685,6 +685,47 @@
     </div>
 </div>
 
+<div class="modal fade" id="newPasswordModal" tabindex="-1" aria-labelledby="newPasswordModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content verification-modal-content">
+            <form id="newPasswordForm">
+                <div class="mb-4">
+                    <img src="https://placehold.co/110x30/5a7b80/ffffff?text=BasaBuzz+Logo" alt="Logo" class="mx-auto d-block" style="width: 110px;" />
+                </div>
+
+                <h2 class="forgot-modal-title">Enter New Password</h2>
+                <p class="forgot-modal-desc">
+                    Please provide new Password
+                </p>
+
+                <div class="mb-4">
+                    <label for="newPasswordInput" class="forgot-label">New Password</label>
+                    <input type="text" class="form-control verification-input"
+                           id="newPasswordInput" name="NewPassword" placeholder="Enter New Password" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="confirmPasswordInput" class="forgot-label">Confirm Password</label>
+                    <input type="text" class="form-control verification-input"
+                           id="confirmPasswordInput" name="ConfirmPassword" placeholder="Enter Confirm Password" required>
+                </div>
+
+                <div class="d-grid mb-4">
+                    <button type="submit" class="verification-btn" id="newPasswordButton">
+                        Submit
+                    </button>
+                </div>
+
+
+                <a href="#" class="forgot-back-link" data-bs-dismiss="modal">
+                    &lt; Back to email
+                </a>
+
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
@@ -711,6 +752,11 @@
     function showForgotPasswordModal() {
         $('#codeVerificationModal').modal('hide');
         $('#forgotPasswordModal').modal('show');
+    }
+
+    function showNewPasswordModal() {
+        $('#codeVerificationModal').modal('hide');
+        $('#newPasswordModal').modal('show');
     }
 
   @*  var errorMessage = '@TempData["ErrorMessage"]';
@@ -759,17 +805,31 @@
         });
     </script>
     <script type ="module">
+        //Forgot password variables
         const sendCodeForgotPassword = document.getElementById("sendCodeForgotPassword");
         const forgotInput = document.getElementById("forgotInput");
         const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+
+        //Verify code variables
         const verifyEmailForm = document.getElementById("verifyEmailForm");
         const verificationCodeInput = document.getElementById("verificationCodeInput");
         const verifyCodeButton = document.getElementById("verifyCodeButton");
+
+        //New password variable
+        const newPasswordForm = document.getElementById("newPasswordForm");
+        const newPasswordInput = document.getElementById("newPasswordInput");
+        const confirmPasswordInput = document.getElementById("confirmPasswordInput");
+        const newPasswordButton = document.getElementById("newPasswordButton");
 
 
         function showVerificationModal() {
             $('#forgotPasswordModal').modal('hide');
             $('#codeVerificationModal').modal('show');
+        }
+
+        function showNewPasswordModal() {
+            $('#codeVerificationModal').modal('hide');
+            $('#newPasswordModal').modal('show');
         }
 
         forgotPasswordForm.addEventListener("submit", async function (event) {
@@ -825,13 +885,69 @@
             }
 
             if (localStorage.getItem('otpMessage') == verificationCodeInput.value.trim()){
-                alert("Successful")
+                showNewPasswordModal()
             }
             else{
                 alert("Invalid OTP")
             }
 
         })
+
+        newPasswordForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            console.log("another"+forgotInput.value.trim())
+
+            if (!newPasswordInput.checkValidity()) {
+                newPasswordInput.reportValidity();
+                return;
+            }
+
+            if (!confirmPasswordInput.checkValidity()) {
+                confirmPasswordInput.reportValidity();
+                return;
+            }
+
+            if (newPasswordInput.value.trim() != confirmPasswordInput.value.trim()) {
+                alert("Password do not match")
+                return
+            }
+
+            if (newPasswordButton) {
+                newPasswordButton.disabled = true;
+                newPasswordButton.textContent = 'Processing...';
+            }
+
+            try {
+                const response = await fetch('/Account/NewPassword', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ Email: forgotInput.value.trim(), Password: newPasswordInput.value.trim() })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    alert(result.message);
+                } else {
+                    const result = await response.json();
+                    alert(result.message)
+                }
+            } catch (backendError) {
+                alert("Unexpected Error Occured" + backendError)
+            }
+            finally {
+
+                if (newPasswordButton) {
+                    newPasswordButton.disabled = false;
+                    newPasswordButton.textContent = 'Submit';
+                }
+            }
+
+        })
+
+
         
         
     </script>

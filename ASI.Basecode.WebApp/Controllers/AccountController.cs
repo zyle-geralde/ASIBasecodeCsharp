@@ -322,5 +322,29 @@ namespace ASI.Basecode.WebApp.Controllers
                 return BadRequest(new { Message = ex.Message});
             }
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("Account/NewPassword")]
+        public async Task<IActionResult> SendOtpForForgotPassword([FromBody] UserViewModel userObject)
+        {
+            if (userObject == null)
+            {
+                return BadRequest(new { Message = "No data has been passed" });
+            }
+            try
+            {
+                await _userService.UpdatePassword(userObject);
+                return Ok(new { Message = "Successfully Updated Password" });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
     }
 }

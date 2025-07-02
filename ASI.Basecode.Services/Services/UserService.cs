@@ -528,5 +528,33 @@ namespace ASI.Basecode.Services.Services
 
 
         }
+
+        public async Task UpdatePassword(UserViewModel user)
+        {
+            if(user == null)
+            {
+                throw new ArgumentException("User is empty");
+            }
+
+            var foundUser = await _repository.FindUserByEmail(user.Email);
+
+            if (foundUser == null) {
+                throw new ArgumentException("User could not be found");
+            }
+
+            try
+            {
+
+                foundUser.Password = PasswordManager.EncryptPassword(user.Password);
+                
+
+                await _repository.UpdatePassword(foundUser);
+            }
+            catch (Exception ex) {
+                throw;
+            }
+
+
+        }
     }
 }
