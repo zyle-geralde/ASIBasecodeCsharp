@@ -1,33 +1,56 @@
 ﻿/* Stats Cards */
 .stats-card {
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-radius: 16px;
+    padding: 1.8rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: none;
+    cursor: pointer;
 }
 
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
     .stats-card.a {
-        background: rgba(210, 196, 158, 0.75);
+        background: linear-gradient(145deg, rgba(210, 196, 158, 0.9), rgba(210, 196, 158, 0.75));
     }
 
     .stats-card.b {
-        background: rgba(134, 168, 170, 0.5);
+        background: linear-gradient(145deg, rgba(134, 168, 170, 0.7), rgba(134, 168, 170, 0.5));
     }
 
     .stats-card h3 {
-        color: #495e53;
-        font-size: 24px;
-        font-weight: 600;
+        color: #2c3e50;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
     }
 
-    .stats-card,
-    .stats-card * {
-        color: #222 !important;
+    .stats-card p {
+        color: #34495e !important;
+        font-weight: 500;
+        font-size: 0.9rem;
     }
 
 .stats-icon {
     font-size: 24px;
-    color: #222 !important;
-    opacity: 0.8;
+    color: #2c3e50 !important;
+    opacity: 0.85;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center;
+    line-height: 48px;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 /* Section Styles */
@@ -57,6 +80,11 @@
         color: #3d4f45;
     }
 
+.admin-common-container .star-rating .stars svg {
+    fill: #fbbf24 !important;
+}
+
+
 /* Book Cards */
 .book-card {
     text-align: center;
@@ -85,10 +113,32 @@
     margin-bottom: 0.25rem;
 }
 
-.rating {
-    color: #ffc107;
-    font-size: 12px;
+.star-rating {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
 }
+
+    .star-rating .stars {
+        color: #fbbf24;
+        display: flex;
+    }
+
+        .star-rating .stars svg {
+            width: 16px;
+            height: 16px;
+            fill: #fbbf24 !important;
+        }
+
+            .star-rating .stars svg.empty-star {
+                color: #fbbf24;
+            }
+
+    .star-rating .rating-text {
+        color: #6b7280;
+        font-size: 14px;
+        margin-left: 8px;
+    }
 
 /* Carousel Container and Layout */
 .carousel-container {
@@ -102,6 +152,7 @@
 
 .carousel-inner {
     overflow: hidden;
+    min-height: 288px;
 }
 
 /* Card Layout */
