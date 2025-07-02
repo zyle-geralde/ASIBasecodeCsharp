@@ -22,6 +22,6 @@ namespace ASI.Basecode.Data.Models
         public string? Role { get; set; }
 
         public string? AboutMe { get; set; }
-
+        public virtual User User { get; set; }
     }
 }

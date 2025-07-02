@@ -64,6 +64,18 @@ namespace ASI.Basecode.Data
                     .HasMaxLength(50)
                     .IsUnicode(false);
             });
+            modelBuilder.Entity<User>()
+              .HasAlternateKey(u => u.Email)
+              .HasName("AK_Users_Email");
+
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.PersonProfile)
+                .WithOne(p => p.User)
+                .HasForeignKey<PersonProfile>(p => p.ProfileID)
+                .HasPrincipalKey<User>(u => u.Email);
+
+            modelBuilder.Entity<PersonProfile>()
+                .HasKey(p => p.ProfileID);
 
             OnModelCreatingPartial(modelBuilder);
         }
