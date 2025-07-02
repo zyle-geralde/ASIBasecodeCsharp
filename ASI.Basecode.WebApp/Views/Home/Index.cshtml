@@ -94,11 +94,11 @@
             <div class="book-list-header">
                 <h2>View Books Top Rated By Users?</h2>
                 <div class="see-more-link-wrapper">
-                    <a asp-controller="Book" 
-                     asp-action="SearchResults" 
-                     asp-route-sortOrder="rating" 
-                     asp-route-sortDescending="true" 
-                     asp-route-category="Top Rated">See More</a>
+                    <a asp-controller="Book"
+                       asp-action="SearchResults"
+                       asp-route-sortOrder="rating"
+                       asp-route-sortDescending="true"
+                       asp-route-category="Top Rated">See More</a>
                 </div>
             </div>
             <div class="book-carousel-container top-rated-carousel">
@@ -137,8 +137,8 @@
                                         .ToList() ?? new List<string>();
 
                                         var colorClasses = new string[] {
-                                            "dynamic-genre-1", "dynamic-genre-2", "dynamic-genre-3", "dynamic-genre-4", "dynamic-genre-5",
-                                            "dynamic-genre-6", "dynamic-genre-7", "dynamic-genre-8", "dynamic-genre-9", "dynamic-genre-10"
+                                "dynamic-genre-1", "dynamic-genre-2", "dynamic-genre-3", "dynamic-genre-4", "dynamic-genre-5",
+                                "dynamic-genre-6", "dynamic-genre-7", "dynamic-genre-8", "dynamic-genre-9", "dynamic-genre-10"
                                                         };
 
                                         foreach (var tag in genres)
@@ -160,11 +160,11 @@
             <div class="book-list-header">
                 <h2>View New Books</h2>
                 <div class="see-more-link-wrapper">
-                    <a asp-controller="Book" 
-                     asp-action="SearchResults" 
-                     asp-route-sortOrder="uploaddate" 
-                     asp-route-sortDescending="true" 
-                     asp-route-category="New Books">See More</a>
+                    <a asp-controller="Book"
+                       asp-action="SearchResults"
+                       asp-route-sortOrder="uploaddate"
+                       asp-route-sortDescending="true"
+                       asp-route-category="New Books">See More</a>
                 </div>
             </div>
             <div class="book-carousel-container new-books-carousel">
@@ -203,8 +203,8 @@
                                         .ToList() ?? new List<string>();
 
                                         var colorClasses = new string[] {
-                                            "dynamic-genre-1", "dynamic-genre-2", "dynamic-genre-3", "dynamic-genre-4", "dynamic-genre-5",
-                                            "dynamic-genre-6", "dynamic-genre-7", "dynamic-genre-8", "dynamic-genre-9", "dynamic-genre-10"
+                                "dynamic-genre-1", "dynamic-genre-2", "dynamic-genre-3", "dynamic-genre-4", "dynamic-genre-5",
+                                "dynamic-genre-6", "dynamic-genre-7", "dynamic-genre-8", "dynamic-genre-9", "dynamic-genre-10"
                                                         };
 
                                         foreach (var tag in genres)
@@ -273,7 +273,8 @@
 
         @foreach (var book in Model.FeaturedBooks)
         {
-            <div class="featured-book-card">
+            <a class="featured-book-card" href="/Book/BookDetails/@book.BookId">
+
                 <img src="@book.CoverImage" alt="@book.Title Book Cover">
                 <div class="featured-book-card-content">
                     <h3>@book.Title</h3>
@@ -293,6 +294,7 @@
                                 }
                             }
                         </div>
+                        <span class="rating-text">@book.AverageRating/5</span>
                     </div>
                     <div class="genre-tags">
                         @{
@@ -301,8 +303,8 @@
                             .ToList() ?? new List<string>();
 
                             var colorClasses = new string[] {
-                                "dynamic-genre-1", "dynamic-genre-2", "dynamic-genre-3", "dynamic-genre-4", "dynamic-genre-5",
-                                "dynamic-genre-6", "dynamic-genre-7", "dynamic-genre-8", "dynamic-genre-9", "dynamic-genre-10"
+                    "dynamic-genre-1", "dynamic-genre-2", "dynamic-genre-3", "dynamic-genre-4", "dynamic-genre-5",
+                    "dynamic-genre-6", "dynamic-genre-7", "dynamic-genre-8", "dynamic-genre-9", "dynamic-genre-10"
                                 };
 
                             foreach (var tag in genres)
@@ -313,7 +315,8 @@
                         }
                     </div>
                 </div>
-            </div>
+
+            </a>
         }
     </div>
 
@@ -365,7 +368,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        // single book carousel
+        // carousel
         function setupSingleBookCarousel(containerClass) {
             const container = $(containerClass);
             const bookCards = container.find('.book-card-single');
@@ -376,20 +379,11 @@
 
             function showCurrentBook() {
                 bookCards.addClass('hidden-book-card');
-
                 if (bookCards.length > 0 && currentIndex >= 0 && currentIndex < bookCards.length) {
-                    const bookToShow = bookCards.eq(currentIndex);
-                    bookToShow.removeClass('hidden-book-card');
+                    bookCards.eq(currentIndex).removeClass('hidden-book-card');
                 }
-
-                // disable/hide buttons
-                if (bookCards.length <= 1) {
-                    prevButton.prop('disabled', true);
-                    nextButton.prop('disabled', true);
-                } else {
-                    prevButton.prop('disabled', currentIndex === 0);
-                    nextButton.prop('disabled', currentIndex >= bookCards.length - 1);
-                }
+                prevButton.prop('disabled', currentIndex === 0);
+                nextButton.prop('disabled', currentIndex >= bookCards.length - 1);
             }
 
             nextButton.on('click', function () {
@@ -411,5 +405,66 @@
 
         setupSingleBookCarousel('.top-rated-carousel');
         setupSingleBookCarousel('.new-books-carousel');
+
+        //genre tag overflow
+        function setupGenreTagsOverflow() {
+            $('.genre-tags').each(function () {
+                const $container = $(this);
+                let $tags = $container.find('.genre-tag');
+
+                $container.find('.genre-tags-more-indicator').remove();
+                $tags.removeClass('hidden-tag').css('display', 'inline-flex');
+
+                if ($tags.length === 0) {
+                    $container.css('max-height', 'none');
+                    return;
+                }
+
+                const containerHeight = $container[0].scrollHeight;
+                const maxHeight = parseInt($container.css('max-height')) || 56;
+
+                if (containerHeight <= maxHeight) {
+                    return;
+                }
+
+                let visibleHeight = 0;
+                let visibleTagsCount = 0;
+                $tags.each(function (index) {
+                    const $tempContainer = $('<div>').css({
+                        display: 'flex',
+                        'flex-wrap': 'wrap',
+                        gap: '8px',
+                        width: $container.width(),
+                        'max-height': 'none',
+                        visibility: 'hidden',
+                        position: 'absolute',
+                        left: '-9999px'
+                    }).append($tags.slice(0, index + 1).clone());
+                    $('body').append($tempContainer);
+                    visibleHeight = $tempContainer[0].scrollHeight;
+                    $tempContainer.remove();
+
+                    if (visibleHeight <= maxHeight) {
+                        visibleTagsCount++;
+                    } else {
+                        $(this).addClass('hidden-tag');
+                    }
+                });
+
+                const hiddenTagsCount = $tags.length - visibleTagsCount;
+
+                if (hiddenTagsCount > 0) {
+                    const $moreIndicator = $(`<span class="genre-tags-more-indicator">+${hiddenTagsCount}</span>`);
+                    $container.append($moreIndicator);
+                    $container.addClass('has-overflow');
+                } else {
+                    $container.removeClass('has-overflow');
+                }
+            });
+        }
+
+        setupGenreTagsOverflow();
+
+        $(window).on('resize', setupGenreTagsOverflow);
     });
 </script>
