@@ -861,7 +861,7 @@ body
     .container 
     {
         width: 320px;
-        padding: 50px 10px 0 10px;
+        padding: 50px 10px 0 0px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -871,6 +871,7 @@ body
         grid-template-columns: 1fr;
         gap: 1.5rem;
         margin-top: 20px;
+        grid-auto-flow: row;
     }
 
     .left-column 
@@ -880,16 +881,7 @@ body
         gap: 16px;
     }
 
-    .section-card 
-    {
-        width: 100%;
-        max-width: 300px;
-        margin-left: auto;
-        margin-right: auto;
-        box-sizing: border-box;
-        display: block;
-    }
-
+    .section-card,
     .section-card-genre 
     {
         width: 100%;
@@ -897,6 +889,7 @@ body
         margin-left: auto;
         margin-right: auto;
         box-sizing: border-box;
+        margin-top: 25px;
     }
 
     .category-card 
@@ -905,13 +898,13 @@ body
         height: 150px;
     }
 
-    .category-card img 
-    {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
+        .category-card img 
+        {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
 
     .book-card-single 
     {
@@ -922,12 +915,12 @@ body
         overflow: hidden;
     }
 
-    .book-card-single img 
-    {
-        width: 100px;
-        height: 150px;
-        margin-bottom: 10px;
-    }
+        .book-card-single img 
+        {
+            width: 100px;
+            height: 150px;
+            margin-bottom: 10px;
+        }
 
     .book-card-content 
     {
@@ -937,12 +930,12 @@ body
         overflow: hidden;
     }
 
-    .book-card-content .genre-tags 
-    {
-        overflow: hidden;
-        max-height: 64px;
-        margin-bottom: 8px; 
-    }
+        .book-card-content .genre-tags 
+        {
+            overflow: hidden;
+            max-height: 64px;
+            margin-bottom: 8px;
+        }
 
     .genre-tags-more-indicator 
     {
@@ -995,15 +988,15 @@ body
         justify-content: center;
     }
 
-    .carousel-button.prev-button 
-    {
-        left: 5px;
-    }
+        .carousel-button.prev-button 
+        {
+            left: 5px;
+        }
 
-    .carousel-button.next-button 
-    {
-        right: 5px;
-    }
+        .carousel-button.next-button 
+        {
+            right: 5px;
+        }
 
     .see-more-link-wrapper 
     {
@@ -1027,12 +1020,12 @@ body
         overflow: hidden;
     }
 
-    .featured-book-card img 
-    {
-        width: 100px;
-        height: 150px;
-        margin-bottom: 10px;
-    }
+        .featured-book-card img 
+        {
+            width: 100px;
+            height: 150px;
+            margin-bottom: 10px;
+        }
 
     .featured-book-card-content 
     {
@@ -1042,50 +1035,37 @@ body
         overflow: hidden;
     }
 
-    .featured-book-card-content h3 
-    {
-        font-size: 16px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        margin: 0;
-    }
+        .featured-book-card-content h3 
+        {
+            font-size: 16px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin: 0;
+        }
 
-    .featured-book-card-content .author 
-    {
-        font-size: 12px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        margin: 0;
-    }
+        .featured-book-card-content .author 
+        {
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin: 0;
+        }
 
-    .featured-book-card-content .description 
-    {
-        font-size: 12px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        margin: 0;
-    }
+        .featured-book-card-content .description 
+        {
+            font-size: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin: 0;
+        }
 
     .featured-book-card .star-rating 
     {
         justify-content: center;
         margin: 0;
-    }
-
-    .main-grid {
-        grid-auto-flow: row;
-        grid-template-rows: auto;
-    }
-
-    .main-grid .section-card,
-    .main-grid .section-card-genre 
-    {
-        width: 100%;
-        max-width: 300px;
-        margin-top: 25px;
     }
 }
