@@ -408,7 +408,7 @@
                 console.log(`Successfully deleted file: ${fileUrl}`);
             } catch (error) {
                 // alert(`Failed to delete file ${fileUrl}:`, error)
-                showSuccessModal(`Failed to delete file ${fileUrl}: ${error.message}`, 'Error');
+                showStatusModal(`Failed to delete file ${fileUrl}: ${error.message}`, 'Error');
                 console.error(`Failed to delete file ${fileUrl}:`, error);
             }
         }
