@@ -132,7 +132,7 @@
 }
 
 
-@media (min-width: 320px) and (max-width: 374px) 
+@media (min-width: 320px) and (max-width: 400px) 
 {
     .site-footer 
     {
@@ -193,70 +193,8 @@
     }
 }
 
-@media (min-width: 375px) and (max-width:509)
-{
-    .site-footer 
-    { 
-        margin-top: 50px;
-    }
 
-        .site-footer .container-footer .row
-        {
-            padding: 15px;
-        }
-
-    .footer-middle-section 
-    {
-        height: 0;
-    }
-
-    .footer-right-section 
-    {
-        height: 0;
-    }
-
-        .contact-us-heading 
-        {
-            padding-left: 25px;
-            font-size: 12px;
-            padding-top: 10px;
-        }
-
-    .social-icons-container 
-    {
-        gap: 5px;
-    }
-
-    .social-icon-circle 
-    {
-        width: 20px;
-        height: 20px;
-    }
-
-    .product-of-text 
-    {
-        margin-left: auto;
-        margin-right: 50px;
-    }
-
-    .product-logo 
-    {
-        max-width: 65px;
-        margin-bottom: 75px;
-        margin-left: auto;
-        margin-right: 50px;
-    }
-
-    .copyright-text 
-    {
-        font-size: 0.7em;
-        margin-left: auto;
-        margin-top: auto;
-    }
-}
-
-
-@media (min-width: 510px) and (max-width: 600px) 
+@media (min-width: 401px) and (max-width: 600px) 
 {
     .site-footer 
     {
