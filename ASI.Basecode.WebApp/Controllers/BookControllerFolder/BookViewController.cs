@@ -129,7 +129,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
 
             ViewData["CurrentSearch"] = searchTerm;
-            ViewData["CurrentAuthor"] = "";
+            ViewData["CurrentAuthor"] =author;
             ViewData["CurrentRating"] = rating;
             ViewData["CurrentFromDate"] = publishedFrom?.ToString("yyyy-MM-dd");
             ViewData["CurrentToDate"] = publishedTo?.ToString("yyyy-MM-dd");
