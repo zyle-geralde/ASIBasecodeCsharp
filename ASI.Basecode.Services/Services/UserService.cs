@@ -18,7 +18,6 @@ using System.Data;
 using ASI.Basecode.Data.Repositories;
 using static System.Net.WebRequestMethods;
 using System.Security.Policy;
-using System.Data.Entity;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -452,18 +451,6 @@ namespace ASI.Basecode.Services.Services
                 await _personProfileService.DeletePersonProfile(user.Email);
             }
             return true;
-        }
-        public async Task<UserViewModel?> GetByEmailForEdit(string email)
-        {
-            var user = await _repository.FindByEmailForEdit(email);
-            if (user == null) return null;
-
-            return new UserViewModel
-            {
-                Id = user.Id,
-                UserName = user.UserName,
-                Email = user.Email
-            };
         }
 
         private async Task<string> GenerateOtpCode(string email)

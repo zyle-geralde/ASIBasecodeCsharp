@@ -197,7 +197,7 @@ namespace ASI.Basecode.Data.Migrations
             modelBuilder.Entity("ASI.Basecode.Data.Models.PersonProfile", b =>
                 {
                     b.Property<string>("ProfileID")
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AboutMe")
                         .HasColumnType("nvarchar(max)");
@@ -320,30 +320,10 @@ namespace ASI.Basecode.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Email")
-                        .HasName("AK_Users_Email");
-
                     b.HasIndex(new[] { "Email" }, "UQ__Users__1788CC4D5F4A160F")
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("ASI.Basecode.Data.Models.PersonProfile", b =>
-                {
-                    b.HasOne("ASI.Basecode.Data.Models.User", "User")
-                        .WithOne("PersonProfile")
-                        .HasForeignKey("ASI.Basecode.Data.Models.PersonProfile", "ProfileID")
-                        .HasPrincipalKey("ASI.Basecode.Data.Models.User", "Email")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ASI.Basecode.Data.Models.User", b =>
-                {
-                    b.Navigation("PersonProfile");
                 });
 #pragma warning restore 612, 618
         }
