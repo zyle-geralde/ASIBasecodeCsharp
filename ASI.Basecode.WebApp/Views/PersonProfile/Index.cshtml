@@ -88,11 +88,11 @@
                         <div class="info-fields-stack">
                             <div class="info-field-col">
                                 <div class="info-label">Username</div>
-                                <div class="info-value">marawr_97</div>
+                                <div class="info-value">@Model.Username</div>
                             </div>
                             <div class="info-field-col">
                                 <div class="info-label">Email</div>
-                                <div class="info-value">maria.garcia@gmail.com</div>
+                                <div class="info-value">@Model.Email</div>
                             </div>
                         </div>
                     </div>
@@ -311,7 +311,21 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-0">
-                <form id="userInfoForm">
+                <form id="userInfoForm" asp-controller="PersonProfile">
+                    <div class="mb-3">
+                        <label for="userName" class="form-label">Username</label>
+                        <input asp-for="Username" type="text" class="form-control" id="userName" placeholder="Text">
+                     <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="text" asp-for="Email" class="form-control" id="email" placeholder="Text">
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
+                    </div>
+                </form>
+                @* <form id="userInfoForm">
                     <div class="mb-3">
                         <label for="userName" class="form-label">Username</label>
                         <input type="text" class="form-control" id="userName" placeholder="Text">
@@ -323,7 +337,7 @@
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
                     </div>
-                </form>
+                </form> *@
             </div>
         </div>
     </div>
