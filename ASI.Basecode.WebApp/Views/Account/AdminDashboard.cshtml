@@ -117,21 +117,11 @@
                                                 <div class="book-info">
                                                     <h5>@book.Title</h5>
                                                     <p class="author">@book.Author</p>
-                                                    <div class="star-rating">
-                                                        <div class="stars">
-                                                            @for (int j = 0; j < 5; j++)
-                                                            {
-                                                                if (j < book.AverageRating)
-                                                                {
-                                                                    <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-                                                                }
-                                                            }
-                                                        </div>
-                                                        <span class="rating-text">@book.AverageRating/5</span>
+                                                    <div class="rating">
+                                                        @for (int star = 0; star < book.AverageRating; star++)
+                                                        {
+                                                            <i class="fas fa-star"></i>
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
@@ -182,21 +172,11 @@
                                                 <div class="book-info">
                                                     <h5>@book.Title</h5>
                                                     <p class="author">@book.Author</p>
-                                                    <div class="star-rating">
-                                                        <div class="stars">
-                                                            @for (int j = 0; j < 5; j++)
-                                                            {
-                                                                if (j < book.AverageRating)
-                                                                {
-                                                                    <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-                                                                }
-                                                            }
-                                                        </div>
-                                                        <span class="rating-text">@book.AverageRating/5</span>
+                                                    <div class="rating">
+                                                        @for (int star = 0; star < book.AverageRating; star++)
+                                                        {
+                                                            <i class="fas fa-star"></i>
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
