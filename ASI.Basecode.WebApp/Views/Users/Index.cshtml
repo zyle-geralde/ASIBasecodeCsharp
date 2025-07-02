@@ -1,6 +1,5 @@
 ﻿@using ASI.Basecode.Data.Interfaces;
 @model PaginatedList<ASI.Basecode.Data.Models.User>
-@using Microsoft.AspNetCore.Routing;
 
 @{
     ViewData["Title"] = "Users";
@@ -11,12 +10,6 @@
     var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
     var currentRoleFilter = (string?)ViewData["CurrentRoleFilter"];
 
-    var routeValues = new Dictionary<string, string> {
-        ["searchTerm"]     = currentSearch,
-        ["role"]           = currentRoleFilter,
-        ["sortOrder"]      = currentSort,
-        ["sortDescending"] = currentSortDescending.ToString().ToLowerInvariant()
-    };
 
     ViewData["CurrentPage"] = Model.PageIndex;
     ViewData["TotalPages"] = Model.TotalPages;

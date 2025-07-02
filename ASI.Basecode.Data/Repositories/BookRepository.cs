@@ -1,6 +1,5 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
-using Basecode.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace ASI.Basecode.Data.Repositories
 {
-    public class BookRepository:BaseRepository, IBookRepository
+    public class BookRepository:IBookRepository
     {
         private readonly AsiBasecodeDBContext _dbContext;
 
-        public BookRepository(IUnitOfWork unitOfWork, AsiBasecodeDBContext dbContext ): base(unitOfWork)
+        public BookRepository(AsiBasecodeDBContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -26,8 +25,7 @@ namespace ASI.Basecode.Data.Repositories
             await _dbContext.Books.AddAsync(book);
             await _dbContext.SaveChangesAsync();
         }
-        //public async Task<List<Book>> GetBooks(BookQueryParams? queryParams = null)
-        public async Task<PaginatedList<Book>> GetBooks(BookQueryParams? queryParams = null)
+        public async Task<List<Book>> GetBooks(BookQueryParams? queryParams = null) 
         {
             queryParams ??= new BookQueryParams();
 
@@ -99,9 +97,14 @@ namespace ASI.Basecode.Data.Repositories
                         break;
                 }
             }
-            return await GetPaged(query, queryParams.PageIndex, queryParams.PageSize);
-        }
 
+
+            query = query
+                .Skip((queryParams.PageIndex - 1) * queryParams.PageSize)
+                .Take(queryParams.PageSize);
+
+            return await query.ToListAsync();
+        }
         public async Task<Book?> GetBookById(string bookId)
         {
             return await _dbContext.Books.FirstOrDefaultAsync(book => book.BookId == bookId);

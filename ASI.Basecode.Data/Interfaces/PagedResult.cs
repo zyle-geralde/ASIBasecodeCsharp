@@ -10,7 +10,7 @@ public class PaginatedList<T> : List<T>
     public int TotalPages { get; }
     public int TotalCount { get; }
 
-    public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
+    private PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
     {
         TotalCount = count;
         PageIndex = pageIndex;

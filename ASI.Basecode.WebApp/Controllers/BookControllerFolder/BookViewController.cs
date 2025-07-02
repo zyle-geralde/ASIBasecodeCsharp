@@ -86,9 +86,9 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         }
 
 
-        [HttpGet]
+        /*[HttpGet]
         [Route("Book/ListBook")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> ListBook(
             string? searchTerm,
             string? author,
@@ -139,26 +139,25 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             ViewData["AllGenres"] = allGenres;
 
 
-            //var books = await _bookService.GetBooks(
-            //    queryParams );
-            PaginatedList<BookViewModel> books = await _bookService.GetBooks(queryParams);
+            var books = await _bookService.GetBooks(
+                queryParams );
             //List<Book> books = await _bookService.GetAllBooks();
             return View("~/Views/Books/ListBook.cshtml", books);
+        }*/
+
+        [HttpGet]
+        [Route("Book/ListBook")]
+        [Authorize]
+        public async Task<IActionResult> ListBook()
+        {
+            //For Routing
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
+            List<BookViewModel> books = await _bookService.GetAllBooks();
+
+            return View("~/Views/Books/ListBook.cshtml", books);
         }
-
-        //[HttpGet]
-        //[Route("Book/ListBook")]
-        //[Authorize]
-        //public async Task<IActionResult> ListBook()
-        //{
-        //    //For Routing
-        //    bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
-        //    if (!checkAdminAccess) return RedirectToAction("Index", "Home");
-
-        //    List<BookViewModel> books = await _bookService.GetAllBooks();
-
-        //    return View("~/Views/Books/ListBook.cshtml", books);
-        //}
 
         [HttpGet]
         [Route("Book/SearchResults")]
@@ -176,7 +175,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         string? category = null
         )
         {
-                const int PageSize = 4;
+                const int PageSize = 10;
                 int pageIndex = page.GetValueOrDefault(1);
 
                 var queryParams = new BookQueryParams
@@ -224,9 +223,10 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             {
                 ViewData["CategoryTitle"] = "Search Results";
             }
-            PaginatedList<BookViewModel> books = await _bookService.GetBooks(queryParams);
-            //List<Book> books = await _bookService.GetAllBooks();
-            return View("~/Views/Books/BookSearchResults.cshtml", books);
+            var books = await _bookService.GetBooks(
+                    queryParams);
+                //List<Book> books = await _bookService.GetAllBooks();
+                return View("~/Views/Books/BookSearchResults.cshtml", books);
             }
 
 

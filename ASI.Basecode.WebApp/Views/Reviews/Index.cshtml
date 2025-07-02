@@ -73,7 +73,22 @@
                 <div class="book-details text-center mb-4">
                     <h2 class="book-title">Book Title</h2>
                     <p class="book-author">Author</p>
-                </div>               
+                </div>
+
+                <div class="user-info d-flex align-items-center mb-4">
+                    <img id="profilePicturePreview"
+                         @* src="@(Model?.ProfilePicture ?? "")"*@
+                         alt="Profile Preview"
+                         class="rounded-circle object-fit-cover"
+                         style="width:100px; height:100px; background:#f4f4f6; border:1px solid #ddd" /> @*display:@(string.IsNullOrEmpty(Model?.ProfilePicture) ? "none" : "block");"*@
+                    <div class="user-avatar user-avatar-circle">
+                        <img src="/img/default_profile.png" alt="User Avatar" onerror="this.src='/img/default_profile.png'">
+                    </div>
+                    <div class="user-details ms-3">
+                        <h5 class="user-name mb-0">User Name</h5>
+                        <small class="text-muted">@DateTime.Now.ToString("MMMM dd, yyyy")</small>
+                    </div>
+                </div>
 
                 <form id="addReviewForm">
                     <div class="mb-4">
