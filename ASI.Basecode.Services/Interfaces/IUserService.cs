@@ -27,5 +27,9 @@ namespace ASI.Basecode.Services.Interfaces
         Task<UserViewModel?> GetByEmailForEdit(string email);
 
 
+        Task<string> SendOTPForResetPassword(string email);
+
+        Task UpdatePassword(UserViewModel user);
+
     }
 }

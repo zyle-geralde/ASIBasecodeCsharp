@@ -44,6 +44,7 @@
                 <div class="book-header-tags" id="genre-tags">
                     <!-- Genres populated by JavaScript -->
                 </div>
+                @*<input type="hidden" id="concatenatedGenre" name="GenreList" value="@Model?.GenreList" />*@
 
                 <div class="book-header-rating" id="bookHeaderRating">
                     <div class="stars header-stars">
@@ -600,6 +601,82 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="module">
+        //For Genre
+        const genre_tag = document.getElementById("genre-tags")
+        const concatenatedGenreInput = document.getElementById('book-genre-tags');
+        const languageHidden = document.getElementById('language-hidden');
+        try {
+            //Add commentMore actions
+            const response = await fetch('/Book/GetLanguage', { method: 'GET' });
+            let itemsToPopulate = [];
+
+            if (response.ok) {
+                const result = await response.json();
+                itemsToPopulate = result.message;
+            } else {
+                console.error(`Server error fetching`);
+            }
+
+            //convert genrelist from commaseparated string to a list
+            const languageValue = languageHidden.value;
+            const languageContainer = document.getElementById('language-value')
+
+            // Populate dropdown with checkboxes
+            itemsToPopulate.forEach(item => {
+                const parts = item.split(',');
+                const itemName = parts[0].trim();
+                const itemValue = parts[1].trim();
+
+                if (languageValue.trim().toLowerCase() == parts[1].trim().toLowerCase()) {
+
+                    languageContainer.textContent = itemName;
+                }
+
+            });
+
+        } catch (error) {
+            console.error(`Error initializing`, error);
+        }
+
+
+
+
+        try {
+            const response = await fetch('/Book/GetGenre', { method: 'GET' });
+            let itemsToPopulate = [];
+
+            if (response.ok) {
+                const result = await response.json();
+                itemsToPopulate = result.message;
+            } else {
+                console.error(`Server error fetching`);
+            }
+
+            //convert genrelist from commaseparated string to a list
+            const commaSeparatedGenre = concatenatedGenreInput.value;
+            const genreArray = commaSeparatedGenre.split(',').map(item => item.trim().toLowerCase()).filter(item => item !== '');
+
+            // Populate dropdown with checkboxes
+            itemsToPopulate.forEach(item => {
+                const parts = item.split(',');
+                const itemName = parts[0].trim();
+                const itemValue = parts[1].trim();
+                const optionDiv = document.createElement('div');
+
+                if (genreArray.includes(parts[1].trim().toLowerCase())) {
+                    optionDiv.textContent = itemName
+                    optionDiv.setAttribute("class", "book-tag")
+
+                    genre_tag.appendChild(optionDiv);
+                }
+
+            });
+
+        } catch (error) {
+            console.error(`Error initializing`, error);
+        }
+    </script>
     <script>
         // Define resetStars outside the document.ready to make it globally accessible
         let stars;
@@ -819,7 +896,10 @@ $('#updateReviewBtn').click(function() {
     });
 });
 
-        $(document).ready(function() {
+        $(document).ready(async function() {
+            
+
+
             // Initialize stars variables
             stars = $('#starsRating i');
             editStars = $('#editStarsRating i');

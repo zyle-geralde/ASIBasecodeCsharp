@@ -7,6 +7,7 @@ using ASI.Basecode.WebApp.AccessControl;
 using ASI.Basecode.WebApp.Authentication;
 using ASI.Basecode.WebApp.Models;
 using ASI.Basecode.WebApp.Mvc;
+using ASI.Basecode.WebApp.Payload.OtpPayload;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -129,6 +130,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public IActionResult Register()
         {
+            ViewBag.LoginView = true;
             return View();
         }
 
@@ -136,6 +138,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register(UserViewModel model)
         {
+            ViewBag.LoginView = true;
             try
             {
                 var user = await _userService.AddUserFromRegister(model);
@@ -174,6 +177,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public IActionResult RegisterAdmin()
         {
+            ViewBag.LoginView = true;
             return View("~/Views/Account/RegisterAdmin.cshtml");
         }
 
@@ -190,6 +194,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> RegisterAdmin(UserViewModel model)
         {
+            ViewBag.LoginView = true;
             try
             {
                 var user = await _userService.AddAdminFromRegister(model);
@@ -295,6 +300,55 @@ namespace ASI.Basecode.WebApp.Controllers
                 return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
             }
 
+        }
+
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("Account/ForgotPassword")]
+        public async Task<IActionResult> SendOtpForForgotPassword([FromBody] ForgotPasswordOtpPayload emailObject)
+        {
+            if(emailObject == null)
+            {
+                return BadRequest(new { Message = "No data has been passed" });
+            }
+            try
+            {
+                string generatedOTP = await _userService.SendOTPForResetPassword(emailObject.Email);
+                return Ok(new { Message = generatedOTP });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message});
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("Account/NewPassword")]
+        public async Task<IActionResult> SendOtpForForgotPassword([FromBody] UserViewModel userObject)
+        {
+            if (userObject == null)
+            {
+                return BadRequest(new { Message = "No data has been passed" });
+            }
+            try
+            {
+                await _userService.UpdatePassword(userObject);
+                return Ok(new { Message = "Successfully Updated Password" });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
     }
 }

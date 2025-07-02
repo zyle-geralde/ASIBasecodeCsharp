@@ -124,5 +124,11 @@ namespace ASI.Basecode.Data.Repositories
             GetDbSet<User>().Update(user);
             await UnitOfWork.SaveChangesAsync();
         }
+
+        public async Task UpdatePassword(User user)
+        {
+            GetDbSet<User>().Update(user);
+            await UnitOfWork.SaveChangesAsync();
+        }
     }
 }
