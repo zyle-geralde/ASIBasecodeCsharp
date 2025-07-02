@@ -260,6 +260,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             var reviews= await _reviewService.GetReviewsByBookId(bookId);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             bool hasReviewed = reviews.Any(r => r.UserId == userId);
+            Author authorName = await _authorRepository.GetAuthorById(book != null ? book.Author : "");
             var bookDetails = new BookViewModel
             {
                 BookId = book.BookId,
@@ -282,7 +283,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 AverageRating = book.AverageRating,
                 CreatedBy = book.CreatedBy,
                 UpdatedBy = book.UpdatedBy,
-                Author = book.Author,
+                Author = authorName != null ? authorName.AuthorName : "",
                 Likes = book.Likes,
                 ISBN10 = book.ISBN10,
                 ISBN13 = book.ISBN13,
