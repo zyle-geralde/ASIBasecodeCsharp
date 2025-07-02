@@ -8,6 +8,7 @@ namespace ASI.Basecode.Services.ServiceModels
 {
     public class PersonProfileViewModel
     {
+        public int Id { get; set; }
         public string UserId { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
