@@ -45,6 +45,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             var vm = new PersonProfileViewModel
             {
+                Id = user.Id,
                 UserId = profile.ProfileID,
                 FirstName = profile.FirstName,
                 MiddleName = profile.MiddleName,
@@ -121,6 +122,24 @@ namespace ASI.Basecode.WebApp.Controllers
             return RedirectToAction("Index", new { success = "personal" });
 
         }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateUserInfo(PersonProfileViewModel vm)
+        {
+            var uvm = new UserViewModel
+            {
+                Id = vm.Id,
+                UserName = vm.Username,
+                Email = vm.Email,
+           };
+            await _userService.UpdateUser(uvm);
+
+            TempData["Success"] = "User info saved!";
+            return RedirectToAction(nameof(Index));
+        }
+
 
     }
 }
