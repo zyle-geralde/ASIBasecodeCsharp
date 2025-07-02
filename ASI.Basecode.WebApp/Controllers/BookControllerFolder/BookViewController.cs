@@ -24,14 +24,15 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         private readonly IReviewService _reviewService;
         private readonly IBookGenreService _bookGenreService;
         private readonly IAccessControlInterface _accessControlInterface;
+        private readonly IAuthorRepository _authorRepository;
         //private readonly IBookRepository _bookRepository;
-        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface)
+        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface, IAuthorRepository authorRepository)
         {
             _bookService = bookService;
             _reviewService = reviewService;
             _bookGenreService = bookGenreService;
             _accessControlInterface = accessControlInterface;
-            
+            _authorRepository = authorRepository;
         }
 
 
