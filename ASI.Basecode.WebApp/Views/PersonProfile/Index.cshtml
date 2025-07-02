@@ -118,11 +118,18 @@
 
     <!-- Enhanced Reviews Section -->
     <section id="my-reviews" class="profile-reviews-section mt-5">
-        <div class="section-header">
-            <div class="section-icon">
+        <div class="section-header d-flex align-items-center gap-2">
+            <div class="section-icon position-relative">
                 <i class="fas fa-comments"></i>
+                @if (Model.Reviews != null && Model.Reviews.Count > 0)
+                {
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        @Model.Reviews.Count
+                        <span class="visually-hidden">number of reviews</span>
+                    </span>
+                }
             </div>
-            <h2>My Reviews (@Model.Reviews.Count)</h2>
+            <h2 class="mb-0">My Reviews</h2>
         </div>
         <div class="section-content">
             @if (Model.Reviews == null || !Model.Reviews.Any())

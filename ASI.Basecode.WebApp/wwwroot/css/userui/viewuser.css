@@ -173,6 +173,28 @@
         font-size: 20px;
     }
 
+.section-icon {
+    font-size: 2.5rem;
+    margin-right: 0.5rem;
+    position: relative;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #4a5d54;
+    border-radius: 12px;
+}
+
+    .section-icon .fa-comments {
+        color: #fff;
+    }
+
+.section-header .badge {
+    font-size: 0.9rem;
+    padding: 0.4em 0.7em;
+}
+
     .profile-reviews-section .section-header h2 {
         margin: 0;
         font-size: 1.75rem;
