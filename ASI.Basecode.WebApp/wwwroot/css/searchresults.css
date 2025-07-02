@@ -7,13 +7,16 @@
     max-width: 1600px;
     margin: 0 auto;
     margin-top: 100px;
+    box-shadow: none;
 }
 
 .search-results-left {
     flex: 2;
-    max-height: 850px; /* Set a max height to enable scrolling */
-    overflow-y: auto; /* Enable vertical scrolling */
     padding-right: 10px; /* Add padding for the scrollbar */
+    box-shadow: none; /* Remove any box-shadow */
+    background-color: transparent; /* Ensure proper background */
+    position: relative; /* Make sticky-header-wrapper flush with container edges */
+    overflow: visible;
 }
 
 .search-results-right {
@@ -25,7 +28,41 @@
     border-left: 1px solid #e5e5e5;
 }
 
+.sticky-header-wrapper {
+    position: relative;
+    top: 0; 
+    background-color: #F7F4ED;
+    z-index: 10;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    box-shadow: none;
+    background-clip: padding-box;
+    border-left: none;
+    border-right: none;
+    width: 100%;
+    overflow: visible;
+}
+
+/* Force removal of all shadows */
+.sticky-header-wrapper,
+.sticky-header-wrapper::before,
+.sticky-header-wrapper::after,
+.search-results-left,
+.search-results-left::before,
+.search-results-left::after {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
 .search-header {
+    position: relative; 
+    top: auto;
+    background-color: transparent;
+    z-index: auto;
+    padding-top: 15px;
     margin-bottom: 20px;
 }
 
@@ -41,9 +78,14 @@
 }
 
 .search-filters {
-    margin-bottom: 20px;
+    position: relative; 
+    top: auto;
+    background-color: transparent;
+    z-index: auto;
+    margin-bottom: 0; /* Adjusted as the wrapper has margin-bottom */
     display: flex;
     justify-content: space-between;
+    padding-bottom: 0; /* Adjusted as the wrapper has padding-bottom */
 }
 
 .filter-group {
@@ -68,7 +110,7 @@
 /* Search Results Grid */
 .search-results-grid {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(9, 1fr);
     gap: 15px;
     margin-bottom: 20px;
 }
@@ -99,7 +141,7 @@
 }
 
 .book-info h3 {
-    font-size: 0.9rem;
+    font-size: 14px;
     font-weight: 600;
     margin-bottom: 3px;
     line-height: 1.2;

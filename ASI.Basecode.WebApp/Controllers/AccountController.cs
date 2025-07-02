@@ -130,6 +130,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public IActionResult Register()
         {
+            ViewBag.LoginView = true;
             return View();
         }
 
@@ -137,6 +138,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register(UserViewModel model)
         {
+            ViewBag.LoginView = true;
             try
             {
                 var user = await _userService.AddUserFromRegister(model);
@@ -175,6 +177,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public IActionResult RegisterAdmin()
         {
+            ViewBag.LoginView = true;
             return View("~/Views/Account/RegisterAdmin.cshtml");
         }
 
@@ -191,6 +194,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> RegisterAdmin(UserViewModel model)
         {
+            ViewBag.LoginView = true;
             try
             {
                 var user = await _userService.AddAdminFromRegister(model);

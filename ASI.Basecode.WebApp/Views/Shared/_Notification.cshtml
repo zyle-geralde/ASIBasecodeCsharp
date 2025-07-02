@@ -40,6 +40,43 @@
         // Display the toastr after DOM is fully loaded
         $(document).ready(function() {
             toastr.success('@TempData["message"]');
+            // Clear the message after displaying it
+            @TempData.Remove("message");
+        });
+    </script>
+}
+
+@if (TempData["message"] != null)
+{
+    <script>
+        $(document).ready(function() {
+            toastr.success('@TempData["message"]');
+            // Clear the message after displaying it
+            @TempData.Remove("message");
+        });
+    </script>
+}
+
+@if (TempData["error"] != null)
+{
+    var errorMessage = TempData["error"].ToString();
+    TempData.Remove("error");
+    
+    <script>
+        $(document).ready(function() {
+            toastr.error('@Html.Raw(Json.Serialize(errorMessage))');
+        });
+    </script>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    var successMessage = TempData["SuccessMessage"].ToString();
+    TempData.Remove("SuccessMessage");
+    
+    <script>
+        $(document).ready(function() {
+            toastr.success('@Html.Raw(Json.Serialize(successMessage))');
         });
     </script>
 }
