@@ -16,12 +16,14 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IPersonProfileService _personProfileService;
         private readonly IReviewService _reviewService;
         private readonly IAccessControlInterface _accessControlInterface;
+        private readonly IUserService _userService;
 
-        public PersonProfileController(IPersonProfileService profileService, IReviewService reviewService, IAccessControlInterface accessControlInterface)
+        public PersonProfileController(IPersonProfileService profileService, IReviewService reviewService, IAccessControlInterface accessControlInterface, IUserService userService)
         {
             _personProfileService = profileService;
             _reviewService = reviewService;
             _accessControlInterface = accessControlInterface;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -38,6 +40,8 @@ namespace ASI.Basecode.WebApp.Controllers
             if (profile == null)
                 return NotFound("Profile not found.");
             var reviews = await _reviewService.GetReviewByUser(username);
+            var user = await _userService.GetByEmailForEdit(username);
+
 
             var vm = new PersonProfileViewModel
             {
@@ -50,6 +54,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 Gender = profile.Gender,
                 Location = profile.Location,
                 ProfilePicture = profile.ProfilePicture,
+                Username = user.UserName,
+                Email = user.Email,
                 Reviews = reviews
                     .Select(r => new ReviewViewModel
                     {

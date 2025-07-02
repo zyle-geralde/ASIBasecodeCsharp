@@ -18,6 +18,8 @@ namespace ASI.Basecode.Services.ServiceModels
         public string Location { get; set; }
         public string ProfilePicture { get; set; }
         public List<ReviewViewModel> Reviews { get; set; } = new();
+        public string Username { get; set; }
+        public string Email { get; set; }
 
     }
 }

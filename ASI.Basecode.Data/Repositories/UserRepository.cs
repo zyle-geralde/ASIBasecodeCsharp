@@ -1,9 +1,9 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
 using Basecode.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +22,11 @@ namespace ASI.Basecode.Data.Repositories
         {
             return this.GetDbSet<User>();
         }
-
+        public async Task<User> FindByEmailForEdit(string email)
+        {
+            return await this.GetDbSet<User>()
+                                   .SingleOrDefaultAsync(u => u.Email == email);
+        }
         public async Task<PaginatedList<User>> GetUsersQueried(UserQueryParams? queryParams = null)
         {
             queryParams ??= new UserQueryParams();
