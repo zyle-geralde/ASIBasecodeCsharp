@@ -26,13 +26,14 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         private readonly IAccessControlInterface _accessControlInterface;
         private readonly IAuthorRepository _authorRepository;
         //private readonly IBookRepository _bookRepository;
-        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface, IAuthorRepository authorRepository)
+        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface,IAuthorRepository authorRepository)
         {
             _bookService = bookService;
             _reviewService = reviewService;
             _bookGenreService = bookGenreService;
             _accessControlInterface = accessControlInterface;
             _authorRepository = authorRepository;
+            
         }
 
 
@@ -177,7 +178,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         string? category = null
         )
         {
-                const int PageSize = 4;
+                const int PageSize = 18;
                 int pageIndex = page.GetValueOrDefault(1);
 
                 var queryParams = new BookQueryParams
@@ -318,7 +319,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 {
                     await _bookService.AddBook(book);
 
-                    TempData["SuccessMessage"] = "Book added successfully!";
+                    //TempData["message"] = "Book added successfully!";
                     return RedirectToAction("ListBook"); 
                 }
                 catch (Exception ex)
