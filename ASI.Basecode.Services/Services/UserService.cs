@@ -569,20 +569,5 @@ namespace ASI.Basecode.Services.Services
 
 
         }
-
-        public async Task<bool> ChangePassword(int id, string currentPassword, string newPassword)
-        {
-            var user = await _repository.GetUserById(id);
-            if (user == null) return false;
-
-            // returns error if the current password doesnt match
-            var currentHash = PasswordManager.EncryptPassword(currentPassword);
-            if (user.Password != currentHash)
-                return false;
-
-            user.Password = PasswordManager.EncryptPassword(newPassword);
-            await _repository.UpdateUser(user);
-            return true;
-        }
     }
 }
