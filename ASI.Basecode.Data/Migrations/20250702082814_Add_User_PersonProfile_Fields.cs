@@ -8,9 +8,6 @@ namespace ASI.Basecode.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropPrimaryKey(
-               name: "PK_PersonProfiles",
-               table: "PersonProfiles");
             migrationBuilder.AlterColumn<string>(
                 name: "ProfileID",
                 table: "PersonProfiles",
@@ -18,10 +15,7 @@ namespace ASI.Basecode.Data.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)");
-            migrationBuilder.AddPrimaryKey(
-                 name: "PK_PersonProfiles",
-                 table: "PersonProfiles",
-                 column: "ProfileID");
+
             migrationBuilder.AddUniqueConstraint(
                 name: "AK_Users_Email",
                 table: "Users",
@@ -45,9 +39,7 @@ namespace ASI.Basecode.Data.Migrations
             migrationBuilder.DropUniqueConstraint(
                 name: "AK_Users_Email",
                 table: "Users");
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_PersonProfiles",
-                table: "PersonProfiles");
+
             migrationBuilder.AlterColumn<string>(
                 name: "ProfileID",
                 table: "PersonProfiles",
@@ -55,10 +47,6 @@ namespace ASI.Basecode.Data.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "varchar(50)");
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_PersonProfiles",
-                table: "PersonProfiles",
-                column: "ProfileID");
         }
     }
 }
