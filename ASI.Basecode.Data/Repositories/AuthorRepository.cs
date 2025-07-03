@@ -135,12 +135,12 @@ namespace ASI.Basecode.Data.Repositories
                 bool desc = queryParams.SortDescending;
                 switch (queryParams.SortOrder.ToLower())
                 {
-                    case "Name":
+                    case "name":
                         query = desc
                            ? query.OrderByDescending(b => b.AuthorName)
                            : query.OrderBy(b => b.AuthorName);
                         break;
-                    case "CreatedTime":
+                    case "createdtime":
                         query = desc
                         ? query.OrderByDescending(b => b.UploadDate)
                         : query.OrderBy(b => b.UploadDate);
