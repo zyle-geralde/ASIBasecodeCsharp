@@ -146,16 +146,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> ChangePassword(PersonProfileViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                // collect all errors into TempData so you can show them above the modal
-                TempData["PwdErrors"] = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToArray();
-                return RedirectToAction(nameof(Index));
-            }
-
+   
             var ok = await _userService.ChangePassword(
                    model.Id,
                    model.ChangePassword.CurrentPassword,
