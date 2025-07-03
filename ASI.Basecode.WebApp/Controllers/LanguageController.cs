@@ -1,4 +1,5 @@
 ﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
@@ -7,6 +8,7 @@ using ASI.Basecode.WebApp.Payload.BooksPayload;
 using ASI.Basecode.WebApp.Payload.LanguagePayload;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -33,7 +35,48 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpGet]
         [Route("Language/Index")]
         [Authorize]
-        public async Task<IActionResult> LanguageList()
+        public async Task<IActionResult> Index(string? searchTerm, string? sortOrder, bool sortDescending = false, int? page = 1)
+        {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
+            try
+            {
+                const int PageSize = 10;
+                int pageIndex = page.GetValueOrDefault(1);
+
+                var queryParams = new LanguageQueryParams
+                {
+                    SearchTerm = searchTerm,
+                    SortOrder = sortOrder ?? "Name",
+                    SortDescending = sortDescending,
+                    PageIndex = pageIndex,
+                    PageSize = PageSize
+                };
+                ViewData["CurrentSearch"] = searchTerm;
+                ViewData["CurrentSort"] = queryParams.SortOrder;
+                ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+                PaginatedList<Language> languageList = await _languageService.GetLanguageQueried(queryParams);
+
+                return View("~/Views/Language/Index.cshtml", languageList);
+            }
+            catch (ApplicationException ex)
+            {
+
+                return View("~/Views/Language/Index.cshtml", new List<LanguageViewModel>());
+            }
+            catch (Exception ex)
+            {
+                return View("~/Views/Language/Index.cshtml", new List<LanguageViewModel>());
+
+            }
+        }
+
+
+        /*[HttpGet]
+        [Route("Language/Index")]
+        [Authorize]
+        public async Task<IActionResult> Index()
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
@@ -54,7 +97,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 return View("~/Views/Language/Index.cshtml", new List<LanguageViewModel>());
                 
             }
-        }
+        }*/
+
 
         [HttpPost]
         [Route("Language/AddLanguage")]
@@ -72,7 +116,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     TempData["message"] = "Language Added successfully!";
                     TempData["showToastrAfterTableLoads"] = true;
 
-                    return RedirectToAction(nameof(LanguageList)); // Redirect to the LanguageList action
+                    return RedirectToAction(nameof(Index)); // Redirect to the LanguageList action
                     // return Ok(new { Message = "Language Added successfully!" });
                 }
                 catch (ArgumentException ex)
@@ -114,7 +158,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 TempData["message"] = "Language deleted successfully!";
                 TempData["showToastrAfterTableLoads"] = true;
 
-                return RedirectToAction(nameof(LanguageList));
+                return RedirectToAction(nameof(Index));
                // return Ok(new { Message = "Language Deleted successfully!" });
             }
             catch (ApplicationException ex)
@@ -145,7 +189,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     TempData["message"] = "Language updated successfully!";
                     TempData["showToastrAfterTableLoads"] = true;
 
-                    return RedirectToAction(nameof(LanguageList));
+                    return RedirectToAction(nameof(Index));
                    // return Ok(new { Message = "Language Successfully edited" });
 
                 }
