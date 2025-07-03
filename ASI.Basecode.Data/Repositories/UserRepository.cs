@@ -124,5 +124,18 @@ namespace ASI.Basecode.Data.Repositories
             GetDbSet<User>().Update(user);
             await UnitOfWork.SaveChangesAsync();
         }
+
+        public async Task<bool> ChangePassword(int id, string currentPasswordHash, string newPasswordHash)
+        {
+            var user = await GetDbSet<User>().SingleOrDefaultAsync(u => u.Id == id);
+            if (user == null || user.Password != currentPasswordHash)
+                return false;
+
+            user.Password = newPasswordHash;
+            GetDbSet<User>().Update(user);
+
+            await UnitOfWork.SaveChangesAsync();
+            return true;
+        }
     }
 }

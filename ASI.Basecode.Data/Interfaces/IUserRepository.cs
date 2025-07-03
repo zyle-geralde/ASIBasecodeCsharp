@@ -21,6 +21,7 @@ namespace ASI.Basecode.Data.Interfaces
         bool UserNameExists(string userName);
         Task<bool> CheckEmailVerified(string email);
         Task<User> FindByEmailForEdit(string email);
+        Task<bool> ChangePassword(int userId, string currentPasswordHash, string newPasswordHash);
 
 
     }

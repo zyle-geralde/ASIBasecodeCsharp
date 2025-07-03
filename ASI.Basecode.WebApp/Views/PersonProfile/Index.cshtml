@@ -7,6 +7,15 @@
 @if (TempData["Success"] is string msg) {
   <div class="alert alert-success">@msg</div>
 }
+@if (TempData["PwdErrors"] is string[] errs)
+{
+    <div class="alert alert-danger">
+      <ul>
+      @foreach(var e in errs) { <li>@e</li> }
+      </ul>
+    </div>
+     @* alert('@pwdErrs[0]'); *@
+}
 
 @section styles {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -308,6 +317,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-0">
+
                 <form id="userInfoForm" asp-controller="PersonProfile" asp-action="UpdateUserInfo" method="post" asp-route-id="@Model.Id">
                     <input asp-for="UserId" type="hidden" />
                     <div class="mb-3">
@@ -346,29 +356,29 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-0">
-                <form id="updatePassForm">
-                    <div class="mb-3">
-                        <label for="currentPass" class="form-label">Current Password</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="currentPass" placeholder="Text">
-                            <button class="btn btn-outline-secondary password-toggle" type="button" data-target="currentPass">
-                                <i class="fas fa-eye"></i>
-                            </button>
+                <form id="updatePassForm" asp-controller="PersonProfile" asp-action="ChangePassword" method="post">
+                    <input asp-for="Id" type="hidden" />
+
+                
+                      <div class="mb-3">
+                          <label asp-for="ChangePassword.CurrentPassword" class="form-label">Current Password</label>
+                          <input asp-for="ChangePassword.CurrentPassword" class="form-control" />
+                          <span asp-validation-for="ChangePassword.CurrentPassword" class="text-danger"></span>
                         </div>
-                    </div>
                     <div class="mb-3">
                         <label for="newPass" class="form-label">New Password</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="newPass" placeholder="Text">
+                            <input type="password" class="form-control" id="newPass" placeholder="Text" asp-for="ChangePassword.NewPassword">
+                            <span asp-validation-for="ChangePassword.NewPassword" class="text-danger"></span>
                             <button class="btn btn-outline-secondary password-toggle" type="button" data-target="newPass">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="confirmnewPass" class="form-label">Confirm New Password</label>
+                        <label for="confirmnewPass" class="form-label"  asp-for="ChangePassword.ConfirmPassword">Confirm New Password</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="confirmnewPass" placeholder="Text">
+                            <input type="password" class="form-control" id="confirmnewPass" placeholder="Text" asp-for="ChangePassword.ConfirmPassword">
                             <button class="btn btn-outline-secondary password-toggle" type="button" data-target="confirmnewPass">
                                 <i class="fas fa-eye"></i>
                             </button>
