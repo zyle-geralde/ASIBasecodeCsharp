@@ -85,7 +85,7 @@
                     @for (int i = 0; i < Model.NewBooks.Count; i++)
                     {
                         var book = Model.NewBooks[i];
-                        <div class="admin-carousel-card hidden-book-card">
+                        <div class="admin-carousel-card hidden-book-card" onclick="window.location.href='/Book/BookDetails/@book.BookId'" style="cursor: pointer">
                             <img class="admin-carousel-img" src="@book.CoverImage" alt="@book.Title Book Cover">
                             <div class="admin-carousel-content">
                                 <h3 class="admin-carousel-title">@book.Title</h3>
@@ -156,7 +156,7 @@
                     @for (int i = 0; i < Model.TopRatedBooks.Count; i++)
                     {
                         var book = Model.TopRatedBooks[i];
-                        <div class="admin-carousel-card hidden-book-card">
+                        <div class="admin-carousel-card hidden-book-card" onclick="window.location.href='/Book/BookDetails/@book.BookId'" style="cursor: pointer">
                             <img class="admin-carousel-img" src="@book.CoverImage" alt="@book.Title Book Cover">
                             <div class="admin-carousel-content">
                                 <h3 class="admin-carousel-title">@book.Title</h3>
