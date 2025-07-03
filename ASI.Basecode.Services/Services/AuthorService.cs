@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
@@ -59,6 +60,13 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ApplicationException($"Failed to add author", ex);
             }
+        }
+
+        public async Task<PaginatedList<Author>> GetAuthorQueried(AuthorQueryParams queryParams)
+        {
+            return await _authorRepository.GetAuthorQueried(queryParams);
+            //return users.ToList();
+
         }
 
 

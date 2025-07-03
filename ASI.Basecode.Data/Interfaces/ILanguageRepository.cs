@@ -1,4 +1,5 @@
 ﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,5 +25,6 @@ namespace ASI.Basecode.Data.Interfaces
         Task<List<Book>> GetBooksByLanguage();
 
         Task<Language> GetLanguageByName(string languageId);
+        Task<PaginatedList<Language>> GetLanguageQueried(LanguageQueryParams? queryParams = null);
     }
 }

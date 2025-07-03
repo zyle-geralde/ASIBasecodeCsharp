@@ -2,8 +2,8 @@
 @model PaginatedList<BookViewModel>
 @{
     ViewData["Title"] = "Search Results";
-    var categoryTitle = (string?)ViewData["CategoryTitle"] ?? "Search Results";
-
+    var categoryTitle = (string?)ViewData["CategoryTitle"] ?? "";
+    var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
     var currentSearch = (string?)ViewData["CurrentSearch"];
     var currentAuthor = (string?)ViewData["CurrentAuthor"];
     var currentRating = (int?)ViewData["CurrentRating"];
@@ -11,21 +11,54 @@
     var currentToDate = (string?)ViewData["CurrentToDate"];
     var currentGenres = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>();
     var currentSort = (string?)ViewData["CurrentSort"];
-    var currentDesc = (bool)(ViewData["CurrentSortDescending"] ?? false);
+    var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
     var currentCategory = (string?)ViewContext.HttpContext.Request.Query["category"] ?? string.Empty;
 
-    var routeValues = new Dictionary<string, string>
-    {
-        ["searchTerm"] = currentSearch ?? string.Empty,
-        ["author"] = currentAuthor ?? string.Empty,
-        ["rating"] = currentRating?.ToString() ?? string.Empty,
-        ["publishedFrom"] = currentFromDate ?? string.Empty,
-        ["publishedTo"] = currentToDate ?? string.Empty,
-        ["genreFilter"] = string.Join(",", currentGenres),
-        ["sortOrder"] = currentSort ?? string.Empty,
-        ["sortDescending"] = currentDesc.ToString().ToLowerInvariant(),
-        ["category"] = currentCategory
-    };
+    
+    var routeValues = new Dictionary<string,string>();
+    var descriptionParts = new List<string>();
+
+    if (!string.IsNullOrWhiteSpace(currentCategory)) {
+        routeValues["category"] = currentCategory;
+        // descriptionParts.Add($"Category: {currentCategory}");
+    }
+    if (!string.IsNullOrWhiteSpace(currentSearch)) {
+        routeValues["searchTerm"] = currentSearch;
+        descriptionParts.Add($"Search: \"{currentSearch}\"");
+    }
+    if (!string.IsNullOrWhiteSpace(currentAuthor)) {
+        routeValues["author"] = currentAuthor;
+        descriptionParts.Add($"Author: {currentAuthor}");
+    }
+    if (currentRating.HasValue) {
+        routeValues["rating"] = currentRating.Value.ToString();
+        descriptionParts.Add($"Rating: {currentRating.Value}★ & up");
+    }
+    if (!string.IsNullOrWhiteSpace(currentFromDate)) {
+        routeValues["publishedFrom"] = currentFromDate;
+        descriptionParts.Add($"Published from: {DateTime.Parse(currentFromDate).ToString("yyyy-MM-dd")} ");
+    }
+    if (!string.IsNullOrWhiteSpace(currentToDate)) {
+        routeValues["publishedTo"] = currentToDate;
+        descriptionParts.Add($"Published to: {DateTime.Parse(currentToDate).ToString("yyyy-MM-dd")} ");
+    }
+    if (currentGenres.Any()) {
+        routeValues["genreFilter"] = string.Join(",", currentGenres);
+        var selectedNames = allGenres
+            .Where(g => currentGenres.Contains(g.BookGenreId))
+            .Select(g => g.GenreName);
+        descriptionParts.Add($"Genre: {string.Join(", ", selectedNames)}");
+    }
+    if (!string.IsNullOrEmpty(currentSort) && currentSort != "title") {
+        routeValues["sortOrder"] = currentSort;
+    }
+    if (currentSortDescending) {
+        routeValues["sortDescending"] = "true";
+    }
+
+        var descriptionText = descriptionParts.Any()
+        ? string.Join(" | ", descriptionParts)
+        : "Manage books";
 }
 
 @section styles {
@@ -41,7 +74,118 @@
                 <h2>Results for: @categoryTitle</h2>
                 <p>Displaying @Model.PageIndex of @Model.TotalPages out of @Model.TotalCount results</p>
             </div>
+            
 
+       
+    <form asp-controller="Book" asp-action="SearchResults"  method="get" class="mb-3">
+
+<div class="row g-3 align-items-end">
+    <div class="col-md-4">
+      <label class="form-label">Search</label>
+      <input type="text"
+             name="searchTerm"
+             value="@ViewData["CurrentSearch"]"
+             placeholder="Title, subtitle, author…"
+             class="form-control" />
+    </div>
+
+      <div class="col-md-3">
+      <label class="form-label">Sort by</label>
+      <select name="sortOrder" class="form-select">
+        <option value="title"             selected="@(currentSort == "title")">Title</option>
+        <option value="publicationdate"   selected="@(currentSort == "publicationdate")">Publication Date</option>
+        <option value="rating"            selected="@(currentSort == "rating")">Rating</option>
+      </select>
+    </div>
+
+     <div class="col-md-2">
+      <label class="form-label">Direction</label>
+      <select name="sortDescending" class="form-select">
+        <option value="false" selected="@(!currentSortDescending)">Ascending</option>
+        <option value="true"  selected="@( currentSortDescending)">Descending</option>
+      </select>
+    </div>
+
+
+
+    <div class="col-md-3">
+      <label class="form-label">Author</label>
+      <input type="text"
+             name="author"
+             value="@currentAuthor"
+             class="form-control" />
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label">Rating</label>
+       <select name="rating" class="form-select">
+      <option value="">Any</option>
+          @for (int i = 1; i <= 5; i++)
+          {
+            if (currentRating == i)
+            {
+              <option value="@i" selected>
+                @i ★ & up
+              </option>
+            }
+            else
+            {
+              <option value="@i">
+                @i ★ & up
+              </option>
+            }
+          }
+    </select>
+
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Date Published</label>
+      <div class="d-flex">
+        <input type="date"
+               name="publishedFrom"
+               value="@currentFromDate"
+               class="form-control me-1" />
+        <input type="date"
+               name="publishedTo"
+               value="@currentToDate"
+               class="form-control" />
+      </div>
+    </div>
+  </div>
+
+  <fieldset class="mt-3">
+    <legend class="form-label">Genres</legend>
+    <div class="row">
+      @foreach (var genre in allGenres)
+      {
+        <div class="col-sm-3">
+          <div class="form-check">
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="genreFilter"
+                   value="@genre.BookGenreId"
+                   id="g_@genre.BookGenreId"
+                   @(currentGenres.Contains(genre.BookGenreId) ? "checked" : "") />
+            <label class="form-check-label" for="g_@genre">
+              @genre.GenreName
+            </label>
+          </div>
+        </div>
+      }
+    </div>
+  </fieldset>
+
+  <div class="d-flex justify-content-end mt-3">
+    <a asp-action="SearchResults" class="btn btn-outline-secondary me-2">
+      Clear All
+    </a>
+    <button type="submit" class="btn btn-primary">
+      Apply Filters
+    </button>
+  </div>
+
+</form>
             <div class="search-filters">
                 <div class="filter-group">
                     <button class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
