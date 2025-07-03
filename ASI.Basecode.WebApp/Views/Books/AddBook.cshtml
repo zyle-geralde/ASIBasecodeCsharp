@@ -24,6 +24,7 @@
 @section styles {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <link rel="stylesheet" href="~/css/admin/books/bookmaster.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
 }
@@ -190,11 +191,11 @@
             <div class="book-master-form-group book-master-form-grid-span-2">
                 <label for="coverImageFile" class="required-label">Select Cover Image</label>
                 <div class="book-master-file-upload-wrapper">
-                    <input type="text" class="book-master-file-input-text" readonly id="coverImageFileNameDisplay" value="@Model?.CoverImageUrl">
+                    <input type="text" class="book-master-file-input-text" readonly id="coverFileNameDisplay" value="@Model?.CoverImageUrl">
                     <input type="file" id="coverImageFile" accept="image/*" name="CoverImageFile" style="display: none;">
                     <button type="button" class="book-master-browse-button" onclick="document.getElementById('coverImageFile').click();">BROWSE</button>
                 </div>
-                <p id="coverImageUploadStatus" class="book-master-upload-status">
+                <p id="coverUploadStatus" class="book-master-upload-status">
                     <span class="file-size-info">Max file size: 1GB</span>
                     <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                 </p>
@@ -203,40 +204,40 @@
 
             <div class="book-master-form-grid">
                 <div class="book-master-form-group">
-                    <label for="bookTitle" class="required-label">Title</label>
-                    <input type="text" id="bookTitle" name="Title" class="book-master-form-input" value="@Model?.Title" required>
+                    <label for="title" class="required-label">Title</label>
+                    <input type="text" id="title" name="Title" class="book-master-form-input" value="@Model?.Title" required>
                     <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
-                    <label for="bookSubtitle">Subtitle</label>
-                    <input type="text" id="bookSubtitle" name="Subtitle" class="book-master-form-input" value="@Model?.Subtitle">
+                    <label for="subtitle">Subtitle</label>
+                    <input type="text" id="subtitle" name="Subtitle" class="book-master-form-input" value="@Model?.Subtitle">
                     <span asp-validation-for="Subtitle" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
-                    <label for="bookPublicationDate" class="required-label">Publication Date</label>
+                    <label for="publicationDate" class="required-label">Publication Date</label>
                     <div class="book-master-date-input-wrapper">
-                        <input type="date" id="bookPublicationDate" name="PublicationDate" class="book-master-form-input" value="@(Model?.PublicationDate?.ToString("yyyy-MM-dd"))" />
+                        <input type="date" id="publicationDate" name="PublicationDate" class="book-master-form-input" value="@(Model?.PublicationDate?.ToString("yyyy-MM-dd"))" />
                     </div>
                     <span asp-validation-for="PublicationDate" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
-                    <label for="bookPublisher">Publisher</label>
-                    <input type="text" id="bookPublisher" name="Publisher" class="book-master-form-input" value="@Model?.Publisher">
+                    <label for="publisher">Publisher</label>
+                    <input type="text" id="publisher" name="Publisher" class="book-master-form-input" value="@Model?.Publisher">
                     <span asp-validation-for="Publisher" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
-                    <label for="bookPublicationLocation">Publication Location</label>
-                    <input type="text" id="bookPublicationLocation" name="PublicationLocation" class="book-master-form-input" value="@Model?.PublicationLocation">
+                    <label for="publicationLocation">Publication Location</label>
+                    <input type="text" id="publicationLocation" name="PublicationLocation" class="book-master-form-input" value="@Model?.PublicationLocation">
                     <span asp-validation-for="PublicationLocation" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
-                    <label for="bookDescription">Description</label>
-                    <textarea id="bookDescription" name="Description" class="book-master-form-textarea">@Model?.Description</textarea>
+                    <label for="description">Description</label>
+                    <textarea id="description" name="Description" class="book-master-form-textarea">@Model?.Description</textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
-                    <label for="bookNumberOfPages">Number of Pages</label>
-                    <input type="number" id="bookNumberOfPages" name="NumberOfPages" class="book-master-form-input" value="@Model?.NumberOfPages">
+                    <label for="numberOfPages">Number of Pages</label>
+                    <input type="number" id="numberOfPages" name="NumberOfPages" class="book-master-form-input" value="@Model?.NumberOfPages">
                     <span asp-validation-for="NumberOfPages" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
@@ -245,18 +246,18 @@
                     <span asp-validation-for="Language" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
-                    <label for="bookSeriesName">Series Name</label>
-                    <input type="text" id="bookSeriesName" name="SeriesName" class="book-master-form-input" value="@Model?.SeriesName">
+                    <label for="seriesName">Series Name</label>
+                    <input type="text" id="seriesName" name="SeriesName" class="book-master-form-input" value="@Model?.SeriesName">
                     <span asp-validation-for="SeriesName" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
-                    <label for="bookSeriesOrder">Series Order</label>
-                    <input type="number" id="bookSeriesOrder" name="SeriesOrder" class="book-master-form-input" value="@Model?.SeriesOrder">
+                    <label for="seriesOrder">Series Order</label>
+                    <input type="number" id="seriesOrder" name="SeriesOrder" class="book-master-form-input" value="@Model?.SeriesOrder">
                     <span asp-validation-for="SeriesOrder" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
-                    <label for="bookSeriesDescription">Series Description</label>
-                    <textarea id="bookSeriesDescription" name="SeriesDescription" class="book-master-form-textarea">@Model?.SeriesDescription</textarea>
+                    <label for="seriesDescription">Series Description</label>
+                    <textarea id="seriesDescription" name="SeriesDescription" class="book-master-form-textarea">@Model?.SeriesDescription</textarea>
                     <span asp-validation-for="SeriesDescription" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
@@ -265,8 +266,8 @@
                     <span asp-validation-for="Author" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
-                    <label for="bookIsFeatured">Featured Book</label>
-                    <input type="checkbox" id="bookIsFeatured" name="IsFeatured" value="true">
+                    <label for="isFeatured">Featured Book</label>
+                    <input type="checkbox" id="isFeatured" name="IsFeatured" value="true">
                     <span asp-validation-for="IsFeatured" class="text-danger"></span>
                 </div>
             </div>
@@ -274,31 +275,31 @@
             <h3 class="book-master-form-section-title">Categorization</h3>
             <div class="book-master-form-grid">
                 <div class="book-master-form-group">
-                    <label for="bookGenre" class="required-label">Genre</label>
-                    <div class="custom-multi-select" id="bookGenreContainer">
+                    <label for="genre" class="required-label">Genre</label>
+                    <div class="custom-multi-select" id="genreContainer">
                         <div class="custom-select-btn">
                             <span>Select Genre</span>
                             <i class="fas fa-chevron-down"></i>
                         </div>
-                        <div class="custom-dropdown" id="bookGenreDropdown"></div>
+                        <div class="custom-dropdown" id="genreDropdown"></div>
                     </div>
-                    <div id="bookSelectedGenres" class="selected-tags"></div>
-                    <input type="hidden" id="bookConcatenatedGenre" name="GenreList" value="@Model?.GenreList" />
+                    <div id="selectedGenres" class="selected-tags"></div>
+                    <input type="hidden" id="concatenatedGenre" name="GenreList" value="@Model?.GenreList" />
                     <span asp-validation-for="GenreList" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
-                    <label for="bookISBN10">ISBN10</label>
-                    <input type="text" id="bookISBN10" name="ISBN10" class="book-master-form-input" value="@Model?.ISBN10">
+                    <label for="isbn10">ISBN10</label>
+                    <input type="text" id="isbn10" name="ISBN10" class="book-master-form-input" value="@Model?.ISBN10">
                     <span asp-validation-for="ISBN10" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
-                    <label for="bookISBN13">ISBN13</label>
-                    <input type="text" id="bookISBN13" name="ISBN13" class="book-master-form-input" value="@Model?.ISBN13">
+                    <label for="isbn13">ISBN13</label>
+                    <input type="text" id="isbn13" name="ISBN13" class="book-master-form-input" value="@Model?.ISBN13">
                     <span asp-validation-for="ISBN13" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
-                    <label for="bookEdition">Edition</label>
-                    <input type="text" id="bookEdition" name="Edition" class="book-master-form-input" value="@Model?.Edition">
+                    <label for="edition">Edition</label>
+                    <input type="text" id="edition" name="Edition" class="book-master-form-input" value="@Model?.Edition">
                     <span asp-validation-for="Edition" class="text-danger"></span>
                 </div>
             </div>
@@ -675,10 +676,10 @@
         }
 
         initializeMultiSelect({
-            containerId: 'bookGenreContainer',
-            dropdownId: 'bookGenreDropdown',
-            hiddenInputId: 'bookConcatenatedGenre',
-            selectedContainerId: 'bookSelectedGenres',
+            containerId: 'genreContainer',
+            dropdownId: 'genreDropdown',
+            hiddenInputId: 'concatenatedGenre',
+            selectedContainerId: 'selectedGenres',
             fetchUrl: '/Book/GetGenre',
             placeholderText: 'Select Genre',
             fallbackItems: [
