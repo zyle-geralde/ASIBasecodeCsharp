@@ -41,7 +41,21 @@
                 <h2>Results for: @categoryTitle</h2>
                 <p>Displaying @Model.PageIndex of @Model.TotalPages out of @Model.TotalCount results</p>
             </div>
-
+            
+       <form asp-controller="Book" asp-action="SearchResults" method="get" class="mb-4">
+          <div class="input-group">
+            <input
+              type="search"
+              name="searchTerm"
+              value="@(ViewData["CurrentSearch"] ?? "")"
+              placeholder="Title, subtitle, author…"
+              class="form-control"
+              aria-label="Search books" />
+            <button class="btn btn-primary" type="submit">
+              Search
+            </button>
+          </div>
+        </form>
             <div class="search-filters">
                 <div class="filter-group">
                     <button class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
