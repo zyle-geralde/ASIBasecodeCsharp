@@ -1,4 +1,5 @@
 ﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Services.ServiceModels;
 using System;
 using System.Collections.Generic;
@@ -21,5 +22,7 @@ namespace ASI.Basecode.Services.Interfaces
         Task<List<BookViewModel>>GetBooksByGenre(string genre_name);
 
         Task<BookGenreViewModel> GetBookGenreByName(string genre_name);
+
+        Task<PaginatedList<BookGenre>> GetGenreQueried(GenreQueryParams queryParams);
     }
 }

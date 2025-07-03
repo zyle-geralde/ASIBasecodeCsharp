@@ -13,6 +13,7 @@ using ASI.Basecode.WebApp.Payload.BooksPayload;
 using ASI.Basecode.WebApp.Payload.AuthorPayload;
 using ASI.Basecode.WebApp.AccessControl;
 using Microsoft.Extensions.DependencyInjection;
+using ASI.Basecode.Data.QueryParams;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -30,6 +31,47 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
+        [Route("Author/Index")]
+        [Authorize]
+        public async Task<IActionResult> Index(string? searchTerm, string? sortOrder, bool sortDescending = false, int? page = 1)
+        {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+
+            try
+            {
+                const int PageSize = 10;
+                int pageIndex = page.GetValueOrDefault(1);
+
+                var queryParams = new AuthorQueryParams
+                {
+                    SearchTerm = searchTerm,
+                    SortOrder = sortOrder ?? "Name",
+                    SortDescending = sortDescending,
+                    PageIndex = pageIndex,
+                    PageSize = PageSize
+                };
+                ViewData["CurrentSearch"] = searchTerm;
+                ViewData["CurrentSort"] = queryParams.SortOrder;
+                ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+                PaginatedList<Author> authorList = await _authorService.GetAuthorQueried(queryParams);
+
+
+                return View("~/Views/Author/Index.cshtml", authorList);
+            }
+            catch (ApplicationException ex)
+            {
+
+                return View("~/Views/Author/Index.cshtml", new List<LanguageViewModel>());
+            }
+            catch (Exception ex)
+            {
+                return View("~/Views/Author/Index.cshtml", new List<LanguageViewModel>());
+
+            }
+        }
+
+        /*[HttpGet]
         [Route("Author/Index")]
         [Authorize]
         public async Task<IActionResult> GenreList()
@@ -53,7 +95,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 return View("~/Views/Author/Index.cshtml", new List<LanguageViewModel>());
 
             }
-        }
+        }*/
 
 
         [HttpGet]
