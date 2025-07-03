@@ -1,4 +1,6 @@
-﻿using ASI.Basecode.Data.Models;
+﻿using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
@@ -7,8 +9,10 @@ using ASI.Basecode.WebApp.Payload.BookGenrePayload;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -75,7 +79,45 @@ namespace ASI.Basecode.WebApp.Controllers
 
 
         }
+
         [HttpGet]
+        [Route("BookGenre/ListGenre")]
+        [Authorize]
+        public async Task<IActionResult> ListGenre(string? searchTerm, string? sortOrder, bool sortDescending = false, int? page = 1)
+        {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
+            try
+            {
+                const int PageSize = 10;
+                int pageIndex = page.GetValueOrDefault(1);
+
+                var queryParams = new GenreQueryParams
+                {
+                    SearchTerm = searchTerm,
+                    SortOrder = sortOrder ?? "Name",
+                    SortDescending = sortDescending,
+                    PageIndex = pageIndex,
+                    PageSize = PageSize
+                };
+                ViewData["CurrentSearch"] = searchTerm;
+                ViewData["CurrentSort"] = queryParams.SortOrder;
+                ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+                PaginatedList<BookGenre> bookGenreList = await BookGenreService.GetGenreQueried(queryParams);
+
+                return View("~/Views/BookGenres/BookGenreList.cshtml", bookGenreList);
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = ex.Message });
+            }
+        }
+
+        /*[HttpGet]
         [Route("BookGenre/ListGenre")]
         [Authorize]
         public async Task<IActionResult> GetAllBookGenres()
@@ -96,7 +138,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 return StatusCode(500, new { Message = ex.Message });
             }
-        }
+        }*/
 
         [HttpGet]
         [Route("BookGenre/EditGenre/{genre_id}")]
