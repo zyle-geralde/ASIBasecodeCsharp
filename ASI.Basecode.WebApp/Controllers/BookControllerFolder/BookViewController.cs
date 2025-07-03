@@ -178,7 +178,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         string? category = null
         )
         {
-                const int PageSize = 4;
+                const int PageSize = 18;
                 int pageIndex = page.GetValueOrDefault(1);
 
                 var queryParams = new BookQueryParams
@@ -320,7 +320,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 {
                     await _bookService.AddBook(book);
 
-                    TempData["SuccessMessage"] = "Book added successfully!";
+                    //TempData["message"] = "Book added successfully!";
                     return RedirectToAction("ListBook"); 
                 }
                 catch (Exception ex)

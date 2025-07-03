@@ -16,12 +16,14 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IPersonProfileService _personProfileService;
         private readonly IReviewService _reviewService;
         private readonly IAccessControlInterface _accessControlInterface;
+        private readonly IUserService _userService;
 
-        public PersonProfileController(IPersonProfileService profileService, IReviewService reviewService, IAccessControlInterface accessControlInterface)
+        public PersonProfileController(IPersonProfileService profileService, IReviewService reviewService, IAccessControlInterface accessControlInterface, IUserService userService)
         {
             _personProfileService = profileService;
             _reviewService = reviewService;
             _accessControlInterface = accessControlInterface;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -38,9 +40,12 @@ namespace ASI.Basecode.WebApp.Controllers
             if (profile == null)
                 return NotFound("Profile not found.");
             var reviews = await _reviewService.GetReviewByUser(username);
+            var user = await _userService.GetByEmailForEdit(username);
+
 
             var vm = new PersonProfileViewModel
             {
+                Id = user.Id,
                 UserId = profile.ProfileID,
                 FirstName = profile.FirstName,
                 MiddleName = profile.MiddleName,
@@ -50,6 +55,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 Gender = profile.Gender,
                 Location = profile.Location,
                 ProfilePicture = profile.ProfilePicture,
+                Username = user.UserName,
+                Email = user.Email,
                 Reviews = reviews
                     .Select(r => new ReviewViewModel
                     {
@@ -115,6 +122,24 @@ namespace ASI.Basecode.WebApp.Controllers
             return RedirectToAction("Index", new { success = "personal" });
 
         }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateUserInfo(PersonProfileViewModel vm)
+        {
+            var uvm = new UserViewModel
+            {
+                Id = vm.Id,
+                UserName = vm.Username,
+                Email = vm.Email,
+           };
+            await _userService.UpdateUser(uvm);
+
+            TempData["Success"] = "User info saved!";
+            return RedirectToAction(nameof(Index));
+        }
+
 
     }
 }

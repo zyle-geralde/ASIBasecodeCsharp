@@ -21,6 +21,8 @@ namespace ASI.Basecode.Data.Interfaces
         bool UserNameExists(string userName);
         Task<bool> CheckEmailVerified(string email);
         Task UpdatePassword(User user);
+        Task<User> FindByEmailForEdit(string email);
+
 
     }
 }
