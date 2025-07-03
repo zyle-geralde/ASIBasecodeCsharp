@@ -42,7 +42,7 @@ namespace ASI.Basecode.Data.Repositories
             if (!string.IsNullOrEmpty(queryParams.SearchTerm))
             {
                 var term = queryParams.SearchTerm.Trim();
-                var authorTerm = queryParams.SearchAuhtor.Trim();
+                var authorTerm = queryParams.SearchAuhtor?.Trim() ?? "";
                 query = query.Where(b =>
                 (b.Title != null && b.Title.Contains(term) || (b.Subtitle != null && b.Subtitle.Contains(term)) || (b.Author != null && authorTerm.Trim().Contains(b.Author))));
 

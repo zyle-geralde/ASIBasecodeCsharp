@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Services.ServiceModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,11 +26,12 @@ namespace ASI.Basecode.Services.Interfaces
         Task<OtpViewModel> GetUserbyEmail(string email);
         Task<OtpViewModel> RegenerateOtpAsync(string email);
         Task<UserViewModel?> GetByEmailForEdit(string email);
-
+        Task<bool> ChangePassword(int userId, string currentPassword, string newPassword);
 
         Task<string> SendOTPForResetPassword(string email);
 
         Task UpdatePassword(UserViewModel user);
+        
 
     }
 }

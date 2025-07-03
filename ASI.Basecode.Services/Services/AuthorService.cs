@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
@@ -59,6 +60,13 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ApplicationException($"Failed to add author", ex);
             }
+        }
+
+        public async Task<PaginatedList<Author>> GetAuthorQueried(AuthorQueryParams queryParams)
+        {
+            return await _authorRepository.GetAuthorQueried(queryParams);
+            //return users.ToList();
+
         }
 
 
@@ -138,16 +146,30 @@ namespace ASI.Basecode.Services.Services
             try
             {
                 Author retreived_author = await _authorRepository.GetAuthorById(author_id);
+                if (retreived_author == null) {
+                    AuthorViewModel mapped_author = new AuthorViewModel
+                    {
+                        AuthorId = "",
+                        AuthorName = "",
+                        AuthorDescription = "",
+                        AuthorImageUrl = "",
+                    };
+                    return mapped_author;
 
-                AuthorViewModel mapped_author = new AuthorViewModel
+                }
+                else
                 {
-                    AuthorId = retreived_author.AuthorId,
-                    AuthorName = retreived_author.AuthorName,
-                    AuthorDescription = retreived_author.AuthorDescription,
-                    AuthorImageUrl = retreived_author.AuthorImageUrl,
-                };
+                    AuthorViewModel mapped_author = new AuthorViewModel
+                    {
+                        AuthorId = retreived_author.AuthorId,
+                        AuthorName = retreived_author.AuthorName,
+                        AuthorDescription = retreived_author.AuthorDescription,
+                        AuthorImageUrl = retreived_author.AuthorImageUrl,
+                    };
 
-                return mapped_author;
+                    return mapped_author;
+                }
+
             }
             catch (Exception ex)
             {

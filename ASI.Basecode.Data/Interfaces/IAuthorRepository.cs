@@ -1,4 +1,5 @@
 ﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace ASI.Basecode.Data.Interfaces
         Task<List<Book>> GetBooksByAuthor();
 
         Task<string> GetAuthorByName(string author_name);
+        Task<PaginatedList<Author>> GetAuthorQueried(AuthorQueryParams? queryParams = null);
 
 
     }

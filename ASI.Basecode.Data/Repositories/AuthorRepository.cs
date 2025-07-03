@@ -1,5 +1,7 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
+using Basecode.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace ASI.Basecode.Data.Repositories
 {
-    public class AuthorRepository : IAuthorRepository
+    public class AuthorRepository : BaseRepository, IAuthorRepository
     {
         private readonly AsiBasecodeDBContext _dbContext;
 
-        public AuthorRepository(AsiBasecodeDBContext dbContext)
+        public AuthorRepository(AsiBasecodeDBContext dbContext,IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             _dbContext = dbContext;
         }
@@ -111,6 +113,48 @@ namespace ASI.Basecode.Data.Repositories
             {
                 throw;
             }
+        }
+
+        public async Task<PaginatedList<Author>> GetAuthorQueried(AuthorQueryParams? queryParams = null)
+        {
+
+            queryParams ??= new AuthorQueryParams();
+
+            IQueryable<Author> query = this.GetDbSet<Author>().AsNoTracking();
+
+            // Apply search filter if provided
+            if (!string.IsNullOrEmpty(queryParams.SearchTerm))
+            {
+                var term = queryParams.SearchTerm.Trim();
+                query = query.Where(b =>
+                    (b.AuthorName != null && b.AuthorName.Contains(term)));
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.SortOrder))
+            {
+                bool desc = queryParams.SortDescending;
+                switch (queryParams.SortOrder.ToLower())
+                {
+                    case "name":
+                        query = desc
+                           ? query.OrderByDescending(b => b.AuthorName)
+                           : query.OrderBy(b => b.AuthorName);
+                        break;
+                    case "createdtime":
+                        query = desc
+                        ? query.OrderByDescending(b => b.UploadDate)
+                        : query.OrderBy(b => b.UploadDate);
+                        break;
+                    default:
+                        query = desc
+                        ? query.OrderByDescending(b => b.AuthorName)
+                        : query.OrderBy(u => u.AuthorName);
+                        break;
+                }
+            }
+
+            return await GetPaged(query, queryParams.PageIndex, queryParams.PageSize);
+
         }
     }
 

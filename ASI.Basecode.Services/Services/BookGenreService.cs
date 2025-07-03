@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
@@ -67,6 +68,14 @@ namespace ASI.Basecode.Services.Services
             catch (Exception ex) {
                 throw new ApplicationException($"Failed to add book genre", ex);
             }
+        }
+
+
+        public async Task<PaginatedList<BookGenre>> GetGenreQueried(GenreQueryParams queryParams)
+        {
+            return await BookGenreRepository.GetGenreQueried(queryParams);
+            //return users.ToList();
+
         }
 
         public async Task<List<BookGenreViewModel>> GetAllGenreList()

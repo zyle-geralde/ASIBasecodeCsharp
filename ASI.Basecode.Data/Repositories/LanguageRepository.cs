@@ -7,14 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using ASI.Basecode.Data.QueryParams;
+using Basecode.Data.Repositories;
 
 namespace ASI.Basecode.Data.Repositories
 {
-    public class LanguageRepository:ILanguageRepository
+    public class LanguageRepository: BaseRepository,ILanguageRepository
     {
         private readonly AsiBasecodeDBContext _dbContext;
 
-        public LanguageRepository(AsiBasecodeDBContext dbContext)
+        public LanguageRepository(AsiBasecodeDBContext dbContext,IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             _dbContext = dbContext;
         }
@@ -84,6 +86,48 @@ namespace ASI.Basecode.Data.Repositories
             {
                 throw;
             }
+
+        }
+
+        public async Task<PaginatedList<Language>> GetLanguageQueried(LanguageQueryParams? queryParams = null)
+        {
+
+            queryParams ??= new LanguageQueryParams();
+
+            IQueryable<Language> query = this.GetDbSet<Language>().AsNoTracking();
+
+            // Apply search filter if provided
+            if (!string.IsNullOrEmpty(queryParams.SearchTerm))
+            {
+                var term = queryParams.SearchTerm.Trim();
+                query = query.Where(b =>
+                    (b.LanguageName != null && b.LanguageName.Contains(term)));
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.SortOrder))
+            {
+                bool desc = queryParams.SortDescending;
+                switch (queryParams.SortOrder.ToLower())
+                {
+                    case "name":
+                        query = desc
+                           ? query.OrderByDescending(b => b.LanguageName)
+                           : query.OrderBy(b => b.LanguageName);
+                        break;
+                    case "createdtime":
+                        query = desc
+                        ? query.OrderByDescending(b => b.UploadDate)
+                        : query.OrderBy(b => b.UploadDate);
+                        break;
+                    default:
+                        query = desc
+                        ? query.OrderByDescending(b => b.LanguageName)
+                        : query.OrderBy(u => u.LanguageName);
+                        break;
+                }
+            }
+
+            return await GetPaged(query, queryParams.PageIndex, queryParams.PageSize);
 
         }
 

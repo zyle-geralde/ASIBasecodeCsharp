@@ -5,6 +5,7 @@ using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.AccessControl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -140,6 +141,92 @@ namespace ASI.Basecode.WebApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(PersonProfileViewModel model)
+        {
+   
+            var ok = await _userService.ChangePassword(
+                   model.Id,
+                   model.ChangePassword.CurrentPassword,
+                   model.ChangePassword.NewPassword
+               );
+
+            if (!ok)
+            {
+                
+                TempData["PwdErrors"] = new[] { "Current password is incorrect." };
+            }
+            else
+            {
+                TempData["Success"] = "password";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> ViewUserProfile(int? id)
+        {
+            string username = null;
+
+            if (id.HasValue)
+            {
+                var user = await _userService.GetUserById(id.Value);
+                if (user == null)
+                    return NotFound("User not found.");
+                username = user.Email;
+            }
+            else
+            {
+                username = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+
+            if (string.IsNullOrEmpty(username))
+            {
+                return Challenge();
+            }
+
+            var profile = await _personProfileService.GetPersonProfile(username);
+            if (profile == null)
+                return NotFound("Profile not found.");
+            var reviews = await _reviewService.GetReviewByUser(username);
+            var userVm = await _userService.GetByEmailForEdit(username);
+
+            var vm = new PersonProfileViewModel
+            {
+                Id = userVm.Id,
+                UserId = profile.ProfileID,
+                FirstName = profile.FirstName,
+                MiddleName = profile.MiddleName,
+                LastName = profile.LastName,
+                AboutMe = profile.AboutMe,
+                Birthdate = profile.BirthDate,
+                Gender = profile.Gender,
+                Location = profile.Location,
+                ProfilePicture = profile.ProfilePicture,
+                Username = userVm.UserName,
+                Email = userVm.Email,
+                Reviews = reviews
+                    .Select(r => new ReviewViewModel
+                    {
+                        ReviewId = r.ReviewId,
+                        BookId = r.BookId,
+                        UserId = r.UserId,
+                        Rating = r.Rating,
+                        Comment = r.Comment,
+                        Likes = r.Likes,
+                        UploadDate = r.UploadDate,
+                        UpdatedDate = r.UpdatedDate
+                    })
+                    .ToList()
+            };
+
+            return View(vm);
+        }
 
     }
 }

@@ -25,15 +25,16 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         private readonly IBookGenreService _bookGenreService;
         private readonly IAccessControlInterface _accessControlInterface;
         private readonly IAuthorRepository _authorRepository;
+        private readonly IAuthorService _authorService;
         //private readonly IBookRepository _bookRepository;
-        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface,IAuthorRepository authorRepository)
+        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface,IAuthorRepository authorRepository, IAuthorService authorService)
         {
             _bookService = bookService;
             _reviewService = reviewService;
             _bookGenreService = bookGenreService;
             _accessControlInterface = accessControlInterface;
             _authorRepository = authorRepository;
-            
+            _authorService = authorService;
         }
 
 
@@ -183,6 +184,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
                 var queryParams = new BookQueryParams
                 {
+                    SearchAuhtor = searchTerm ?? "",
                     SearchTerm = searchTerm,
                     Author = author,
                     Rating = rating,
@@ -261,6 +263,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             bool hasReviewed = reviews.Any(r => r.UserId == userId);
             Author authorName = await _authorRepository.GetAuthorById(book != null ? book.Author : "");
+            AuthorViewModel authorObject = await _authorService.GetAuthorById(book != null ? book.Author : "");
             var bookDetails = new BookViewModel
             {
                 BookId = book.BookId,
@@ -301,6 +304,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                             })
                             .ToList()
             };
+
+            ViewBag.AuthorDetails = authorObject;
 
 
             return View("~/Views/Books/BookDetails.cshtml", bookDetails);
