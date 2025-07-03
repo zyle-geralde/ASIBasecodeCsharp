@@ -32,36 +32,75 @@
     margin-bottom: 0;
 }
 
+/* Enhanced form Inputs and dropdown style */
 .book-master-form-input,
 .book-master-form-textarea,
 .book-master-form-select 
 {
-    display: block;
     width: 100%;
-    padding: 8px 12px;
-    margin-top: 4px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    font-size: 16px;
-    line-height: 1.5;
-    color: #757575;
-    appearance: none;
-    box-sizing: border-box;
+    padding: 12px 16px;
+    margin-top: 8px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #374151;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    font-weight: 500;
 }
+
+    .book-master-form-input:hover,
+    .book-master-form-textarea:hover,
+    .book-master-form-select:hover 
+    {
+        border-color: #a0b4b7;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+    }
 
     .book-master-form-input:focus,
     .book-master-form-textarea:focus,
     .book-master-form-select:focus 
     {
+        border-color: #647D7F;
+        box-shadow: 0 0 0 3px rgba(100, 125, 127, 0.15), 0 2px 8px 0 rgba(0, 0, 0, 0.12);
         outline: none;
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5);
+        transform: translateY(-1px);
     }
+
+.book-master-form-select 
+{
+    appearance: none;
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23647D7F' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-position: right 16px center;
+    background-repeat: no-repeat;
+    padding: 12px 48px 12px 16px;
+    cursor: pointer;
+}
+
+    .book-master-form-select:hover 
+    {
+        background-color: #f8fafa;
+        border-color: #a0b4b7;
+    }
+
+    .book-master-form-select:focus 
+    {
+        background-color: #ffffff;
+        border-color: #647D7F;
+    }
+
+.book-master-form-group 
+{
+    position: relative;
+}
+
 
 .book-master-form-textarea 
 {
-    min-height: 100px;
+    min-height: 120px;
     resize: vertical;
 }
 
@@ -88,7 +127,7 @@
 .book-master-browse-button 
 {
     position: absolute;
-    right: 30px;
+    right: 6px;
     margin-top: 32px;
     transform: translateY(-50%);
     background: #647D7F;
@@ -234,11 +273,13 @@
     display: inline-block;
     width: 150px;
     text-align: center;
+    transition: all 0.2s ease;
 }
 
     .master-browse-button:hover 
     {
-        background-color: #435c5e;
+        background: #4a6763;
+        transform: translateY(-1px);
     }
 
 .master-upload-status 
@@ -261,7 +302,9 @@
 /*--------------------  Edit Genre Specific ---------------------------------------*/
 #authorImageFileNameDisplay,
 #authorImageUrl,
-#genreImageFileNameDisplay {
+#genreImageFileNameDisplay,
+#coverFileNameDisplay 
+{
     display: none;
 }
 
@@ -337,3 +380,150 @@
         padding: 10px;
     }
 
+/* --------------- Add Book Specific toggle and series---------------------------*/
+.additional-questions-section 
+{
+    margin: 2.5rem 0;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+}
+
+.series-toggle-container 
+{
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.series-toggle-btn 
+{
+    padding: 0.6rem 1.25rem;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+    .series-toggle-btn.active 
+    {
+        background: #5f7c78;
+        color: white;
+        border-color: #5f7c78;
+    }
+
+.series-fields-container 
+{
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+
+
+/* --------------- Add Book Specific (description fullwidth)---------------------------*/
+.full-width-description 
+{
+    margin-top: 2rem;
+}
+
+    .full-width-description .book-master-form-textarea 
+    {
+        min-height: 180px;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+/*--------------------------- Slider (used in isFeatured)------------------------------------*/
+
+.toggle-question-label 
+{
+    display: block;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 0.75rem;
+}
+
+.featured-toggle-container 
+{
+    display: flex;
+    align-items: center;
+    gap: 5px; 
+}
+
+.toggle-label 
+{
+    font-size: 0.95rem;
+    color: #4a5568;
+    font-weight: 500;
+    min-width: 30px;
+    margin-bottom: 6px;
+}
+
+.switch 
+{
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+    margin-right: 8px; 
+}
+
+    .switch input 
+    {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+.slider 
+{
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e2e8f0;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+    .slider:before 
+    {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+input:checked + .slider 
+{
+    background-color: #5f7c78;
+}
+
+    input:checked + .slider:before 
+    {
+        transform: translateX(22px);
+    }
+
+.round 
+{
+    border-radius: 34px;
+}
+
+    .round:before 
+    {
+        border-radius: 50%;
+    }
