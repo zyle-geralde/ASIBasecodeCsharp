@@ -1,7 +1,7 @@
 ﻿/* Make the page not scrollable */
 body, html {
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .users-container {
@@ -58,9 +58,10 @@ body, html {
 }
 
 .table-container {
-    height: 400px; /* Changed from min-height to fixed height */
-    max-height: 400px;
-    overflow-y: auto; /* Add scroll only inside the table if needed */
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0; /* Important for flex container with overflow */
 }
 
 .table > :not(caption) > * > * {
@@ -132,14 +133,17 @@ body, html {
     overflow: ;
 }
 
-/* Reduce card body padding */
 .card-body {
-    padding: 1rem;
-    flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    flex: 1;
+    overflow: hidden; /* Important for scrollable children */
 }
+
+    /* Search and filter form styling */
+    .card-body form {
+        flex-shrink: 0; /* Prevent form from shrinking */
+    }
 
 /* Reduce margin after header */
 .header-section {
@@ -167,13 +171,13 @@ body, html {
 
 /* Make sure the table takes full width */
 .table-scroll-container {
-    flex: 1;
-    min-height: 0; /* Important for flex containers */
-    height: calc(100vh - 350px); /* Adjust based on header + search bar + pagination height */
-    max-height: calc(100vh - 350px);
-    overflow-y: auto;
-    margin-bottom: 15px; /* Add margin at bottom to create space for pagination */
-    border-radius: 0.25rem;
+    flex: 1; /* Allow it to grow and fill available space */
+    overflow-y: auto; /* Enable vertical scrolling */
+    background: #fff;
+    border-radius: 8px;
+    border: none;
+    min-height: 100px; /* Ensure minimum height for the table */
+    margin-bottom: 0;
 }
 /* Optional: sticky table header */
 .table-scroll-container thead th {
