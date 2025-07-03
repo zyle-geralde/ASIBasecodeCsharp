@@ -35,7 +35,8 @@
 /* Enhanced form Inputs and dropdown style */
 .book-master-form-input,
 .book-master-form-textarea,
-.book-master-form-select {
+.book-master-form-select 
+{
     width: 100%;
     padding: 12px 16px;
     margin-top: 8px;
@@ -51,7 +52,8 @@
 
     .book-master-form-input:hover,
     .book-master-form-textarea:hover,
-    .book-master-form-select:hover {
+    .book-master-form-select:hover 
+    {
         border-color: #a0b4b7;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
         transform: translateY(-1px);
@@ -59,14 +61,16 @@
 
     .book-master-form-input:focus,
     .book-master-form-textarea:focus,
-    .book-master-form-select:focus {
+    .book-master-form-select:focus 
+    {
         border-color: #647D7F;
         box-shadow: 0 0 0 3px rgba(100, 125, 127, 0.15), 0 2px 8px 0 rgba(0, 0, 0, 0.12);
         outline: none;
         transform: translateY(-1px);
     }
 
-.book-master-form-select {
+.book-master-form-select 
+{
     appearance: none;
     background-color: #ffffff;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23647D7F' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
@@ -76,17 +80,20 @@
     cursor: pointer;
 }
 
-    .book-master-form-select:hover {
+    .book-master-form-select:hover 
+    {
         background-color: #f8fafa;
         border-color: #a0b4b7;
     }
 
-    .book-master-form-select:focus {
+    .book-master-form-select:focus 
+    {
         background-color: #ffffff;
         border-color: #647D7F;
     }
 
-.book-master-form-group {
+.book-master-form-group 
+{
     position: relative;
 }
 
@@ -253,7 +260,8 @@
     margin-top: 20px;
 }
 
-.master-browse-button {
+.master-browse-button 
+{
     background: #647D7F;
     color: white;
     padding: 0.5rem 1.25rem;
@@ -268,7 +276,8 @@
     transition: all 0.2s ease;
 }
 
-    .master-browse-button:hover {
+    .master-browse-button:hover 
+    {
         background: #4a6763;
         transform: translateY(-1px);
     }
@@ -294,7 +303,8 @@
 #authorImageFileNameDisplay,
 #authorImageUrl,
 #genreImageFileNameDisplay,
-#coverFileNameDisplay {
+#coverFileNameDisplay 
+{
     display: none;
 }
 
@@ -371,20 +381,23 @@
     }
 
 /* --------------- Add Book Specific toggle and series---------------------------*/
-.additional-questions-section {
+.additional-questions-section 
+{
     margin: 2.5rem 0;
     padding: 1.5rem;
     border-radius: 0.75rem;
     border: 1px solid #e2e8f0;
 }
 
-.series-toggle-container {
+.series-toggle-container 
+{
     display: flex;
     gap: 0.75rem;
     margin-top: 0.75rem;
 }
 
-.series-toggle-btn {
+.series-toggle-btn 
+{
     padding: 0.6rem 1.25rem;
     border: 1px solid #e2e8f0;
     background: #fff;
@@ -394,13 +407,15 @@
     transition: all 0.2s ease;
 }
 
-    .series-toggle-btn.active {
+    .series-toggle-btn.active 
+    {
         background: #5f7c78;
         color: white;
         border-color: #5f7c78;
     }
 
-.series-fields-container {
+.series-fields-container 
+{
     margin-top: 1.5rem;
     padding: 1.5rem;
     background: #fff;
@@ -412,11 +427,13 @@
 
 
 /* --------------- Add Book Specific (description fullwidth)---------------------------*/
-.full-width-description {
+.full-width-description 
+{
     margin-top: 2rem;
 }
 
-    .full-width-description .book-master-form-textarea {
+    .full-width-description .book-master-form-textarea 
+    {
         min-height: 180px;
         width: 100%;
         margin-bottom: 15px;
@@ -424,7 +441,8 @@
 
 /*--------------------------- Slider (used in isFeatured)------------------------------------*/
 
-.toggle-question-label {
+.toggle-question-label 
+{
     display: block;
     font-size: 1rem;
     font-weight: 500;
@@ -432,13 +450,15 @@
     margin-bottom: 0.75rem;
 }
 
-.featured-toggle-container {
+.featured-toggle-container 
+{
     display: flex;
     align-items: center;
     gap: 5px; 
 }
 
-.toggle-label {
+.toggle-label 
+{
     font-size: 0.95rem;
     color: #4a5568;
     font-weight: 500;
@@ -446,7 +466,8 @@
     margin-bottom: 6px;
 }
 
-.switch {
+.switch 
+{
     position: relative;
     display: inline-block;
     width: 50px;
@@ -454,13 +475,15 @@
     margin-right: 8px; 
 }
 
-    .switch input {
+    .switch input 
+    {
         opacity: 0;
         width: 0;
         height: 0;
     }
 
-.slider {
+.slider 
+{
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -472,7 +495,8 @@
     border-radius: 34px;
 }
 
-    .slider:before {
+    .slider:before 
+    {
         position: absolute;
         content: "";
         height: 20px;
@@ -484,18 +508,22 @@
         border-radius: 50%;
     }
 
-input:checked + .slider {
+input:checked + .slider 
+{
     background-color: #5f7c78;
 }
 
-    input:checked + .slider:before {
+    input:checked + .slider:before 
+    {
         transform: translateX(22px);
     }
 
-.round {
+.round 
+{
     border-radius: 34px;
 }
 
-    .round:before {
+    .round:before 
+    {
         border-radius: 50%;
     }

@@ -188,7 +188,8 @@ label
 
 /*------------------------------ Status Modal -----------------------------*/
 
-.status-modal .modal-content {
+.status-modal .modal-content 
+{
     border-radius: 12px;
     background-color: #f5f2ef;
     border: none;
@@ -196,11 +197,13 @@ label
     margin: 0 auto;
 }
 
-.status-modal .modal-body {
+.status-modal .modal-body 
+{
     padding: 2rem;
 }
 
-.status-icon { 
+.status-icon 
+{ 
     width: 60px;
     height: 60px;
     background-color: #647D7F;
@@ -211,29 +214,34 @@ label
     margin: 0 auto;
 }
 
-    .status-icon i {
+    .status-icon i 
+    {
         color: white;
         font-size: 24px;
     }
 
-.status-modal .modal-title {
+.status-modal .modal-title 
+{
     color: #333;
     font-weight: 600;
 }
 
-.status-modal p {
+.status-modal p 
+{
     color: #666;
     font-size: 14px !important;
 }
 
-.status-modal .btn-secondary {
+.status-modal .btn-secondary 
+{
     background-color: #647D7F;
     border: none;
     color: white;
     min-width: 100px;
 }
 
-    .status-modal .btn-secondary:hover {
+    .status-modal .btn-secondary:hover 
+    {
         background-color: #4f6466;
     }
 
@@ -335,13 +343,15 @@ label
 
 /*---------------- Dropdown with displayed tags selected by the user ---------------*/
 /*---------------- Implemented in AddBook and will be in the BookList later ---------------*/
-.custom-multi-select {
+.custom-multi-select 
+{
     position: relative;
     width: 100%;
     z-index: 1000;
 }
 
-.custom-select-btn {
+.custom-select-btn 
+{
     background-color: #ffffff;
     border: 1.5px solid #e2e8f0;
     border-radius: 8px;
@@ -361,7 +371,8 @@ label
     z-index: 1001;
 }
 
-    .custom-select-btn:hover {
+    .custom-select-btn:hover 
+    {
         background-color: #f8fafa;
         border-color: #a0b4b7;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
@@ -369,24 +380,28 @@ label
     }
 
     .custom-select-btn:focus,
-    .custom-select-btn.active {
+    .custom-select-btn.active 
+    {
         background-color: #ffffff;
         border-color: #647D7F;
         box-shadow: 0 0 0 3px rgba(100, 125, 127, 0.15), 0 2px 8px 0 rgba(0, 0, 0, 0.12);
         outline: none;
     }
 
-    .custom-select-btn i {
+    .custom-select-btn i 
+    {
         color: #647D7F;
         font-size: 12px;
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .custom-select-btn.active i {
+    .custom-select-btn.active i 
+    {
         transform: rotate(180deg);
     }
 
-.custom-dropdown {
+.custom-dropdown 
+{
     position: absolute;
     top: calc(100% + 4px);
     left: 0;
@@ -402,23 +417,28 @@ label
     animation: fadeIn 0.2s ease-out;
 }
 
-    .custom-dropdown.show {
+    .custom-dropdown.show 
+    {
         display: block;
     }
 
-@keyframes fadeIn {
-    from {
+@keyframes fadeIn 
+{
+    from 
+    {
         opacity: 0;
         transform: translateY(-8px);
     }
 
-    to {
+    to 
+    {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-.dropdown-item {
+.dropdown-item 
+{
     padding: 12px 16px;
     display: flex;
     align-items: center;
@@ -429,22 +449,26 @@ label
     border-bottom: 1px solid #f3f4f6;
 }
 
-    .dropdown-item:last-child {
+    .dropdown-item:last-child 
+    {
         border-bottom: none;
     }
 
-    .dropdown-item:hover {
+    .dropdown-item:hover 
+    {
         background-color: #f8fafa;
         color: #647D7F;
     }
 
-    .dropdown-item.selected {
+    .dropdown-item.selected 
+    {
         background-color: #e8f0f0;
         color: #647D7F;
         font-weight: 500;
     }
 
-    .dropdown-item input[type="checkbox"] {
+    .dropdown-item input[type="checkbox"] 
+    {
         margin-right: 12px;
         accent-color: #647D7F;
         cursor: pointer;
@@ -454,33 +478,39 @@ label
     }
 
 /* scrollbar for dropdown */
-.custom-dropdown::-webkit-scrollbar {
+.custom-dropdown::-webkit-scrollbar 
+{
     width: 6px;
 }
 
-.custom-dropdown::-webkit-scrollbar-track {
+.custom-dropdown::-webkit-scrollbar-track 
+{
     background: #f1f5f9;
     border-radius: 3px;
 }
 
-.custom-dropdown::-webkit-scrollbar-thumb {
+.custom-dropdown::-webkit-scrollbar-thumb 
+{
     background: #cbd5e1;
     border-radius: 3px;
 }
 
-    .custom-dropdown::-webkit-scrollbar-thumb:hover {
+    .custom-dropdown::-webkit-scrollbar-thumb:hover 
+    {
         background: #94a3b8;
     }
 
 /* selected tags */
-.selected-tags {
+.selected-tags 
+{
     margin-top: 12px;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
 
-.selected-tag {
+.selected-tag 
+{
     background: linear-gradient(135deg, #647D7F 0%, #5a6f71 100%);
     color: #ffffff;
     padding: 6px 12px;
@@ -493,12 +523,14 @@ label
     box-shadow: 0 2px 4px 0 rgba(100, 125, 127, 0.2);
 }
 
-    .selected-tag:hover {
+    .selected-tag:hover 
+    {
         transform: translateY(-2px);
         box-shadow: 0 4px 8px 0 rgba(100, 125, 127, 0.3);
     }
 
-    .selected-tag .remove-tag {
+    .selected-tag .remove-tag 
+    {
         margin-left: 8px;
         cursor: pointer;
         font-weight: bold;
@@ -510,30 +542,36 @@ label
         background: rgba(255, 255, 255, 0.2);
     }
 
-        .selected-tag .remove-tag:hover {
+        .selected-tag .remove-tag:hover 
+        {
             background: rgba(255, 255, 255, 0.3);
             transform: scale(1.1);
         }
 
 /* dropdown invalid state*/
-.is-invalid-select {
+.is-invalid-select 
+{
     border-color: #ef4444 !important;
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
 }
 
-    .is-invalid-select + .custom-dropdown {
+    .is-invalid-select + .custom-dropdown 
+    {
         border-color: #ef4444;
     }
 
-.custom-multi-select {
+.custom-multi-select 
+{
     position: relative;
 }
 
-.custom-dropdown {
+.custom-dropdown 
+{
     z-index: 9999 !important;
 }
 
-.dropdown-empty {
+.dropdown-empty 
+{
     padding: 16px;
     text-align: center;
     color: #9ca3af;
@@ -541,15 +579,17 @@ label
 }
 
           
-.table-container {
+.table-container 
+{
     display: flex;
     flex-direction: column;
     flex: 1;
-    min-height: 0; /* Important for flex container with overflow */
+    min-height: 0; 
 }
-/*Sort Button*/
 
-.sort-btn {
+/*------------------Sort Button----------------------*/
+.sort-btn 
+{
     padding: 8px 15px;
     border: 1px solid #ddd;
     border-radius: 20px;
@@ -561,12 +601,14 @@ label
     margin-left: 8px;
 }
 
-    .sort-btn:hover {
+    .sort-btn:hover 
+    {
         background-color: #f5f5f5;
     }
 
 /* Sort Popup Styling */
-.sort-popup {
+.sort-popup 
+{
     position: absolute;
     z-index: 1000;
     width: 280px;
@@ -575,40 +617,47 @@ label
     right: 0; /* Align to the right side of its positioned parent */
 }
 
-    .sort-popup .card-header {
+    .sort-popup .card-header 
+    {
         border-radius: 8px 8px 0 0;
         background-color: rgb(100, 125, 127) !important;
         height: 45px;
     }
 
-    .sort-popup .form-check-input:checked {
+    .sort-popup .form-check-input:checked 
+    {
         background-color: #465b73;
         border-color: #465b73;
     }
 
-    .sort-popup .form-label {
+    .sort-popup .form-label 
+    {
         color: #465b73;
     }
 
-    .sort-popup .btn-secondary.me-2 {
+    .sort-popup .btn-secondary.me-2
+    {
         background-color: rgb(100, 125, 127, 0.4);
         font-size: 12px;
         border-color: rgb(100, 125, 127, 0.8);
     }
 
-        .sort-popup .btn-secondary.me-2:hover {
+        .sort-popup .btn-secondary.me-2:hover 
+        {
             background-color: rgb(100, 125, 127, 0.8);
             border-color: rgb(100, 125, 127);
         }
 
-    .sort-popup .btn-outline-secondary {
+    .sort-popup .btn-outline-secondary 
+    {
         background-color: #fff;
         color: dimgray;
         font-size: 12px;
         border-color: rgb(255, 115, 90, 0.5);
     }
 
-        .sort-popup .btn-outline-secondary:hover {
+        .sort-popup .btn-outline-secondary:hover 
+        {
             background-color: rgb(255, 115, 90, 0.3);
             border-color: rgb(255, 115, 90);
         }
