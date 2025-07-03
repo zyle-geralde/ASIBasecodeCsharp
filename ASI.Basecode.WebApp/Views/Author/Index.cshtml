@@ -99,138 +99,132 @@
 
     </div>
 
-    <div class="search-filter-container">
-        <div style="position: relative; flex-grow: 1;">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" id="searchInput" class="form-control search-field" placeholder="Search authors..." style="padding-left: 33px;" />
-        </div>
-        <div class="d-flex gap-2">
-            <button class="btn btn-outline-secondary">
-                <i class="fas fa-sort"></i> Sort
-            </button>
-        </div>
-    </div>
-
-    @*--------------------------------------For Searching sort and filter---------------------------------------------*@
-    <form asp-action="Index" asp-controller="Author" method="get" class="d-flex align-items-center mb-3" id="searchFilterForm">
-        <input type="text"
-               name="searchTerm"
-               value="@currentSearch"
-               class="form-control me-2"
-               placeholder="Search users…" />
-
-        <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
-        <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
-
-        <button type="submit" class="btn btn-primary">Apply</button>
-
-        <button type="button" id="sortButton" class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
-
-    </form>
-    <div class="sort-popup card shadow" id="sortPopup" style="display: none;">
-        <div class="card-header bg-secondary text-white justify-center">
-            <h6 class="mb-0" style="margin-top: 6px;">Sort By:</h6>
-        </div>
+    <div class="card">
         <div class="card-body">
-            <div class="mb-3">
-                <label class="form-label fw-bold">Sort By:</label>
-                <div class="ms-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="popupSortOrder" id="sortName" value="Name" @(currentSort == "Name" ? "checked" : "")>
-                        <label class="form-check-label" for="sortId">Name</label>
+            @*--------------------------------------For Searching sort and filter---------------------------------------------*@
+            <form asp-action="Index" asp-controller="Author" method="get" class="d-flex align-items-center mb-3" id="searchFilterForm">
+                <input type="text"
+                       name="searchTerm"
+                       value="@currentSearch"
+                       class="form-control me-2"
+                       placeholder="Search users…" />
+
+                <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
+                <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
+
+                <button type="submit" class="btn btn-primary">Apply</button>
+
+                <button type="button" id="sortButton" class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
+
+            </form>
+            <div class="sort-popup card shadow" id="sortPopup" style="display: none;">
+                <div class="card-header bg-secondary text-white justify-center">
+                    <h6 class="mb-0" style="margin-top: 6px;">Sort By:</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Sort By:</label>
+                        <div class="ms-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortName" value="Name" @(currentSort == "Name" ? "checked" : "")>
+                                <label class="form-check-label" for="sortId">Name</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortDate" value="CreatedTime" @(currentSort == "CreatedTime" ? "checked" : "")>
+                                <label class="form-check-label" for="sortDate">Created Date</label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="popupSortOrder" id="sortDate" value="CreatedTime" @(currentSort == "CreatedTime" ? "checked" : "")>
-                        <label class="form-check-label" for="sortDate">Created Date</label>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Direction:</label>
+                        <div class="ms-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortDirection" id="sortAsc" value="false" @(!currentSortDescending ? "checked" : "")>
+                                <label class="form-check-label" for="sortAsc">Ascending <i class="fas fa-arrow-up"></i></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortDirection" id="sortDesc" value="true" @(currentSortDescending ? "checked" : "")>
+                                <label class="form-check-label" for="sortDesc">Descending <i class="fas fa-arrow-down"></i></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-outline-secondary" style="margin-right: 10px" id="closeSortButton">Cancel</button>
+                        <button type="button" class="btn btn-secondary me-2" id="applySortButton">Apply</button>
                     </div>
                 </div>
             </div>
+            @*------------------------------------------------------------For searching sort and filter-----------------------------------------------*@
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Direction:</label>
-                <div class="ms-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="popupSortDirection" id="sortAsc" value="false" @(!currentSortDescending ? "checked" : "")>
-                        <label class="form-check-label" for="sortAsc">Ascending <i class="fas fa-arrow-up"></i></label>
+            <div  class="table-container">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="data-table table table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="padding-left: 10px">Image</th>
+                                    <th>Author Name</th>
+                                    <th>Description</th>
+                                    <th>Upload Date</th>
+                                    <th class="text-md-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var author in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(author.AuthorImageUrl))
+                                            {
+                                                <img src="@author.AuthorImageUrl" alt="Author Image" class="author-image" />
+                                            }
+                                            else
+                                            {
+                                                <span>No Image</span>
+                                            }
+                                        </td>
+                                        <td class="align-middle" style="padding-left: 10px">@author.AuthorName</td>
+                                        <td class="align-middle">@author.AuthorDescription</td>
+                                        <td class="align-middle">@author.UploadDate?.ToShortDateString()</td>
+                                        <td class="align-middle" style="white-space:nowrap;">
+                                            <div class="action-buttons">
+                                                <a asp-controller="Book"
+                                                   asp-action="ListBook"
+                                                   asp-route-author="@author.AuthorName"
+                                                   asp-route-category="@author.AuthorName"
+                                                   class="action-icon-button text-secondary">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </a>
+                                                <a href="/Author/EditAuthor/@author.AuthorId" class="btn btn-icon text-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-icon text-danger delete-author-btn"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteAuthorConfirmModal"
+                                                        data-author-id="@author.AuthorId"
+                                                        data-author-image-url="@author.AuthorImageUrl"
+                                                        data-author-name="@author.AuthorName">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="popupSortDirection" id="sortDesc" value="true" @(currentSortDescending ? "checked" : "")>
-                        <label class="form-check-label" for="sortDesc">Descending <i class="fas fa-arrow-down"></i></label>
-                    </div>
-                </div>
-            </div>
+                }
+                else
+                {
+                    <p class="empty-message">No authors found. Click "ADD AUTHOR" to add some.</p>
+                }
+                <partial name="_PaginationPartial" view-data='@new ViewDataDictionary(ViewData) { { "RouteValues", routeValues } }' />
 
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-outline-secondary" style="margin-right: 10px" id="closeSortButton">Cancel</button>
-                <button type="button" class="btn btn-secondary me-2" id="applySortButton">Apply</button>
-            </div>
+            </div>            
         </div>
     </div>
-    @*------------------------------------------------------------For searching sort and filter-----------------------------------------------*@
-
-    @if (Model != null && Model.Any())
-    {
-        <div class="table-responsive">
-            <table class="data-table table table-hover">
-                <thead>
-                    <tr>
-                        <th style="padding-left: 10px">Image</th>
-                        <th>Author Name</th>
-                        <th>Description</th>
-                        <th>Upload Date</th>
-                        <th class="text-md-center">Actions</th> 
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var author in Model)
-                    {
-                        <tr>
-                            <td>
-                                @if (!string.IsNullOrWhiteSpace(author.AuthorImageUrl))
-                                {
-                                    <img src="@author.AuthorImageUrl" alt="Author Image" class="author-image" />
-                                }
-                                else
-                                {
-                                    <span>No Image</span>
-                                }
-                            </td>
-                            <td class="align-middle" style="padding-left: 10px">@author.AuthorName</td>
-                            <td class="align-middle">@author.AuthorDescription</td>
-                            <td class="align-middle">@author.UploadDate?.ToShortDateString()</td>
-                            <td class="align-middle" style="white-space:nowrap;">
-                                <div class="action-buttons">
-                                 <a 
-                                     asp-controller="Book" 
-                                     asp-action="ListBook" 
-                                     asp-route-author="@author.AuthorName"
-                                     asp-route-category="@author.AuthorName"
-                                     class="action-icon-button text-secondary">
-                                      <i class="fas fa-info-circle"></i>
-                                   </a>
-                                    <a href="/Author/EditAuthor/@author.AuthorId"  class="btn btn-icon text-primary">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <button type="button" class="btn btn-icon text-danger delete-author-btn"
-                                            data-bs-toggle="modal" data-bs-target="#deleteAuthorConfirmModal"
-                                            data-author-id="@author.AuthorId"
-                                            data-author-image-url="@author.AuthorImageUrl"
-                                            data-author-name="@author.AuthorName">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    else
-    {
-        <p class="empty-message">No authors found. Click "ADD AUTHOR" to add some.</p>
-    }
-    <partial name="_PaginationPartial" view-data='@new ViewDataDictionary(ViewData) { { "RouteValues", routeValues } }' />
 </div>
 
 <div class="modal fade confirmation-modal" id="deleteAuthorConfirmModal" tabindex="-1" aria-labelledby="deleteAuthorConfirmModalLabel" aria-hidden="true">
