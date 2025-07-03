@@ -5,6 +5,7 @@ using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.AccessControl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -137,6 +138,31 @@ namespace ASI.Basecode.WebApp.Controllers
             await _userService.UpdateUser(uvm);
 
             TempData["Success"] = "User info saved!";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(PersonProfileViewModel model)
+        {
+   
+            var ok = await _userService.ChangePassword(
+                   model.Id,
+                   model.ChangePassword.CurrentPassword,
+                   model.ChangePassword.NewPassword
+               );
+
+            if (!ok)
+            {
+                
+                TempData["PwdErrors"] = new[] { "Current password is incorrect." };
+            }
+            else
+            {
+                TempData["Success"] = "password";
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
