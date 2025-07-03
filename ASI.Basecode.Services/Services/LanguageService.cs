@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
@@ -233,6 +234,13 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ApplicationException("Failed to retrieve language by name.");
             }
+        }
+
+        public async Task<PaginatedList<Language>> GetLanguageQueried(LanguageQueryParams queryParams)
+        {
+            return await _languageRepository.GetLanguageQueried(queryParams);
+            //return users.ToList();
+
         }
     }
 }
