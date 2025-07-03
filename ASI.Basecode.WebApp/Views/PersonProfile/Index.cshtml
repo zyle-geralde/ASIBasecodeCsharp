@@ -1,8 +1,27 @@
 ﻿@using System.Security.Claims
 @model ASI.Basecode.Services.ServiceModels.PersonProfileViewModel;
+@inject ASI.Basecode.WebApp.AccessControl.IAccessControlInterface AccessControl
 @{
     ViewData["Title"] = "My Profile";
+
+    var isAdmin = await AccessControl.CheckAdminAccess();
     
+    @if (isAdmin)
+    {
+        Layout = "_AdminSidebarLayout";
+        <link rel="stylesheet" href="~/css/admin/adminsidebar.css" asp-append-version="true" />
+    
+        <style>
+            .main-content
+            {
+                margin-top: 10px;
+            }
+        </style>
+    }
+    else
+    {
+        Layout = "_Layout"; 
+    }
 }
 
 @if (TempData["Success"] is string msg) {
@@ -25,6 +44,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/userui/viewuser.css" asp-append-version="true" />
 }
 
