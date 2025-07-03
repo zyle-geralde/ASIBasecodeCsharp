@@ -3,35 +3,10 @@
 
 @{
     Layout = "_AdminSidebarLayout";
+}
 
-    // Example data for demonstration
-    var books = Enumerable.Range(1, 10).Select(i => new
-    {
-        Title = "The Lost Expedition",
-        Author = "Tom Hardy, 2020",
-        Image = Url.Content("~/img/bookcover_container.png"),
-        Rating = 5
-    }).ToList();
-
-    int cardsPerSlide = 5;
-    int totalSlides = 2;
-    var newBooks = Model.NewBooks ?? new List<BookViewModel>();
-    int newBooksTotalSlides = (int)Math.Ceiling(newBooks.Count / (double)cardsPerSlide);
-
-    var topRatedBooks = Model.TopRatedBooks ?? new List<BookViewModel>();
-    int topRatedBooksTotalSlides = (int)Math.Ceiling(topRatedBooks.Count / (double)cardsPerSlide);
-
-    }
 @section styles {
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/dashboard.css" asp-append-version="true" />
-    <style>
-        .stats-card {
-            cursor: pointer;
-        }
-    </style>
 }
 
 <div class="admin-common-container">
@@ -90,113 +65,237 @@
         </div>
 
         <!-- Newly Added Books Section -->
-        <div class="section mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="section-title">Newly Added Books</h2>
-                <a href="#" class="view-more">View more <i class="fas fa-arrow-right"></i></a>
+        <section class="section-card admin-carousel-section">
+            <div class="book-list-header">
+                <h2>View New Books</h2>
+                <div class="see-more-link-wrapper">
+                    <a asp-controller="Book"
+                       asp-action="SearchResults"
+                       asp-route-sortOrder="uploaddate"
+                       asp-route-sortDescending="true"
+                       asp-route-category="New Books">See More</a>
+                </div>
             </div>
-            <div class="carousel-container">
-                <div id="newBooksCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
-                    <div class="carousel-inner">
-                        @for (int slide = 0; slide < totalSlides; slide++)
-                        {
-                            <div class="carousel-item @(slide == 0 ? "active" : "")">
-                                <div class="row carousel-row justify-content-center">
-                                    @for (int card = 0; card < cardsPerSlide; card++)
-                                    {
-                                        int bookIndex = slide * cardsPerSlide + card;
-                                        if (bookIndex >= newBooks.Count) { break; }
-                                        var book = newBooks[bookIndex];
-                                        <div class="book-card-wrapper">
-                                            <div class="book-card">
-                                                <a href="/Book/BookDetails/@book.BookId">
-                                                     <img src="@book.CoverImage" class="book-cover" alt="Book cover">
-                                                <div class="book-info">
-                                                    <h5>@book.Title</h5>
-                                                    <p class="author">@book.Author</p>
-                                                    <div class="rating">
-                                                        @for (int star = 0; star < book.AverageRating; star++)
-                                                        {
-                                                            <i class="fas fa-star"></i>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                    </a>
-                                               
-                                            </div>
-                                        </div>
+            <div class="admin-book-carousel-container new-books-carousel">
+                <button class="carousel-button admin-carousel-btn prev-button"
+                        aria-label="Previous books">
+                    <span class="button-icon">&#x25C0;</span>
+                </button>
+                <div class="admin-book-display-wrapper">
+                    @for (int i = 0; i < Model.NewBooks.Count; i++)
+                    {
+                        var book = Model.NewBooks[i];
+                        <div class="admin-carousel-card hidden-book-card">
+                            <img class="admin-carousel-img" src="@book.CoverImage" alt="@book.Title Book Cover">
+                            <div class="admin-carousel-content">
+                                <h3 class="admin-carousel-title">@book.Title</h3>
+                                <p class="admin-carousel-author">by @book.Author</p>
+                                <p class="admin-carousel-desc"><i>@book.Description</i></p>
+                                <div class="star-rating admin-star-rating">
+                                    <div class="stars">
+                                        @for (int j = 0; j < 5; j++)
+                                        {
+                                            if (j < book.AverageRating)
+                                            {
+                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                            else
+                                            {
+                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                <div class="genre-tags">
+                                    @{
+                                        var genres = book.GenreList?.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                        .Select(s => s.Trim())
+                                        .ToList() ?? new List<string>();
+
+                                        var colorClasses = new string[] {
+                                                                "dynamic-genre-1", "dynamic-genre-2", "dynamic-genre-3", "dynamic-genre-4", "dynamic-genre-5",
+                                                                "dynamic-genre-6", "dynamic-genre-7", "dynamic-genre-8", "dynamic-genre-9", "dynamic-genre-10"
+                                                                };
+
+                                        foreach (var tag in genres)
+                                        {
+                                            var colorIndex = Math.Abs(tag.GetHashCode()) % colorClasses.Length;
+                                            <span class="genre-tag @colorClasses[colorIndex]">@tag</span>
+                                        }
                                     }
                                 </div>
                             </div>
-                        }
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#newBooksCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#newBooksCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+                        </div>
+                    }
                 </div>
+                <button class="carousel-button admin-carousel-btn next-button"
+                        aria-label="Next books">
+                    <span class="button-icon">&#x25B6;</span>
+                </button>
             </div>
-        </div>
+        </section>
 
         <!-- Top 10 Rated Books Section -->
-        <div class="section">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="section-title">Top 10 Rated Books</h2>
-                <a href="#" class="view-more">View more <i class="fas fa-arrow-right"></i></a>
+        <section class="section-card admin-carousel-section">
+            <div class="book-list-header">
+                <h2>View Books Top Rated By Users?</h2>
+                <div class="see-more-link-wrapper">
+                    <a asp-controller="Book"
+                       asp-action="SearchResults"
+                       asp-route-sortOrder="rating"
+                       asp-route-sortDescending="true"
+                       asp-route-category="Top Rated">See More</a>
+                </div>
             </div>
-            <div class="carousel-container">
-                <div id="topBooksCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
-                    <div class="carousel-inner">
-                        @for (int slide = 0; slide < totalSlides; slide++)
-                        {
-                            <div class="carousel-item @(slide == 0 ? "active" : "")">
-                                <div class="row carousel-row justify-content-center">
-                                    @for (int card = 0; card < cardsPerSlide; card++)
-                                    {
-                                        int bookIndex = slide * cardsPerSlide + card;
-                                        if (bookIndex >= topRatedBooks.Count) { break; }
-                                        var book = topRatedBooks[bookIndex];
-                                        <div class="book-card-wrapper">
-                                            <div class="book-card">
-                                                <a href="/Book/BookDetails/@book.BookId">
-                                                     <img src="@book.CoverImage" class="book-cover" alt="Book cover">
-                                                <div class="book-info">
-                                                    <h5>@book.Title</h5>
-                                                    <p class="author">@book.Author</p>
-                                                    <div class="rating">
-                                                        @for (int star = 0; star < book.AverageRating; star++)
-                                                        {
-                                                            <i class="fas fa-star"></i>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                    </a>
-                                               
-                                            </div>
-                                        </div>
+            <div class="admin-book-carousel-container top-rated-carousel">
+                <button class="carousel-button admin-carousel-btn prev-button"
+                        aria-label="Previous books">
+                    <span class="button-icon">&#x25C0;</span>
+                </button>
+                <div class="admin-book-display-wrapper">
+                    @for (int i = 0; i < Model.TopRatedBooks.Count; i++)
+                    {
+                        var book = Model.TopRatedBooks[i];
+                        <div class="admin-carousel-card hidden-book-card">
+                            <img class="admin-carousel-img" src="@book.CoverImage" alt="@book.Title Book Cover">
+                            <div class="admin-carousel-content">
+                                <h3 class="admin-carousel-title">@book.Title</h3>
+                                <p class="admin-carousel-author">by @book.Author</p>
+                                <p class="admin-carousel-desc"><i>@book.Description</i></p>
+                                <div class="star-rating admin-star-rating">
+                                    <div class="stars">
+                                        @for (int j = 0; j < 5; j++)
+                                        {
+                                            if (j < book.AverageRating)
+                                            {
+                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                            else
+                                            {
+                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                <div class="genre-tags">
+                                    @{
+                                        var genres = book.GenreList?.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                        .Select(s => s.Trim())
+                                        .ToList() ?? new List<string>();
+
+                                        var colorClasses = new string[] {
+                                                                "dynamic-genre-1", "dynamic-genre-2", "dynamic-genre-3", "dynamic-genre-4", "dynamic-genre-5",
+                                                                "dynamic-genre-6", "dynamic-genre-7", "dynamic-genre-8", "dynamic-genre-9", "dynamic-genre-10"
+                                                                };
+
+                                        foreach (var tag in genres)
+                                        {
+                                            var colorIndex = Math.Abs(tag.GetHashCode()) % colorClasses.Length;
+                                            <span class="genre-tag @colorClasses[colorIndex]">@tag</span>
+                                        }
                                     }
                                 </div>
                             </div>
-                        }
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#topBooksCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#topBooksCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+                        </div>
+                    }
                 </div>
+                <button class="carousel-button admin-carousel-btn next-button"
+                        aria-label="Next books">
+                    <span class="button-icon">&#x25B6;</span>
+                </button>
             </div>
-        </div>
+        </section>  
     </div>
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            console.log("Document ready, jQuery loaded");
+
+            // Completely rewritten carousel function for 2 books per page
+            function setupTwoBookCarousel(containerClass) {
+                const container = $(containerClass);
+                const bookCards = container.find('.admin-carousel-card');
+                const prevButton = container.find('.prev-button');
+                const nextButton = container.find('.next-button');
+
+                // Hide all books initially
+                bookCards.addClass('hidden-book-card');
+
+                const booksPerPage = 5; // Fixed at 2 books per page
+                const totalBooks = bookCards.length;
+                const totalPages = Math.ceil(totalBooks / booksPerPage);
+
+                console.log(`Setting up ${containerClass}: ${totalBooks} books, ${totalPages} pages`);
+
+                // Handle edge case with too few books
+                if (totalBooks <= booksPerPage) {
+                    bookCards.removeClass('hidden-book-card');
+                    prevButton.hide();
+                    nextButton.hide();
+                    return;
+                }
+
+                let currentPage = 0;
+
+                // Function to update the display
+                function showPage(pageIndex) {
+                    if (pageIndex < 0 || pageIndex >= totalPages) return;
+
+                    // Hide all books first
+                    bookCards.addClass('hidden-book-card');
+
+                    // Calculate start and end indices
+                    const startIndex = pageIndex * booksPerPage;
+                    const endIndex = Math.min(startIndex + booksPerPage, totalBooks);
+
+                    // Show only the books for current page
+                    for (let i = startIndex; i < endIndex; i++) {
+                        bookCards.eq(i).removeClass('hidden-book-card');
+                    }
+
+                    // Update button states
+                    prevButton.prop('disabled', pageIndex === 0);
+                    nextButton.prop('disabled', pageIndex >= totalPages - 1);
+
+                    // Update current page tracker
+                    currentPage = pageIndex;
+
+                    console.log(`${containerClass}: Showing page ${currentPage + 1}/${totalPages}`);
+                }
+
+                // Event handlers
+                prevButton.on('click', function() {
+                    console.log('Previous button clicked');
+                    if (currentPage > 0) {
+                        showPage(currentPage - 1);
+                    }
+                });
+
+                nextButton.on('click', function() {
+                    console.log('Next button clicked');
+                    if (currentPage < totalPages - 1) {
+                        showPage(currentPage + 1);
+                    }
+                });
+
+                // Show first page initially
+                showPage(0);
+            }
+
+            // Initialize both carousels
+            setupTwoBookCarousel('.new-books-carousel');
+            setupTwoBookCarousel('.top-rated-carousel');
+
+            // Keep your genre tags overflow code
+            function setupGenreTagsOverflow() {
+                // Your existing code...
+            }
+
+            setupGenreTagsOverflow();
+            $(window).on('resize', setupGenreTagsOverflow);
+        });
+    </script>
 }
