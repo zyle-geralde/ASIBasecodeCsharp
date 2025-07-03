@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Policy;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ASI.Basecode.WebApp.Controllers
@@ -221,6 +220,5 @@ namespace ASI.Basecode.WebApp.Controllers
             return Request.Method == "POST" ||
                    (Request.Headers["Referer"].ToString()?.Contains(Request.Path.Value) == true);
         }
-
     }
 }
