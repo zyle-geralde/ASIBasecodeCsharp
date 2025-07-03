@@ -369,7 +369,7 @@
                 
                       <div class="mb-3">
                           <label asp-for="ChangePassword.CurrentPassword" class="form-label">Current Password</label>
-                          <input asp-for="ChangePassword.CurrentPassword" class="form-control" />
+                          <input asp-for="ChangePassword.CurrentPassword" class="form-control" placeholder="Enter current password" />
                           <span asp-validation-for="ChangePassword.CurrentPassword" class="text-danger"></span>
                         </div>
                     <div class="mb-3">
@@ -390,6 +390,8 @@
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
+                                                    <span asp-validation-for="ChangePassword.ConfirmPassword" class="text-danger"></span>
+
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
@@ -910,5 +912,43 @@
                 }
             }
         });
+
     </script>
+      <script>
+    toastr.options = {
+      closeButton: true,
+      progressBar: true,
+      positionClass: "toast-top-right",
+      timeOut: "3000"
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      @if (TempData["Success"] as string == "password")
+      {
+        <text>toastr.success("Your password has been changed.");</text>
+      }
+
+      @if (TempData["PwdErrors"] is string[] errs && errs.Any())
+      {
+        var error = errs[0];
+        <text>toastr.error("@error");</text>
+      }
+
+      var pwdModalEl = document.getElementById('updatePass');
+      if (pwdModalEl) {
+        pwdModalEl.addEventListener('hidden.bs.modal', function () {
+          var form = document.getElementById('updatePassForm');
+          if (form) {
+            form.reset();
+            form.querySelectorAll('.text-danger').forEach(function(el) {
+              el.textContent = '';
+            });
+            form.querySelectorAll('.password-match-error').forEach(function(el) {
+              el.remove();
+            });
+          }
+        });
+      }
+    });
+  </script>
 }

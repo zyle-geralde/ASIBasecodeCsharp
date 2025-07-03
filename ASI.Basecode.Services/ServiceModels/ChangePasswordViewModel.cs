@@ -17,7 +17,7 @@ namespace ASI.Basecode.Services.ServiceModels
         [Required, DataType(DataType.Password)]
         public string NewPassword { get; set; }
 
-        [Required, Compare("NewPassword"), DataType(DataType.Password)]
+        [Required, Compare("NewPassword", ErrorMessage = "Passwords don't match"), DataType(DataType.Password), ]
         public string ConfirmPassword { get; set; }
     }
 }
