@@ -137,5 +137,10 @@ namespace ASI.Basecode.Data.Repositories
             await UnitOfWork.SaveChangesAsync();
             return true;
         }
+        public async Task UpdatePassword(User user)
+        {
+            GetDbSet<User>().Update(user);
+            await UnitOfWork.SaveChangesAsync();
+        }
     }
 }
