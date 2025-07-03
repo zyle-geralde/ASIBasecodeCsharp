@@ -7,8 +7,6 @@
     ViewData["Title"] = "Add New Book";
     Layout = "_AdminSidebarLayout";
 
-
-
     var addBookConfirmationModel = new ConfirmationModalModel
             {
                 Id = "addBookConfirmationModal",
@@ -38,153 +36,6 @@
 
         <!-- Display validation summary errors -->
         <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
-
-        @* <form asp-action="AddBook" asp-controller="Book" method="post" enctype="multipart/form-data" id="addBookForm">
-        <div class="book-master-form-grid">
-        <div class="book-master-form-group">
-        <label for="title" class="required-label">Title</label>
-        <input type="text" id="title" name="Title" class="book-master-form-input" value="@Model?.Title" required>
-        <span asp-validation-for="Title" class="text-danger"></span>
-        </div>
-        <div class="book-master-form-group">
-        <label for="subtitle">Subtitle</label>
-        <input type="text" id="subtitle" name="Subtitle" class="book-master-form-input" value="@Model?.Subtitle">
-        <span asp-validation-for="Subtitle" class="text-danger"></span>
-        </div>
-        <div class="book-master-form-group">
-        <label for="publicationDate" class="required-label">Publication Date</label>
-        <div class="book-master-date-input-wrapper">
-        <input type="date" id="publicationDate" name="PublicationDate" class="book-master-form-input" value="@(Model?.PublicationDate?.ToString("yyyy-MM-dd"))" />
-        </div>
-        <span asp-validation-for="PublicationDate" class="text-danger"></span>
-        </div>
-        <div class="book-master-form-group">
-        <label for="publisher">Publisher</label>
-        <input type="text" id="publisher" name="Publisher" class="book-master-form-input" value="@Model?.Publisher">
-        <span asp-validation-for="Publisher" class="text-danger"></span>
-        </div>
-        <div class="book-master-form-group">
-        <label for="publicationLocation">Publication Location</label>
-        <input type="text" id="publicationLocation" name="PublicationLocation" class="book-master-form-input" value="@Model?.PublicationLocation">
-        <span asp-validation-for="PublicationLocation" class="text-danger"></span>
-        </div>
-        <div class="book-master-form-group">
-        <label for="description">Description</label>
-        <textarea id="description" name="Description" class="book-master-form-textarea">@Model?.Description</textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-        <div class="book-master-form-group">
-        <label for="numberOfPages">Number of Pages</label>
-        <input type="number" id="numberOfPages" name="NumberOfPages" class="book-master-form-input" value="@Model?.NumberOfPages">
-        <span asp-validation-for="NumberOfPages" class="text-danger"></span>
-        </div>
-
-        <div class="book-master-form-group">
-        <label for="language" class="required-label">Language</label>
-        <select id="language" name="Language" class="book-master-form-select">
-
-        </select>
-        </div>
-
-        <div class="book-master-form-group">
-        <label for="seriesName">Series Name</label>
-        <input type="text" id="seriesName" name="SeriesName" class="book-master-form-input" value="@Model?.SeriesName">
-        <span asp-validation-for="SeriesName" class="text-danger"></span>
-        </div>
-        <div class="book-master-form-group">
-        <label for="seriesOrder">Series Order</label>
-        <input type="number" id="seriesOrder" name="SeriesOrder" class="book-master-form-input" value="@Model?.SeriesOrder">
-        <span asp-validation-for="SeriesOrder" class="text-danger"></span>
-        </div>
-        <div class="book-master-form-group">
-        <label for="seriesDescription">Series Description</label>
-        <textarea id="seriesDescription" name="SeriesDescription" class="book-master-form-textarea">@Model?.SeriesDescription</textarea>
-        <span asp-validation-for="SeriesDescription" class="text-danger"></span>
-        </div>
-        <div class="book-master-form-group">
-        <label for="author">Author</label>
-        <select id="author" name="Author" class="book-master-form-select">
-
-        </select>
-        </div>
-
-        <div class="book-master-form-group">
-        <label for="IsFeatured">Featured Book</label>
-        <input type="checkbox" id="isFeatured" name="IsFeatured" value="true">
-        <span asp-validation-for="IsFeatured" class="text-danger"></span>
-        </div>
-        </div>
-
-        <h3 class="book-master-form-section-title">Categorization</h3>
-        <div class="book-master-form-grid">
-        <div class="book-master-form-group">
-        <label for="genre" class="required-label">Genre</label>
-        <div class="custom-multi-select" id="genreContainer">
-        <div class="custom-select-btn">
-        <span>Select Genre</span>
-        <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="custom-dropdown" id="genreDropdown">
-
-        </div>
-        </div>
-        <div id="selectedGenres" class="selected-tags"></div>
-        <input type="hidden" id="concatenatedGenre" name="GenreList" value="@Model?.GenreList" />
-        </div>
-        <div class="book-master-form-group">
-        <label for="isbn10">ISBN10</label>
-        <input type="text" id="isbnten" name="ISBN10" class="book-master-form-input" value="@Model?.ISBN10">
-        <span asp-validation-for="ISBN10" class="text-danger"></span>
-        </div>
-        <div class="book-master-form-group">
-        <label for="isbn13">ISBN13</label>
-        <input type="text" id="isbnthitheen" name="ISBN13" class="book-master-form-input" value="@Model?.ISBN13">
-        <span asp-validation-for="ISBN13" class="text-danger"></span>
-        </div class="book-master-form-group">
-        <div>
-        <label for="edition">Edition</label>
-        <input type="text" id="edition" name="Edition" class="book-master-form-input" value="@Model?.Edition">
-        <span asp-validation-for="Edition" class="text-danger"></span>
-        </div>
-        </div>
-
-        <h3 class="book-master-form-section-title">Cover Image Upload</h3>
-        <div class="book-master-form-group book-master-form-grid-span-2">
-        <label for="coverImageFile" class="required-label">Select Cover Image</label>
-        <div class="book-master-file-upload-wrapper">
-        <input type="text" class="book-master-file-input-text" readonly id="coverFileNameDisplay" value="@Model?.CoverImageUrl">
-        <input type="file" id="coverImageFile" accept="image/*" name="CoverImageFile" style="display: none;">
-        <button type="button" class="book-master-browse-button" onclick="document.getElementById('coverImageFile').click();">BROWSE</button>
-        </div>
-
-        <p id="coverUploadStatus" class="book-master-upload-status">
-        <span class="file-size-info">Max file size: 1GB</span>
-        <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
-        </p>
-        <input type="hidden" id="coverImageUrl" name="CoverImageUrl">
-        </div>
-
-        <h3 class="book-master-form-section-title">Book File Upload (e.g., PDF)</h3>
-        <div class="book-master-form-group book-master-form-grid-span-2">
-        <label for="bookFile" class="required-label">Select Book File</label>
-        <div class="book-master-file-upload-wrapper">
-        <input type="text" class="book-master-file-input-text" readonly id="bookFileNameDisplay" value="@Model?.BookFileUrl">
-        <input type="file" id="bookFile" accept=".pdf,.epub" name="BookFile" style="display: none;">
-        <button type="button" class="book-master-browse-button" onclick="document.getElementById('bookFile').click();">BROWSE</button>
-        </div>
-
-        <p id="bookFileUploadStatus" class="book-master-upload-status">
-        <span class="file-size-info">Max file size: 1GB</span>
-        <span class="supported-formats-info">Supported formats: PDF, EPUB.</span>
-        </p>
-        <input type="hidden" id="bookFileUrl" name="BookFileUrl">
-        </div>
-
-        <div class="button-container">
-        <button type="button" class="cancel-button" onclick="location.href='/Book/ListBook';">CANCEL</button>
-        <button type="submit" class="book-master-submit-button">ADD BOOK</button>
-        </div>
-        </form> *@
 
         <form asp-action="AddBook" asp-controller="Book" method="post" enctype="multipart/form-data" id="addBookForm">
             <h3 class="book-master-form-section-title">Cover Image Upload</h3>
@@ -562,9 +413,9 @@
                 const tag = document.createElement('div');
                 tag.className = 'selected-tag';
                 tag.innerHTML = `
-                            ${itemText}
-                            <span class="remove-tag" data-value="${itemValue}">×</span>
-                        `;
+                                    ${itemText}
+                                    <span class="remove-tag" data-value="${itemValue}">×</span>
+                                `;
                 selectedContainer.appendChild(tag);
 
                 tag.querySelector('.remove-tag').addEventListener('click', () => {
@@ -607,7 +458,7 @@
                     console.warn(`Failed to fetch from ${fetchUrl}, using fallback items.`);
                     itemsToPopulate = fallbackItems;
                 } else {
-                    showStatusModal(`Server error fetching data from ${fetchUrl} and no fallback provided.`, 'Error');
+                    toastr.error(`Server error fetching data from ${fetchUrl} and no fallback provided.`, 'Error');
                     return;
                 }
 
@@ -620,9 +471,9 @@
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'dropdown-item';
                     optionDiv.innerHTML = `
-                                <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
-                                <label for="${dropdownId}-${itemValue}">${itemName}</label>
-                            `;
+                                        <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
+                                        <label for="${dropdownId}-${itemValue}">${itemName}</label>
+                                    `;
                     dropdown.appendChild(optionDiv);
                 });
 
@@ -651,9 +502,9 @@
                         const optionDiv = document.createElement('div');
                         optionDiv.className = 'dropdown-item';
                         optionDiv.innerHTML = `
-                                    <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
-                                    <label for="${dropdownId}-${itemValue}">${itemName}</label>
-                                `;
+                                            <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
+                                            <label for="${dropdownId}-${itemValue}">${itemName}</label>
+                                        `;
                         dropdown.appendChild(optionDiv);
                     });
 
@@ -670,7 +521,7 @@
                         });
                     }
                 } else {
-                    showStatusModal(`Unexpected error occurred while initializing dropdown for ${containerId}: ${error.message}`, 'Error');
+                    toastr.error(`Unexpected error occurred while initializing dropdown for ${containerId}: ${error.message}`, 'Error');
                 }
             }
         }
@@ -702,7 +553,7 @@
         const publicationDateInput = document.getElementById('publicationDate');
         if (publicationDateInput) {
             publicationDateInput.addEventListener('click', () => {
-                
+
                 publicationDateInput.showPicker();
             });
         } else {
@@ -832,13 +683,7 @@
                 return;
             }
 
-            // Show confirmation modal
             addBookConfirmationModal.show();
-            // document.getElementById('addBookForm')._currentSubmitEvent = event;
-            // form._currentSubmitEvent = event;
-
-            // Store the current form event for later use after confirmation
-            // document.getElementById('addBookForm')._currentSubmitEvent = event;
         });
 
 
@@ -849,10 +694,8 @@
 
             const submitButton = form.querySelector('.book-master-submit-button');
 
-            // console.log(form)
-        @* const submitButton = form.querySelector('.add-book-submit-button'); *@
 
-                    const coverImageFile = document.getElementById('coverImageFile').files[0];
+            const coverImageFile = document.getElementById('coverImageFile').files[0];
             const bookFile = document.getElementById('bookFile').files[0];
 
             const coverUploadStatus = document.getElementById('coverUploadStatus');
@@ -918,12 +761,6 @@
                 if (response.ok) {
                     toastr.success('Book added successfully!');
                     form.reset();
-                    document.getElementById('coverFileNameDisplay').value = '';
-                    document.getElementById('bookFileNameDisplay').value = '';
-                    // Optionally clear multi-select tags if needed after reset
-                    document.getElementById('selectedGenres').innerHTML = '';
-
-                    // Redirect after a short delay
                     setTimeout(() => {
                         window.location.href = '/Book/ListBook';
                     }, 1500);
@@ -942,7 +779,7 @@
 
             } catch (error) {
                 console.error('Submission error:', error);
-                showStatusModal(`An unexpected error occurred during file upload or form submission: ${error.message}. Please try again.`, 'Error');
+                toastr.error(`An unexpected error occurred during file upload or form submission: ${error.message}. Please try again.`, 'Error');
 
                 // Rollback: delete uploaded files from Firebase
                 if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
