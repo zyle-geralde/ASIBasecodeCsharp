@@ -178,7 +178,10 @@
                                     <td>@u.UserName</td>
                                     <td>@u.Email</td>
                                     <td>
-                                        <div class="action-buttons">
+                                        <div class="action-buttons justify-content-center align-items-center">
+                                            <a class="action-icon-button text-secondary" onclick="window.location.href='@Url.Action("ViewUserProfile", "PersonProfile", new { id = u.Id })'" style="cursor: pointer">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
                                             <button type="button" class="btn btn-icon text-danger"
                                                     onclick="setupDeleteModal(this)"
                                                     data-user-id="@u.Id"

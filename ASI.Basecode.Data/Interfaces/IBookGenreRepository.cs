@@ -1,4 +1,5 @@
 ﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,8 @@ namespace ASI.Basecode.Data.Interfaces
         Task<List<Book>> GetBooksByGenre(); 
 
         Task<BookGenre> GetBookGenreByName(string genre_name);
+
+        Task<PaginatedList<BookGenre>> GetGenreQueried(GenreQueryParams? queryParams = null);
 
     }
 }
