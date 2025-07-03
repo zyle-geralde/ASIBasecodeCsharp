@@ -1,4 +1,6 @@
-﻿using ASI.Basecode.Services.ServiceModels;
+﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
+using ASI.Basecode.Services.ServiceModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +21,7 @@ namespace ASI.Basecode.Services.Interfaces
         Task DeleteAuthor(string author_id);
 
         Task<List<BookViewModel>> GetBooksByAuthor(string author_id);
+        Task<PaginatedList<Author>> GetAuthorQueried(AuthorQueryParams queryParams);
 
     }
 }

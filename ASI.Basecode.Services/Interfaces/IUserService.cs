@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Services.ServiceModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace ASI.Basecode.Services.Interfaces
         Task<string> SendOTPForResetPassword(string email);
 
         Task UpdatePassword(UserViewModel user);
+        
 
     }
 }
