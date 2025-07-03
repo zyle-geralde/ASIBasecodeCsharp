@@ -353,23 +353,32 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-0">
-                <form id="updatePassForm">
+                <form id="updatePassForm" asp-controller="PersonProfile" asp-action="ChangePassword" method="post">
+                    <input asp-for="Id" type="hidden" />
+
+                
+                      <div class="mb-3">
+                          <label asp-for="ChangePassword.CurrentPassword" class="form-label">Current Password</label>
+                          <input asp-for="ChangePassword.CurrentPassword" class="form-control" placeholder="Enter current password" />
+                          <span asp-validation-for="ChangePassword.CurrentPassword" class="text-danger"></span>
+                        </div>
                     <div class="mb-3">
-                        <label for="currentPass" class="form-label">Current Password</label>
+                        <label for="newPass" class="form-label">New Password</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="currentPass" >
+                            <input type="password" class="form-control" id="newPass" placeholder="Text" asp-for="ChangePassword.NewPassword">
+                            <span asp-validation-for="ChangePassword.NewPassword" class="text-danger"></span>
+                            <button class="btn btn-outline-secondary password-toggle" type="button" data-target="newPass">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="newPass" class="form-label">New Password</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="newPass" >
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirmnewPass" class="form-label">Confirm New Password</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="confirmnewPass" >
+                            <input type="password" class="form-control" id="confirmnewPass" placeholder="Text" asp-for="ChangePassword.ConfirmPassword">
+                            <button class="btn btn-outline-secondary password-toggle" type="button" data-target="confirmnewPass">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="text-center">
