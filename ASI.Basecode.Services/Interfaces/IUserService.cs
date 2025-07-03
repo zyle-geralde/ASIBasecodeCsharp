@@ -25,7 +25,7 @@ namespace ASI.Basecode.Services.Interfaces
         Task<OtpViewModel> GetUserbyEmail(string email);
         Task<OtpViewModel> RegenerateOtpAsync(string email);
         Task<UserViewModel?> GetByEmailForEdit(string email);
-
+        Task<bool> ChangePassword(int userId, string currentPassword, string newPassword);
 
         Task<string> SendOTPForResetPassword(string email);
 

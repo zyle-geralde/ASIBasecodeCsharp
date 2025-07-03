@@ -21,6 +21,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public List<ReviewViewModel> Reviews { get; set; } = new();
         public string Username { get; set; }
         public string Email { get; set; }
+        public ChangePasswordViewModel ChangePassword { get; set; }
 
     }
 }
