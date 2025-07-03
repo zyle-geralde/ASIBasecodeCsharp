@@ -125,12 +125,6 @@ namespace ASI.Basecode.Data.Repositories
             await UnitOfWork.SaveChangesAsync();
         }
 
-        public async Task UpdatePassword(User user)
-        {
-            GetDbSet<User>().Update(user);
-            await UnitOfWork.SaveChangesAsync();
-        }
-
         public async Task<bool> ChangePassword(int id, string currentPasswordHash, string newPasswordHash)
         {
             var user = await GetDbSet<User>().SingleOrDefaultAsync(u => u.Id == id);
@@ -142,6 +136,11 @@ namespace ASI.Basecode.Data.Repositories
 
             await UnitOfWork.SaveChangesAsync();
             return true;
+        }
+        public async Task UpdatePassword(User user)
+        {
+            GetDbSet<User>().Update(user);
+            await UnitOfWork.SaveChangesAsync();
         }
     }
 }
