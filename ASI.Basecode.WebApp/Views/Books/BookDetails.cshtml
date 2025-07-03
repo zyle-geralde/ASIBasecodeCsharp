@@ -4,6 +4,19 @@
 *@
 @model ASI.Basecode.Services.ServiceModels.BookViewModel;
 @{
+    var current_author_details = ViewBag.AuthorDetails as ASI.Basecode.Services.ServiceModels.AuthorViewModel;
+    string authorImage = "";
+    string authorName = "";
+    string authorDesription = "";
+
+    if (current_author_details != null)
+    {
+        authorImage = current_author_details?.AuthorImageUrl ?? ViewBag.AuthorDetails as string ?? "";
+        authorName = current_author_details?.AuthorName ?? ViewBag.AuthorDetails as string ?? "";
+        authorDesription = current_author_details?.AuthorDescription ?? ViewBag.AuthorDetails as string ?? "";
+    }
+}
+@{
     ViewData["Title"] = "BookDetails";
     Layout = "_AdminSidebarLayout";
     
@@ -332,6 +345,43 @@
                     </div>
                 </div>
             </section>
+
+
+            <!--Author Details-->
+            <section id="metadata" class="book-detail-section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h2>Author Details</h2>
+                </div>
+                <div class="section-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-barcode"></i> Iamge
+                            </div>
+                            <img src = @authorImage style="height:50px; width:50px"/>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-barcode"></i> Author Name
+                            </div>
+                            <div class="info-value">@authorName</div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-calendar-plus"></i> Author Description
+                            </div>
+                            <div class="info-value">@authorDesription</div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
 
             <!-- Reviews Section -->
             <section id="reviews" class="book-detail-section">
