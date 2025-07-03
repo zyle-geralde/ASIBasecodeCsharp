@@ -15,6 +15,33 @@
 <div class="main-grid">
     <!-- Left Column -->
     <div class="left-column">
+               <form asp-controller="Book" asp-action="SearchResults" method="get" class="mb-4">
+          <div class="input-group">
+            <input
+              type="search"
+              name="searchTerm"
+              value="@(ViewData["CurrentSearch"] ?? "")"
+              placeholder="Title, subtitle, author…"
+              class="form-control"
+              aria-label="Search books" />
+            <button class="btn btn-primary" type="submit">
+              Search
+            </button>
+          </div>
+        </form>
+@* <form asp-controller="Book"
+      asp-action="SearchResults"
+      method="get"
+      class="mb-4 d-flex align-items-center gap-3">
+  <input type="text"
+         name="searchTerm"
+         value="@(ViewData["CurrentSearch"] ?? "")"
+         placeholder="Title, subtitle, author…"
+         class="form-control flex-grow-1" />
+  <button type="submit" class="btn btn-primary">Search</button>
+</form> *@
+
+
         <!-- What Do You Feel Like Reading? Section -->
         <section class="section-card-genre">
             <h2>What Do You Feel Like Reading?</h2>
@@ -36,60 +63,7 @@
                 }
             </div>
         </section>
-        @* <ul>
-        <!-- View Books Top Rated By Users? Section -->
-        <section class="section-card">
-        <div class="book-list-header">
-        <h2>View Books Top Rated By Users?</h2>
-        <a asp-controller="Book" asp-action="SearchResults" asp-route-sortOrder="rating" asp-route-sortDescending="true" asp-route-category="Top Rated">See More</a>
-        </div>
-        @foreach (var book in Model.TopRatedBooks)
-        {
-        <a class="book-card"
-        href="/Book/BookDetails/@book.BookId">
-        <img src="@book.CoverImage" alt="@book.Title Book Cover">
-        <div class="book-card-content">
-        <h3>@book.Title</h3>
-        <p class="author">by @book.Author</p>
-        <p class="description"><i>@book.Description</i></p>
-        <div class="star-rating">
-        <div class="stars">
-        @for (int i = 0; i < 5; i++)
-        {
-        if (i < book.AverageRating)
-        {
-        <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-        }
-        else
-        {
-        <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-        }
-        }
-        </div>
-        <span class="rating-text">@book.AverageRating/5</span>
-        </div>
-        <div class="genre-tags">
-        <span class="genre-tag">@book.GenreList</span>
-
-        @* @if (!book.GenreList.Any())
-        {
-        @foreach (var tag in book.GenreList)
-        {
-        <span class="genre-tag @tag">@tag</span>
-        }
-        }
-        else
-        {
-        <p>stay a while</p>
-        }
-
-        </div>
-        </div>
-        </a>
-        }
-        </section>
-        <ul> *@
-
+       
         <section class="section-card">
             <div class="book-list-header">
                 <h2>View Books Top Rated By Users?</h2>
@@ -222,46 +196,7 @@
             </div>
 
         </section>
-        <!-- View New Books Section -->
-        @* <section class="section-card">
-        <div class="book-list-header">
-        <h2>View New Books</h2>
-        <a asp-controller="Book" asp-action="SearchResults" asp-route-sortOrder="uploaddate" asp-route-sortDescending="true" asp-route-category="New Books">See More</a>
-        </div>
-        @foreach (var book in Model.NewBooks)
-        {
-        <a class="book-card"
-        href="/Book/BookDetails/@book.BookId">
-        <img src="@book.CoverImage" alt="@book.Title Book Cover">
-        <div class="book-card-content">
-        <h3>@book.Title</h3>
-        <p class="author">by @book.Author</p>
-        <p class="description"><i>@book.Description</i></p>
-        <div class="star-rating">
-        <div class="stars">
-        @for (int i = 0; i < 5; i++)
-        {
-        if (i < book.AverageRating)
-        {
-        <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-        }
-        else
-        {
-        <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-        }
-        }
-        </div>
-        <span class="rating-text">@book.AverageRating/5</span>
-        </div>
-
-        <div class="genre-tags">
-        <span class="">@book.GenreList</span>
-
-        </div>
-        </div>
-        </a>
-        }
-        </section> *@
+       
     </div>
 
     <!-- Right Column - Featured Reads -->
@@ -319,50 +254,6 @@
             </a>
         }
     </div>
-
-    @* <div class="featured-column">
-    <div class="book-list-header">
-    <h2>Featured Reads</h2>
-    <a href="#">See More</a>
-    </div>
-
-    @foreach (var book in featuredBooks)
-    {
-    <div class="featured-book-card">
-    <img src="@book.ImageUrl" alt="@book.Title Book Cover">
-    <div class="featured-book-card-content">
-    <h3>@book.Title</h3>
-    <p class="author">by @book.Author</p>
-    <p class="description">@book.Description</p>
-    <div class="star-rating featured-star-rating">
-    <div class="stars">
-    @for (int i = 0; i < 5; i++)
-    {
-    if (i < book.Rating)
-    {
-    <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-    }
-    else
-    {
-    <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-    }
-    }
-    </div>
-    </div>
-
-    <div class="genre-tags">
-    @* <spa class="genre-tag">@book.GenreList</spa> *@
-
-    @* @foreach (var tag in book.GenreNames)
-    {
-    <span class="genre-tag">@tag</span>
-    }
-    </div>
-
-    </div>
-    </div>
-    }
-    </div> *@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

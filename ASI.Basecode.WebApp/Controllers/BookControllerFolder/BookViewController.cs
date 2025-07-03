@@ -183,6 +183,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
                 var queryParams = new BookQueryParams
                 {
+                    SearchAuhtor = searchTerm ?? "",
                     SearchTerm = searchTerm,
                     Author = author,
                     Rating = rating,
