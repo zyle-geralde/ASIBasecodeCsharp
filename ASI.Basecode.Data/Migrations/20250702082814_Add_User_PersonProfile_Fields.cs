@@ -8,14 +8,6 @@ namespace ASI.Basecode.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "ProfileID",
-                table: "PersonProfiles",
-                type: "varchar(50)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(450)");
-
             migrationBuilder.AddUniqueConstraint(
                 name: "AK_Users_Email",
                 table: "Users",
@@ -39,14 +31,6 @@ namespace ASI.Basecode.Data.Migrations
             migrationBuilder.DropUniqueConstraint(
                 name: "AK_Users_Email",
                 table: "Users");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "ProfileID",
-                table: "PersonProfiles",
-                type: "nvarchar(450)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "varchar(50)");
         }
     }
 }
