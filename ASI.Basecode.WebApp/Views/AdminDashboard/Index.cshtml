@@ -67,10 +67,10 @@
         <!-- Newly Added Books Section -->
         <section class="section-card admin-carousel-section">
             <div class="book-list-header">
-                <h2>View New Books</h2>
+                <h2>Newly Added Books</h2>
                 <div class="see-more-link-wrapper">
                     <a asp-controller="Book"
-                       asp-action="SearchResults"
+                       asp-action="ListBook"
                        asp-route-sortOrder="uploaddate"
                        asp-route-sortDescending="true"
                        asp-route-category="New Books">See More</a>
@@ -138,10 +138,10 @@
         <!-- Top 10 Rated Books Section -->
         <section class="section-card admin-carousel-section">
             <div class="book-list-header">
-                <h2>View Books Top Rated By Users?</h2>
+                <h2>Top 10 Rated Books</h2>
                 <div class="see-more-link-wrapper">
                     <a asp-controller="Book"
-                       asp-action="SearchResults"
+                       asp-action="ListBook"
                        asp-route-sortOrder="rating"
                        asp-route-sortDescending="true"
                        asp-route-category="Top Rated">See More</a>
