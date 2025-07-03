@@ -31,18 +31,18 @@
 
 .top-border 
 {
-    height: 2px; 
-    background-color: #7B68EE;
-    margin-bottom: 5px; 
+    height: 2px;
+    background-color: #657271;
+    margin-bottom: 5px;
 }
 
 .site-footer .container-footer .row 
-{ 
+{
     height: 100px;
     width: 100%;
     padding: 30px;
     padding-bottom: 80px;
-    padding-top: 20px; 
+    padding-top: 20px;
 }
 
 
@@ -58,27 +58,27 @@
 {
     font-size: 1em;
     color: #E0E0E0;
-    margin-bottom: 8px; 
+    margin-bottom: 8px;
     padding-left: 75px;
 }
 
 .social-icons-container 
 {
     display: flex;
-    gap: 20px; 
+    gap: 20px;
 }
 
 .social-icon-circle 
 {
-    width: 30px; 
-    height: 30px; 
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     border: 1px solid #E0E0E0;
     display: flex;
     justify-content: center;
     align-items: center;
     color: #E0E0E0;
-    font-size: 0.9em; 
+    font-size: 0.9em;
     transition: all 0.3s ease;
     text-decoration: none;
 }
@@ -97,14 +97,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%; 
+    height: 100%;
 }
 
 .product-of-text 
 {
-    font-size: 0.8em; 
+    font-size: 0.8em;
     color: #C0C0C0;
     margin-bottom: 2px;
+    display: block;
 }
 
 .product-logo 
@@ -112,6 +113,7 @@
     max-width: 80px;
     height: auto;
     filter: brightness(0) invert(1);
+    display: block;
 }
 
 /* Right Section */
@@ -120,36 +122,309 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    height: 100%; 
+    height: 100%;
 }
 
 .copyright-text 
 {
-    font-size: 0.8em; 
+    font-size: 0.8em;
     color: #E0E0E0;
 }
 
 
-@media (max-width: 767.98px) 
+@media (min-width: 320px) and (max-width: 400px) 
 {
-    .footer-left-section,
-    .footer-middle-section,
-    .footer-right-section 
+    .site-footer 
     {
-        text-align: center !important;
-        align-items: center !important;
-        margin-bottom: 10px;
+        margin-top: 50px;
     }
 
+        .site-footer .container-footer .row 
+        {
+            padding: 15px;
+        }
 
-    .footer-right-section 
+    .contact-us-heading 
     {
-        margin-bottom: 0;
+        padding-left: 25px;
+        font-size: 12px;
+        padding-top: 10px;
     }
 
     .social-icons-container 
     {
-        justify-content: center;
-        margin-top: 5px;
+        gap: 5px;
+    }
+
+    .social-icon-circle 
+    {
+        width: 20px;
+        height: 20px;
+    }
+
+    .product-of-text 
+    {
+        margin-left: auto;
+    }
+
+    .product-logo 
+    {
+        max-width: 65px;
+        margin-bottom: 50px;
+        margin-left: auto;
+    }
+
+    .copyright-text 
+    {
+        font-size: 0.7em;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: auto;
+    }
+
+    .footer-middle-section 
+    {
+        height: 0;
+    }
+
+    .footer-right-section 
+    {
+        height: 0;
     }
 }
+
+
+@media (min-width: 401px) and (max-width: 600px) 
+{
+    .site-footer 
+    {
+        margin-top: 50px;
+    }
+
+
+    .contact-us-heading
+    {
+        padding-left: 25px;
+        font-size: 12px;
+        padding-top: 10px;
+    }
+
+    .social-icons-container 
+    {
+        gap: 5px;
+    }
+
+    .social-icon-circle 
+     {
+        width: 20px;
+        height: 20px;
+    }
+
+    .product-of-text 
+    {
+        margin-left: auto;
+        margin-right: 50px;
+    }
+
+    .product-logo 
+    {
+        max-width: 65px;
+        margin-bottom: 75px;
+        margin-left: auto;
+        margin-right: 50px;
+    }
+
+    .copyright-text 
+    {
+        font-size: 0.7em;
+        margin-left: auto;
+        margin-top: auto;
+    }
+}
+
+
+
+@media (min-width: 601px) and (max-width: 767px) 
+{
+    .site-footer 
+     {
+        margin-top: 50px;
+    }
+
+    .contact-us-heading 
+    {
+        padding-left: 45px;
+    }
+
+    .social-icons-container 
+    {
+        gap: 5px;
+    }
+
+    .product-of-text {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .product-logo 
+    {
+        max-width: 70px;
+        margin-bottom: 50px;
+        margin-left: auto;
+        margin-right: auto;
+
+    }
+
+    .copyright-text 
+    {
+        font-size: 0.8em;
+        margin-bottom: 45px;
+    }
+}
+
+
+@media (min-width: 768px) and (max-width: 1023px) 
+{
+
+    .site-footer .container-footer .row 
+    {
+        height: 90px;
+        padding: 25px;
+        padding-bottom: 60px;
+        padding-top: 15px;
+    }
+
+    .contact-us-heading 
+    {
+        font-size: 1em;
+        padding-left: 40px;
+    }
+
+    .social-icons-container 
+    {
+        gap: 18px;
+    }
+
+    .social-icon-circle 
+    {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9em;
+    }
+
+    .product-of-text 
+    {
+        font-size: 0.8em;
+    }
+
+    .product-logo 
+    {
+        max-width: 80px;
+    }
+
+    .copyright-text 
+    {
+        font-size: 0.8em;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) 
+{
+    .site-footer .container-footer .row 
+    {
+        height: 100px;
+        padding: 30px;
+        padding-bottom: 70px;
+        padding-top: 20px;
+    }
+
+    .contact-us-heading 
+    {
+        font-size: 1em;
+        padding-left: 60px;
+    }
+
+    .social-icons-container 
+    {
+        gap: 20px;
+    }
+
+    .social-icon-circle 
+    {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9em;
+    }
+
+    .product-of-text 
+    {
+        font-size: 0.8em;
+    }
+
+    .product-logo 
+    {
+        max-width: 80px;
+        margin-bottom: 5px;
+    }
+
+    .copyright-text 
+    {
+        font-size: 0.8em;
+        margin-bottom: 5px;
+    }
+}
+
+@media (min-width: 1440px) 
+{
+    .site-footer 
+    {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+        .site-footer .container-footer .row 
+        {
+            height: 100px;
+            padding: 30px;
+            padding-bottom: 80px;
+            padding-top: 20px;
+        }
+
+    .contact-us-heading 
+    {
+        font-size: 1em;
+        padding-left: 75px;
+    }
+
+    .social-icons-container 
+    {
+        gap: 20px;
+    }
+
+    .social-icon-circle 
+    {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9em;
+    }
+
+    .product-of-text 
+    {
+        font-size: 0.8em;
+    }
+
+    .product-logo 
+    {
+        max-width: 80px;
+        margin-bottom: 5px;
+    }
+
+    .copyright-text 
+    {
+        font-size: 0.8em;
+        margin-bottom: 5px;
+    }
+}
+
+

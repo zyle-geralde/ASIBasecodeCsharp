@@ -59,7 +59,8 @@ header
     display: none;
 }
 
-header .logosec {
+header .logosec 
+{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -71,7 +72,8 @@ header .logosec {
     height: 100%;
 }
 
-.main-header-search-area {
+.main-header-search-area 
+{
     flex-grow: 1;
     display: flex;
     justify-content: center;
@@ -101,7 +103,6 @@ header .logosec {
     align-items: center;
     width: 100%;
     max-width: 450px;
-    /*border: 1px solid var(--search-border-color);*/
     border-radius: 25px;
     background-color: var(--header-background);
     padding: 5px 15px;
@@ -149,7 +150,8 @@ header .logosec {
     }
 
 
-.username-display {
+.username-display 
+{
     color: #8b7e6e;
     font-size: 16px;
     font-weight: 500;
@@ -453,10 +455,113 @@ header .logosec {
     border-radius: 4px;
 }
 
+@media (max-width: 767px) 
+{
+    .username-display 
+    {
+        display: none;
+    }
+}
 
-/*------------------Original Styles-----------------*/
-/*----------wala sa nako gi delete since naay searchbar nya wala pako ka trace sa unsa na nga search bar----------*/
-/*.logo {
+@media (min-width: 515px) and (max-width: 545px)
+{
+    header 
+    {
+        justify-content: space-between;
+    }
+        header .logosec
+        {
+            padding: 20px;
+        }
+    .main-header-search-area
+    {
+        width: 100%;
+    }
+
+    .search-container 
+    {
+        width: 100%;
+    }
+}
+
+@media (min-width: 319px) and (max-width: 514px) 
+{
+    header 
+    {
+        min-width: 320px;
+        max-width: 514px;
+        height: 70px;
+        margin: 0 auto;
+        padding: 0;
+        justify-content: space-between;
+    }
+
+        header .logosec 
+        {
+            gap: 5px;
+            padding: 0 10px;
+            border-right: 2px solid #e0e0e0;
+        }
+
+    .main-header-search-area 
+    {
+        padding: 0 5px;
+        border-right: 2px solid #e0e0e0;
+    }
+
+    .search-container 
+    {
+        max-width: 160px; 
+        padding: 2px 1px;
+        width: 100%;
+    }
+
+    .main-search-icon 
+    {
+        font-size: 12px;
+        margin-right: 3px;
+    }
+
+    .search-input 
+    {
+        font-size: 10px;
+        margin-left: 5px;
+    }
+
+        .search-input::placeholder 
+        {
+            font-size: 10px;
+        }
+
+    .profile-dropdown-trigger 
+    {
+        padding: 2px 5px;
+        gap: 3px;
+    }
+
+    .dp 
+    {
+        height: 25px;
+        width: 25px;
+    }
+
+    .dpicn 
+    {
+        height: 20px;
+        width: 20px;
+    }
+
+    .book-icon 
+    {
+        width: 35px;
+    }
+}
+
+
+
+    /*------------------Original Styles-----------------*/
+    /*----------wala sa nako gi delete since naay searchbar nya wala pako ka trace sa unsa na nga search bar----------*/
+    /*.logo {
     font-size: 27px;
     font-weight: 600;
     color: rgb(47, 141, 70);

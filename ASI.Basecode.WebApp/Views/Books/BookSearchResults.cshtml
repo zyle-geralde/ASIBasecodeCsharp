@@ -36,15 +36,17 @@
 <div class="search-results-container">
     <!-- Left Side - Scrollable Book Results -->
     <div class="search-results-left">
-        <div class="search-header">
-            <h2>Results for: @categoryTitle</h2>
-            <p>Displaying @Model.PageIndex of @Model.TotalPages out of @Model.TotalCount results</p>
-        </div>
+        <div class="sticky-header-wrapper">
+            <div class="search-header">
+                <h2>Results for: @categoryTitle</h2>
+                <p>Displaying @Model.PageIndex of @Model.TotalPages out of @Model.TotalCount results</p>
+            </div>
 
-        <div class="search-filters">
-            <div class="filter-group">
-                <button class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
-                <button class="filter-btn">Filter <i class="fas fa-caret-down"></i></button>
+            <div class="search-filters">
+                <div class="filter-group">
+                    <button class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
+                    <button class="filter-btn">Filter <i class="fas fa-caret-down"></i></button>
+                </div>
             </div>
         </div>
 

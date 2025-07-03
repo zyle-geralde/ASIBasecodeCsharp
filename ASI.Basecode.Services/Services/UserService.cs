@@ -513,6 +513,63 @@ namespace ASI.Basecode.Services.Services
             return user_otp;
         }
 
+        public async Task<string> SendOTPForResetPassword(string email)
+        {
+            var user = await _repository.FindUserByEmail(email);
+
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ArgumentException("Email is empty for OTP regeneration.");
+            }
+            if(user == null)
+            {
+                throw new ArgumentException("Email not found for OTP regeneration.");
+            }
+            if (user.IsEmailVerified == false)
+            {
+                throw new ArgumentException("Email is not verified");
+            }
+
+            try
+            {
+                string generatedOtp = await GenerateOtpCode(email);
+                return generatedOtp;
+            }catch(Exception ex)
+            {
+                throw;
+            }
+
+
+        }
+
+        public async Task UpdatePassword(UserViewModel user)
+        {
+            if(user == null)
+            {
+                throw new ArgumentException("User is empty");
+            }
+
+            var foundUser = await _repository.FindUserByEmail(user.Email);
+
+            if (foundUser == null) {
+                throw new ArgumentException("User could not be found");
+            }
+
+            try
+            {
+
+                foundUser.Password = PasswordManager.EncryptPassword(user.Password);
+                
+
+                await _repository.UpdatePassword(foundUser);
+            }
+            catch (Exception ex) {
+                throw;
+            }
+
+
+        }
+
         public async Task<bool> ChangePassword(int id, string currentPassword, string newPassword)
         {
             var user = await _repository.GetUserById(id);
