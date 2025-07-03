@@ -200,63 +200,6 @@
                 </div>
                 <partial name="_PaginationPartial" view-data='@new ViewDataDictionary(ViewData) { { "RouteValues", routeValues } }' />
             </div>
-
-            
-            
-        @*    <div class="custom-pagination-container">
-                <div class="custom-pagination">
-                    <!-- First page button -->
-                    <a class="page-btn @(Model.PageIndex > 2 ? "" : "disabled")"
-                       asp-all-route-data="@(Model.PageIndex > 2 ? new Dictionary<string,string>(routeValues) { ["page"] = "1" } : null)">
-                        <i class="fas fa-angle-double-left"></i>
-                    </a>
-                    
-                    <!-- Previous page button -->
-                    <a class="page-btn @(Model.HasPreviousPage ? "" : "disabled")"
-                       asp-all-route-data="@(Model.HasPreviousPage ? new Dictionary<string,string>(routeValues) { ["page"] = (Model.PageIndex - 1).ToString() } : null)">
-                        <i class="fas fa-angle-left"></i>
-                    </a>
-                    
-                    <!-- Page numbers -->
-                    @{
-                        var startPage = Math.Max(1, Model.PageIndex - 2);
-                        var endPage = Math.Min(Model.TotalPages, startPage + 4);
-                        
-                        // Ensure we show 5 page buttons if possible
-                        if (endPage - startPage < 4 && Model.TotalPages > 4)
-                        {
-                            if (startPage == 1)
-                            {
-                                endPage = Math.Min(5, Model.TotalPages);
-                            }
-                            else
-                            {
-                                startPage = Math.Max(1, endPage - 4);
-                            }
-                        }
-                        
-                        for (int i = startPage; i <= endPage; i++)
-                        {
-                            <a class="page-btn @(i == Model.PageIndex ? "active" : "")"
-                               asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = i.ToString() })">
-                                @i
-                            </a>
-                        }
-                    }
-                    
-                    <!-- Next page button -->
-                    <a class="page-btn @(Model.HasNextPage ? "" : "disabled")"
-                       asp-all-route-data="@(Model.HasNextPage ? new Dictionary<string,string>(routeValues) { ["page"] = (Model.PageIndex + 1).ToString() } : null)">
-                        <i class="fas fa-angle-right"></i>
-                    </a>
-                    
-                    <!-- Last page button -->
-                    <a class="page-btn @(Model.PageIndex < Model.TotalPages - 1 ? "" : "disabled")"
-                       asp-all-route-data="@(Model.PageIndex < Model.TotalPages - 1 ? new Dictionary<string,string>(routeValues) { ["page"] = Model.TotalPages.ToString() } : null)">
-                        <i class="fas fa-angle-double-right"></i>
-                    </a>
-                </div>
-            </div> *@
         </div>
     </div>
 </div>

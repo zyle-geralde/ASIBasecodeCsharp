@@ -89,6 +89,7 @@
     background-color: #fff;
     border-radius: 8px;
     overflow: hidden;
+    border-bottom: 1px solid #e0e0e0;
 }
 
    
@@ -106,9 +107,9 @@
         text-transform: uppercase;
     }
 
-    
+
     .data-table tbody tr {
-        border-bottom: 1px solid #E5E7EB;
+        border-bottom: 1px solid #e0e0e0;
     }
 
         .data-table tbody tr:last-child {

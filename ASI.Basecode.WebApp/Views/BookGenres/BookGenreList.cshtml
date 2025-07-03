@@ -47,122 +47,128 @@
         </p>
     </div>
 
-
-    @*--------------------------------------For Searching sort and filter---------------------------------------------*@
-    <form asp-action="ListGenre" asp-controller="BookGenre" method="get" class="d-flex align-items-center mb-3" id="searchFilterForm">
-        <input type="text"
-               name="searchTerm"
-               value="@currentSearch"
-               class="form-control me-2"
-               placeholder="Search users…" />
-
-        <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
-        <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
-
-        <button type="submit" class="btn btn-primary">Apply</button>
-
-        <button type="button" id="sortButton" class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
-
-    </form>
-    <div class="sort-popup card shadow" id="sortPopup" style="display: none;">
-        <div class="card-header bg-secondary text-white justify-center">
-            <h6 class="mb-0" style="margin-top: 6px;">Sort By:</h6>
-        </div>
+    <div class="card">
         <div class="card-body">
-            <div class="mb-3">
-                <label class="form-label fw-bold">Sort By:</label>
-                <div class="ms-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="popupSortOrder" id="sortName" value="Name" @(currentSort == "Name" ? "checked" : "")>
-                        <label class="form-check-label" for="sortId">Name</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="popupSortOrder" id="sortDate" value="CreatedTime" @(currentSort == "CreatedTime" ? "checked" : "")>
-                        <label class="form-check-label" for="sortDate">Created Date</label>
-                    </div>
+            @*--------------------------------------For Searching sort and filter---------------------------------------------*@
+            <form asp-action="ListGenre" asp-controller="BookGenre" method="get" class="d-flex align-items-center mb-3" id="searchFilterForm">
+                <input type="text"
+                       name="searchTerm"
+                       value="@currentSearch"
+                       class="form-control me-2"
+                       placeholder="Search users…" />
+
+                <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
+                <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
+
+                <button type="submit" class="btn btn-primary">Apply</button>
+
+                <button type="button" id="sortButton" class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
+
+            </form>
+            <div class="sort-popup card shadow" id="sortPopup" style="display: none;">
+                <div class="card-header bg-secondary text-white justify-center">
+                    <h6 class="mb-0" style="margin-top: 6px;">Sort By:</h6>
                 </div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-bold">Direction:</label>
-                <div class="ms-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="popupSortDirection" id="sortAsc" value="false" @(!currentSortDescending ? "checked" : "")>
-                        <label class="form-check-label" for="sortAsc">Ascending <i class="fas fa-arrow-up"></i></label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="popupSortDirection" id="sortDesc" value="true" @(currentSortDescending ? "checked" : "")>
-                        <label class="form-check-label" for="sortDesc">Descending <i class="fas fa-arrow-down"></i></label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-outline-secondary" style="margin-right: 10px" id="closeSortButton">Cancel</button>
-                <button type="button" class="btn btn-secondary me-2" id="applySortButton">Apply</button>
-            </div>
-        </div>
-    </div>
-    @*------------------------------------------------------------For searching sort and filter-----------------------------------------------*@
-
-    @if (Model != null && Model.Any())
-    {
-        <div class="table-responsive">
-            <table class="data-table table table-hover">
-                <thead>
-                    <tr>
-                        <th>Cover</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <td style="display:none" id="genre-id"></td>
-                <td style="display:none" id="cover-url"></td>
-                    @foreach (var genre in Model)
-                    {
-                    <tr>
-                        <td>
-                                @if (!string.IsNullOrWhiteSpace(genre.GenreImageUrl))
-                                {
-                                <img src="@genre.GenreImageUrl" alt="Cover Image" class="cover-image" />
-                                }
-                                else
-                                {
-                                <span>No Image</span>
-                                }
-                        </td>
-                        <td>@genre.GenreName</td>
-                        <td>@genre.GenreDescription</td>
-                        <td>
-                            <div class="d-flex gap-2">
-                        <a asp-controller="Book"
-                                   asp-action="ListBook"
-                                   asp-route-genreFilter="@genre.BookGenreId"
-                                   asp-route-category="@genre.GenreName"Add commentMore actions
-                                   class="action-icon-button text-secondary">
-                                  <i class="fas fa-info-circle"></i>
-                                  </a>
-                                <a href="/BookGenre/EditGenre/@genre.BookGenreId" class="action-icon-button text-primary">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button type="button" class="action-icon-button text-danger" data-genre-id="@genre.BookGenreId" data-cover-url=@genre.GenreImageUrl id="deleteButton">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Sort By:</label>
+                        <div class="ms-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortName" value="Name" @(currentSort == "Name" ? "checked" : "")>
+                                <label class="form-check-label" for="sortId">Name</label>
                             </div>
-                        </td>
-                    </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    else
-    {
-        <p class="empty-message">No books found. Why not add some?</p>
-    }
-    <partial name="_PaginationPartial" view-data='@new ViewDataDictionary(ViewData) { { "RouteValues", routeValues } }' />
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortDate" value="CreatedTime" @(currentSort == "CreatedTime" ? "checked" : "")>
+                                <label class="form-check-label" for="sortDate">Created Date</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Direction:</label>
+                        <div class="ms-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortDirection" id="sortAsc" value="false" @(!currentSortDescending ? "checked" : "")>
+                                <label class="form-check-label" for="sortAsc">Ascending <i class="fas fa-arrow-up"></i></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortDirection" id="sortDesc" value="true" @(currentSortDescending ? "checked" : "")>
+                                <label class="form-check-label" for="sortDesc">Descending <i class="fas fa-arrow-down"></i></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-outline-secondary" style="margin-right: 10px" id="closeSortButton">Cancel</button>
+                        <button type="button" class="btn btn-secondary me-2" id="applySortButton">Apply</button>
+                    </div>
+                </div>
+            </div>
+            @*------------------------------------------------------------For searching sort and filter-----------------------------------------------*@
+
+            <div class="table-container">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="data-table table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Cover</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <td style="display:none" id="genre-id"></td>
+                            <td style="display:none" id="cover-url"></td>
+                            @foreach (var genre in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(genre.GenreImageUrl))
+                                        {
+                                            <img src="@genre.GenreImageUrl" alt="Cover Image" class="cover-image" />
+                                        }
+                                        else
+                                        {
+                                            <span>No Image</span>
+                                        }
+                                    </td>
+                                    <td>@genre.GenreName</td>
+                                    <td>@genre.GenreDescription</td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <a asp-controller="Book"
+                                               asp-action="ListBook"
+                                               asp-route-genreFilter="@genre.BookGenreId"
+                                               asp-route-category="@genre.GenreName" Add commentMore actions
+                                               class="action-icon-button text-secondary">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                            <a href="/BookGenre/EditGenre/@genre.BookGenreId" class="action-icon-button text-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" class="action-icon-button text-danger" data-genre-id="@genre.BookGenreId" data-cover-url=@genre.GenreImageUrl id="deleteButton">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="empty-message">No books found. Why not add some?</p>
+                }
+                <partial name="_PaginationPartial" view-data='@new ViewDataDictionary(ViewData) { { "RouteValues", routeValues } }' />
+
+            </div>
+          </div>
+    </div>  
 </div>
 
 
@@ -329,36 +335,35 @@
             })
         })
 
-        //--------------------------FOR SORTING-----------------------------
         // Sort popup functionality
-        const sortButton = document.getElementById('sortButton');
-        const sortPopup = document.getElementById('sortPopup');
-        const closeSortButton = document.getElementById('closeSortButton');
-        const applySortButton = document.getElementById('applySortButton');
+            const sortButton = document.getElementById('sortButton');
+            const sortPopup = document.getElementById('sortPopup');
+            const closeSortButton = document.getElementById('closeSortButton');
+            const applySortButton = document.getElementById('applySortButton');
 
-        // Toggle the sort popup when the sort button is clicked
-        sortButton.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (sortPopup.style.display === 'none') {
-                sortPopup.style.display = 'block';
-            } else {
+            // Toggle the sort popup when the sort button is clicked
+            sortButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (sortPopup.style.display === 'none') {
+                    sortPopup.style.display = 'block';
+                } else {
+                    sortPopup.style.display = 'none';
+                }
+            });
+
+            // Close the sort popup when clicked outside
+            document.addEventListener('click', function(e) {
+                if (!sortButton.contains(e.target) &&
+                    !sortPopup.contains(e.target) &&
+                    sortPopup.style.display === 'block') {
+                    sortPopup.style.display = 'none';
+                }
+            });
+
+            // Close button
+            closeSortButton.addEventListener('click', function() {
                 sortPopup.style.display = 'none';
-            }
-        });
-
-        // Close the sort popup when clicked outside
-        document.addEventListener('click', function (e) {
-            if (!sortButton.contains(e.target) &&
-                !sortPopup.contains(e.target) &&
-                sortPopup.style.display === 'block') {
-                sortPopup.style.display = 'none';
-            }
-        });
-
-        // Close button
-        closeSortButton.addEventListener('click', function () {
-            sortPopup.style.display = 'none';
-        });
+            });
 
         // Apply button
         // Apply button
