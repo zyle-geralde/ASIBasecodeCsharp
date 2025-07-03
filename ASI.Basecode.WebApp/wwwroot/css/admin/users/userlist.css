@@ -3,7 +3,8 @@
     padding: 25px;
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 60px); /* Account for the top navbar height */
+    min-height: calc(100vh - 60px); /* Changed from height to min-height */
+    overflow-y: visible;
 }
 
 .avatar-circle {
@@ -23,14 +24,14 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow: hidden; /* Important for child elements with overflow */
+    overflow: visible; /* Important for child elements with overflow */
 }
 
 .card-body {
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow: hidden; /* Important for scrollable children */
+    overflow: visible; /* Important for scrollable children */
 }
 
 /* Search and filter form styling */
@@ -49,11 +50,11 @@
 /* Table container that will grow and enable scrolling */
 .scrollable-table-container {
     flex: 1; /* Allow it to grow and fill available space */
-    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-y: visible; /* Enable vertical scrolling */
+    overflow-x: auto;
     background: #fff;
     border-radius: 8px;
     border: none;
-    min-height: 100px; /* Ensure minimum height for the table */
     margin-bottom: 0; /* Remove margin at bottom */
 }
 
