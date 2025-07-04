@@ -31,7 +31,13 @@ namespace ASI.Basecode.Services.Interfaces
         Task<string> SendOTPForResetPassword(string email);
 
         Task UpdatePassword(UserViewModel user);
-        
+
+        Task<bool> IsEmailVerifiedAndExists(string email);
+        Task<bool> IsUsernameVerifiedAndExists(string username);
+        Task<string> SendOtpCodeEmail(string email);
+        Task<User> CreateVerifiedUser(UserViewModel model, string role = "User");
+
+
 
     }
 }

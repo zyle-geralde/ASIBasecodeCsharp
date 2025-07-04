@@ -245,7 +245,7 @@
             
             <div class="otp-timer-resend">
                 <div class="otp-timer">
-                    Remaining time: <span id="countdown">02:00</span>
+                    Remaining time: <span id="countdown">05:00</span>
                 </div>
                 <div>
                     Didn't get the code? <a class="resend-link" id="resendOtpLink">Resend</a>
@@ -279,7 +279,7 @@
             const countdownElement = document.getElementById('countdown');
             
             // Initialize countdown timer - 5 minutes
-            let timeLeft = 2 * 60; // 5 minutes in seconds
+            let timeLeft = 5 * 60; // 5 minutes in seconds
             
             // Check if we have a stored timestamp from a previous session
             const storedExpiry = sessionStorage.getItem('otpExpiryTime');
@@ -293,7 +293,7 @@
                 } else {
                     // OTP has expired, reset the timer
                     sessionStorage.removeItem('otpExpiryTime');
-                    timeLeft = 2 * 60;
+                    timeLeft = 5 * 60;
                     
                     // Store new expiry time
                     const newExpiryTime = now + timeLeft;

@@ -6,6 +6,7 @@ using ASI.Basecode.WebApp.AccessControl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -134,10 +135,16 @@ namespace ASI.Basecode.WebApp.Controllers
                 Id = vm.Id,
                 UserName = vm.Username,
                 Email = vm.Email,
-           };
-            await _userService.UpdateUser(uvm);
-
-            TempData["Success"] = "User info saved!";
+            };
+            try
+            {
+                await _userService.UpdateUser(uvm);
+                TempData["Success"] = "User info saved!";
+            }
+            catch (InvalidDataException ex)
+            {
+                TempData["UserInfoError"] = ex.Message;
+            }
             return RedirectToAction(nameof(Index));
         }
 

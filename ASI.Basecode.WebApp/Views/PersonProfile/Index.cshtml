@@ -953,6 +953,11 @@
         <text>toastr.error("@error");</text>
       }
 
+      @if (TempData["UserInfoError"] is string userInfoError)
+       {
+        <text>toastr.error("@userInfoError");</text>
+       }
+
       var pwdModalEl = document.getElementById('updatePass');
       if (pwdModalEl) {
         pwdModalEl.addEventListener('hidden.bs.modal', function () {
