@@ -100,8 +100,6 @@
 <!-- Save confirmation modal -->
 <partial name="_ConfirmationModal" model="saveConfirmationModal" />
 
-<!-- Success modal -->
-<partial name="_SuccessModal" model="successModal" />
 
 @*
 <div class="modal fade confirmation-modal" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
@@ -142,15 +140,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="~/js/modal-helper.js" asp-append-version="true"></script>
 
-    <script>
-        function showEditSuccess() {
-            closeAllModals(); // Close any open modals first
-
-            setTimeout(function() {
-                showSuccessModal('successModal', 'Success!', 'User information saved successfully!', false, '/User/Index');
-            }, 100);
-        }
-
+    <script>       
         document.addEventListener('DOMContentLoaded', function () {
             // Initial state
             togglePasswordFields();
@@ -166,16 +156,26 @@
                 });
             });
 
-            // Show success modal only if the save was successful and not on page load
-            @if (ViewData["SaveSuccess"] != null && (bool)ViewData["SaveSuccess"])
-            {
-                <text>
-                console.log("Save was successful - showing success modal");
-                setTimeout(function() {
-                    showSuccessModal('successModal', 'Success!', 'User information saved successfully!', false, '/User/Index');
-                }, 300);
-                </text>
-            }
+            toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "3000"
+        };
+
+        // Show toastr for success messages
+        @if (TempData["SuccessMessage"] != null)
+        {
+                var msg = TempData["SuccessMessage"] as string;
+                if (!string.IsNullOrEmpty(msg))
+                {
+                        <text>toastr.success("@msg");</text>
+                }
+        }
+        @if (ViewData["SaveSuccess"] != null && (bool)ViewData["SaveSuccess"])
+        {
+                <text>toastr.success("User info updated successfully!");</text>
+        }
         });
     </script>
     <script>
