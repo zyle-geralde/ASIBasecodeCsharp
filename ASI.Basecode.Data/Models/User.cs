@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Data.Classes;
 using System;
+using System.Collections.Generic;
 
 namespace ASI.Basecode.Data.Models
 {
@@ -15,5 +16,6 @@ namespace ASI.Basecode.Data.Models
         public DateTime? OtpExpirationDate { get; set; }
         public bool IsEmailVerified { get; set; } = false;
         public virtual PersonProfile PersonProfile { get ; set;}
+        public List<Review> Reviews { get; set; } = new List<Review>();
     }
 }

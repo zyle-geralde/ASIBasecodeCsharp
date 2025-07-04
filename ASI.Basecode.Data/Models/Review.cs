@@ -16,7 +16,12 @@ namespace ASI.Basecode.Data.Models
         public float Rating { get; set; }
         public string Comment { get; set; }
         public int Likes { get; set; }
+        [Required]
+        [Column("UserId")]
         public string UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public User User { get; set; }
 
         public DateTime? UploadDate { get; set; }
         public DateTime? UpdatedDate { get; set; }

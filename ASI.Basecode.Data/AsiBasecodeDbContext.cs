@@ -72,10 +72,17 @@ namespace ASI.Basecode.Data
                 .HasOne(u => u.PersonProfile)
                 .WithOne(p => p.User)
                 .HasForeignKey<PersonProfile>(p => p.ProfileID)
-                .HasPrincipalKey<User>(u => u.Email);
-
+                .HasPrincipalKey<User>(u => u.Email)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<PersonProfile>()
                 .HasKey(p => p.ProfileID);
+
+            modelBuilder.Entity<Review>()
+                 .HasOne(r => r.User)
+                 .WithMany(u => u.Reviews)
+                 .HasForeignKey(r => r.UserId)
+                 .HasPrincipalKey(u => u.Email)
+                 .OnDelete(DeleteBehavior.Cascade);
 
             OnModelCreatingPartial(modelBuilder);
         }
