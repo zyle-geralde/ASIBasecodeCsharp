@@ -1,7 +1,8 @@
 ﻿/* Stats Cards */
-
-.admin-common-container
-{
+.header-section{
+    margin-bottom: 40px;
+}
+.admin-common-container {
     padding: 40px;
 }
 .stats-card {
