@@ -233,7 +233,7 @@
     <script type="module">
         import { initializeFeaturedToggle } from "/js/common/_slider.js";
         import { deleteFileFromFirebase, uploadFileToFirebase, updateImagePreview } from "/js/common/_firebase.js";
-        import { initializeSingleSelectAuthor, initializeSingleSelectLanguage, initializeMultiSelectWithPreselected } from "/js/common/_selectInitializer.js";
+        import { initializeSingleSelectAuthor, initializeSingleSelectLanguage, initializeMultiSelect } from "/js/common/_selectInitializer.js";
 
         document.addEventListener('DOMContentLoaded', async () => {
             const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024;
@@ -306,8 +306,8 @@
             // Initialize all the modular functions
             initializeFeaturedToggle();
             await initializeSingleSelectAuthor(); // Await because it fetches data
-            await initializeSingleSelectLanguage(); // Await 
-            await initializeMultiSelectWithPreselected({ // Await 
+            await initializeSingleSelectLanguage(); // Await
+            await initializeMultiSelect({ // Await
                 containerId: 'genreContainer',
                 dropdownId: 'genreDropdown',
                 hiddenInputId: 'concatenatedGenre',

@@ -169,21 +169,21 @@ export async function initializeSingleSelectLanguage() {
     }
 }
 
-export async function initializeMultiSelectWithPreselected({
+export async function initializeMultiSelect({
     containerId,
     dropdownId,
     hiddenInputId,
     selectedContainerId,
     fetchUrl,
     placeholderText = 'Select Items',
-    fallbackItems = null,
-    itemType
+    fallbackItems = null
 }) {
     const selectButton = document.querySelector(`#${containerId} .custom-select-btn`);
     const dropdown = document.getElementById(dropdownId);
     const selectedContainer = document.getElementById(selectedContainerId);
     const hiddenInput = document.getElementById(hiddenInputId);
 
+    // Initial validation for essential DOM elements
     if (!selectButton || !dropdown || !selectedContainer || !hiddenInput) {
         console.error(`Missing elements for multi-select initialization: ${containerId}`);
         return;
@@ -191,51 +191,83 @@ export async function initializeMultiSelectWithPreselected({
 
     selectButton.querySelector('span').textContent = placeholderText;
 
+    // --- Dropdown Toggle and Outside Click Handling ---
     selectButton.addEventListener('click', (event) => {
-        event.stopPropagation();
+        event.stopPropagation(); // Prevent immediate closing by document click
         dropdown.classList.toggle('show');
     });
 
-    document.addEventListener('click', (event) => {
+    document.addEventListener('click', (event) => { // close if clicked outside
         if (!selectButton.contains(event.target) && !dropdown.contains(event.target)) {
             dropdown.classList.remove('show');
         }
     });
 
-    function addSelectedTag(itemText, itemValue) {
-        const tag = document.createElement('div');
-        tag.className = `selected-tag ${itemType}-tag`;
-        tag.innerHTML = `
-                                    ${itemText}
-                                    <span class="remove-tag" data-value="${itemValue}" data-type="${itemType}">×</span>
-                                `;
-        selectedContainer.appendChild(tag);
+    // in order selection of genre, first is the main
+    // This array stores { value, text } pairs in the order they should be displayed.
+    let currentSelectedItemsOrder = [];
 
+    // Functions for Managing Displayed Tags (UI) 
+
+    // creates and appends a selected tag to the display area.
+    function addSelectedTagToDisplay(itemText, itemValue) {
+        const tag = document.createElement('div');
+        tag.className = 'selected-tag';
+        tag.setAttribute('data-value', itemValue); // Store value for easy lookup/removal
+        tag.innerHTML = `
+            ${itemText}
+            <span class="remove-tag" data-value="${itemValue}">×</span>
+        `;
+        selectedContainer.appendChild(tag); // Append to the container
+
+        // removing a tag via its 'x' button
         tag.querySelector('.remove-tag').addEventListener('click', () => {
-            tag.remove();
+            tag.remove(); // Remove tag from UI
+
+            // Find and uncheck the corresponding checkbox in the dropdown
             const checkbox = dropdown.querySelector(`input[value="${itemValue}"]`);
             if (checkbox) checkbox.checked = false;
-            updateHiddenInput();
+
+            // Remove item 
+            currentSelectedItemsOrder = currentSelectedItemsOrder.filter(item => item.value !== itemValue);
+
+            updateHiddenInputFromOrder();
         });
     }
 
-    function updateHiddenInput() {
-        const selectedCheckboxes = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked'));
-        const selectedValues = selectedCheckboxes.map(checkbox => checkbox.value);
-        hiddenInput.value = selectedValues.join(',');
+    // updates the hidden input field based on the current order in `currentSelectedItemsOrder`.
+    function updateHiddenInputFromOrder() {
+        hiddenInput.value = currentSelectedItemsOrder.map(item => item.value).join(',');
     }
+
+    // cehckboxes for dropdown , add/remove
 
     dropdown.addEventListener('change', (event) => {
         if (event.target.type === 'checkbox') {
-            selectedContainer.innerHTML = '';
-            const selectedCheckboxes = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked'));
-            selectedCheckboxes.forEach(checkbox => {
-                const label = dropdown.querySelector(`label[for="${checkbox.id}"]`).textContent;
-                addSelectedTag(label, checkbox.value);
-            });
-            updateHiddenInput();
+            const changedCheckbox = event.target;
+            const itemValue = changedCheckbox.value;
+            const itemText = dropdown.querySelector(`label[for="${changedCheckbox.id}"]`).textContent;
+
+            if (changedCheckbox.checked) {
+                // Add item to internal order array if not already present
+                if (!currentSelectedItemsOrder.some(item => item.value === itemValue)) {
+                    currentSelectedItemsOrder.push({ value: itemValue, text: itemText });
+                    addSelectedTagToDisplay(itemText, itemValue); // Add to UI display
+                }
+            } else {
+                // Remove item from internal order array
+                currentSelectedItemsOrder = currentSelectedItemsOrder.filter(item => item.value !== itemValue);
+                // Remove item from UI display
+                const existingTag = selectedContainer.querySelector(`.selected-tag[data-value="${itemValue}"]`);
+                if (existingTag) {
+                    existingTag.remove();
+                }
+            }
+            updateHiddenInputFromOrder(); //for synchronized hidden input with display order
         }
     });
+
+    // --- Initial Data Fetching and UI Population on Load ---
 
     try {
         const response = await fetch(fetchUrl, { method: 'GET' });
@@ -247,65 +279,103 @@ export async function initializeMultiSelectWithPreselected({
         } else if (fallbackItems) {
             console.warn(`Failed to fetch from ${fetchUrl}, using fallback items.`);
             itemsToPopulate = fallbackItems;
+            toastr.warn("Failed to fetch data, using fallback options."); // Direct toastr call
         } else {
-            toastr.error(`Server error fetching data from ${fetchUrl} and no fallback provided.`, 'Error');
+            toastr.error(`Server error fetching data from ${fetchUrl} and no fallback provided.`, 'Error'); // Direct toastr call
             return;
         }
 
-        dropdown.innerHTML = '';
+        dropdown.innerHTML = ''; // Clear previous options in dropdown before populating
 
+        // Store all available items in a map for efficient lookup (value -> text)
+        const allItemsLookup = new Map();
         itemsToPopulate.forEach(item => {
             const parts = item.split(',');
             const itemName = parts[0].trim();
             const itemValue = parts[1].trim();
+            allItemsLookup.set(itemValue, itemName);
+
+            // Create and append dropdown option
             const optionDiv = document.createElement('div');
             optionDiv.className = 'dropdown-item';
             optionDiv.innerHTML = `
-                                            <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
-                                            <label for="${dropdownId}-${itemValue}">${itemName}</label>
-                                        `;
+                <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
+                <label for="${dropdownId}-${itemValue}">${itemName}</label>
+            `;
             dropdown.appendChild(optionDiv);
         });
 
+        // --- Handle Initial Pre-selection on Page Load (Edit Scenario) ---
         if (hiddenInput.value) {
-            const preselectedValues = hiddenInput.value.split(',').map(v => v.trim());
-            Array.from(dropdown.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
-                if (preselectedValues.includes(checkbox.value)) {
-                    checkbox.checked = true;
-                    const label = dropdown.querySelector(`label[for="${checkbox.id}"]`).textContent;
-                    addSelectedTag(label, checkbox.value);
+            // Get preselected values from the hidden input, filter out empty strings
+            const preselectedValues = hiddenInput.value.split(',').map(v => v.trim()).filter(v => v !== '');
+
+            // Populate the internal `currentSelectedItemsOrder` array and check corresponding checkboxes
+            preselectedValues.forEach(value => {
+                const text = allItemsLookup.get(value);
+                if (text) {
+                    currentSelectedItemsOrder.push({ value: value, text: text }); // Add to order
+                    const checkbox = dropdown.querySelector(`input[value="${value}"]`);
+                    if (checkbox) {
+                        checkbox.checked = true; // Check the checkbox
+                    }
                 }
             });
+
+            // Add initial tags to the display in the order they appeared in the hidden input
+            currentSelectedItemsOrder.forEach(item => {
+                addSelectedTagToDisplay(item.text, item.value);
+            });
+
+            // Ensure the hidden input is correctly synchronized
+            updateHiddenInputFromOrder();
         }
+
     } catch (error) {
         console.error(`Error initializing dropdown for ${containerId}:`, error);
+        toastr.error(`An unexpected error occurred while initializing dropdown for ${containerId}: ${error.message}`, 'Error'); // Direct toastr call
+
+        // Fallback if fetching data fails
         if (fallbackItems) {
-           
-            dropdown.innerHTML = '';
+            dropdown.innerHTML = ''; // Clear existing dropdown content
+            const allItemsLookupFallback = new Map(); // Create lookup for fallback items
             fallbackItems.forEach(item => {
                 const parts = item.split(',');
                 const itemName = parts[0].trim();
                 const itemValue = parts[1].trim();
+                allItemsLookupFallback.set(itemValue, itemName);
                 const optionDiv = document.createElement('div');
                 optionDiv.className = 'dropdown-item';
                 optionDiv.innerHTML = `
-                                                    <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
-                                                    <label for="${dropdownId}-${itemValue}">${itemName}</label>
-                                                `;
+                    <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
+                    <label for="${dropdownId}-${itemValue}">${itemName}</label>
+                `;
                 dropdown.appendChild(optionDiv);
             });
+
+            // Re-check checkboxes and re-render tags based on fallback and preselected values
             if (hiddenInput.value) {
-                const preselectedValues = hiddenInput.value.split(',').map(v => v.trim());
-                Array.from(dropdown.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
-                    if (preselectedValues.includes(checkbox.value)) {
-                        checkbox.checked = true;
-                        const label = dropdown.querySelector(`label[for="${checkbox.id}"]`).textContent;
-                        addSelectedTag(label, checkbox.value);
+                const preselectedValues = hiddenInput.value.split(',').map(v => v.trim()).filter(v => v !== '');
+                currentSelectedItemsOrder = []; // Reset internal order for fallback re-initialization
+                preselectedValues.forEach(value => {
+                    const text = allItemsLookupFallback.get(value);
+                    if (text) {
+                        currentSelectedItemsOrder.push({ value: value, text: text });
+                        const checkbox = dropdown.querySelector(`input[value="${value}"]`);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                        }
                     }
                 });
+                // Clear and re-add tags based on the restored order
+                selectedContainer.innerHTML = '';
+                currentSelectedItemsOrder.forEach(item => {
+                    addSelectedTagToDisplay(item.text, item.value);
+                });
+                updateHiddenInputFromOrder();
             }
         } else {
-            toastr.error(`Failed to load items for ${placeholderText}. Please try again.`, 'Error');
+            toastr.error(`Failed to load items for ${placeholderText}. Please try again.`, 'Error'); 
         }
     }
 }
