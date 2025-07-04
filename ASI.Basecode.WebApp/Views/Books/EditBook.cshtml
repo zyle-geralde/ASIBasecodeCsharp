@@ -229,7 +229,12 @@
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script type="module">
+        import { initializeFeaturedToggle } from "/js/common/_slider.js";
+
+
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
         import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
 
@@ -977,17 +982,6 @@
                     submitButton.disabled = false;
                     submitButton.textContent = 'SAVE CHANGES';
                 }
-            }
-
-            // slider
-            const featuredCheckbox = document.getElementById('isFeatured');
-            const featuredStatus = document.getElementById('featuredStatus');
-
-            if (featuredCheckbox && featuredStatus) {
-                featuredCheckbox.addEventListener('change', function () {
-                    featuredStatus.textContent = this.checked ? 'Yes' : 'No';
-                });
-                featuredStatus.textContent = featuredCheckbox.checked ? 'Yes' : 'No';
             }
         });
     </script>
