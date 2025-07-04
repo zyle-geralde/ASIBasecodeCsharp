@@ -56,7 +56,7 @@
     var currentGenres = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>();
     var currentSort = (string?)ViewData["CurrentSort"];
     var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
-
+    var currentIsFeatured = (bool?)ViewData["CurrentIsFeatured"];
     var routeValues = new Dictionary<string,string>();
     var descriptionParts = new List<string>();
 
@@ -84,6 +84,10 @@
         routeValues["publishedTo"] = currentToDate;
         descriptionParts.Add($"Published to: {DateTime.Parse(currentToDate).ToString("yyyy-MM-dd")} ");
     }
+    if (currentIsFeatured == true) {
+      routeValues["isFeatured"] = "true";
+      descriptionParts.Add("Featured");
+    }
     if (currentGenres.Any()) {
         routeValues["genreFilter"] = string.Join(",", currentGenres);
         var selectedNames = allGenres
@@ -94,6 +98,8 @@
     if (!string.IsNullOrEmpty(currentSort) && currentSort != "title") {
         routeValues["sortOrder"] = currentSort;
     }
+
+
     if (currentSortDescending) {
         routeValues["sortDescending"] = "true";
     }
@@ -108,6 +114,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/books/listbook.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pagination.css" asp-append-version="true" />
 }
 
 
@@ -142,7 +149,9 @@
         <option value="title"             selected="@(currentSort == "title")">Title</option>
         <option value="publicationdate"   selected="@(currentSort == "publicationdate")">Publication Date</option>
         <option value="rating"            selected="@(currentSort == "rating")">Rating</option>
-      </select>
+        <option value="uploaddate"        selected="@(currentSort == "uploaddate")">Upload Date</option>
+
+        </select>
     </div>
 
      <div class="col-md-2">
@@ -222,6 +231,18 @@
       }
     </div>
   </fieldset>
+    <div class="form-check mt-4">
+      <input 
+        class="form-check-input" 
+        type="checkbox" 
+        id="isFeatured" 
+        name="isFeatured" 
+        value="true"
+        @(currentIsFeatured == true ? "checked" : "") />
+      <label class="form-check-label" for="isFeatured">
+        Featured only
+      </label>
+    </div>
 
   <div class="d-flex justify-content-end mt-3">
     <a asp-action="ListBook" class="btn btn-outline-secondary me-2">
@@ -251,6 +272,7 @@
       <th>Publication Date</th>
       <th>Language</th>
       <th>Rating</th>
+      <th>Upload Date</th>
       <th>Series</th>
       <th>Actions</th>                         
                 </tr>
@@ -290,6 +312,7 @@
                         <td>@book.Language</td>
                         @* <td>@book.NumberOfPages</td> *@
                         <td>@book.AverageRating</td>
+                        <td>@book.UploadDate</td>
                         @* <td>@book.Likes</td> *@
                         <td>@book.SeriesName</td>
                         @* <td>@book.Description</td> *@
@@ -316,7 +339,13 @@
     {
         <p class="empty-message">No books found. Why not add some?</p>
     }
-      <ul class="pagination">
+
+    <partial name="_PaginationPartial" view-data='@new ViewDataDictionary(ViewData) {
+        { "RouteValues", routeValues },
+        { "CurrentPage", Model.PageIndex },
+        { "TotalPages", Model.TotalPages }
+    }' />
+    @*  <ul class="pagination">
     <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
         <a class="page-link"
          asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = (Model.PageIndex - 1).ToString() })">
@@ -338,7 +367,7 @@
         Next ›
 
       </a>    </li>
-  </ul>
+  </ul>*@
 </div>
 
 

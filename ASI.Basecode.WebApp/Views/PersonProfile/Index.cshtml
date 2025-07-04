@@ -322,6 +322,11 @@
                             <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
                     </div>
+                     <div class="mb-4">
+                        <label asp-for="Location" class="form-label">Location</label>
+                        <input asp-for="Location" class="form-control" id="location" rows="4" placeholder="Where are you from?"/>
+                        <span asp-validation-for="AboutMe" class="text-danger"></span>
+                    </div>
                     <div class="mb-4">
                         <label asp-for="AboutMe" class="form-label">About Me</label>
                         <textarea asp-for="AboutMe" class="form-control" id="aboutme" rows="4" placeholder="Tell us about yourself"></textarea>
@@ -947,6 +952,11 @@
         var error = errs[0];
         <text>toastr.error("@error");</text>
       }
+
+      @if (TempData["UserInfoError"] is string userInfoError)
+       {
+        <text>toastr.error("@userInfoError");</text>
+       }
 
       var pwdModalEl = document.getElementById('updatePass');
       if (pwdModalEl) {

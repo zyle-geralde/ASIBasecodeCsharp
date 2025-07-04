@@ -30,8 +30,10 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
-            TempData.Remove("SuccessMessage");
-            // Remove pagination parameters - get all users
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewData["SuccessMessage"] = TempData["SuccessMessage"];
+            }
             const int PageSize = 10;
             int pageIndex = page.GetValueOrDefault(1);
 
