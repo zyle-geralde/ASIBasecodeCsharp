@@ -101,7 +101,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             string[]? genreFilter,
             string? sortOrder,
             bool sortDescending = false,
-            bool isFeatured = false,
+            bool? isFeatured = null,
 
             int? page = 1
             )
@@ -180,7 +180,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         string[]? genreFilter,
         string? sortOrder,
         bool sortDescending = false,
-        bool isFeatured = false,
+        bool? isFeatured = null,
         int? page = 1,
         string? category = null
         )
