@@ -113,7 +113,9 @@
 
 .book-master-file-input-text 
 {
+    
     flex-grow: 1;
+    min-width: 150px;
     padding: 8px 12px;
     border: 1px solid #d1d5db;
     border-radius: 6px;
@@ -122,6 +124,7 @@
     color: #374151;
     background-color: #f9fafb;
     box-sizing: border-box;
+    padding-right: 120px;
 }
 
 .book-master-browse-button 
@@ -381,7 +384,7 @@
     }
 
 /* --------------- Add Book Specific toggle and series---------------------------*/
-.additional-questions-section 
+/*.additional-questions-section 
 {
     margin: 2.5rem 0;
     padding: 1.5rem;
@@ -423,7 +426,7 @@
     border: 1px solid #e2e8f0;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
-
+*/
 
 
 /* --------------- Add Book Specific (description fullwidth)---------------------------*/
@@ -439,7 +442,7 @@
         margin-bottom: 15px;
     }
 
-/*--------------------------- Slider (used in isFeatured)------------------------------------*/
+/*--------------------------- Add and Edit Book Specific Slider (used in isFeatured)------------------------------------*/
 
 .toggle-question-label 
 {
@@ -526,4 +529,32 @@ input:checked + .slider
     .round:before 
     {
         border-radius: 50%;
+    }
+
+/*--------------------------- Edit Book Specific Slider (view book file)------------------------------------*/
+
+.book-master-view-file-link 
+{
+    display: inline-block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    padding: 8px 15px;
+    background-color: #647D7F;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
+    text-align: center;
+    max-width: 250px;
+}
+
+    .book-master-view-file-link:hover 
+    {
+        background-color: #435c5e;
+        color: white;
+        text-decoration: none;
     }
