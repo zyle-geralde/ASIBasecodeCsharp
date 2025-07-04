@@ -84,9 +84,9 @@
         routeValues["publishedTo"] = currentToDate;
         descriptionParts.Add($"Published to: {DateTime.Parse(currentToDate).ToString("yyyy-MM-dd")} ");
     }
-    if (currentIsFeatured.HasValue) {
-        routeValues["isFeatured"] = currentIsFeatured.Value.ToString();
-        descriptionParts.Add("Featured");
+    if (currentIsFeatured == true) {
+      routeValues["isFeatured"] = "true";
+      descriptionParts.Add("Featured");
     }
     if (currentGenres.Any()) {
         routeValues["genreFilter"] = string.Join(",", currentGenres);

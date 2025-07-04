@@ -35,10 +35,11 @@
         routeValues["rating"] = currentRating.Value.ToString();
         descriptionParts.Add($"Rating: {currentRating.Value}★ & up");
     }
-        if (currentIsFeatured.HasValue) {
-        routeValues["isFeatured"] = currentIsFeatured.Value.ToString();
-        descriptionParts.Add("Featured");
+    if (currentIsFeatured == true) {
+      routeValues["isFeatured"] = "true";
+      descriptionParts.Add("Featured");
     }
+
     if (!string.IsNullOrWhiteSpace(currentFromDate)) {
         routeValues["publishedFrom"] = currentFromDate;
         descriptionParts.Add($"Published from: {DateTime.Parse(currentFromDate).ToString("yyyy-MM-dd")} ");
@@ -184,7 +185,6 @@
   </fieldset>
     <div class="col-md-2">
     <div class="form-check mt-4">
-      <input type="hidden" name="isFeatured" value="false" />
       <input 
         class="form-check-input" 
         type="checkbox" 
