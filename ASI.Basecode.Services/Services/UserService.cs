@@ -81,12 +81,12 @@ namespace ASI.Basecode.Services.Services
             // Check if email or username exists among verified users
             if (await IsEmailVerifiedAndExists(model.Email))
             {
-                throw new InvalidDataException("Email already exists");
+                throw new InvalidDataException("Email already exists!");
             }
 
             if (await IsUsernameVerifiedAndExists(model.UserName))
             {
-                throw new InvalidDataException("Username already exists");
+                throw new InvalidDataException("Username already exists!");
             }
 
             // Delete any existing unverified account with same email or username
@@ -250,7 +250,7 @@ namespace ASI.Basecode.Services.Services
                 }
 
                 if (_repository.GetUsers().Any(u => u.UserName == model.UserName && u.Id != model.Id))
-                    throw new InvalidDataException("A user with this username already exists.");
+                    throw new InvalidDataException("A user with this username already exists!");
 
                 user.UserName = model.UserName;
                 user.UpdatedTime = DateTime.Now;
