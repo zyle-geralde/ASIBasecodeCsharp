@@ -114,6 +114,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/books/listbook.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pagination.css" asp-append-version="true" />
 }
 
 
@@ -338,7 +339,13 @@
     {
         <p class="empty-message">No books found. Why not add some?</p>
     }
-      <ul class="pagination">
+
+    <partial name="_PaginationPartial" view-data='@new ViewDataDictionary(ViewData) {
+        { "RouteValues", routeValues },
+        { "CurrentPage", Model.PageIndex },
+        { "TotalPages", Model.TotalPages }
+    }' />
+    @*  <ul class="pagination">
     <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
         <a class="page-link"
          asp-all-route-data="@(new Dictionary<string,string>(routeValues) { ["page"] = (Model.PageIndex - 1).ToString() })">
@@ -360,7 +367,7 @@
         Next ›
 
       </a>    </li>
-  </ul>
+  </ul>*@
 </div>
 
 
