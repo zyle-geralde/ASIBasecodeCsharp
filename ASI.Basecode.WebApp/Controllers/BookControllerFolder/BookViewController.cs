@@ -101,6 +101,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             string[]? genreFilter,
             string? sortOrder,
             bool sortDescending = false,
+            bool isFeatured = false,
+
             int? page = 1
             )
         {
@@ -122,6 +124,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 GenreNames = genreFilter?.ToList(),
                 SortDescending = sortDescending,
                 PageIndex = page.GetValueOrDefault(1),
+                IsFeatured = isFeatured,
                 SortOrder = sortOrder ?? "title",
                 PageSize = PageSize,
 
@@ -137,6 +140,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             ViewData["CurrentGenres"] = genreFilter ?? Array.Empty<string>();
             ViewData["CurrentSort"] = queryParams.SortOrder;
             ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+            ViewData["CurrentIsFeatured"] = isFeatured;
+
 
             var allGenres = await _bookGenreService.GetAllGenreList();
             ViewData["AllGenres"] = allGenres;
@@ -175,6 +180,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         string[]? genreFilter,
         string? sortOrder,
         bool sortDescending = false,
+        bool isFeatured = false,
         int? page = 1,
         string? category = null
         )
@@ -191,6 +197,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                     PublishedFrom = publishedFrom,
                     PublishedTo = publishedTo,
                     GenreNames = genreFilter?.ToList(),
+                    IsFeatured = isFeatured,
                     SortDescending = sortDescending,
                     PageIndex = page.GetValueOrDefault(1),
                     SortOrder = sortOrder ?? "title",
@@ -206,6 +213,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 ViewData["CurrentFromDate"] = publishedFrom?.ToString("yyyy-MM-dd");
                 ViewData["CurrentToDate"] = publishedTo?.ToString("yyyy-MM-dd");
                 ViewData["CurrentGenres"] = genreFilter ?? Array.Empty<string>();
+                ViewData["CurrentIsFeatured"] = isFeatured;
                 ViewData["CurrentSort"] = queryParams.SortOrder;
                 ViewData["CurrentSortDescending"] = queryParams.SortDescending;
 
