@@ -17,6 +17,17 @@
                 ConfirmButtonId = "confirmEditAction",
                 ConfirmButtonClass = "btn-primary px-4"
             };
+
+    var discardChangesConfirmationModel = new ConfirmationModalModel
+            {
+                Id = "discardChangesConfirmationModal",
+                Title = "Discard Changes?",
+                Message = "You have unsaved changes. Are you sure you want to discard them?",
+                CancelButtonText = "Keep Editing",
+                ConfirmButtonText = "Discard",
+                ConfirmButtonId = "confirmDiscardAction",
+                ConfirmButtonClass = "btn-danger px-4"
+            };
 }
 
 @section styles {
@@ -216,7 +227,8 @@
             </div>
 
             <div class="button-container">
-                <button type="button" class="cancel-button" onclick="location.href='/Book/ListBook'">CANCEL</button>
+                @* <button type="button" class="cancel-button" onclick="location.href='/Book/ListBook'">CANCEL</button> *@
+                <button type="button" class="cancel-button" id="cancelButton">CANCEL</button>
                 <button type="submit" class="book-master-submit-button" id="editBookButton">SAVE CHANGES</button>
             </div>
         </form>
@@ -224,6 +236,7 @@
 </div>
 
 <partial name="_ConfirmationModal" model="editBookConfirmationModel" />
+<partial name="_ConfirmationModal" model="discardChangesConfirmationModel" />
 
 
 @section scripts {
@@ -234,6 +247,83 @@
         import { initializeFeaturedToggle } from "/js/common/_slider.js";
         import { deleteFileFromFirebase, uploadFileToFirebase, updateImagePreview } from "/js/common/_firebase.js";
         import { initializeSingleSelectAuthor, initializeSingleSelectLanguage, initializeMultiSelect } from "/js/common/_selectInitializer.js";
+
+        // Track initial form state
+        let initialFormState = {};
+
+        // capture the initial state of the form fields
+        function captureInitialFormState() {
+            const form = document.getElementById('editBookForm');
+            if (!form) return;
+
+            initialFormState = {
+                title: form.querySelector('#title').value,
+                author: form.querySelector('#author').value,
+                subtitle: form.querySelector('#subtitle').value,
+                publisher: form.querySelector('#publisher').value,
+                publicationDate: form.querySelector('#publicationDate').value,
+                publicationLocation: form.querySelector('#publicationLocation').value,
+                language: form.querySelector('#language').value,
+                numberOfPages: form.querySelector('#numberOfPages').value,
+                description: form.querySelector('#description').value,
+                seriesName: form.querySelector('#seriesName').value,
+                seriesOrder: form.querySelector('#seriesOrder').value,
+                seriesDescription: form.querySelector('#seriesDescription').value,
+                isFeatured: form.querySelector('#isFeatured').checked,
+                genreList: form.querySelector('#concatenatedGenre').value,
+                isbn10: form.querySelector('#isbn10').value,
+                isbn13: form.querySelector('#isbn13').value,
+                edition: form.querySelector('#edition').value,
+                coverImageUrl: form.querySelector('#coverImageUrl').value, // initial URL of the cover image
+                bookFileUrl: form.querySelector('#bookFileUrl').value      // initial URL of the book file
+            };
+        }
+
+       
+        function checkForChanges() {
+            const form = document.getElementById('editBookForm');
+            if (!form) return false;
+
+            const currentCoverFileSelected = document.getElementById('coverImageFile').files.length > 0;
+            const currentBookFileSelected = document.getElementById('bookFile').files.length > 0;
+
+            const currentCoverImageUrl = form.querySelector('#coverImageUrl').value;
+            const currentBookFileUrl = form.querySelector('#bookFileUrl').value;
+
+            // Compare all non-file input values with their initial states
+            if (
+                form.querySelector('#title').value !== initialFormState.title ||
+                form.querySelector('#author').value !== initialFormState.author ||
+                form.querySelector('#subtitle').value !== initialFormState.subtitle ||
+                form.querySelector('#publisher').value !== initialFormState.publisher ||
+                form.querySelector('#publicationDate').value !== initialFormState.publicationDate ||
+                form.querySelector('#publicationLocation').value !== initialFormState.publicationLocation ||
+                form.querySelector('#language').value !== initialFormState.language ||
+                form.querySelector('#numberOfPages').value !== initialFormState.numberOfPages ||
+                form.querySelector('#description').value !== initialFormState.description ||
+                form.querySelector('#seriesName').value !== initialFormState.seriesName ||
+                form.querySelector('#seriesOrder').value !== initialFormState.seriesOrder ||
+                form.querySelector('#seriesDescription').value !== initialFormState.seriesDescription ||
+                form.querySelector('#isFeatured').checked !== initialFormState.isFeatured ||
+                form.querySelector('#concatenatedGenre').value !== initialFormState.genreList ||
+                form.querySelector('#isbn10').value !== initialFormState.isbn10 ||
+                form.querySelector('#isbn13').value !== initialFormState.isbn13 ||
+                form.querySelector('#edition').value !== initialFormState.edition
+            ) {
+                return true; // Changes detected in text/select fields
+            }
+
+            if (currentCoverFileSelected || currentBookFileSelected) {
+                return true; // New files are selected
+            }
+
+            if (currentCoverImageUrl !== initialFormState.coverImageUrl ||
+                currentBookFileUrl !== initialFormState.bookFileUrl) {
+                return true; 
+            }
+
+            return false; 
+        }
 
         document.addEventListener('DOMContentLoaded', async () => {
             const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024;
@@ -252,8 +342,7 @@
 
             const publicationDateInput = document.getElementById('publicationDate');
 
-
-            // file input change with null checks
+            // file inputs
             if (coverImageFile) {
                 coverImageFile.addEventListener('change', function () {
                     const fileName = this.files[0] ? this.files[0].name : '';
@@ -286,10 +375,11 @@
                 });
             }
 
-            // Preview for existing cover image
+            //  Pre-fill File Display and Image Preview with existing data 
+            // Cover Image
             const coverImageUrl = '@Model?.CoverImageUrl';
             if (coverImageUrl && coverImagePreview && coverImagePlaceholder && coverFileNameDisplay) {
-                if (!coverImageUrl.includes("placeholder.jpg")) {
+                if (!coverImageUrl.includes("placeholder.jpg")) { // Avoid showing placeholder as actual image
                     coverImagePreview.src = coverImageUrl;
                     coverImagePreview.style.display = 'block';
                     coverImagePlaceholder.style.display = 'none';
@@ -297,13 +387,13 @@
                 }
             }
 
-            // Preview for existing book file
+            // Book File
             const bookFileUrl = '@Model?.BookFileUrl';
-            if (bookFileUrl && bookFileNameDisplay && !bookFileUrl.includes("placeholder.pdf")) {
+            if (bookFileUrl && bookFileNameDisplay && !bookFileUrl.includes("placeholder.pdf")) { 
                 bookFileNameDisplay.value = bookFileUrl.substring(bookFileUrl.lastIndexOf('/') + 1);
             }
 
-            // Initialize all the modular functions
+            // Initialize all the modular functions 
             initializeFeaturedToggle();
             await initializeSingleSelectAuthor(); // Await because it fetches data
             await initializeSingleSelectLanguage(); // Await
@@ -322,16 +412,44 @@
                 itemType: 'genre'
             });
 
-            const confirmationModalElement = document.getElementById('@editBookConfirmationModel.Id');
-            const confirmButton = document.getElementById('@editBookConfirmationModel.ConfirmButtonId');
-            const editBookConfirmationModal = confirmationModalElement ? new bootstrap.Modal(confirmationModalElement) : null;
+            captureInitialFormState();
+
+            const editBookConfirmationModalElement = document.getElementById('@editBookConfirmationModel.Id');
+            const confirmSaveButton = document.getElementById('@editBookConfirmationModel.ConfirmButtonId');
+            const editBookConfirmationModal = editBookConfirmationModalElement ? new bootstrap.Modal(editBookConfirmationModalElement) : null;
+
+            const discardChangesConfirmationModalElement = document.getElementById('discardChangesConfirmationModal');
+            const confirmDiscardButton = document.getElementById('confirmDiscardAction');
+            const discardChangesConfirmationModal = discardChangesConfirmationModalElement ? new bootstrap.Modal(discardChangesConfirmationModalElement) : null;
+
 
             const form = document.getElementById('editBookForm');
+
+            // Cancel Button (with Discard Confirmation) ---
+            document.getElementById('cancelButton').addEventListener('click', () => {
+                if (checkForChanges()) {
+                    // Show discard confirmation modal if changes exist
+                    if (discardChangesConfirmationModal) {
+                        discardChangesConfirmationModal.show();
+                    }
+                } else {
+                    window.location.href = '/Book/ListBook';
+                }
+            });
+
+            // Confirm Discard Action 
+            if (confirmDiscardButton) {
+                confirmDiscardButton.addEventListener('click', () => {
+                    window.location.href = '/Book/ListBook';
+                });
+            }
+
+            // Form Submission(with Save Confirmation) 
             if (form) {
                 form.addEventListener('submit', async (event) => {
-                    event.preventDefault();
+                    event.preventDefault(); // Prevent default form submission
 
-                    const submitButton = form.querySelector('.book-master-submit-button');
+                    //  client-side validation first
                     const titleInput = document.getElementById('title');
                     const authorInput = document.getElementById('author');
                     const publicationDateInput = document.getElementById('publicationDate');
@@ -344,62 +462,21 @@
                     const coverImageUploadStatus = document.getElementById('coverImageUploadStatus');
                     const bookFileUploadStatus = document.getElementById('bookFileUploadStatus');
 
-
                     let isValid = true;
                     const missingFields = [];
 
-                    // Validation checks
-                    if (!titleInput.value.trim()) {
-                        missingFields.push('Title');
-                        titleInput.classList.add('is-invalid');
-                        isValid = false;
-                    } else {
-                        titleInput.classList.remove('is-invalid');
-                    }
-
-                    if (!authorInput.value.trim()) {
-                        missingFields.push('Author');
-                        document.getElementById('authorContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select');
-                        isValid = false;
-                    } else {
-                        document.getElementById('authorContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select');
-                    }
-
-                    if (!publicationDateInput.value) {
-                        missingFields.push('Publication Date');
-                        publicationDateInput.classList.add('is-invalid');
-                        isValid = false;
-                    } else {
-                        publicationDateInput.classList.remove('is-invalid');
-                    }
+                    // Validation checks 
+                    if (!titleInput.value.trim()) { missingFields.push('Title'); titleInput.classList.add('is-invalid'); isValid = false; } else { titleInput.classList.remove('is-invalid'); }
+                    if (!authorInput.value.trim()) { missingFields.push('Author'); document.getElementById('authorContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select'); isValid = false; } else { document.getElementById('authorContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select'); }
+                    if (!publicationDateInput.value) { missingFields.push('Publication Date'); publicationDateInput.classList.add('is-invalid'); isValid = false; } else { publicationDateInput.classList.remove('is-invalid'); }
 
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     const pubDate = new Date(publicationDateInput.value);
 
-                    if (pubDate > today) {
-                        missingFields.push('Publication Date (cannot be in the future)');
-                        publicationDateInput.classList.add('is-invalid');
-                        isValid = false;
-                    } else {
-                        publicationDateInput.classList.remove('is-invalid');
-                    }
-
-                    if (!languageInput.value.trim()) {
-                        missingFields.push('Language');
-                        document.getElementById('languageContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select');
-                        isValid = false;
-                    } else {
-                        document.getElementById('languageContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select');
-                    }
-
-                    if (!genreInput.value) {
-                        missingFields.push('Genre');
-                        document.getElementById('genreContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select');
-                        isValid = false;
-                    } else {
-                        document.getElementById('genreContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select');
-                    }
+                    if (pubDate > today) { missingFields.push('Publication Date (cannot be in the future)'); publicationDateInput.classList.add('is-invalid'); isValid = false; } else { publicationDateInput.classList.remove('is-invalid'); }
+                    if (!languageInput.value.trim()) { missingFields.push('Language'); document.getElementById('languageContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select'); isValid = false; } else { document.getElementById('languageContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select'); }
+                    if (!genreInput.value) { missingFields.push('Genre'); document.getElementById('genreContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select'); isValid = false; } else { document.getElementById('genreContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select'); }
 
                     const coverImageFileChanged = coverImageFileInput.files.length > 0;
                     if (!coverImageFileChanged && !coverImageUrlInput.value) {
@@ -408,6 +485,9 @@
                             coverImageUploadStatus.querySelector('.file-size-info').textContent = 'Cover image is required.';
                             coverImageUploadStatus.classList.add('error-message');
                         }
+                        isValid = false;
+                    } else if (coverImageFileChanged && coverImageFileInput.files[0].size > MAX_IMAGE_FILE_SIZE_BYTES) {
+                        toastr.error('Cover image file size exceeds the 10MB limit.');
                         isValid = false;
                     } else if (coverImageUploadStatus) {
                         coverImageUploadStatus.querySelector('.file-size-info').textContent = `Max file size: ${MAX_IMAGE_FILE_SIZE_BYTES / (1024 * 1024)}MB`;
@@ -422,38 +502,43 @@
                             bookFileUploadStatus.classList.add('error-message');
                         }
                         isValid = false;
-                    } else if (bookFileUploadStatus) {
+                    } else if (bookFileChanged && bookFileInput.files[0].size > MAX_BOOK_FILE_SIZE_BYTES) {
+                        toastr.error('Book file size exceeds the 100MB limit.');
+                        isValid = false;
+                    }
+                    else if (bookFileUploadStatus) {
                         bookFileUploadStatus.querySelector('.file-size-info').textContent = `Max file size: ${MAX_BOOK_FILE_SIZE_BYTES / (1024 * 1024)}MB`;
                         bookFileUploadStatus.classList.remove('error-message');
                     }
 
-
                     if (!isValid) {
                         if (window.toastr) window.toastr.warning(`Please fill in all required fields. Missing: ${missingFields.join(', ')}.`);
-                        return;
+                        return; // Stop here if client-side validation fails
                     }
 
+                    // If client-side validation passed, show confirmation modal
                     if (editBookConfirmationModal) {
                         editBookConfirmationModal.show();
                     } else {
-                        await submitForm();
+                        // Fallback if modal isn't initialized (shouldn't happen with bootstrap.Modal checks)
+                        await submitFormContents();
                     }
                 });
             }
 
-            if (confirmButton) {
-                confirmButton.addEventListener('click', async () => {
+            // --- Confirm Save Action Event Listener ---
+            if (confirmSaveButton) {
+                confirmSaveButton.addEventListener('click', async () => {
                     if (editBookConfirmationModal) {
-                        editBookConfirmationModal.hide();
+                        editBookConfirmationModal.hide(); // Hide the confirmation modal
                     }
-                    await submitForm();
+                    await submitFormContents(); // Call the actual submission function
                 });
             }
 
-            async function submitForm() {
+            // --- Main Form Submission Logic (extracted into a function) ---
+            async function submitFormContents() {
                 const form = document.getElementById('editBookForm');
-                if (!form) return;
-
                 const submitButton = form.querySelector('.book-master-submit-button');
                 const coverImageFileInput = document.getElementById('coverImageFile');
                 const bookFileInput = document.getElementById('bookFile');
@@ -462,8 +547,9 @@
                 const coverImageUploadStatus = document.getElementById('coverImageUploadStatus');
                 const bookFileUploadStatus = document.getElementById('bookFileUploadStatus');
 
-                const originalCoverImageUrl = coverImageUrlInput ? coverImageUrlInput.value : null;
-                const originalBookFileUrl = bookFileUrlInput ? bookFileUrlInput.value : null;
+                // Get original URLs from initialFormState, not current input values
+                const originalCoverImageUrl = initialFormState.coverImageUrl;
+                const originalBookFileUrl = initialFormState.bookFileUrl;
 
                 submitButton.disabled = true;
                 submitButton.textContent = 'Processing...';
@@ -472,61 +558,61 @@
                 let uploadedBookUrl = null;
 
                 try {
-                    // Cover Image Upload
+                    // --- Cover Image Upload Logic ---
                     const coverImageFile = coverImageFileInput ? coverImageFileInput.files[0] : null;
                     if (coverImageFile) {
+                        // Delete old image from Firebase if it's not a placeholder
                         if (originalCoverImageUrl && !originalCoverImageUrl.includes("placeholder.jpg")) {
                             await deleteFileFromFirebase(originalCoverImageUrl);
                         }
 
                         if (coverImageUploadStatus) {
                             const statusElement = coverImageUploadStatus.querySelector('.file-size-info');
-                            if (statusElement) {
-                                statusElement.textContent = 'Uploading cover image...';
-                            }
+                            if (statusElement) { statusElement.textContent = 'Uploading cover image...'; }
                         }
+                        // Upload new image
                         uploadedCoverUrl = await uploadFileToFirebase(coverImageFile, 'book_covers/', coverImageUploadStatus ? coverImageUploadStatus.querySelector('.file-size-info') : null);
-                        if (!uploadedCoverUrl && coverImageFile) {
+                        if (!uploadedCoverUrl) {
+                            // If upload fails/cancelled, re-enable button and return
+                            toastr.error("Cover image upload failed or was cancelled.");
                             submitButton.disabled = false;
                             submitButton.textContent = 'SAVE CHANGES';
                             return;
                         }
-                        if (uploadedCoverUrl && coverImageUrlInput) {
-                            coverImageUrlInput.value = uploadedCoverUrl;
-                        } else {
-                            throw new Error('Cover image upload failed or was cancelled.');
-                        }
+                        // Update hidden input with new URL
+                        if (uploadedCoverUrl && coverImageUrlInput) { coverImageUrlInput.value = uploadedCoverUrl; }
                     }
 
-                    // Book File Upload
+                    // --- Book File Upload Logic ---
                     const bookFile = bookFileInput ? bookFileInput.files[0] : null;
                     if (bookFile) {
+                        // Delete old file from Firebase if it's not a placeholder
                         if (originalBookFileUrl && !originalBookFileUrl.includes("placeholder.pdf")) {
                             await deleteFileFromFirebase(originalBookFileUrl);
                         }
 
                         if (bookFileUploadStatus) {
                             const statusElement = bookFileUploadStatus.querySelector('.file-size-info');
-                            if (statusElement) {
-                                statusElement.textContent = 'Uploading book file...';
-                            }
+                            if (statusElement) { statusElement.textContent = 'Uploading book file...'; }
                         }
+                        // Upload new file
                         uploadedBookUrl = await uploadFileToFirebase(bookFile, 'book_files/', bookFileUploadStatus ? bookFileUploadStatus.querySelector('.file-size-info') : null);
-                        if (!uploadedBookUrl && bookFile) {
+                        if (!uploadedBookUrl) {
+                            // If upload fails/cancelled, re-enable button and return
+                            toastr.error("Book file upload failed or was cancelled.");
                             submitButton.disabled = false;
                             submitButton.textContent = 'SAVE CHANGES';
                             return;
                         }
-                        if (uploadedBookUrl && bookFileUrlInput) {
-                            bookFileUrlInput.value = uploadedBookUrl;
-                        } else {
-                            throw new Error('Book file upload failed or was cancelled.');
-                        }
+                        // Update hidden input with new URL
+                        if (uploadedBookUrl && bookFileUrlInput) { bookFileUrlInput.value = uploadedBookUrl; }
                     }
 
+                    // --- Prepare FormData and Submit to Backend ---
                     const formData = new FormData(form);
 
-                    const numberFields = ['NumberOfPages', 'Likes', 'AverageRating', 'SeriesOrder'];
+                    // Ensure number fields are sent as "0" if empty (as per your original logic)
+                    const numberFields = ['NumberOfPages', 'Likes', 'AverageRating', 'SeriesOrder']; // Assuming Likes/AverageRating are part of the model if needed
                     for (const fieldName of numberFields) {
                         const fieldValue = formData.get(fieldName);
                         if (fieldValue === "" || fieldValue === null) {
@@ -541,6 +627,8 @@
 
                     if (response.ok) {
                         if (window.toastr) window.toastr.success('Book updated successfully!');
+                        // Re-capture initial state after successful save
+                        captureInitialFormState();
                         setTimeout(() => {
                             window.location.href = '/Book/ListBook';
                         }, 1500);
@@ -549,21 +637,21 @@
                         const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
                         if (window.toastr) window.toastr.error(`Server error: ${errorMessage}`);
 
-                        // Rollback uploaded files if submission fails
+                        // If new cover different from original, delete the new one
                         if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
                             await deleteFileFromFirebase(uploadedCoverUrl);
-                            coverImageUrlInput.value = originalCoverImageUrl; // restore original URL
+                            coverImageUrlInput.value = originalCoverImageUrl; // original url
                         }
+                        // If new book file different from original, delete the new one
                         if (uploadedBookUrl && uploadedBookUrl !== originalBookFileUrl) {
                             await deleteFileFromFirebase(uploadedBookUrl);
-                            bookFileUrlInput.value = originalBookFileUrl; // restore original URL
+                            bookFileUrlInput.value = originalBookFileUrl; 
                         }
                     }
                 } catch (error) {
                     console.error('Submission error:', error);
                     if (window.toastr) window.toastr.error(`An unexpected error occurred during file upload or form submission: ${error.message}. Please try again.`, 'Error');
 
-                    //  rollback even on unexpected errors
                     if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
                         await deleteFileFromFirebase(uploadedCoverUrl);
                         coverImageUrlInput.value = originalCoverImageUrl;
