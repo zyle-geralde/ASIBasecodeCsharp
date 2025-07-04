@@ -57,7 +57,8 @@ namespace ASI.Basecode.Data.Repositories
 
             if (queryParams.PublishedFrom.HasValue && queryParams.PublishedTo.HasValue)
                 query = query.Where(b => b.PublicationDate >= queryParams.PublishedFrom.Value && b.PublicationDate <= queryParams.PublishedTo.Value);
-
+            if (queryParams.IsFeatured.HasValue)
+                query = query.Where(b => b.IsFeatured == queryParams.IsFeatured);
             if (queryParams.GenreNames != null && queryParams.GenreNames.Any())
             {
                 foreach (var gn in queryParams.GenreNames)

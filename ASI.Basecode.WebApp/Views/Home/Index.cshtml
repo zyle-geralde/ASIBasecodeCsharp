@@ -29,18 +29,6 @@
             </button>
           </div>
         </form>
-@* <form asp-controller="Book"
-      asp-action="SearchResults"
-      method="get"
-      class="mb-4 d-flex align-items-center gap-3">
-  <input type="text"
-         name="searchTerm"
-         value="@(ViewData["CurrentSearch"] ?? "")"
-         placeholder="Title, subtitle, author…"
-         class="form-control flex-grow-1" />
-  <button type="submit" class="btn btn-primary">Search</button>
-</form> *@
-
 
         <!-- What Do You Feel Like Reading? Section -->
         <section class="section-card-genre">
@@ -203,7 +191,13 @@
     <div class="featured-column">
         <div class="book-list-header">
             <h2>Featured Reads</h2>
-            <a href="#">See More</a>
+            @* <a href="#">See More</a>
+                    <div class="see-more-link-wrapper"> *@
+                    <a asp-controller="Book"
+                       asp-action="SearchResults"
+                       asp-route-isFeatured="true"
+                       asp-route-category="Featured">See More</a>
+                @* </div> *@
         </div>
 
         @foreach (var book in Model.FeaturedBooks)
@@ -248,6 +242,7 @@
                                 <span class="genre-tag @colorClasses[colorIndex]">@tag</span>
                             }
                         }
+                        
                     </div>
                 </div>
 
