@@ -148,7 +148,9 @@
         <option value="title"             selected="@(currentSort == "title")">Title</option>
         <option value="publicationdate"   selected="@(currentSort == "publicationdate")">Publication Date</option>
         <option value="rating"            selected="@(currentSort == "rating")">Rating</option>
-      </select>
+        <option value="uploaddate"        selected="@(currentSort == "uploaddate")">Upload Date</option>
+
+        </select>
     </div>
 
      <div class="col-md-2">
@@ -269,6 +271,7 @@
       <th>Publication Date</th>
       <th>Language</th>
       <th>Rating</th>
+      <th>Upload Date</th>
       <th>Series</th>
       <th>Actions</th>                         
                 </tr>
@@ -308,6 +311,7 @@
                         <td>@book.Language</td>
                         @* <td>@book.NumberOfPages</td> *@
                         <td>@book.AverageRating</td>
+                        <td>@book.UploadDate</td>
                         @* <td>@book.Likes</td> *@
                         <td>@book.SeriesName</td>
                         @* <td>@book.Description</td> *@
