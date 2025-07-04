@@ -46,6 +46,7 @@
     Layout = "_AdminSidebarLayout";
     string display_name = "Books";
     string description = "Manage books";
+    var allLanguages = (List<LanguageViewModel>)ViewData["AllLanguages"];
     var currentCategory  = (string?)ViewContext.HttpContext.Request.Query["category"];
     var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
     var currentSearch    = (string?)ViewData["CurrentSearch"];
@@ -59,6 +60,8 @@
     var currentIsFeatured = (bool?)ViewData["CurrentIsFeatured"];
     var routeValues = new Dictionary<string,string>();
     var descriptionParts = new List<string>();
+        var currentLanguage = (string?)ViewData["CurrentLanguage"];
+
 
     if (!string.IsNullOrWhiteSpace(currentCategory)) {
         routeValues["category"] = currentCategory;
@@ -97,6 +100,9 @@
     }
     if (!string.IsNullOrEmpty(currentSort) && currentSort != "title") {
         routeValues["sortOrder"] = currentSort;
+    }
+     if (!string.IsNullOrWhiteSpace(currentLanguage)) {
+        routeValues["languageFilter"] = currentLanguage;
     }
 
 
@@ -252,7 +258,31 @@
       Apply Filters
     </button>
   </div>
+    <fieldset class="mt-3">
+    <legend class="form-label">Language</legend>
+    <div class="row">
+      @foreach (var language in allLanguages)
+      {
+        <div class="col-sm-3">
+          <div class="form-check">
+           <input class="form-check-input"
+           type="radio"
+           name="languageFilter"
+           value="@language.LanguageId"
+           id="lang_@language.LanguageId"
+           @(currentLanguage == language.LanguageId ? "checked" : "") />
 
+
+
+
+            <label class="form-check-label" for="lang_@language.LanguageId">
+              @language.LanguageName
+            </label>
+          </div>
+        </div>
+      }
+    </div>
+  </fieldset>
 </form>
 
     
