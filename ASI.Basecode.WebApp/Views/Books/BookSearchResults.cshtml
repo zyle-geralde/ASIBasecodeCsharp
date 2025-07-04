@@ -4,10 +4,12 @@
     ViewData["Title"] = "Search Results";
     var categoryTitle = (string?)ViewData["CategoryTitle"] ?? "";
     var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
+    var allLanguages = (List<LanguageViewModel>)ViewData["AllLanguages"];
     var currentSearch = (string?)ViewData["CurrentSearch"];
     var currentIsFeatured = (bool?)ViewData["CurrentIsFeatured"];
     var currentAuthor = (string?)ViewData["CurrentAuthor"];
     var currentRating = (int?)ViewData["CurrentRating"];
+    var currentLanguage = (string?)ViewData["CurrentLanguage"];
     var currentFromDate = (string?)ViewData["CurrentFromDate"];
     var currentToDate = (string?)ViewData["CurrentToDate"];
     var currentGenres = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>();
@@ -26,6 +28,10 @@
     if (!string.IsNullOrWhiteSpace(currentSearch)) {
         routeValues["searchTerm"] = currentSearch;
         descriptionParts.Add($"Search: \"{currentSearch}\"");
+    }
+    if (!string.IsNullOrWhiteSpace(currentLanguage)) {
+        routeValues["languageFilter"] = currentLanguage;
+        descriptionParts.Add($"Language: \"{currentLanguage}\"");
     }
     if (!string.IsNullOrWhiteSpace(currentAuthor)) {
         routeValues["author"] = currentAuthor;
@@ -198,7 +204,31 @@
     </div>
   </div>
 
+    <fieldset class="mt-3">
+    <legend class="form-label">Language</legend>
+    <div class="row">
+      @foreach (var language in allLanguages)
+      {
+        <div class="col-sm-3">
+          <div class="form-check">
+           <input class="form-check-input"
+           type="radio"
+           name="languageFilter"
+           value="@language.LanguageId"
+           id="lang_@language.LanguageId"
+           @(currentLanguage == language.LanguageId ? "checked" : "") />
 
+
+
+
+            <label class="form-check-label" for="lang_@language.LanguageId">
+              @language.LanguageName
+            </label>
+          </div>
+        </div>
+      }
+    </div>
+  </fieldset>
 
   <div class="d-flex justify-content-end mt-3">
     <a asp-controller="Book"

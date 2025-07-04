@@ -26,8 +26,9 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         private readonly IAccessControlInterface _accessControlInterface;
         private readonly IAuthorRepository _authorRepository;
         private readonly IAuthorService _authorService;
+        private readonly ILanguageService _languageService;
         //private readonly IBookRepository _bookRepository;
-        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface,IAuthorRepository authorRepository, IAuthorService authorService)
+        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface,IAuthorRepository authorRepository, IAuthorService authorService, ILanguageService languageService)
         {
             _bookService = bookService;
             _reviewService = reviewService;
@@ -35,6 +36,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             _accessControlInterface = accessControlInterface;
             _authorRepository = authorRepository;
             _authorService = authorService;
+            _languageService = languageService;
         }
 
 
@@ -99,6 +101,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             DateTime? publishedFrom,
             DateTime? publishedTo,
             string[]? genreFilter,
+            string? languageFilter,
             string? sortOrder,
             bool sortDescending = false,
             bool? isFeatured = null,
@@ -106,7 +109,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             int? page = 1
             )
         {
-            const int PageSize = 10;
+            const int PageSize = 2;
             int pageIndex = page.GetValueOrDefault(1);
             string authorId = await _authorRepository.GetAuthorByName(author != null ? author : "");
             string authorIdFromSearch = await _authorRepository.GetAuthorByName(searchTerm != null ? searchTerm : "");
@@ -122,6 +125,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 PublishedFrom = publishedFrom,
                 PublishedTo = publishedTo,
                 GenreNames = genreFilter?.ToList(),
+                Language = languageFilter,
                 SortDescending = sortDescending,
                 PageIndex = page.GetValueOrDefault(1),
                 IsFeatured = isFeatured,
@@ -141,10 +145,13 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             ViewData["CurrentSort"] = queryParams.SortOrder;
             ViewData["CurrentSortDescending"] = queryParams.SortDescending;
             ViewData["CurrentIsFeatured"] = isFeatured;
+            ViewData["CurrentLanguage"] = languageFilter;
 
 
             var allGenres = await _bookGenreService.GetAllGenreList();
+            var allLanguages = await _languageService.GetAllLanguage();
             ViewData["AllGenres"] = allGenres;
+            ViewData["AllLanguages"] = allLanguages;
 
 
             //var books = await _bookService.GetBooks(
@@ -178,6 +185,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         DateTime? publishedFrom,
         DateTime? publishedTo,
         string[]? genreFilter,
+        string? languageFilter,
         string? sortOrder,
         bool sortDescending = false,
         bool? isFeatured = null,
@@ -197,6 +205,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                     PublishedFrom = publishedFrom,
                     PublishedTo = publishedTo,
                     GenreNames = genreFilter?.ToList(),
+                    Language = languageFilter,
                     IsFeatured = isFeatured,
                     SortDescending = sortDescending,
                     PageIndex = page.GetValueOrDefault(1),
@@ -216,10 +225,12 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 ViewData["CurrentIsFeatured"] = isFeatured;
                 ViewData["CurrentSort"] = queryParams.SortOrder;
                 ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+                ViewData["CurrentLanguage"] = languageFilter;
 
-                var allGenres = await _bookGenreService.GetAllGenreList();
+            var allGenres = await _bookGenreService.GetAllGenreList();
                 ViewData["AllGenres"] = allGenres;
-
+            var allLanguages = await _languageService.GetAllLanguage();
+            ViewData["AllLanguages"] = allLanguages;
             if (!string.IsNullOrEmpty(category))
             {
                 ViewData["CategoryTitle"] = category;
@@ -236,6 +247,9 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             {
                 ViewData["CategoryTitle"] = "Search Results";
             }
+
+
+
             PaginatedList<BookViewModel> books = await _bookService.GetBooks(queryParams);
             //List<Book> books = await _bookService.GetAllBooks();
             return View("~/Views/Books/BookSearchResults.cshtml", books);

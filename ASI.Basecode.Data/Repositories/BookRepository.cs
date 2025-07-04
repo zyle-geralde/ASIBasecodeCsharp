@@ -69,8 +69,13 @@ namespace ASI.Basecode.Data.Repositories
                         && b.GenreList.Contains(gn));
                 }
             }
+            if (!string.IsNullOrEmpty(queryParams.Language))
+            {
+                query=query.Where(b=>b.Language == queryParams.Language);
+            }
 
-            if (!string.IsNullOrEmpty(queryParams.SortOrder))
+
+                if (!string.IsNullOrEmpty(queryParams.SortOrder))
             {
                 bool desc = queryParams.SortDescending;
                 switch (queryParams.SortOrder.Trim().ToLower())
