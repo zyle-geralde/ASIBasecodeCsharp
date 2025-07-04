@@ -92,7 +92,9 @@ namespace ASI.Basecode.Data.Repositories
                             : query.OrderBy(b => b.AverageRating);
                         break;
                     case "uploaddate":
-                        query = desc ? query.OrderByDescending(b => b.UploadDate) : query.OrderBy(b => b.UploadDate);
+                        query = desc 
+                            ? query.OrderByDescending(b => b.UploadDate) 
+                            : query.OrderBy(b => b.UploadDate);
                         break;
                     default:
                         query = query.OrderBy(b => b.Title);
