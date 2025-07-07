@@ -347,7 +347,7 @@ label
 {
     position: relative;
     width: 100%;
-    z-index: 1000;
+    /*z-index: 1000;*/
 }
 
 .custom-select-btn 
@@ -368,7 +368,7 @@ label
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     position: relative;
-    z-index: 1001;
+    margin-top: 15px;
 }
 
     .custom-select-btn:hover 
