@@ -117,6 +117,7 @@ namespace ASI.Basecode.Services.Services
                 UpdatedBy = System.Environment.UserName,
                 IsEmailVerified = true,
                 OtpCode = null,
+                Role = role,
                 OtpExpirationDate = null
             };
 
