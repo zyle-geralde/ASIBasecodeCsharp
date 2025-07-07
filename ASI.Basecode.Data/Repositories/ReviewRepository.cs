@@ -68,12 +68,12 @@ namespace ASI.Basecode.Data.Repositories
 
         public async Task<List<Review>> GetReviewsByBookId(string bookId)
         {
-            return await _dbContext.Reviews.Where(r => r.BookId == bookId).ToListAsync();
+            return await _dbContext.Reviews.Where(r => r.BookId == bookId).Include(r => r.Book).ToListAsync();
         }
 
         public async Task<List<Review>> GetReviewByUser(string userId)
         {
-            return await _dbContext.Reviews.Where(r => r.UserId == userId).ToListAsync();
+            return await _dbContext.Reviews.Where(r => r.UserId == userId).Include(r => r.Book).ToListAsync();
         }
     }
 }
