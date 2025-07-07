@@ -54,7 +54,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 SortOrder = "rating",
                 SortDescending = true,
-                PageSize = 10
+                PageSize = 12
             };
             var topRatedBooks = await _bookService.GetBooks(topRatedParams);
 
@@ -62,7 +62,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 SortOrder = "uploaddate",
                 SortDescending = true,
-                PageSize = 10
+                PageSize = 12
             };
             var newlyAddedBooks = await _bookService.GetBooks(newlyAddedParams);
 

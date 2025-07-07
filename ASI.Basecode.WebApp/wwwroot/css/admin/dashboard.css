@@ -425,7 +425,8 @@ body {
     flex-wrap: wrap;
     gap: 8px;
     max-height: 56px;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
     position: relative;
     width: 100%;
 }
@@ -536,7 +537,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 500px;
     position: relative;
     background: none;
     margin-top: 8px;
@@ -568,21 +568,38 @@ body {
     flex: 1;
     flex: 1 1 auto;
     overflow: visible;
+    width: 100% !important;
+    align-items: center !important;  /* Center items horizontally */
+    justify-content: space-between !important;  /* Space between vertical elements */
+    text-align: center !important;  /* Center text */
+    height: 100% !important;
+    padding: 0 5px;
 }
 
 .admin-carousel-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: #2c3e50;
     margin-bottom: 0.2rem;
     font-family: 'Lara', serif;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
+    width: 100% !important;
+    white-space: normal !important;
 }
 
 .admin-carousel-author {
     color: #7b7b7b;
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 0.2rem;
     font-family: 'Lara', serif;
+    text-align: center !important;
+    width: 100% !important;  /* Full width to ensure proper centering */
+    display: block !important;
 }
 
 .admin-carousel-desc {
@@ -591,17 +608,27 @@ body {
     margin-bottom: 1rem;
     font-style: italic;
     font-family: 'Lara', serif;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
+    width: 100% !important;
+    white-space: normal !important;
 }
+    .admin-carousel-desc.text-truncate {
+        white-space: normal !important;
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        -webkit-line-clamp: 2 !important;
+    }
 
 .admin-star-rating {
     margin-bottom: 10px;
     align-items: center;
-    justify-content: center;
+    justify-content: center !important;
+    width: 100% !important;
 }
 
 .admin-star-rating .stars {
@@ -776,32 +803,32 @@ body {
 
 .admin-book-display-wrapper {
     display: flex !important;
-    flex-wrap: nowrap !important; 
+    flex-wrap: nowrap !important;
     flex-direction: row !important;
-    gap: 25px !important;
+    gap: 12px !important; /* Reduced gap to create more space for cards */
     justify-content: center !important;
     align-items: flex-start !important;
     width: 100% !important;
-    max-width: 1000px !important;
+    max-width: 1100px !important;
     margin: 0 auto !important;
 }
 
+/* Adjust the carousel card to better fit four cards */
 .admin-carousel-card {
     display: none !important; /* All cards hidden by default */
-    max-width: calc(30% - 12px) !important;
-    width: 200px !important;
-    flex: 0 0 calc(20% - 12px) !important;
+    max-width: calc(25% - 15px) !important; /* Changed from 30% to 25% for even 4-card display */
+    width: 225px !important; /* Increased from 200px */
+    flex: 0 0 calc(25% - 15px) !important; /* Changed from 20% to 25% */
     flex-direction: column !important;
     margin: 0 !important;
     box-sizing: border-box !important;
-    padding: 40px 20px;
+    padding: 20px 15px; /* Reduced padding to make more space for content */
     align-items: center !important;
     background: #f8f6f2;
     border-radius: 18px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-    gap: 15px;
-    min-height: 420px;
-    height: 100% !important
+    gap: 10px; /* Reduced gap to optimize space */
+    min-height: 450px; /* Slightly reduced min-height */
 }
 
 .admin-carousel-card:not(.hidden-book-card) {
@@ -810,16 +837,18 @@ body {
 
 /* Reset and fix the admin carousel layout */
 .admin-carousel-card .admin-carousel-img {
-    width: 140px !important;
-    height: 200px !important;
-    margin-bottom: 15px !important;
+    width: 130px !important;
+    height: 190px !important;
+    margin-bottom: 10px !important;
 }
 
     .admin-carousel-card .admin-carousel-content {
         width: 100% !important;
-        align-items: flex-start;
-        justify-content: flex-start;
-        height: 100% !important
+        align-items: center !important;  /* Center items horizontally */
+        justify-content: space-between !important;  /* Space between vertical elements */
+        text-align: center !important;  /* Center text */
+        height: 100% !important;
+        padding: 0 5px;
     }
 
 .carousel-button {
