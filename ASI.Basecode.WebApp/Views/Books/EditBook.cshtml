@@ -562,9 +562,9 @@
                     const coverImageFile = coverImageFileInput ? coverImageFileInput.files[0] : null;
                     if (coverImageFile) {
                         // Delete old image from Firebase if it's not a placeholder
-                        if (originalCoverImageUrl && !originalCoverImageUrl.includes("placeholder.jpg")) {
+                        /*if (originalCoverImageUrl && !originalCoverImageUrl.includes("placeholder.jpg")) {
                             await deleteFileFromFirebase(originalCoverImageUrl);
-                        }
+                        }*/
 
                         if (coverImageUploadStatus) {
                             const statusElement = coverImageUploadStatus.querySelector('.file-size-info');
@@ -587,9 +587,9 @@
                     const bookFile = bookFileInput ? bookFileInput.files[0] : null;
                     if (bookFile) {
                         // Delete old file from Firebase if it's not a placeholder
-                        if (originalBookFileUrl && !originalBookFileUrl.includes("placeholder.pdf")) {
+                        /*if (originalBookFileUrl && !originalBookFileUrl.includes("placeholder.pdf")) {
                             await deleteFileFromFirebase(originalBookFileUrl);
-                        }
+                        }*/
 
                         if (bookFileUploadStatus) {
                             const statusElement = bookFileUploadStatus.querySelector('.file-size-info');
@@ -629,6 +629,20 @@
                         if (window.toastr) window.toastr.success('Book updated successfully!');
                         // Re-capture initial state after successful save
                         captureInitialFormState();
+                        
+                         // If new cover different from original, delete the new one
+                        if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
+                            console.log(uploadedCoverUrl)
+                            console.log(originalCoverImageUrl)
+                            await deleteFileFromFirebase(originalCoverImageUrl);
+                            coverImageUrlInput.value = uploadedCoverUrl; // original url
+                        }
+                        // If new book file different from original, delete the new one
+                        if (uploadedBookUrl && uploadedBookUrl !== originalBookFileUrl) {
+                            await deleteFileFromFirebase(originalBookFileUrl);
+                            bookFileUrlInput.value = uploadedBookUrl; 
+                        }
+
                         setTimeout(() => {
                             window.location.href = '/Book/ListBook';
                         }, 1500);
