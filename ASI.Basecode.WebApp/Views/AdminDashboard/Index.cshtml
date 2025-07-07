@@ -240,21 +240,6 @@
                     tag.remove()
                 }
             }
-            // Populate dropdown with checkboxes
-            /*itemsToPopulate.forEach(item => {
-                const parts = item.split(',');
-                const itemName = parts[0].trim();
-                const itemValue = parts[1].trim();
-                const optionDiv = document.createElement('div');
-
-                if (genreArray.includes(parts[1].trim().toLowerCase())) {
-                    optionDiv.textContent = itemName
-                    optionDiv.setAttribute("class", "book-tag")
-
-                    genre_tag.appendChild(optionDiv);
-                }
-
-            });*/
 
         } catch (error) {
             console.error(`Error initializing`, error);
