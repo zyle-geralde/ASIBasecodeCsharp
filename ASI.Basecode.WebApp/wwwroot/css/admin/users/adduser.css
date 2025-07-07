@@ -153,35 +153,6 @@ input[type="password"] {
         transform: translateY(-1px);
     }
 
-
-
-.upload-section {
-    margin-bottom: 1rem;
-    align-self: start;
-    width: 50%;
-}
-
-.upload-input 
-{
-    position: relative;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    
-}
-
-.file-display 
-{
-    flex: 1;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    color: #666;
-    background: #fff;
-}
-
 .admin-common-container {
     max-width: 1250px; 
     margin-left: auto;
