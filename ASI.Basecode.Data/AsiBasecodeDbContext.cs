@@ -83,7 +83,11 @@ namespace ASI.Basecode.Data
                  .HasForeignKey(r => r.UserId)
                  .HasPrincipalKey(u => u.Email)
                  .OnDelete(DeleteBehavior.Cascade);
-
+            modelBuilder.Entity<Review>()
+              .HasOne(r => r.Book)
+              .WithMany(b => b.Reviews)
+              .HasForeignKey(r => r.BookId)
+              .OnDelete(DeleteBehavior.Cascade);
             OnModelCreatingPartial(modelBuilder);
         }
 
