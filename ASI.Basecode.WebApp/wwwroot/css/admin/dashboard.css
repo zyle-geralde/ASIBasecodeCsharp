@@ -427,6 +427,7 @@ body {
     max-height: 56px;
     align-items: flex-start;
     position: relative;
+    width: 100%;
 }
 
 .genre-tags-more-indicator {
@@ -535,7 +536,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 320px;
+    min-height: 500px;
     position: relative;
     background: none;
     margin-top: 8px;
@@ -544,7 +545,8 @@ body {
     padding: 0 50px !important;
     margin: 10px 0;
     position: relative !important;
-    min-height: 300px !important;
+    align-items: stretch;
+    /*    min-height: 300px !important;*/
     overflow: visible;
 }
 
@@ -561,9 +563,11 @@ body {
 .admin-carousel-content {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     min-width: 0;
     flex: 1;
+    flex: 1 1 auto;
+    overflow: visible;
 }
 
 .admin-carousel-title {
@@ -587,6 +591,11 @@ body {
     margin-bottom: 1rem;
     font-style: italic;
     font-family: 'Lara', serif;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .admin-star-rating {
@@ -683,6 +692,7 @@ body {
     .admin-carousel-card {
         flex: 1 0 calc(100% - 20px);
         max-width: calc(100% - 20px);
+        height: 100%
     }
     
     .admin-carousel-btn.prev-button {
@@ -729,6 +739,8 @@ body {
     .admin-carousel-card {
         flex: 1 0 calc(50% - 20px);
         max-width: calc(50% - 20px);
+        min-height: 420px;
+        height: 100% !important
     }
 }
 
@@ -737,6 +749,8 @@ body {
         width: 100%;
         flex: 1 0 calc(100% - 20px);
         max-width: calc(100% - 20px);
+        min-height: 420px;
+        height: 100% !important
     }
     
     .admin-carousel-btn.prev-button {
@@ -786,7 +800,8 @@ body {
     border-radius: 18px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.06);
     gap: 15px;
-    min-height: 220px;
+    min-height: 420px;
+    height: 100% !important
 }
 
 .admin-carousel-card:not(.hidden-book-card) {
@@ -800,9 +815,12 @@ body {
     margin-bottom: 15px !important;
 }
 
-.admin-carousel-card .admin-carousel-content {
-    width: 100% !important;
-}
+    .admin-carousel-card .admin-carousel-content {
+        width: 100% !important;
+        align-items: flex-start;
+        justify-content: flex-start;
+        height: 100% !important
+    }
 
 .carousel-button {
     position: absolute !important;
@@ -844,6 +862,8 @@ body {
         width: 100% !important;
         max-width: 100% !important;
         flex: 0 0 100% !important;
+        height: 100% !important;
+        
     }
 }
 
