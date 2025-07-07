@@ -857,8 +857,8 @@
                         }, 1500);
                     } else {
                         const errorData = await response.json();
-                        const errorMessage = JSON.stringify(errorData.errors.join('\n- ') || errorData.message || "An unknown error occurred on the server.");
-                        toastr.error(`Server error: ${errorMessage}`);
+                        const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
+                        toastr.error(`${errorMessage}`);
 
                         if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
                             await deleteFileFromFirebase(uploadedCoverUrl);

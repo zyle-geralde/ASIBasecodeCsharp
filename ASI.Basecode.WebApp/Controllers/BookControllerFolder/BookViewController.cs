@@ -355,7 +355,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 catch (Exception ex)
                 {
                     //ModelState.AddModelError("", "An unexpected error occurred: " + ex.Message);
-                    return BadRequest(new { Message = "An unexpected server error occurred" });
+                    return BadRequest(new { ex.Message });
                 }
             }
 
@@ -382,7 +382,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 catch (Exception ex)
                 {
                     Console.Error.WriteLine($"Error updating book: {ex.Message}");
-                    return StatusCode(500, $"Error updating book: {ex.Message}");
+                    return StatusCode(500, new {Message = ex.Message });
                 }
             }
 
