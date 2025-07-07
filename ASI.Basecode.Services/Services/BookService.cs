@@ -32,8 +32,28 @@ namespace ASI.Basecode.Services.Services
             // Here you can add any business logic or validation before saving the book to the database.
             //example:if (string.IsNullOrWhiteSpace(book.Title)) throw new ArgumentException("Book title cannot be empty.");
 
+            
+            try
+            {
+                bool isBookNameAndAuthorExist = await _bookRepository.CheckBookNameAndAuthorExist(request.Author.Trim(),request.Title.Trim().ToLower());
+
+                if (isBookNameAndAuthorExist)
+                {
+                    throw new ApplicationException("Book Title and/or Author Exist.");
+                }
+            }
+            catch(ApplicationException ex)
+            {
+                throw;
+            }
+            catch(Exception ex)
+            {
+                throw new ApplicationException($"Failed to add book: {ex.Message}", ex);
+            }
+
             // Map DTO to actual Book model
             //Change to mapper
+
             var book = new Book
             {
                 BookId = Guid.NewGuid().ToString(),
@@ -232,6 +252,7 @@ namespace ASI.Basecode.Services.Services
 
         public async Task EditBook(BookViewModel request)
         {
+
             //Change to mapper
             var book = new Book
             {
@@ -273,7 +294,7 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Failed to Edit book: {ex.Message}", ex);
+                throw new ApplicationException(ex.Message);
             }
         }
 
