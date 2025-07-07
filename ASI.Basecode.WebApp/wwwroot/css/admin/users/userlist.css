@@ -1,13 +1,32 @@
-﻿/* Main container styling */
-.users-container {
+﻿/* Layout & Container Styles */
+.users-container 
+{
     padding: 40px;
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 60px); /* Changed from height to min-height */
+    min-height: calc(100vh - 60px);
     overflow-y: visible;
 }
 
-.avatar-circle {
+/* Card & Avatar Styles */
+.card 
+{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: visible;
+}
+
+.card-body 
+{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: visible;
+}
+
+.avatar-circle 
+{
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -19,145 +38,19 @@
     font-weight: bold;
 }
 
-/* Card structure to expand to fill available space */
-.card {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow: visible; /* Important for child elements with overflow */
+/* Search & Filter Form */
+.card-body form 
+{
+    flex-shrink: 0;
 }
 
-.card-body {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow: visible; /* Important for scrollable children */
-}
-
-/* Search and filter form styling */
-.card-body form {
-    flex-shrink: 0; /* Prevent form from shrinking */
-}
-
-/* Table container styling */
-.table-container {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0; /* Important for flex container with overflow */
-}
-
-/* Table container that will grow and enable scrolling */
-.scrollable-table-container {
-    flex: 1; /* Allow it to grow and fill available space */
-    overflow-y: visible; /* Enable vertical scrolling */
-    overflow-x: auto;
-    background: #fff;
-    border-radius: 8px;
-    border: none;
-    margin-bottom: 0; /* Remove margin at bottom */
-}
-
-/* Table styling */
-.user-table {
-    border: none !important;
+.form-control.me-2 
+{
     width: 100%;
-    margin-bottom: 0; /* Remove default margin */
-    table-layout: fixed; /* Important for consistent column widths */
 }
 
-.user-table th,
-.user-table td {
-    border-bottom: 1px solid #e0e0e0;
-    padding: 12px 15px; /* Set consistent padding for all cells */
-    height: 53px; /* Set a fixed height for all rows */
-    vertical-align: middle; /* Center content vertically */
-}
-
-.user-table tr {
-    border-left: none !important;
-    border-right: none !important;
-    height: 53px; /* Set consistent height for all rows */
-}
-
-.user-table tbody tr {
-    border-bottom: 1px solid #e0e0e0;
-    border-top: 1px solid #e0e0e0;
-}
-
-.user-table thead th {
-    position: sticky;
-    top: 0;
-    background: #fff;
-    z-index: 2;
-    box-shadow: 0 2px 2px -1px rgba(0,0,0,0.04);
-    height: 53px; 
-   
-}
-
-/* When the table has fewer rows, this will prevent it from stretching */
-.user-table tbody {
-    flex: 0 0 auto; /* Don't allow tbody to flex */
-}
-
-.action-buttons {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.btn-icon {
-    padding: 0.375rem;
-    border: none;
-}
-
-/* Custom Pagination Styles */
-.custom-pagination-container {
-    padding: 15px 0;
-    display: flex;
-    justify-content: center;
-    margin-top: auto; /* Push pagination to the bottom */
-}
-
-.custom-pagination {
-    display: flex;
-    gap: 8px;
-}
-
-.page-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 40px;
-    height: 40px;
-    padding: 0 10px;
-    border-radius: 5px;
-    background-color: #f0f2f5;
-    color: #444;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.page-btn:hover:not(.disabled):not(.active) {
-    background-color: #e1e5eb;
-}
-
-.page-btn.active {
-    background-color: #465b73;
-    color: #fff;
-}
-
-.page-btn.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-.page-btn i {
-    font-size: 0.9rem;
-}
-
-.sort-btn{
+.sort-btn 
+{
     padding: 8px 15px;
     border: 1px solid #ddd;
     border-radius: 20px;
@@ -169,29 +62,92 @@
     margin-left: 8px;
 }
 
-    .sort-btn:hover{
-        background-color: #f5f5f5;
-    }
+.sort-btn:hover 
+{
+    background-color: #f5f5f5;
+}
 
-.form-control.me-2{
+/* Table Container & Table */
+.table-container 
+{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.scrollable-table-container 
+{
+    flex: 1;
+    overflow-y: visible;
+    overflow-x: auto;
+    background: #fff;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 0;
+}
+
+.user-table 
+{
+    border: none !important;
     width: 100%;
+    margin-bottom: 0;
+    table-layout: fixed;
 }
 
-/* Responsive styles */
-@media (max-width: 768px) {
-    .users-container {
-        margin-left: 0;
-        height: auto;
-        min-height: calc(100vh - 60px);
-    }
-    
-    .scrollable-table-container {
-        overflow-x: auto; /* Enable horizontal scrolling on small screens */
-    }
+.user-table th,
+.user-table td 
+{
+    border-bottom: 1px solid #e0e0e0;
+    padding: 12px 15px;
+    height: 53px;
+    vertical-align: middle;
 }
 
-/* Sort Popup Styling */
-.sort-popup {
+.user-table tr 
+{
+    border-left: none !important;
+    border-right: none !important;
+    height: 53px;
+}
+
+.user-table tbody tr 
+{
+    border-bottom: 1px solid #e0e0e0;
+    border-top: 1px solid #e0e0e0;
+}
+
+.user-table thead th 
+{
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 2;
+    box-shadow: 0 2px 2px -1px rgba(0,0,0,0.04);
+    height: 53px;
+}
+
+.user-table tbody 
+{
+    flex: 0 0 auto;
+}
+
+/* Action Buttons */
+.action-buttons 
+{
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-icon 
+{
+    padding: 0.375rem;
+    border: none;
+}
+
+/* Sort Popup */
+.sort-popup 
+{
     position: absolute;
     right: 0;
     top: 40px;
@@ -201,40 +157,64 @@
     border: 1px solid #e0e0e0;
 }
 
-    .sort-popup .card-header {
-        border-radius: 8px 8px 0 0;        
-        background-color: rgb(100, 125, 127) !important;
-        height: 45px;
-    }
+.sort-popup .card-header 
+{
+    border-radius: 8px 8px 0 0;
+    background-color: rgb(100, 125, 127) !important;
+    height: 45px;
+}
 
-.sort-popup .form-check-input:checked {
+.sort-popup .form-check-input:checked 
+{
     background-color: #465b73;
     border-color: #465b73;
 }
 
-.sort-popup .form-label {
+.sort-popup .form-label 
+{
     color: #465b73;
 }
 
-    .sort-popup .btn-secondary.me-2 {
-        background-color: rgb(100, 125, 127, 0.4);
-        font-size: 12px;
-        border-color: rgb(100, 125, 127, 0.8);
+.sort-popup .btn-secondary.me-2 
+{
+    background-color: rgb(100, 125, 127, 0.4);
+    font-size: 12px;
+    border-color: rgb(100, 125, 127, 0.8);
+}
+
+.sort-popup .btn-secondary.me-2:hover 
+{
+    background-color: rgb(100, 125, 127, 0.8);
+    border-color: rgb(100, 125, 127);
+}
+
+.sort-popup .btn-outline-secondary 
+{
+    background-color: #fff;
+    color: dimgray;
+    font-size: 12px;
+    border-color: rgb(255, 115, 90, 0.5);
+}
+
+.sort-popup .btn-outline-secondary:hover 
+{
+    background-color: rgb(255, 115, 90, 0.3);
+    border-color: rgb(255, 115, 90);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) 
+{
+    .users-container 
+    {
+        margin-left: 0;
+        height: auto;
+        min-height: calc(100vh - 60px);
+        padding: 16px;
     }
 
-        .sort-popup .btn-secondary.me-2:hover {
-            background-color: rgb(100, 125, 127, 0.8);
-            border-color: rgb(100, 125, 127);
-        }
-
-    .sort-popup .btn-outline-secondary {
-        background-color: #fff;
-        color: dimgray;
-        font-size: 12px;
-        border-color: rgb(255, 115, 90, 0.5);
+    .scrollable-table-container 
+    {
+        overflow-x: auto;
     }
-
-    .sort-popup .btn-outline-secondary:hover{
-        background-color: rgb(255, 115, 90, 0.3);
-        border-color: rgb(255, 115, 90);
-    }
+}
