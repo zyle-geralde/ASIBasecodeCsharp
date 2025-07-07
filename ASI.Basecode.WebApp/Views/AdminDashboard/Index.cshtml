@@ -120,7 +120,7 @@
                                         foreach (var tag in genres)
                                         {
                                             var colorIndex = Math.Abs(tag.GetHashCode()) % colorClasses.Length;
-                                            <span class="genre-tag @colorClasses[colorIndex]">@tag</span>
+                                            <span class="genre-tag @colorClasses[colorIndex]" id="genre-tag-id">@tag</span>
                                         }
                                     }
                                 </div>
@@ -191,7 +191,7 @@
                                         foreach (var tag in genres)
                                         {
                                             var colorIndex = Math.Abs(tag.GetHashCode()) % colorClasses.Length;
-                                            <span class="genre-tag @colorClasses[colorIndex]">@tag</span>
+                                            <span class="genre-tag @colorClasses[colorIndex]" id="genre-tag-id">@tag</span>
                                         }
                                     }
                                 </div>
@@ -210,6 +210,41 @@
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="module">
+        var genreTag = document.querySelectorAll("#genre-tag-id");
+        try {
+            const response = await fetch('/Book/GetGenre', { method: 'GET' });
+            let itemsToPopulate = [];
+
+            if (response.ok) {
+                const result = await response.json();
+                itemsToPopulate = result.message;
+            } else {
+                console.error(`Server error fetching`);
+            }
+
+            for(var tag of genreTag){
+                var isGenreExist = false;
+                for(var item of itemsToPopulate){
+                    const parts = item.split(',');
+                    const itemName = parts[0].trim();
+                    const itemValue = parts[1].trim();
+                    
+
+                    if (tag.textContent.includes(parts[1].trim().toLowerCase())) {
+                        tag.textContent = itemName;
+                        isGenreExist = true;
+                    }
+                }
+                if(!isGenreExist){
+                    tag.remove()
+                }
+            }
+
+        } catch (error) {
+            console.error(`Error initializing`, error);
+        }
+    </script>
     <script>
         $(document).ready(function () {
             console.log("Document ready, jQuery loaded");

@@ -509,8 +509,8 @@
                     }
 
                     const formData = new FormData(form);
-                    const response = await fetch(form.action, {
-                        method: form.method,
+                    const response = await fetch("/Book/AddBook", {
+                        method: "POST",
                         body: formData
                     });
 
@@ -532,7 +532,7 @@
                         }, 1500);
                     } else {
                         const errorData = await response.json();
-                        const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
+                        const errorMessage = JSON.stringify(errorData.errors.join('\n- ') || errorData.message || "An unknown error occurred on the server.");
                         toastr.error(`Server error: ${errorMessage}`);
 
                         if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
