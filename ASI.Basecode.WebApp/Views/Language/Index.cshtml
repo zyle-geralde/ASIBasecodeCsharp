@@ -161,9 +161,16 @@
                                         <td class="align-middle" style="padding-left: 10px">@language.LanguageName</td>
                                         <td class="align-middle" style="white-space:nowrap;">
                                             <div class="action-buttons justify-content-center">
-                                                <a href="/Language/LanguageView/@language.LanguageId" class="action-icon-button text-secondary">
+                                                <a asp-controller="Book"
+                                                   asp-action="ListBook"
+                                                   asp-route-languageFilter="@language.LanguageId"
+                                                   asp-route-category="@language.LanguageName"
+                                                   class="action-icon-button text-secondary">
                                                     <i class="fas fa-info-circle"></i>
                                                 </a>
+                                                @*<a href="/Language/LanguageView/@language.LanguageId" class="action-icon-button text-secondary">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </a>*@
                                                 <button type="button" class="btn btn-icon text-danger delete-language-btn"
                                                         data-bs-toggle="modal" data-bs-target="#deleteLanguageModal"
                                                         data-id="@language.LanguageId" data-name="@language.LanguageName" id="delete_language_button">
