@@ -115,7 +115,6 @@ input[type="text"] {
     table-layout: fixed;
 }
 
-.user-table th,
 .user-table td 
 {
     border-bottom: 1px solid #e0e0e0;
@@ -123,6 +122,16 @@ input[type="text"] {
     height: 53px;
     vertical-align: middle;
 }
+
+    .user-table th {
+        font-weight: 600;
+        color: #4B5563;
+        font-size: 14px;
+        text-transform: uppercase;
+        border-bottom: 1px solid #e0e0e0;
+        align-content: center;
+        padding: 12px 15px;
+    }
 
 .user-table tr 
 {
@@ -137,15 +146,14 @@ input[type="text"] {
     border-top: 1px solid #e0e0e0;
 }
 
-.user-table thead th 
-{
-    position: sticky;
-    top: 0;
-    background: #fff;
-    z-index: 2;
-    box-shadow: 0 2px 2px -1px rgba(0,0,0,0.04);
-    height: 53px;
-}
+    .user-table thead th {
+        position: sticky;
+        top: 0;
+        background: rgb(210, 196, 158, 0.75);
+        z-index: 2;
+        box-shadow: 0 2px 2px -1px rgba(0,0,0,0.04);
+        height: 53px;
+    }
 
 .user-table tbody 
 {
