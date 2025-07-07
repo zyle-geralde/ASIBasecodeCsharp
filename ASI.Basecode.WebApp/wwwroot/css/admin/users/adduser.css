@@ -129,12 +129,12 @@
 }
 
 input[type="text"],
-input[type="email"] 
-{
+input[type="email"],
+input[type="password"] {
     width: 100%;
-    padding: 0.5rem; 
+    padding: 0.6rem 1rem;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 14px;
 }
 
@@ -166,53 +166,15 @@ input[type="email"]
     background: #fff;
 }
 
-input[type="file"] 
-{
+.admin-common-container {
+    max-width: 1250px; /* or any width you prefer */
+    margin-left: auto;
+    margin-right: auto;
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.browse-btn 
-{
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #647D7F;
-    color: white;
-    padding: 0.5rem 1.25rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.file-instructions 
-{
-    display: flex;
-    flex-direction: column;
-    font-size: 0.875rem;
-    color: #666;
-    margin-top: 0.5rem;
-}
-
-.file-info 
-{
-    display: flex;
-    flex-direction: row;
-    gap: 0.15rem; 
-    justify-content: space-between;
-    margin-bottom: 0.5rem; 
-}
-
-.file-info small 
-{
-    color: #666;
-    font-size: 12px;
+    padding: 0 24px; /* optional: for some horizontal padding */
+    box-sizing: border-box;
+    display: block; /* ensure it's a block-level element */
+    margin-top: 24px;
 }
 
 .button-container {
@@ -317,6 +279,7 @@ input[type="file"]
     .admin-common-container
     {
         padding: 20px;
+        
     }
     .admin-common-content-wrapper
     {
