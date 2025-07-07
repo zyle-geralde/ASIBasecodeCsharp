@@ -25,6 +25,28 @@ body, html {
     font-weight: bold;
 }
 
+input[type="text"]
+{
+    width: 100%;
+    padding: 12px 16px;
+    margin-top: 8px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #374151;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+}
+
+    input[type="text"]:hover
+    {
+        border-color: #a0b4b7;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+    }
+
 .action-buttons {
     display: flex;
     gap: 0.5rem;
@@ -68,8 +90,14 @@ body, html {
     padding: 0.4rem 0.5rem; /* Reduced padding (default is 0.5rem) */
 }
 
-.table tr {
+.table th {
     height: 45px; /* Set fixed height for rows */
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #4B5563;
+    font-size: 14px;
+    text-transform: uppercase;
 }
 
 .table thead th {
@@ -107,21 +135,31 @@ body, html {
 .add-language-label {
     color: #5B7670;
     font-size: 24px !important;
+    font-weight: 500;
 }
 
 .add-language-btn {
-    background: #5B7670;
-    color: #fff;
-    min-width: 100px;
-    font-size: 14px;
-    font-weight: 300;
-    min-height: 25px;
+    height: 40px;
+    min-height: 40px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
     border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    background-color: #5f7c78;
+    color: #fff;
+    border: 1px solid #5f7c78;
 }
 
     .add-language-btn:hover {
-        background-color: #3d4f45;
-        color: #ffffff;
+        background-color: #516a67;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        color: #fff;
     }
 
 .form-control {
@@ -129,8 +167,12 @@ body, html {
     color: GrayText;
 }
 
+.form-label {
+    font-weight: 500;
+}
+
 .users-container.p-4 {
-    overflow: ;
+    overflow:;
 }
 
 .card-body {
@@ -180,13 +222,15 @@ body, html {
     margin-bottom: 0;
 }
 /* Optional: sticky table header */
-.table-scroll-container thead th {
-    position: sticky;
-    top: 0;
-    background-color: white;
-    z-index: 10;
-    box-shadow: 0 2px 3px -3px rgba(0, 0, 0, 0.1);
-}
+    .table-scroll-container thead th {
+        position: sticky;
+        top: 0;
+        background-color: rgb(210, 196, 158, 0.75);
+        z-index: 10;
+        box-shadow: 0 2px 3px -3px rgba(0, 0, 0, 0.1);
+        height: 53px;
+        align-content: center;
+    }
 
 .table-responsive {
     overflow: visible !important; /* Override Bootstrap's overflow behavior */
@@ -196,4 +240,15 @@ body, html {
     .users-container {
         margin-left: 0;
     }
+}
+
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    border-bottom: 1px solid #e0e0e0;
 }

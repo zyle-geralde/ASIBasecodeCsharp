@@ -8,6 +8,7 @@ namespace ASI.Basecode.Services.ServiceModels
         public string ReviewId { get; set; } //will be set automatically
 
         public string BookId { get; set; } //depends on where user mapped it
+        public string BookTitle { get; set; } //depends on where user mapped it
 
         [Required(ErrorMessage = "Rating is required.")]
         [Range(0, 5, ErrorMessage = "Rating must be between 0 and 5.")]

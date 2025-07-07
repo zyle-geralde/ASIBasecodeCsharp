@@ -37,11 +37,25 @@
         </div>
         <form asp-action="AddUser" asp-controller="User" method="post" class="add-user-form" id="addUserForm">
             @Html.AntiForgeryToken()
+
+            <div class="form-row">
+                <div class="form-group role-group">
+                    <div class="btn-group role-btn-group" role="group" aria-label="Role selection">
+                        <input type="radio" class="btn-check" name="Role" id="roleUser" value="User" autocomplete="off" checked>
+                        <label class="btn role-btn" for="roleUser">User</label>
+
+                        <input type="radio" class="btn-check" name="Role" id="roleAdmin" value="Admin" autocomplete="off">
+                        <label class="btn role-btn" for="roleAdmin">Admin</label>
+                    </div>
+                    <span class="text-danger"></span>
+                </div>
+            </div>
+
             <div class="form-row">
                 <div class="form-group">
                     <label for="userId">Email</label>
                     <input type="email" id="userId" class="form-control"
-                           asp-for="Email" placeholder="sample@gmail.com"
+                           asp-for="Email" placeholder="email@address.com"
                            data-bs-toggle="tooltip" data-bs-placement="top"
                            data-bs-custom-class="custom-tooltip" />
                     <span asp-validation-for="Email" class="text-danger"></span>

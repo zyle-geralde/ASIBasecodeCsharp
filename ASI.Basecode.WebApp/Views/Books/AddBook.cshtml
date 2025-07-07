@@ -52,7 +52,7 @@
                     <input type="file" id="coverImageFile" accept="image/*" name="CoverImageFile" style="display: none;">
 
                     <p id="coverImageUploadStatus" class="master-upload-status">
-                        <span class="file-size-info">Max file size: 1GB</span>
+                        <span class="file-size-info">Max file size: 10MB</span>
                         <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                     </p>
                 </div>
@@ -63,11 +63,21 @@
                             <input type="text" id="title" name="Title" class="book-master-form-input" value="@Model?.Title" required>
                             <span asp-validation-for="Title" class="text-danger"></span>
                         </div>
+
                         <div class="book-master-form-group">
-                            <label for="author" class="required-label">Author</label>
-                            <select id="author" name="Author" class="book-master-form-select"></select>
+                            <label for="authorContainer" class="required-label">Author</label>
+                            <div class="custom-multi-select" id="authorContainer">
+                                <div class="custom-select-btn">
+                                    <span>Select Author</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="custom-dropdown" id="authorDropdown">
+                                </div>
+                            </div>
+                            <input type="hidden" id="author" name="Author" value="@(Model?.Author ?? "")">
                             <span asp-validation-for="Author" class="text-danger"></span>
                         </div>
+
                         <div class="book-master-form-group">
                             <label for="subtitle">Subtitle</label>
                             <input type="text" id="subtitle" name="Subtitle" class="book-master-form-input" value="@Model?.Subtitle">
@@ -92,11 +102,21 @@
                             <input type="text" id="publicationLocation" name="PublicationLocation" class="book-master-form-input" value="@Model?.PublicationLocation">
                             <span asp-validation-for="PublicationLocation" class="text-danger"></span>
                         </div>
+
                         <div class="book-master-form-group">
-                            <label for="language" class="required-label">Language</label>
-                            <select id="language" name="Language" class="book-master-form-select"></select>
+                            <label for="languageContainer" class="required-label">Language</label>
+                            <div class="custom-multi-select" id="languageContainer">
+                                <div class="custom-select-btn">
+                                    <span>Select Language</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="custom-dropdown" id="languageDropdown">
+                                </div>
+                            </div>
+                            <input type="hidden" id="language" name="Language" value="@(Model?.Language ?? "")">
                             <span asp-validation-for="Language" class="text-danger"></span>
                         </div>
+
                         <div class="book-master-form-group">
                             <label for="numberOfPages">Number of Pages</label>
                             <input type="number" id="numberOfPages" name="NumberOfPages" class="book-master-form-input" value="@Model?.NumberOfPages">
@@ -104,48 +124,7 @@
                         </div>
 
 
-                        @* <div class="book-master-form-group">
-                            <label for="description">Description</label>
-                            <textarea id="description" name="Description" class="book-master-form-textarea">@Model?.Description</textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div> *@
-
-@* 
-                        <div class="book-master-form-group">
-                            <label for="seriesName">Series Name</label>
-                            <input type="text" id="seriesName" name="SeriesName" class="book-master-form-input" value="@Model?.SeriesName">
-                            <span asp-validation-for="SeriesName" class="text-danger"></span>
-                        </div>
-                        <div class="book-master-form-group">
-                            <label for="seriesOrder">Series Order</label>
-                            <input type="number" id="seriesOrder" name="SeriesOrder" class="book-master-form-input" value="@Model?.SeriesOrder">
-                            <span asp-validation-for="SeriesOrder" class="text-danger"></span>
-                        </div>
-                        <div class="book-master-form-group">
-                            <label for="seriesDescription">Series Description</label>
-                            <textarea id="seriesDescription" name="SeriesDescription" class="book-master-form-textarea">@Model?.SeriesDescription</textarea>
-                            <span asp-validation-for="SeriesDescription" class="text-danger"></span>
-                        </div>
-                        <div class="book-master-form-group">
-                            <label for="isFeatured">Featured Book</label>
-                            <div class="featured-toggle-container">
-                                <label class="switch">
-                                    <input type="checkbox" id="isFeatured" name="IsFeatured" value="true">
-                                    <span class="slider round"></span>
-                                </label>
-                                <span class="toggle-label" id="featuredStatus">No</span>
-                            </div>
-                            <span asp-validation-for="IsFeatured" class="text-danger"></span>
-                        </div> *@
-                        @* <div class="book-master-form-group">
-                            <label for="isFeatured">Featured Book</label>
-                            <input type="checkbox" id="isFeatured" name="IsFeatured" value="true">
-                            <span asp-validation-for="IsFeatured" class="text-danger"></span>
-                        </div> *@
-
                     </div>
-
-                    
 
                     <div class="book-master-form-group full-width-description">
                         <label for="description">Description</label>
@@ -172,7 +151,6 @@
                         <span asp-validation-for="SeriesDescription" class="text-danger"></span>
                     </div>
 
-                    <!-- Featured toggle section remains the same -->
                     <div class="book-master-form-group">
                         <label class="toggle-question-label">Is this a featured book?</label>
                         <div class="featured-toggle-container">
@@ -187,7 +165,7 @@
                 </div>
             </div>
 
-            
+
 
             <h3 class="book-master-form-section-title">Categorization</h3>
             <div class="book-master-form-grid">
@@ -253,105 +231,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <script type="module">
-        // Initialize Firebase 
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyA4CTMSbgGQN_yLn9lEZlswbZ_2A2Xhl0k",
-            authDomain: "basabuzz-ca8fe.firebaseapp.com",
-            projectId: "basabuzz-ca8fe",
-            storageBucket: "basabuzz-ca8fe.firebasestorage.app",
-            messagingSenderId: "206533484485",
-            appId: "1:206533484485:web:2c71a06a17d5244efe75ac"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const storage = getStorage(app);
-
-        async function deleteFileFromFirebase(fileUrl) {
-            if (!fileUrl) {
-                console.warn("Attempted to delete null or empty file URL.");
-                return;
-            }
-            try {
-                const fileRef = ref(storage, fileUrl);
-                await deleteObject(fileRef);
-                console.log(`Successfully deleted file: ${fileUrl}`);
-            } catch (error) {
-                toastr.error(`Failed to delete file ${fileUrl}: ${error.message}`);
-                console.error(`Failed to delete file ${fileUrl}:`, error);
-            }
-        }
-
-        // Firebase Upload Function
-        async function uploadFileToFirebase(file, path, statusElement) {
-            if (!file) {
-                statusElement.textContent = 'No file selected.';
-                return null;
-            }
-
-            const timestamp = new Date().getTime();
-            const randomString = Math.random().toString(36).substring(2, 8);
-            const uniqueFileName = `${path}${timestamp}-${randomString}-${file.name}`;
-            const storageRef = ref(storage, uniqueFileName);
-            const uploadTask = uploadBytesResumable(storageRef, file);
-
-            return new Promise((resolve, reject) => {
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        statusElement.textContent = `Upload is ${progress.toFixed(2)}% done`;
-                    },
-                    (error) => {
-                        statusElement.textContent = `Upload failed: ${error.message}`;
-                        console.error("Upload error:", error);
-                        toastr.error(`File upload failed: ${error.message}`);
-                        reject(error);
-                    },
-                    async () => {
-                        try {
-                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                            statusElement.textContent = 'Upload successful!';
-                            resolve(downloadURL);
-                        } catch (error) {
-                            statusElement.textContent = `Failed to get download URL: ${error.message}`;
-                            console.error("Get Download URL error:", error);
-                            toastr.error(`Failed to get download URL: ${error.message}`);
-                            reject(error);
-                        }
-                    }
-                );
-            });
-        }
-
-        // Image Preview Function
-        function updateImagePreview(file, previewElement, placeholderElement, fileNameDisplay) {
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    previewElement.src = e.target.result;
-                    previewElement.style.display = 'block';
-                    placeholderElement.style.display = 'none';
-                    fileNameDisplay.value = file.name;
-                };
-                reader.readAsDataURL(file);
-            } else {
-                previewElement.src = '';
-                previewElement.style.display = 'none';
-                placeholderElement.style.display = 'block';
-                fileNameDisplay.value = '';
-            }
-        }
-
+        import { initializeFeaturedToggle } from "/js/common/_slider.js";
+        import { deleteFileFromFirebase, uploadFileToFirebase, updateImagePreview } from "/js/common/_firebase.js";
+        import { initializeSingleSelectAuthor, initializeSingleSelectLanguage, initializeMultiSelect } from "/js/common/_selectInitializer.js";
 
         document.addEventListener('DOMContentLoaded', async () => {
-            
-            const MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024 * 1024; 
-            const VALID_IMAGE_FORMATS = ['image/jpeg', 'image/png', 'image/jpg'];
-            const VALID_BOOK_FORMATS = ['application/pdf', 'application/epub+zip'];
 
-            // Get all elements 
+            const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+            const MAX_BOOK_FILE_SIZE_BYTES = 100 * 1024 * 1024;
+
+            // Get all elements
             const coverImageFile = document.getElementById('coverImageFile');
             const coverImagePreview = document.getElementById('coverImagePreview');
             const coverImagePlaceholder = document.getElementById('coverImagePlaceholder');
@@ -359,13 +248,9 @@
             const coverImageUploadStatus = document.getElementById('coverImageUploadStatus');
 
             const bookFile = document.getElementById('bookFile');
-            const bookFilePreview = document.getElementById('bookFilePreview');
-            const bookFilePlaceholder = document.getElementById('bookFilePlaceholder');
             const bookFileNameDisplay = document.getElementById('bookFileNameDisplay');
             const bookFileUploadStatus = document.getElementById('bookFileUploadStatus');
 
-            const authorSelect = document.getElementById('author');
-            const languageSelect = document.getElementById('language');
             const publicationDateInput = document.getElementById('publicationDate');
 
             // Initialize file input change handlers with null checks
@@ -387,17 +272,15 @@
                     const fileName = this.files[0] ? this.files[0].name : '';
                     if (bookFileNameDisplay) bookFileNameDisplay.value = fileName;
                     if (bookFileUploadStatus) {
-                        bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
+                        bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 10MB';
                         bookFileUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: PDF, EPUB.';
                         bookFileUploadStatus.classList.remove('error-message');
                     }
-                    if (bookFilePreview) bookFilePreview.style.display = 'none';
-                    if (bookFilePlaceholder) bookFilePlaceholder.style.display = 'block';
                 });
             }
-            
 
-            // Date picker 
+
+            // Date picker
             if (publicationDateInput) {
                 publicationDateInput.addEventListener('click', () => {
                     publicationDateInput.showPicker();
@@ -414,222 +297,13 @@
             }
 
             const bookFileUrl = '@Model?.BookFileUrl';
-            if (bookFileUrl && bookFileNameDisplay && bookFilePreview && bookFilePlaceholder) {
+            if (bookFileUrl && bookFileNameDisplay) {
                 bookFileNameDisplay.value = bookFileUrl.substring(bookFileUrl.lastIndexOf('/') + 1);
-                bookFilePreview.style.display = 'none';
-                bookFilePlaceholder.style.display = 'block';
             }
 
-            // Fetch authors with error handling
-            try {
-                if (authorSelect) {
-                    const response = await fetch('/Book/GetAuthor', {
-                        method: 'GET'
-                    });
-
-                    if (response.ok) {
-                        const result = await response.json();
-                        const author_list = result.message;
-
-                        const default_option = document.createElement('option');
-                        default_option.value = ""
-                        default_option.textContent = "Select Author"
-                        authorSelect.appendChild(default_option)
-
-                        author_list.forEach(author_name_id => {
-                            const parts = author_name_id.split(',');
-                            const option = document.createElement('option');
-                            option.value = parts[1].trim();
-                            option.textContent = parts[0].trim();
-                            authorSelect.appendChild(option);
-                        })
-                    } else {
-                        toastr.error("Server error fetching authors.");
-                    }
-                }
-            } catch (backendError) {
-                toastr.error("Unexpected Error Occured while fetching authors.");
-            }
-            
-
-            // Fetch languages 
-            try {
-                if (languageSelect) {
-                    const response = await fetch('/Book/GetLanguage', {
-                        method: 'GET'
-                    });
-
-                    if (response.ok) {
-                        const result = await response.json();
-                        const language_list = result.message;
-
-                        const default_option = document.createElement('option');
-                        default_option.value = "";
-                        default_option.textContent = "Select Language";
-                        languageSelect.appendChild(default_option);
-
-                        language_list.forEach(language_name_id => {
-                            const parts = language_name_id.split(',');
-                            const option = document.createElement('option');
-                            option.value = parts[1].trim();
-                            option.textContent = parts[0].trim();
-                            languageSelect.appendChild(option);
-                        });
-
-                        if ('@Model?.Language') {
-                            languageSelect.value = '@Model?.Language';
-                        }
-                    } else {
-                        toastr.error("Server error fetching languages.");
-                    }
-                }
-            } catch (backendError) {
-                toastr.error("Unexpected Error Occurred while fetching languages.");
-            }
-
-
-            // Initialize Multi-Select Dropdown
-            async function initializeMultiSelect({
-                containerId,
-                dropdownId,
-                hiddenInputId,
-                selectedContainerId,
-                fetchUrl,
-                placeholderText = 'Select Items',
-                fallbackItems = null
-            }) {
-                const selectButton = document.querySelector(`#${containerId} .custom-select-btn`);
-                const dropdown = document.getElementById(dropdownId);
-                const selectedContainer = document.getElementById(selectedContainerId);
-                const hiddenInput = document.getElementById(hiddenInputId);
-
-                if (!selectButton || !dropdown || !selectedContainer || !hiddenInput) {
-                    console.error(`Missing elements for multi-select initialization: ${containerId}`);
-                    return;
-                }
-
-                selectButton.querySelector('span').textContent = placeholderText;
-
-                selectButton.addEventListener('click', () => {
-                    dropdown.classList.toggle('show');
-                });
-
-                document.addEventListener('click', (event) => {
-                    if (!selectButton.contains(event.target) && !dropdown.contains(event.target)) {
-                        dropdown.classList.remove('show');
-                    }
-                });
-
-                function addSelectedTag(itemText, itemValue) {
-                    const tag = document.createElement('div');
-                    tag.className = 'selected-tag';
-                    tag.innerHTML = `
-                                ${itemText}
-                                <span class="remove-tag" data-value="${itemValue}">×</span>
-                            `;
-                    selectedContainer.appendChild(tag);
-
-                    tag.querySelector('.remove-tag').addEventListener('click', () => {
-                        tag.remove();
-                        const checkbox = dropdown.querySelector(`input[value="${itemValue}"]`);
-                        if (checkbox) checkbox.checked = false;
-                        updateHiddenInput();
-                    });
-                }
-
-                function updateHiddenInput() {
-                    const selectedCheckboxes = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked'));
-                    const selectedValues = selectedCheckboxes.map(checkbox => checkbox.value);
-                    hiddenInput.value = selectedValues.join(',');
-                }
-
-                dropdown.addEventListener('change', (event) => {
-                    if (event.target.type === 'checkbox') {
-                        selectedContainer.innerHTML = '';
-                        const selectedCheckboxes = Array.from(dropdown.querySelectorAll('input[type="checkbox"]:checked'));
-                        selectedCheckboxes.forEach(checkbox => {
-                            const label = dropdown.querySelector(`label[for="${checkbox.id}"]`).textContent;
-                            addSelectedTag(label, checkbox.value);
-                        });
-                        updateHiddenInput();
-                    }
-                });
-
-                try {
-                    const response = await fetch(fetchUrl, { method: 'GET' });
-                    let itemsToPopulate = [];
-
-                    if (response.ok) {
-                        const result = await response.json();
-                        itemsToPopulate = result.message;
-                    } else if (fallbackItems) {
-                        console.warn(`Failed to fetch from ${fetchUrl}, using fallback items.`);
-                        itemsToPopulate = fallbackItems;
-                    } else {
-                        toastr.error(`Server error fetching data from ${fetchUrl} and no fallback provided.`, 'Error');
-                        return;
-                    }
-
-                    itemsToPopulate.forEach(item => {
-                        const parts = item.split(',');
-                        const itemName = parts[0].trim();
-                        const itemValue = parts[1].trim();
-                        const optionDiv = document.createElement('div');
-                        optionDiv.className = 'dropdown-item';
-                        optionDiv.innerHTML = `
-                                    <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
-                                    <label for="${dropdownId}-${itemValue}">${itemName}</label>
-                                `;
-                        dropdown.appendChild(optionDiv);
-                    });
-
-                    if (hiddenInput.value) {
-                        const selectedValues = hiddenInput.value.split(',');
-                        Array.from(dropdown.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
-                            if (selectedValues.includes(checkbox.value)) {
-                                checkbox.checked = true;
-                                addSelectedTag(
-                                    dropdown.querySelector(`label[for="${checkbox.id}"]`).textContent,
-                                    checkbox.value
-                                );
-                            }
-                        });
-                    }
-                } catch (error) {
-                    if (fallbackItems) {
-                        fallbackItems.forEach(item => {
-                            const parts = item.split(',');
-                            const itemName = parts[0].trim();
-                            const itemValue = parts[1].trim();
-                            const optionDiv = document.createElement('div');
-                            optionDiv.className = 'dropdown-item';
-                            optionDiv.innerHTML = `
-                                        <input type="checkbox" value="${itemValue}" id="${dropdownId}-${itemValue}">
-                                        <label for="${dropdownId}-${itemValue}">${itemName}</label>
-                                    `;
-                            dropdown.appendChild(optionDiv);
-                        });
-
-                        if (hiddenInput.value) {
-                            const selectedValues = hiddenInput.value.split(',');
-                            Array.from(dropdown.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
-                                if (selectedValues.includes(checkbox.value)) {
-                                    checkbox.checked = true;
-                                    addSelectedTag(
-                                        dropdown.querySelector(`label[for="${checkbox.id}"]`).textContent,
-                                        checkbox.value
-                                    );
-                                }
-                            });
-                        }
-                    } else {
-                        toastr.error(`Unexpected error occurred while initializing dropdown for ${containerId}: ${error.message}`, 'Error');
-                    }
-                }
-            }
-
-            // Initialize Genre Multi-Select
-            initializeMultiSelect({
+            await initializeSingleSelectAuthor();
+            await initializeSingleSelectLanguage();
+            await initializeMultiSelect({
                 containerId: 'genreContainer',
                 dropdownId: 'genreDropdown',
                 hiddenInputId: 'concatenatedGenre',
@@ -648,10 +322,64 @@
                     'History,History',
                     'Cookbook,Cookbook',
                     'Poetry,Poetry'
-                ]
+                ],
+                itemType: 'genre'
             });
 
-            // Form submission 
+            document.addEventListener('input', function (event) {
+                const input = event.target;
+
+                if (input.classList.contains('book-master-form-input')) {
+                    if (input.value) {
+                        input.classList.remove('is-invalid');
+
+                        if (input.type === 'date') {
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            if (new Date(input.value) > today) {
+                                input.classList.add('is-invalid');
+                            }
+                        }
+                    }
+                }
+
+                if (input.type === 'file') {
+                    if (input.files.length > 0) {
+                        const statusElement = document.getElementById(input.id + 'UploadStatus');
+                        if (statusElement) {
+                            statusElement.classList.remove('error-message');
+                            const sizeMsg = input.id === 'coverImageFile' ? '10MB' : '1GB';
+                            statusElement.querySelector('.file-size-info').textContent = `Max file size: ${sizeMsg}`;
+                        }
+                    }
+                }
+            });
+
+            function setupDropdownValidation(containerId, hiddenInputId) {
+                const container = document.getElementById(containerId);
+                const hiddenInput = document.getElementById(hiddenInputId);
+                const dropdownBtn = container?.querySelector('.custom-select-btn');
+
+                if (!container || !hiddenInput || !dropdownBtn) return;
+
+                if (hiddenInput.value) {
+                    dropdownBtn.classList.remove('is-invalid-select');
+                }
+
+                hiddenInput.addEventListener('change', function () {
+                    if (this.value) {
+                        dropdownBtn.classList.remove('is-invalid-select');
+                    }
+                });
+            }
+
+            setupDropdownValidation('authorContainer', 'author');
+            setupDropdownValidation('languageContainer', 'language');
+            setupDropdownValidation('genreContainer', 'concatenatedGenre');
+
+
+
+            // Form submission
             const confirmationModalElement = document.getElementById('@addBookConfirmationModel.Id');
             const confirmButton = document.getElementById('@addBookConfirmationModel.ConfirmButtonId');
             const addBookConfirmationModal = confirmationModalElement ? new bootstrap.Modal(confirmationModalElement) : null;
@@ -672,10 +400,14 @@
                     const coverImageUrlInput = document.getElementById('coverImageUrl');
                     const bookFileUrlInput = document.getElementById('bookFileUrl');
 
+                    const seriesNameInput = document.getElementById('seriesName');
+                    const seriesOrderInput = document.getElementById('seriesOrder');
+                    const seriesDescriptionInput = document.getElementById('seriesDescription');
+
                     let isValid = true;
                     const missingFields = [];
 
-                    // Validation checks 
+                    // Validation checks
                     if (!titleInput.value.trim()) {
                         missingFields.push('Title');
                         titleInput.classList.add('is-invalid');
@@ -686,38 +418,57 @@
 
                     if (!authorInput.value.trim()) {
                         missingFields.push('Author');
-                        authorInput.classList.add('is-invalid');
+                        document.getElementById('authorContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select');
                         isValid = false;
                     } else {
-                        authorInput.classList.remove('is-invalid');
+                        document.getElementById('authorContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select');
                     }
 
-                    if (!publicationDateInput.value) {
+                    const pubDateValue = publicationDateInput.value;
+                    if (!pubDateValue || pubDateValue === "undefined" || pubDateValue === "NaN-NaN-NaN") {
                         missingFields.push('Publication Date');
                         publicationDateInput.classList.add('is-invalid');
                         isValid = false;
                     } else {
                         publicationDateInput.classList.remove('is-invalid');
+
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        const pubDate = new Date(pubDateValue);
+
+                        if (pubDate > today) {
+                            missingFields.push('Publication Date (cannot be in the future)');
+                            publicationDateInput.classList.add('is-invalid');
+                            isValid = false;
+                        } else {
+                            publicationDateInput.classList.remove('is-invalid');
+                        }
                     }
+                    // if (!publicationDateInput.value) {
+                    //     missingFields.push('Publication Date');
+                    //     publicationDateInput.classList.add('is-invalid');
+                    //     isValid = false;
+                    // } else {
+                    //     publicationDateInput.classList.remove('is-invalid');
+                    // }
 
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    const pubDate = new Date(publicationDateInput.value);
+                    // const today = new Date();
+                    // today.setHours(0, 0, 0, 0);
+                    // const pubDate = new Date(publicationDateInput.value);
 
-                    if (pubDate > today) {
-                        missingFields.push('Publication Date (cannot be in the future)');
-                        publicationDateInput.classList.add('is-invalid');
-                        isValid = false;
-                    } else {
-                        publicationDateInput.classList.remove('is-invalid');
-                    }
-
-                    if (!languageInput.value) {
+                    // if (pubDate > today) {
+                    //     missingFields.push('Publication Date (cannot be in the future)');
+                    //     publicationDateInput.classList.add('is-invalid');
+                    //     isValid = false;
+                    // } else {
+                    //     publicationDateInput.classList.remove('is-invalid');
+                    // }
+                    if (!languageInput.value.trim()) {
                         missingFields.push('Language');
-                        languageInput.classList.add('is-invalid');
+                        document.getElementById('languageContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select');
                         isValid = false;
                     } else {
-                        languageInput.classList.remove('is-invalid');
+                        document.getElementById('languageContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select');
                     }
 
                     if (!genreInput.value) {
@@ -753,6 +504,42 @@
                     } else if (bookFileUploadStatus) {
                         bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
                         bookFileUploadStatus.classList.remove('error-message');
+                    }
+
+                   
+
+                    const seriesDescriptionPresent = seriesDescriptionInput.value.trim() !== '';
+                    const seriesOrderPresent = seriesOrderInput.value !== '' && !isNaN(seriesOrderInput.value);
+                    const seriesNamePresent = seriesNameInput.value.trim() !== '';
+
+                    if (seriesDescriptionPresent) {
+                        if (!seriesNamePresent) {
+                            missingFields.push('Series Name (required when Series Description is present)');
+                            seriesNameInput.classList.add('is-invalid');
+                            isValid = false;
+                        } else {
+                            seriesNameInput.classList.remove('is-invalid');
+                        }
+                        if (!seriesOrderPresent) {
+                            missingFields.push('Series Order (required when Series Description is present)');
+                            seriesOrderInput.classList.add('is-invalid');
+                            isValid = false;
+                        } else {
+                            seriesOrderInput.classList.remove('is-invalid');
+                        }
+                    } else {
+                        seriesNameInput.classList.remove('is-invalid');
+                        seriesOrderInput.classList.remove('is-invalid');
+                    }
+
+                    if (seriesOrderPresent && !seriesNamePresent) {
+                        if (!missingFields.includes('Series Name (required when Series Order is present)')) {
+                            missingFields.push('Series Name (required when Series Order is present)');
+                        }
+                        seriesNameInput.classList.add('is-invalid');
+                        isValid = false;
+                    } else if (seriesOrderPresent && seriesNamePresent) {
+                        seriesNameInput.classList.remove('is-invalid');
                     }
 
                     if (!isValid) {
@@ -885,16 +672,5 @@
 
         });
 
-        // slider
-        const featuredCheckbox = document.getElementById('isFeatured');
-        const featuredStatus = document.getElementById('featuredStatus');
-      
-        if (featuredCheckbox && featuredStatus) {
-            featuredCheckbox.addEventListener('change', function () {
-                featuredStatus.textContent = this.checked ? 'Yes' : 'No';
-            });
-
-            featuredStatus.textContent = featuredCheckbox.checked ? 'Yes' : 'No';
-        }
     </script>
 }

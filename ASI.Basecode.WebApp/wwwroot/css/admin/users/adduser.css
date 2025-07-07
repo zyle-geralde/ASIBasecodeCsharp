@@ -1,4 +1,77 @@
-﻿
+﻿.role-group {
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.role-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #647D7F;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.role-btn-group {
+    width: 100%;
+    display: flex;
+}
+
+.role-btn {
+    flex: 1 1 0;
+    border-radius: 0;
+    border: 1.5px solid #647D7F;
+    background: #f8f9fa;
+    color: #647D7F;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background 0.2s, color 0.2s;
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .role-btn:hover {
+        background: rgb(100, 125, 127, 0.6) !important;
+        color: #fff !important;
+        border-color: rgb(100, 125, 127, 0.6) !important;
+    }
+
+    .btn-check:checked + .role-btn,
+    .role-btn.active,
+    .role-btn:active {
+        background: #647D7F !important;
+        color: #fff !important;
+        border-color: #647D7F !important;
+    }
+
+.role-btn-group .role-btn:first-of-type {
+    border-top-left-radius: 8px !important;
+    border-bottom-left-radius: 8px !important;
+}
+
+.role-btn-group .role-btn:last-of-type {
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+}
+
+@media (max-width: 785px) {
+    .role-group {
+        width: 100%;
+    }
+
+    .role-btn-group {
+        flex-direction: column;
+    }
+
+    .role-btn {
+        border-radius: 8px !important;
+        margin-bottom: 8px;
+    }
+}
+
 .edit-user-container,
 .add-user-container 
 {
@@ -56,96 +129,46 @@
 }
 
 input[type="text"],
-input[type="email"] 
-{
+input[type="email"],
+input[type="password"] {
     width: 100%;
-    padding: 0.5rem; 
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 12px 16px;
+    margin-top: 8px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
     font-size: 14px;
+    color: #374151;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    font-weight: 500;
 }
 
-.upload-section 
-{
-    margin-bottom: 1rem;
-    align-self: start;
-    width: 50%;
-}
+    input[type="text"]:hover,
+    input[type="email"]:hover,
+    input[type="password"]:hover 
+    {
+        border-color: #a0b4b7;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+    }
 
-.upload-input 
-{
-    position: relative;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    
-}
-
-.file-display 
-{
-    flex: 1;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    color: #666;
-    background: #fff;
-}
-
-input[type="file"] 
-{
+.admin-common-container {
+    max-width: 1250px; 
+    margin-left: auto;
+    margin-right: auto;
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.browse-btn 
-{
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #647D7F;
-    color: white;
-    padding: 0.5rem 1.25rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.file-instructions 
-{
-    display: flex;
-    flex-direction: column;
-    font-size: 0.875rem;
-    color: #666;
-    margin-top: 0.5rem;
-}
-
-.file-info 
-{
-    display: flex;
-    flex-direction: row;
-    gap: 0.15rem; 
-    justify-content: space-between;
-    margin-bottom: 0.5rem; 
-}
-
-.file-info small 
-{
-    color: #666;
-    font-size: 12px;
+    padding: 0 24px; 
+    box-sizing: border-box;
+    display: block; 
+    margin-top: 24px;
 }
 
 .button-container {
     width: 100%;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     margin-top: 40px;
 }
 
@@ -159,48 +182,43 @@ input[type="file"]
 }
 
 .cancel-btn, .submit-btn {
-    /* Common button styles */
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-    height: 38px; /* Set a fixed height for both buttons */
-    display: flex;
-    align-items: center;
+    height: 44px;
+    min-height: 44px;
+    display: inline-flex;
     justify-content: center;
-    text-transform: uppercase;
-    line-height: 1;
-    box-sizing: border-box;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
+
 .cancel-btn {
-    background: #fff;
-    border: 1px solid #ddd;
-    color: #333;
-    width: 120px; /* Fixed width */
+    background-color: #e0e0e0;
+    color: #555555;
+    border: 1px solid #c0c0c0;
 }
 
 .submit-btn {
-    background: #647D7F;
-    border: none;
-    color: white;
-    width: 140px; /* Fixed width - wider than cancel button */
+    background-color: #5f7c78;
+    color: #fff;
+    border: 1px solid #5f7c78;
 }
 
-    .cancel-btn:hover {
-        background: #f5f5f5;
-    }
-
-    .submit-btn:hover {
-        background: #556a6c;
-    }
-
-.custom-tooltip {
-    --bs-tooltip-bg: #d9534f;
-    --bs-tooltip-color: #fff;
-    font-size: 14px;
+.cancel-btn:hover {
+    background-color: #d0d0d0;
+    border-color: #b0b0b0;
 }
+
+.submit-btn:hover {
+    background-color: #516a67;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
 
 .is-invalid {
     border-color: #d9534f !important;
@@ -244,6 +262,7 @@ input[type="file"]
     .admin-common-container
     {
         padding: 20px;
+        
     }
     .admin-common-content-wrapper
     {

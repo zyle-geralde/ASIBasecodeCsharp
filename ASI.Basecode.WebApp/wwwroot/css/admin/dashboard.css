@@ -425,8 +425,10 @@ body {
     flex-wrap: wrap;
     gap: 8px;
     max-height: 56px;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
     position: relative;
+    width: 100%;
 }
 
 .genre-tags-more-indicator {
@@ -535,7 +537,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 320px;
     position: relative;
     background: none;
     margin-top: 8px;
@@ -544,7 +545,8 @@ body {
     padding: 0 50px !important;
     margin: 10px 0;
     position: relative !important;
-    min-height: 300px !important;
+    align-items: stretch;
+    /*    min-height: 300px !important;*/
     overflow: visible;
 }
 
@@ -561,24 +563,43 @@ body {
 .admin-carousel-content {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     min-width: 0;
     flex: 1;
+    flex: 1 1 auto;
+    overflow: visible;
+    width: 100% !important;
+    align-items: center !important;  
+    justify-content: space-between !important;  
+    text-align: center !important; 
+    height: 100% !important;
+    padding: 0 5px;
 }
 
 .admin-carousel-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: #2c3e50;
     margin-bottom: 0.2rem;
     font-family: 'Lara', serif;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
+    width: 100% !important;
+    white-space: normal !important;
 }
 
 .admin-carousel-author {
     color: #7b7b7b;
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 0.2rem;
     font-family: 'Lara', serif;
+    text-align: center !important;
+    width: 100% !important;  
+    display: block !important;
 }
 
 .admin-carousel-desc {
@@ -587,12 +608,27 @@ body {
     margin-bottom: 1rem;
     font-style: italic;
     font-family: 'Lara', serif;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
+    width: 100% !important;
+    white-space: normal !important;
 }
+    .admin-carousel-desc.text-truncate {
+        white-space: normal !important;
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        -webkit-line-clamp: 2 !important;
+    }
 
 .admin-star-rating {
     margin-bottom: 10px;
     align-items: center;
-    justify-content: center;
+    justify-content: center !important;
+    width: 100% !important;
 }
 
 .admin-star-rating .stars {
@@ -683,6 +719,7 @@ body {
     .admin-carousel-card {
         flex: 1 0 calc(100% - 20px);
         max-width: calc(100% - 20px);
+        height: 100%
     }
     
     .admin-carousel-btn.prev-button {
@@ -700,9 +737,6 @@ body {
     }
 }
 
-/* Add this at the end of your dashboard.css file */
-
-/* Make carousel buttons more visible */
 .visible-button {
     background-color: #DCD7C9 !important;
     color: #3E4F4E !important;
@@ -715,20 +749,18 @@ body {
     position: absolute !important;
 }
 
-/* Hover state for better usability */
 .visible-button:hover {
     background-color: #bebbaf !important;
     opacity: 1 !important;
     transform: scale(1.05) !important;
 }
 
-
-
-/* Responsive adjustments for multi-book display */
 @media (max-width: 1200px) {
     .admin-carousel-card {
         flex: 1 0 calc(50% - 20px);
         max-width: calc(50% - 20px);
+        min-height: 420px;
+        height: 100% !important
     }
 }
 
@@ -737,6 +769,8 @@ body {
         width: 100%;
         flex: 1 0 calc(100% - 20px);
         max-width: calc(100% - 20px);
+        min-height: 420px;
+        height: 100% !important
     }
     
     .admin-carousel-btn.prev-button {
@@ -754,7 +788,6 @@ body {
     }
 }
 
-/* Force proper two-book layout */
 .admin-carousel-section {
     position: relative;
     overflow: hidden;
@@ -762,47 +795,87 @@ body {
 
 .admin-book-display-wrapper {
     display: flex !important;
-    flex-wrap: nowrap !important; 
+    flex-wrap: nowrap !important;
     flex-direction: row !important;
-    gap: 25px !important;
+    gap: 12px !important; 
     justify-content: center !important;
     align-items: flex-start !important;
     width: 100% !important;
-    max-width: 1000px !important;
+    max-width: 1100px !important;
     margin: 0 auto !important;
 }
 
 .admin-carousel-card {
-    display: none !important; /* All cards hidden by default */
-    max-width: calc(30% - 12px) !important;
-    width: 200px !important;
-    flex: 0 0 calc(20% - 12px) !important;
+    display: none !important;
+    max-width: calc(25% - 15px) !important; 
+    width: 225px !important; 
+    flex: 0 0 calc(25% - 15px) !important; 
     flex-direction: column !important;
     margin: 0 !important;
     box-sizing: border-box !important;
-    padding: 40px 20px;
+    padding: 20px 15px; 
     align-items: center !important;
     background: #f8f6f2;
     border-radius: 18px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-    gap: 15px;
-    min-height: 220px;
+    gap: 10px; 
+    min-height: 450px; 
+    transition: all 0.3s ease-in-out; 
+    transform-origin: center center;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
 }
 
 .admin-carousel-card:not(.hidden-book-card) {
-    display: flex !important; /* Only visible when not hidden */
+    display: flex !important; 
 }
 
-/* Reset and fix the admin carousel layout */
+.admin-carousel-card:hover {
+    transform: scale(1.05); 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+    background: linear-gradient(to bottom, #f8f6f2, #fff); 
+    z-index: 10; 
+}
+
+.admin-carousel-card:hover .admin-carousel-img {
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
+}
+
 .admin-carousel-card .admin-carousel-img {
-    width: 140px !important;
-    height: 200px !important;
-    margin-bottom: 15px !important;
+    width: 130px !important;
+    height: 190px !important;
+    margin-bottom: 10px !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.admin-carousel-card .admin-carousel-content {
-    width: 100% !important;
+.admin-carousel-card:hover .admin-carousel-title {
+    color: #1a202c; 
 }
+
+.admin-carousel-card:hover .admin-carousel-author {
+    color: #4a5568; /
+}
+
+.admin-carousel-card:hover {
+    border: 1px solid rgba(134, 168, 170, 0.3); 
+}
+
+.admin-carousel-card .admin-carousel-img {
+    width: 130px !important;
+    height: 190px !important;
+    margin-bottom: 10px !important;
+}
+
+    .admin-carousel-card .admin-carousel-content {
+        width: 100% !important;
+        align-items: center !important;  
+        justify-content: space-between !important;  
+        text-align: center !important; 
+        height: 100% !important;
+        padding: 0 5px;
+    }
 
 .carousel-button {
     position: absolute !important;
@@ -834,7 +907,6 @@ body {
     font-size: 18px !important;
 }
 
-/* Make sure the hidden class really hides elements */
 .hidden-book-card {
     display: none !important;
 }
@@ -844,6 +916,8 @@ body {
         width: 100% !important;
         max-width: 100% !important;
         flex: 0 0 100% !important;
+        height: 100% !important;
+        
     }
 }
 

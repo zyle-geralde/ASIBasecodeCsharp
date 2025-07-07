@@ -4,7 +4,8 @@ export async function initializeSingleSelectAuthor() {
     const authorDropdown = document.getElementById('authorDropdown');
     const selectButton = authorContainer ? authorContainer.querySelector('.custom-select-btn') : null;
     const hiddenInput = document.getElementById('author');
-    const hiddenAuthorValue = document.getElementById('hiddenAuthor') ? document.getElementById('hiddenAuthor').value : '';
+
+    const initialSelectedValue = hiddenInput ? hiddenInput.value : '';
 
     if (!selectButton || !authorDropdown || !hiddenInput || !authorContainer) {
         console.error("Missing elements for author single-select initialization.");
@@ -26,6 +27,9 @@ export async function initializeSingleSelectAuthor() {
         hiddenInput.value = value;
         selectButton.querySelector('span').textContent = text;
         authorDropdown.classList.remove('show');
+
+        hiddenInput.dispatchEvent(new Event('change'));
+        hiddenInput.dispatchEvent(new Event('input')); 
     }
 
     try {
@@ -35,17 +39,17 @@ export async function initializeSingleSelectAuthor() {
             const result = await response.json();
             const author_list = result.message;
 
-           
             authorDropdown.innerHTML = '';
 
             const defaultOption = document.createElement('div');
             defaultOption.className = 'dropdown-item';
             defaultOption.innerHTML = `<label>Select Author</label>`;
             defaultOption.addEventListener('click', () => {
-                selectAuthor('', 'Select Author');
+                selectAuthor('', 'Select Author'); 
             });
             authorDropdown.appendChild(defaultOption);
 
+            let foundInitialSelection = false; 
             author_list.forEach(author_name_id => {
                 const parts = author_name_id.split(',');
                 const authorName = parts[0].trim();
@@ -59,15 +63,24 @@ export async function initializeSingleSelectAuthor() {
                 });
                 authorDropdown.appendChild(option);
 
-                if (hiddenAuthorValue && hiddenAuthorValue.trim() === authorId) {
+                if (initialSelectedValue && initialSelectedValue.trim() === authorId) {
                     selectButton.querySelector('span').textContent = authorName;
+                    foundInitialSelection = true; 
                 }
             });
+
+            if (!foundInitialSelection) {
+                selectButton.querySelector('span').textContent = 'Select Author';
+            }
+
         } else {
             toastr.error("Server error fetching authors.");
+            selectButton.querySelector('span').textContent = 'Select Author';
         }
     } catch (backendError) {
         toastr.error("Unexpected Error Occured while fetching authors.");
+        
+        selectButton.querySelector('span').textContent = 'Select Author';
     }
 }
 
@@ -76,7 +89,8 @@ export async function initializeSingleSelectLanguage() {
     const languageDropdown = document.getElementById('languageDropdown');
     const languageSelectButton = languageContainer ? languageContainer.querySelector('.custom-select-btn') : null;
     const languageHiddenInput = document.getElementById('language');
-    const hiddenLanguageValue = document.getElementById('hiddenLanguage') ? document.getElementById('hiddenLanguage').value : '';
+
+    const initialSelectedValue = languageHiddenInput ? languageHiddenInput.value : '';
 
     if (!languageContainer || !languageDropdown || !languageSelectButton || !languageHiddenInput) {
         console.error("Missing elements for language single-select initialization.");
@@ -98,6 +112,9 @@ export async function initializeSingleSelectLanguage() {
         languageHiddenInput.value = value;
         languageSelectButton.querySelector('span').textContent = text;
         languageDropdown.classList.remove('show');
+        // New: Trigger change event for validation systems
+        languageHiddenInput.dispatchEvent(new Event('change'));
+        languageHiddenInput.dispatchEvent(new Event('input'));
     }
 
     try {
@@ -115,17 +132,17 @@ export async function initializeSingleSelectLanguage() {
             toastr.warn("Failed to fetch languages, using fallback options.");
         }
 
-       
         languageDropdown.innerHTML = '';
 
         const defaultOption = document.createElement('div');
         defaultOption.className = 'dropdown-item';
         defaultOption.innerHTML = `<label>Select Language</label>`;
         defaultOption.addEventListener('click', () => {
-            selectLanguage('', 'Select Language');
+            selectLanguage('', 'Select Language'); // Allows "deselecting" by choosing the default
         });
         languageDropdown.appendChild(defaultOption);
 
+        let foundInitialSelection = false; // New: Track if initial value was matched
         language_list.forEach(language_name_id => {
             const parts = language_name_id.split(',');
             const languageName = parts[0].trim();
@@ -139,17 +156,29 @@ export async function initializeSingleSelectLanguage() {
             });
             languageDropdown.appendChild(option);
 
-            if (hiddenLanguageValue && hiddenLanguageValue.trim() === languageId) {
+            // Modified: Pre-select the display text if initialSelectedValue matches
+            if (initialSelectedValue && initialSelectedValue.trim() === languageId) {
                 languageSelectButton.querySelector('span').textContent = languageName;
+                foundInitialSelection = true; // New: Mark as found
             }
         });
+
+        // New: If no initial selection was found (e.g., new book or invalid old value), set to default placeholder
+        if (!foundInitialSelection) {
+            languageSelectButton.querySelector('span').textContent = 'Select Language';
+        }
+
     } catch (backendError) {
         toastr.error("Unexpected Error Occurred while fetching languages.");
+        // New: Ensure default text if error occurs
+        languageSelectButton.querySelector('span').textContent = 'Select Language';
+
+        // Fallback options logic (keep as is for robustness)
         const fallbackLanguageList = [
             'English,English', 'Tagalog,Tagalog', 'Bisaya,Bisaya',
             'Spanish,Spanish', 'French,French', 'German,German', 'Japanese,Japanese'
         ];
-       
+
         languageDropdown.innerHTML = '';
         fallbackLanguageList.forEach(language_name_id => {
             const parts = language_name_id.split(',');
@@ -162,7 +191,8 @@ export async function initializeSingleSelectLanguage() {
                 selectLanguage(languageId, languageName);
             });
             languageDropdown.appendChild(option);
-            if (hiddenLanguageValue && hiddenLanguageValue.trim() === languageId) {
+            // Modified: This part also needs to check initialSelectedValue, not hiddenLanguageValue
+            if (initialSelectedValue && initialSelectedValue.trim() === languageId) {
                 languageSelectButton.querySelector('span').textContent = languageName;
             }
         });
@@ -183,7 +213,6 @@ export async function initializeMultiSelect({
     const selectedContainer = document.getElementById(selectedContainerId);
     const hiddenInput = document.getElementById(hiddenInputId);
 
-    // Initial validation for essential DOM elements
     if (!selectButton || !dropdown || !selectedContainer || !hiddenInput) {
         console.error(`Missing elements for multi-select initialization: ${containerId}`);
         return;
@@ -191,56 +220,46 @@ export async function initializeMultiSelect({
 
     selectButton.querySelector('span').textContent = placeholderText;
 
-    // --- Dropdown Toggle and Outside Click Handling ---
     selectButton.addEventListener('click', (event) => {
-        event.stopPropagation(); // Prevent immediate closing by document click
+        event.stopPropagation();
         dropdown.classList.toggle('show');
     });
 
-    document.addEventListener('click', (event) => { // close if clicked outside
+    document.addEventListener('click', (event) => {
         if (!selectButton.contains(event.target) && !dropdown.contains(event.target)) {
             dropdown.classList.remove('show');
         }
     });
 
-    // in order selection of genre, first is the main
-    // This array stores { value, text } pairs in the order they should be displayed.
     let currentSelectedItemsOrder = [];
 
-    // Functions for Managing Displayed Tags (UI) 
-
-    // creates and appends a selected tag to the display area.
     function addSelectedTagToDisplay(itemText, itemValue) {
         const tag = document.createElement('div');
         tag.className = 'selected-tag';
-        tag.setAttribute('data-value', itemValue); // Store value for easy lookup/removal
+        tag.setAttribute('data-value', itemValue);
         tag.innerHTML = `
             ${itemText}
             <span class="remove-tag" data-value="${itemValue}">×</span>
         `;
-        selectedContainer.appendChild(tag); // Append to the container
+        selectedContainer.appendChild(tag);
 
-        // removing a tag via its 'x' button
         tag.querySelector('.remove-tag').addEventListener('click', () => {
-            tag.remove(); // Remove tag from UI
-
-            // Find and uncheck the corresponding checkbox in the dropdown
+            tag.remove();
             const checkbox = dropdown.querySelector(`input[value="${itemValue}"]`);
             if (checkbox) checkbox.checked = false;
-
-            // Remove item 
-            currentSelectedItemsOrder = currentSelectedItemsOrder.filter(item => item.value !== itemValue);
-
+            // New: Trigger change event for validation systems
+            hiddenInput.dispatchEvent(new Event('change'));
+            hiddenInput.dispatchEvent(new Event('input'));
             updateHiddenInputFromOrder();
         });
     }
 
-    // updates the hidden input field based on the current order in `currentSelectedItemsOrder`.
     function updateHiddenInputFromOrder() {
         hiddenInput.value = currentSelectedItemsOrder.map(item => item.value).join(',');
+        // New: Trigger change event for validation systems
+        hiddenInput.dispatchEvent(new Event('change'));
+        hiddenInput.dispatchEvent(new Event('input'));
     }
-
-    // cehckboxes for dropdown , add/remove
 
     dropdown.addEventListener('change', (event) => {
         if (event.target.type === 'checkbox') {
@@ -249,25 +268,20 @@ export async function initializeMultiSelect({
             const itemText = dropdown.querySelector(`label[for="${changedCheckbox.id}"]`).textContent;
 
             if (changedCheckbox.checked) {
-                // Add item to internal order array if not already present
                 if (!currentSelectedItemsOrder.some(item => item.value === itemValue)) {
                     currentSelectedItemsOrder.push({ value: itemValue, text: itemText });
-                    addSelectedTagToDisplay(itemText, itemValue); // Add to UI display
+                    addSelectedTagToDisplay(itemText, itemValue);
                 }
             } else {
-                // Remove item from internal order array
                 currentSelectedItemsOrder = currentSelectedItemsOrder.filter(item => item.value !== itemValue);
-                // Remove item from UI display
                 const existingTag = selectedContainer.querySelector(`.selected-tag[data-value="${itemValue}"]`);
                 if (existingTag) {
                     existingTag.remove();
                 }
             }
-            updateHiddenInputFromOrder(); //for synchronized hidden input with display order
+            updateHiddenInputFromOrder();
         }
     });
-
-    // --- Initial Data Fetching and UI Population on Load ---
 
     try {
         const response = await fetch(fetchUrl, { method: 'GET' });
@@ -278,16 +292,15 @@ export async function initializeMultiSelect({
             itemsToPopulate = result.message;
         } else if (fallbackItems) {
             console.warn(`Failed to fetch from ${fetchUrl}, using fallback items.`);
+            toastr.warn("Failed to fetch data, using fallback options.");
             itemsToPopulate = fallbackItems;
-            toastr.warn("Failed to fetch data, using fallback options."); // Direct toastr call
         } else {
-            toastr.error(`Server error fetching data from ${fetchUrl} and no fallback provided.`, 'Error'); // Direct toastr call
+            toastr.error(`Server error fetching data from ${fetchUrl} and no fallback provided.`, 'Error');
             return;
         }
 
-        dropdown.innerHTML = ''; // Clear previous options in dropdown before populating
+        dropdown.innerHTML = '';
 
-        // Store all available items in a map for efficient lookup (value -> text)
         const allItemsLookup = new Map();
         itemsToPopulate.forEach(item => {
             const parts = item.split(',');
@@ -295,7 +308,6 @@ export async function initializeMultiSelect({
             const itemValue = parts[1].trim();
             allItemsLookup.set(itemValue, itemName);
 
-            // Create and append dropdown option
             const optionDiv = document.createElement('div');
             optionDiv.className = 'dropdown-item';
             optionDiv.innerHTML = `
@@ -305,40 +317,33 @@ export async function initializeMultiSelect({
             dropdown.appendChild(optionDiv);
         });
 
-        // --- Handle Initial Pre-selection on Page Load (Edit Scenario) ---
         if (hiddenInput.value) {
-            // Get preselected values from the hidden input, filter out empty strings
             const preselectedValues = hiddenInput.value.split(',').map(v => v.trim()).filter(v => v !== '');
-
-            // Populate the internal `currentSelectedItemsOrder` array and check corresponding checkboxes
             preselectedValues.forEach(value => {
                 const text = allItemsLookup.get(value);
                 if (text) {
-                    currentSelectedItemsOrder.push({ value: value, text: text }); // Add to order
+                    currentSelectedItemsOrder.push({ value: value, text: text });
                     const checkbox = dropdown.querySelector(`input[value="${value}"]`);
                     if (checkbox) {
-                        checkbox.checked = true; // Check the checkbox
+                        checkbox.checked = true;
                     }
                 }
             });
 
-            // Add initial tags to the display in the order they appeared in the hidden input
+            selectedContainer.innerHTML = ''; // Clear existing tags before re-adding
             currentSelectedItemsOrder.forEach(item => {
                 addSelectedTagToDisplay(item.text, item.value);
             });
-
-            // Ensure the hidden input is correctly synchronized
-            updateHiddenInputFromOrder();
+            updateHiddenInputFromOrder(); // Ensure hidden input reflects order
         }
 
     } catch (error) {
         console.error(`Error initializing dropdown for ${containerId}:`, error);
-        toastr.error(`An unexpected error occurred while initializing dropdown for ${containerId}: ${error.message}`, 'Error'); // Direct toastr call
+        toastr.error(`An unexpected error occurred while initializing dropdown for ${containerId}: ${error.message}`, 'Error');
 
-        // Fallback if fetching data fails
         if (fallbackItems) {
-            dropdown.innerHTML = ''; // Clear existing dropdown content
-            const allItemsLookupFallback = new Map(); // Create lookup for fallback items
+            dropdown.innerHTML = '';
+            const allItemsLookupFallback = new Map();
             fallbackItems.forEach(item => {
                 const parts = item.split(',');
                 const itemName = parts[0].trim();
@@ -353,10 +358,9 @@ export async function initializeMultiSelect({
                 dropdown.appendChild(optionDiv);
             });
 
-            // Re-check checkboxes and re-render tags based on fallback and preselected values
             if (hiddenInput.value) {
                 const preselectedValues = hiddenInput.value.split(',').map(v => v.trim()).filter(v => v !== '');
-                currentSelectedItemsOrder = []; // Reset internal order for fallback re-initialization
+                currentSelectedItemsOrder = [];
                 preselectedValues.forEach(value => {
                     const text = allItemsLookupFallback.get(value);
                     if (text) {
@@ -367,7 +371,6 @@ export async function initializeMultiSelect({
                         }
                     }
                 });
-                // Clear and re-add tags based on the restored order
                 selectedContainer.innerHTML = '';
                 currentSelectedItemsOrder.forEach(item => {
                     addSelectedTagToDisplay(item.text, item.value);
@@ -375,7 +378,7 @@ export async function initializeMultiSelect({
                 updateHiddenInputFromOrder();
             }
         } else {
-            toastr.error(`Failed to load items for ${placeholderText}. Please try again.`, 'Error'); 
+            toastr.error(`Failed to load items for ${placeholderText}. Please try again.`, 'Error');
         }
     }
 }

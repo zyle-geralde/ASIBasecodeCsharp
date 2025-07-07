@@ -131,3 +131,9 @@ body
 {
     width: 1000px;
 }
+
+
+span.field-validation-error {
+    font-size: 10px;
+    color: red;
+}
