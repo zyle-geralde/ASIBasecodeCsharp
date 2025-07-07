@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Runtime.Intrinsics.X86;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -119,31 +120,54 @@ namespace ASI.Basecode.Data.Repositories
         {
             Book existingBook = await GetBookById(book.BookId);
 
-            //Transfer to Service
-            existingBook.Title = book.Title;
-            existingBook.Subtitle = book.Subtitle;
-            existingBook.Author = book.Author;
-            existingBook.Publisher = book.Publisher;
-            existingBook.PublicationDate = book.PublicationDate;
-            existingBook.PublicationLocation = book.PublicationLocation;
-            existingBook.Language = book.Language;
-            existingBook.NumberOfPages = book.NumberOfPages;
-            existingBook.UpdatedDate = book.UpdatedDate;
-            existingBook.SeriesName = book.SeriesName;
-            existingBook.SeriesOrder = book.SeriesOrder;
-            existingBook.SeriesDescription = book.SeriesDescription;
-            existingBook.Description = book.Description;
-            existingBook.ISBN10 = book.ISBN10;
-            existingBook.ISBN13 = book.ISBN13;
-            existingBook.Edition = book.Edition;
-            existingBook.CoverImage = book.CoverImage;
-            existingBook.BookFile = book.BookFile;
-            existingBook.GenreList = book.GenreList;
-            existingBook.UpdatedBy = book.UpdatedBy;//change to Updated
-            existingBook.IsFeatured = book.IsFeatured;
+
+            try
+            {
+                
+
+                bool isBookNameAndAuthorExist = await CheckBookNameAndAuthorExist(book.Author.Trim(), book.Title.Trim().ToLower());
+
+                if (isBookNameAndAuthorExist && (book.Author.Trim() != existingBook.Author.Trim() || book.Title.Trim().ToLower() != existingBook.Title.Trim().ToLower()))
+                {
+                    throw new ApplicationException("Book Title and/or Author Exist.");
+                }
+
+                //Transfer to Service
+                existingBook.Title = book.Title;
+                existingBook.Subtitle = book.Subtitle;
+                existingBook.Author = book.Author;
+                existingBook.Publisher = book.Publisher;
+                existingBook.PublicationDate = book.PublicationDate;
+                existingBook.PublicationLocation = book.PublicationLocation;
+                existingBook.Language = book.Language;
+                existingBook.NumberOfPages = book.NumberOfPages;
+                existingBook.UpdatedDate = book.UpdatedDate;
+                existingBook.SeriesName = book.SeriesName;
+                existingBook.SeriesOrder = book.SeriesOrder;
+                existingBook.SeriesDescription = book.SeriesDescription;
+                existingBook.Description = book.Description;
+                existingBook.ISBN10 = book.ISBN10;
+                existingBook.ISBN13 = book.ISBN13;
+                existingBook.Edition = book.Edition;
+                existingBook.CoverImage = book.CoverImage;
+                existingBook.BookFile = book.BookFile;
+                existingBook.GenreList = book.GenreList;
+                existingBook.UpdatedBy = book.UpdatedBy;//change to Updated
+                existingBook.IsFeatured = book.IsFeatured;
+
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (ApplicationException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
 
 
-            await _dbContext.SaveChangesAsync();
+           
         }
         public async Task DeleteBook(string bookId)
         {
@@ -220,6 +244,12 @@ namespace ASI.Basecode.Data.Repositories
             {
                 throw;
             }
+        }
+
+        public async Task<bool> CheckBookNameAndAuthorExist(string author,string bookName)
+        {
+            // Use AsNoTracking for read-only queries
+            return await _dbContext.Books.AsNoTracking().AnyAsync(b => b.Author != null && b.Title != null && b.Author.ToLower() == author && b.Title.ToLower() == bookName);
         }
 
 

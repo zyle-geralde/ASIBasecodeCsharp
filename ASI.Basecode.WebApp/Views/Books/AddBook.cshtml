@@ -102,7 +102,7 @@
                             <input type="text" id="publicationLocation" name="PublicationLocation" class="book-master-form-input" value="@Model?.PublicationLocation">
                             <span asp-validation-for="PublicationLocation" class="text-danger"></span>
                         </div>
-                      
+
                         <div class="book-master-form-group">
                             <label for="languageContainer" class="required-label">Language</label>
                             <div class="custom-multi-select" id="languageContainer">
@@ -165,7 +165,7 @@
                 </div>
             </div>
 
-            
+
 
             <h3 class="book-master-form-section-title">Categorization</h3>
             <div class="book-master-form-grid">
@@ -237,10 +237,10 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
 
-            const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024; 
-            const MAX_BOOK_FILE_SIZE_BYTES = 100 * 1024 * 1024; 
+            const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+            const MAX_BOOK_FILE_SIZE_BYTES = 100 * 1024 * 1024;
 
-            // Get all elements 
+            // Get all elements
             const coverImageFile = document.getElementById('coverImageFile');
             const coverImagePreview = document.getElementById('coverImagePreview');
             const coverImagePlaceholder = document.getElementById('coverImagePlaceholder');
@@ -278,9 +278,9 @@
                     }
                 });
             }
-            
 
-            // Date picker 
+
+            // Date picker
             if (publicationDateInput) {
                 publicationDateInput.addEventListener('click', () => {
                     publicationDateInput.showPicker();
@@ -297,7 +297,7 @@
             }
 
             const bookFileUrl = '@Model?.BookFileUrl';
-            if (bookFileUrl && bookFileNameDisplay) { 
+            if (bookFileUrl && bookFileNameDisplay) {
                 bookFileNameDisplay.value = bookFileUrl.substring(bookFileUrl.lastIndexOf('/') + 1);
             }
 
@@ -323,10 +323,63 @@
                     'Cookbook,Cookbook',
                     'Poetry,Poetry'
                 ],
-                itemType: 'genre' 
+                itemType: 'genre'
             });
 
-            // Form submission 
+            document.addEventListener('input', function (event) {
+                const input = event.target;
+
+                if (input.classList.contains('book-master-form-input')) {
+                    if (input.value) {
+                        input.classList.remove('is-invalid');
+
+                        if (input.type === 'date') {
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            if (new Date(input.value) > today) {
+                                input.classList.add('is-invalid');
+                            }
+                        }
+                    }
+                }
+
+                if (input.type === 'file') {
+                    if (input.files.length > 0) {
+                        const statusElement = document.getElementById(input.id + 'UploadStatus');
+                        if (statusElement) {
+                            statusElement.classList.remove('error-message');
+                            const sizeMsg = input.id === 'coverImageFile' ? '10MB' : '1GB';
+                            statusElement.querySelector('.file-size-info').textContent = `Max file size: ${sizeMsg}`;
+                        }
+                    }
+                }
+            });
+
+            function setupDropdownValidation(containerId, hiddenInputId) {
+                const container = document.getElementById(containerId);
+                const hiddenInput = document.getElementById(hiddenInputId);
+                const dropdownBtn = container?.querySelector('.custom-select-btn');
+
+                if (!container || !hiddenInput || !dropdownBtn) return;
+
+                if (hiddenInput.value) {
+                    dropdownBtn.classList.remove('is-invalid-select');
+                }
+
+                hiddenInput.addEventListener('change', function () {
+                    if (this.value) {
+                        dropdownBtn.classList.remove('is-invalid-select');
+                    }
+                });
+            }
+
+            setupDropdownValidation('authorContainer', 'author');
+            setupDropdownValidation('languageContainer', 'language');
+            setupDropdownValidation('genreContainer', 'concatenatedGenre');
+
+
+
+            // Form submission
             const confirmationModalElement = document.getElementById('@addBookConfirmationModel.Id');
             const confirmButton = document.getElementById('@addBookConfirmationModel.ConfirmButtonId');
             const addBookConfirmationModal = confirmationModalElement ? new bootstrap.Modal(confirmationModalElement) : null;
@@ -347,10 +400,14 @@
                     const coverImageUrlInput = document.getElementById('coverImageUrl');
                     const bookFileUrlInput = document.getElementById('bookFileUrl');
 
+                    const seriesNameInput = document.getElementById('seriesName');
+                    const seriesOrderInput = document.getElementById('seriesOrder');
+                    const seriesDescriptionInput = document.getElementById('seriesDescription');
+
                     let isValid = true;
                     const missingFields = [];
 
-                    // Validation checks 
+                    // Validation checks
                     if (!titleInput.value.trim()) {
                         missingFields.push('Title');
                         titleInput.classList.add('is-invalid');
@@ -361,38 +418,57 @@
 
                     if (!authorInput.value.trim()) {
                         missingFields.push('Author');
-                        authorInput.classList.add('is-invalid');
+                        document.getElementById('authorContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select');
                         isValid = false;
                     } else {
-                        authorInput.classList.remove('is-invalid');
+                        document.getElementById('authorContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select');
                     }
 
-                    if (!publicationDateInput.value) {
+                    const pubDateValue = publicationDateInput.value;
+                    if (!pubDateValue || pubDateValue === "undefined" || pubDateValue === "NaN-NaN-NaN") {
                         missingFields.push('Publication Date');
                         publicationDateInput.classList.add('is-invalid');
                         isValid = false;
                     } else {
                         publicationDateInput.classList.remove('is-invalid');
+
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        const pubDate = new Date(pubDateValue);
+
+                        if (pubDate > today) {
+                            missingFields.push('Publication Date (cannot be in the future)');
+                            publicationDateInput.classList.add('is-invalid');
+                            isValid = false;
+                        } else {
+                            publicationDateInput.classList.remove('is-invalid');
+                        }
                     }
+                    // if (!publicationDateInput.value) {
+                    //     missingFields.push('Publication Date');
+                    //     publicationDateInput.classList.add('is-invalid');
+                    //     isValid = false;
+                    // } else {
+                    //     publicationDateInput.classList.remove('is-invalid');
+                    // }
 
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    const pubDate = new Date(publicationDateInput.value);
+                    // const today = new Date();
+                    // today.setHours(0, 0, 0, 0);
+                    // const pubDate = new Date(publicationDateInput.value);
 
-                    if (pubDate > today) {
-                        missingFields.push('Publication Date (cannot be in the future)');
-                        publicationDateInput.classList.add('is-invalid');
-                        isValid = false;
-                    } else {
-                        publicationDateInput.classList.remove('is-invalid');
-                    }
-
-                    if (!languageInput.value) {
+                    // if (pubDate > today) {
+                    //     missingFields.push('Publication Date (cannot be in the future)');
+                    //     publicationDateInput.classList.add('is-invalid');
+                    //     isValid = false;
+                    // } else {
+                    //     publicationDateInput.classList.remove('is-invalid');
+                    // }
+                    if (!languageInput.value.trim()) {
                         missingFields.push('Language');
-                        languageInput.classList.add('is-invalid');
+                        document.getElementById('languageContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select');
                         isValid = false;
                     } else {
-                        languageInput.classList.remove('is-invalid');
+                        document.getElementById('languageContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select');
                     }
 
                     if (!genreInput.value) {
@@ -428,6 +504,42 @@
                     } else if (bookFileUploadStatus) {
                         bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
                         bookFileUploadStatus.classList.remove('error-message');
+                    }
+
+                   
+
+                    const seriesDescriptionPresent = seriesDescriptionInput.value.trim() !== '';
+                    const seriesOrderPresent = seriesOrderInput.value !== '' && !isNaN(seriesOrderInput.value);
+                    const seriesNamePresent = seriesNameInput.value.trim() !== '';
+
+                    if (seriesDescriptionPresent) {
+                        if (!seriesNamePresent) {
+                            missingFields.push('Series Name (required when Series Description is present)');
+                            seriesNameInput.classList.add('is-invalid');
+                            isValid = false;
+                        } else {
+                            seriesNameInput.classList.remove('is-invalid');
+                        }
+                        if (!seriesOrderPresent) {
+                            missingFields.push('Series Order (required when Series Description is present)');
+                            seriesOrderInput.classList.add('is-invalid');
+                            isValid = false;
+                        } else {
+                            seriesOrderInput.classList.remove('is-invalid');
+                        }
+                    } else {
+                        seriesNameInput.classList.remove('is-invalid');
+                        seriesOrderInput.classList.remove('is-invalid');
+                    }
+
+                    if (seriesOrderPresent && !seriesNamePresent) {
+                        if (!missingFields.includes('Series Name (required when Series Order is present)')) {
+                            missingFields.push('Series Name (required when Series Order is present)');
+                        }
+                        seriesNameInput.classList.add('is-invalid');
+                        isValid = false;
+                    } else if (seriesOrderPresent && seriesNamePresent) {
+                        seriesNameInput.classList.remove('is-invalid');
                     }
 
                     if (!isValid) {
@@ -532,8 +644,8 @@
                         }, 1500);
                     } else {
                         const errorData = await response.json();
-                        const errorMessage = JSON.stringify(errorData.errors.join('\n- ') || errorData.message || "An unknown error occurred on the server.");
-                        toastr.error(`Server error: ${errorMessage}`);
+                        const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
+                        toastr.error(`${errorMessage}`);
 
                         if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
                             await deleteFileFromFirebase(uploadedCoverUrl);
