@@ -11,8 +11,11 @@ namespace ASI.Basecode.Data.Models
     public class Review
     {
         [Key]
-        public string ReviewId { get; set; } 
+        public string ReviewId { get; set; }
+        [Required]
         public string BookId { get; set; }
+        [ForeignKey(nameof(BookId))]
+        public Book Book { get; set; }
         public float Rating { get; set; }
         public string Comment { get; set; }
         public int Likes { get; set; }
