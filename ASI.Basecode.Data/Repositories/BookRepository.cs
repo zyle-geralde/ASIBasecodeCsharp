@@ -188,11 +188,12 @@ namespace ASI.Basecode.Data.Repositories
                 avg = await reviews.AverageAsync(r => r.Rating);
             else
                 avg = 0;
+            var roundedAvg = Math.Round(avg, 2);
 
             var book = await _dbContext.Books.FindAsync(bookId);
             if (book != null)
             {
-                book.AverageRating = (float)avg;
+                book.AverageRating = (float)roundedAvg;
                 await _dbContext.SaveChangesAsync();
             }
         }
