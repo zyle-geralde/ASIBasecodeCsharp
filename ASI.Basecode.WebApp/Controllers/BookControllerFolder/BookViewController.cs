@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Resources.Messages;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
@@ -348,15 +349,19 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                     await _bookService.AddBook(book);
 
                     //TempData["message"] = "Book added successfully!";
-                    return RedirectToAction("ListBook"); 
+                    //return RedirectToAction("ListBook"); 
+                    return Ok(new { Message = "Book Edited successfully!" });
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "An unexpected error occurred: " + ex.Message);
+                    //ModelState.AddModelError("", "An unexpected error occurred: " + ex.Message);
+                    return BadRequest(new { Message = "An unexpected server error occurred" });
                 }
             }
 
-            return View("~/Views/Books/AddBook.cshtml", book);
+            //return View("~/Views/Books/AddBook.cshtml", book);
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            return BadRequest(new { errors = errors, Message = "Validation failed." });
         }
 
         [HttpPost]
