@@ -1,6 +1,6 @@
 ﻿.role-group {
     width: 100%;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
 }
 
 .role-label {
@@ -132,14 +132,30 @@ input[type="text"],
 input[type="email"],
 input[type="password"] {
     width: 100%;
-    padding: 0.6rem 1rem;
-    border: 1px solid #ddd;
+    padding: 12px 16px;
+    margin-top: 8px;
+    border: 1.5px solid #e2e8f0;
     border-radius: 8px;
     font-size: 14px;
+    color: #374151;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    font-weight: 500;
 }
 
-.upload-section 
-{
+    input[type="text"]:hover,
+    input[type="email"]:hover,
+    input[type="password"]:hover 
+    {
+        border-color: #a0b4b7;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+    }
+
+
+
+.upload-section {
     margin-bottom: 1rem;
     align-self: start;
     width: 50%;
@@ -181,6 +197,7 @@ input[type="password"] {
     width: 100%;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     margin-top: 40px;
 }
 
@@ -194,46 +211,43 @@ input[type="password"] {
 }
 
 .cancel-btn, .submit-btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-    height: 38px; 
-    align-items: center;
+    height: 44px;
+    min-height: 44px;
+    display: inline-flex;
     justify-content: center;
-    text-transform: uppercase;
-    line-height: 1;
-    box-sizing: border-box;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
+
 .cancel-btn {
-    background: #fff;
-    border: 1px solid #ddd;
-    color: #333;
-    width: 120px; /* Fixed width */
+    background-color: #e0e0e0;
+    color: #555555;
+    border: 1px solid #c0c0c0;
 }
 
 .submit-btn {
-    background: #647D7F;
-    border: none;
-    color: white;
-    width: 140px; /* Fixed width - wider than cancel button */
+    background-color: #5f7c78;
+    color: #fff;
+    border: 1px solid #5f7c78;
 }
 
-    .cancel-btn:hover {
-        background: #f5f5f5;
-    }
-
-    .submit-btn:hover {
-        background: #556a6c;
-    }
-
-.custom-tooltip {
-    --bs-tooltip-bg: #d9534f;
-    --bs-tooltip-color: #fff;
-    font-size: 14px;
+.cancel-btn:hover {
+    background-color: #d0d0d0;
+    border-color: #b0b0b0;
 }
+
+.submit-btn:hover {
+    background-color: #516a67;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
 
 .is-invalid {
     border-color: #d9534f !important;
