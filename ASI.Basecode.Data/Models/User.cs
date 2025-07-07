@@ -16,6 +16,7 @@ namespace ASI.Basecode.Data.Models
         public DateTime? OtpExpirationDate { get; set; }
         public bool IsEmailVerified { get; set; } = false;
         public virtual PersonProfile PersonProfile { get ; set;}
+        public string? Role { get; set; }
         public List<Review> Reviews { get; set; } = new List<Review>();
     }
 }
