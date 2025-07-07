@@ -1,6 +1,6 @@
 ﻿/* Main container styling */
 .users-container {
-    padding: 25px;
+    padding: 40px;
     display: flex;
     flex-direction: column;
     min-height: calc(100vh - 60px); /* Changed from height to min-height */
@@ -91,7 +91,8 @@
     background: #fff;
     z-index: 2;
     box-shadow: 0 2px 2px -1px rgba(0,0,0,0.04);
-    height: 53px; /* Consistent with other rows */
+    height: 53px; 
+   
 }
 
 /* When the table has fewer rows, this will prevent it from stretching */
