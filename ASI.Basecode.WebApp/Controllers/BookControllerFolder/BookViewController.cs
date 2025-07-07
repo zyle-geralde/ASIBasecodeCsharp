@@ -110,7 +110,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             int? page = 1
             )
         {
-            const int PageSize = 2;
+            const int PageSize = 10;
             int pageIndex = page.GetValueOrDefault(1);
             string authorId = await _authorRepository.GetAuthorByName(author != null ? author : "");
             string authorIdFromSearch = await _authorRepository.GetAuthorByName(searchTerm != null ? searchTerm : "");
@@ -374,6 +374,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
             if (ModelState.IsValid)
             {
+                book.UpdatedDate = DateTime.UtcNow;
+                book.UpdatedBy = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 try
                 {
                     await _bookService.EditBook(book);
