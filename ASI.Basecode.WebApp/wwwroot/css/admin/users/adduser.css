@@ -1,4 +1,77 @@
-﻿
+﻿.role-group {
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.role-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #647D7F;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.role-btn-group {
+    width: 100%;
+    display: flex;
+}
+
+.role-btn {
+    flex: 1 1 0;
+    border-radius: 0;
+    border: 1.5px solid #647D7F;
+    background: #f8f9fa;
+    color: #647D7F;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background 0.2s, color 0.2s;
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .role-btn:hover {
+        background: rgb(100, 125, 127, 0.6) !important;
+        color: #fff !important;
+        border-color: rgb(100, 125, 127, 0.6) !important;
+    }
+
+    .btn-check:checked + .role-btn,
+    .role-btn.active,
+    .role-btn:active {
+        background: #647D7F !important;
+        color: #fff !important;
+        border-color: #647D7F !important;
+    }
+
+.role-btn-group .role-btn:first-of-type {
+    border-top-left-radius: 8px !important;
+    border-bottom-left-radius: 8px !important;
+}
+
+.role-btn-group .role-btn:last-of-type {
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+}
+
+@media (max-width: 785px) {
+    .role-group {
+        width: 100%;
+    }
+
+    .role-btn-group {
+        flex-direction: column;
+    }
+
+    .role-btn {
+        border-radius: 8px !important;
+        margin-bottom: 8px;
+    }
+}
+
 .edit-user-container,
 .add-user-container 
 {
