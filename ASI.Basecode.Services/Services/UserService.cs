@@ -208,6 +208,7 @@ namespace ASI.Basecode.Services.Services
                 user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = true;
                 user.OtpCode = null;
+                user.Role = "User";
                 user.OtpExpirationDate = null;
 
                 await _repository.AddUser(user);
