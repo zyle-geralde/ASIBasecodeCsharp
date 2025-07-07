@@ -1218,7 +1218,7 @@
 
 .confirmation-modal .modal-header {
     border-bottom: none;
-    padding-bottom: 0;
+    padding-bottom: 15px;
 }
 
 .confirmation-modal .btn-danger {

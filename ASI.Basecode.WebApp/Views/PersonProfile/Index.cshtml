@@ -1,20 +1,27 @@
 ﻿@using System.Security.Claims
 @model ASI.Basecode.Services.ServiceModels.PersonProfileViewModel;
+@inject ASI.Basecode.WebApp.AccessControl.IAccessControlInterface AccessControl
 @{
     ViewData["Title"] = "My Profile";
-}
 
-@if (TempData["Success"] is string msg) {
-  <div class="alert alert-success">@msg</div>
-}
-@if (TempData["PwdErrors"] is string[] errs)
-{
-    <div class="alert alert-danger">
-      <ul>
-      @foreach(var e in errs) { <li>@e</li> }
-      </ul>
-    </div>
-     @* alert('@pwdErrs[0]'); *@
+    var isAdmin = await AccessControl.CheckAdminAccess();
+    
+    @if (isAdmin)
+    {
+        Layout = "_AdminSidebarLayout";
+        <link rel="stylesheet" href="~/css/admin/adminsidebar.css" asp-append-version="true" />
+    
+        <style>
+            .main-content
+            {
+                margin-top: 10px;
+            }
+        </style>
+    }
+    else
+    {
+        Layout = "_Layout"; 
+    }
 }
 
 @section styles {
@@ -24,6 +31,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/userui/viewuser.css" asp-append-version="true" />
 }
 
@@ -163,7 +171,7 @@
                                 <div class="book-info">
                                     <div class="book-title">
                                         <a asp-route="BookDetails" asp-route-bookId="@review.BookId" class="book-link">
-                                            Book ID: @review.BookId
+                                            @review.BookTitle
                                         </a>
                                     </div>
                                 </div>
@@ -259,24 +267,24 @@
                             <input type="hidden" asp-for="ProfilePicture" id="ProfilePictureHidden" name="ProfilePicture" value="@Model?.ProfilePicture">
                             <input type="text" id="profilePictureNameDisplay" style="display:none;" /> <!-- Add this line -->
                             <p id="profilePictureUploadStatus" class="add-book-upload-status mt-2" style="display: flex; flex-direction: row; align-items: center; gap: 4px">
-                                <span class="file-size-info" style="font-size:10px">Max file size: 1GB; </span>
+                                <span class="file-size-info" style="font-size:10px">Max file size: 10MB; </span>
                                 <span class="supported-formats-info" style="font-size:10px">  Supported formats: JPG, PNG, JPEG</span>
                             </p>
                         </div>
 
                     </div>
                     <div class="mb-3">
-                        <label asp-for="FirstName" class="form-label"></label>
+                        <label asp-for="FirstName" class="form-label">First Name</label>
                         <input asp-for="FirstName" class="form-control" />
                         <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="MiddleName" class="form-label"></label>
+                        <label asp-for="MiddleName" class="form-label">Middle Name</label>
                         <input asp-for="MiddleName" class="form-control" />
                         <span asp-validation-for="MiddleName" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="LastName" class="form-label"></label>
+                        <label asp-for="LastName" class="form-label">Last Name</label>
                         <input asp-for="LastName" class="form-control" />
                         <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
@@ -300,6 +308,11 @@
                             </select>
                             <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
+                    </div>
+                     <div class="mb-4">
+                        <label asp-for="Location" class="form-label">Location</label>
+                        <input asp-for="Location" class="form-control" id="location" rows="4" placeholder="Where are you from?"/>
+                        <span asp-validation-for="AboutMe" class="text-danger"></span>
                     </div>
                     <div class="mb-4">
                         <label asp-for="AboutMe" class="form-label">About Me</label>
@@ -336,19 +349,7 @@
                         <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
                     </div>
                 </form>
-                @* <form id="userInfoForm">
-                    <div class="mb-3">
-                        <label for="userName" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="userName" placeholder="Text">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="text" class="form-control" id="email" placeholder="Text">
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
-                    </div>
-                </form> *@
+                
             </div>
         </div>
     </div>
@@ -374,24 +375,17 @@
                         </div>
                     <div class="mb-3">
                         <label for="newPass" class="form-label">New Password</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="newPass" placeholder="Text" asp-for="ChangePassword.NewPassword">
-                            <span asp-validation-for="ChangePassword.NewPassword" class="text-danger"></span>
-                            <button class="btn btn-outline-secondary password-toggle" type="button" data-target="newPass">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
+                        @* <div class="input-group"> *@
+                            <input type="password" class="form-control" placeholder="Enter new password" id="newPass" asp-for="ChangePassword.NewPassword">
+                            <span asp-validation-for="ChangePassword.NewPassword" class="text-danger"></span>       
+                        @* </div> *@
                     </div>
                     <div class="mb-3">
                         <label for="confirmnewPass" class="form-label"  asp-for="ChangePassword.ConfirmPassword">Confirm New Password</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="confirmnewPass" placeholder="Text" asp-for="ChangePassword.ConfirmPassword">
-                            <button class="btn btn-outline-secondary password-toggle" type="button" data-target="confirmnewPass">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                                                    <span asp-validation-for="ChangePassword.ConfirmPassword" class="text-danger"></span>
-
+                        @* <div class="input-group"> *@
+                            <input type="password" class="form-control" id="confirmnewPass" placeholder="Confirm new password" asp-for="ChangePassword.ConfirmPassword">
+                            <span asp-validation-for="ChangePassword.ConfirmPassword" class="text-danger"></span>
+                        @* </div>                                                    *@
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
@@ -933,6 +927,11 @@
         var error = errs[0];
         <text>toastr.error("@error");</text>
       }
+
+      @if (TempData["UserInfoError"] is string userInfoError)
+       {
+        <text>toastr.error("@userInfoError");</text>
+       }
 
       var pwdModalEl = document.getElementById('updatePass');
       if (pwdModalEl) {

@@ -39,6 +39,110 @@ namespace ASI.Basecode.Services.Services
             _emailSenderService = emailSenderService;
         }
 
+
+        private string GenerateOtpCode()
+        {
+            //Generate 6-digit numeric OTP
+            var otpBytes = new byte[4]; // Enough to get a number up to 2^32 - 1
+            RandomNumberGenerator.Fill(otpBytes);
+            var otp = BitConverter.ToUInt32(otpBytes, 0) % 1_000_000; //Get a number between 0 and 999,999
+            return otp.ToString("D6"); //Format as a 6-digit string, padding with leading zeros if necessary
+        }
+        public async Task<string> SendOtpCodeEmail(string email)
+        {
+            string otp = GenerateOtpCode();
+            var subject = "BasaBuzz 6 digit code";
+            var message = "This is your code " + otp;
+
+            try
+            {
+                await _emailSenderService.SendEmailAsync(email, subject, message);
+                return otp;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> IsEmailVerifiedAndExists(string email)
+        {
+            var user = await _repository.FindUserByEmail(email);
+            return user != null && user.IsEmailVerified;
+        }
+
+        public async Task<bool> IsUsernameVerifiedAndExists(string username)
+        {
+            return _repository.GetUsers().Any(u => u.UserName == username && u.IsEmailVerified);
+        }
+
+        public async Task<User> CreateVerifiedUser(UserViewModel model, string role = "User")
+        {
+            // Check if email or username exists among verified users
+            if (await IsEmailVerifiedAndExists(model.Email))
+            {
+                throw new InvalidDataException("Email already exists!");
+            }
+
+            if (await IsUsernameVerifiedAndExists(model.UserName))
+            {
+                throw new InvalidDataException("Username already exists!");
+            }
+
+            // Delete any existing unverified account with same email or username
+            var existingUnverifiedUser = await _repository.FindUserByEmail(model.Email);
+            if (existingUnverifiedUser != null)
+            {
+                await _repository.DeleteUser(existingUnverifiedUser.Id);
+
+                try
+                {
+                    await _personProfileService.DeletePersonProfile(existingUnverifiedUser.Email);
+                }
+                catch
+                {
+                    // Profile might not exist
+                }
+            }
+
+            // Create new user as verified
+            var user = new User
+            {
+                Email = model.Email,
+                UserName = model.UserName,
+                Password = PasswordManager.EncryptPassword(model.Password),
+                CreatedTime = DateTime.Now,
+                UpdatedTime = DateTime.Now,
+                CreatedBy = System.Environment.UserName,
+                UpdatedBy = System.Environment.UserName,
+                IsEmailVerified = true,
+                OtpCode = null,
+                Role = role,
+                OtpExpirationDate = null
+            };
+
+            await _repository.AddUser(user);
+
+            // Create profile
+            var profile = new PersonProfile
+            {
+                ProfileID = user.Email,
+                FirstName = role == "Admin" ? model.UserName : null,
+                LastName = null,
+                MiddleName = null,
+                Suffix = null,
+                Gender = null,
+                BirthDate = null,
+                Location = null,
+                Role = role,
+                AboutMe = string.Empty
+            };
+
+            await _personProfileService.AddPersonProfile(profile);
+
+            return user;
+        }
+
         public LoginResult AuthenticateUser(string userId, string password, ref User user)
         {
             user = new User();
@@ -104,6 +208,7 @@ namespace ASI.Basecode.Services.Services
                 user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = true;
                 user.OtpCode = null;
+                user.Role = "User";
                 user.OtpExpirationDate = null;
 
                 await _repository.AddUser(user);
@@ -147,7 +252,7 @@ namespace ASI.Basecode.Services.Services
                 }
 
                 if (_repository.GetUsers().Any(u => u.UserName == model.UserName && u.Id != model.Id))
-                    throw new InvalidDataException("A user with this username already exists.");
+                    throw new InvalidDataException("A user with this username already exists!");
 
                 user.UserName = model.UserName;
                 user.UpdatedTime = DateTime.Now;

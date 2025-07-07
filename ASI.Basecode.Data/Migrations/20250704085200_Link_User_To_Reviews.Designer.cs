@@ -4,6 +4,7 @@ using ASI.Basecode.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASI.Basecode.Data.Migrations
 {
     [DbContext(typeof(AsiBasecodeDBContext))]
-    partial class AsiBasecodeDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250704085200_Link_User_To_Reviews")]
+    partial class Link_User_To_Reviews
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,8 +242,7 @@ namespace ASI.Basecode.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("BookId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
@@ -264,8 +265,6 @@ namespace ASI.Basecode.Data.Migrations
                         .HasColumnName("UserId");
 
                     b.HasKey("ReviewId");
-
-                    b.HasIndex("BookId");
 
                     b.HasIndex("UserId");
 
@@ -310,9 +309,6 @@ namespace ASI.Basecode.Data.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -353,12 +349,6 @@ namespace ASI.Basecode.Data.Migrations
 
             modelBuilder.Entity("ASI.Basecode.Data.Models.Review", b =>
                 {
-                    b.HasOne("ASI.Basecode.Data.Models.Book", "Book")
-                        .WithMany("Reviews")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ASI.Basecode.Data.Models.User", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("UserId")
@@ -366,14 +356,7 @@ namespace ASI.Basecode.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Book");
-
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ASI.Basecode.Data.Models.Book", b =>
-                {
-                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("ASI.Basecode.Data.Models.User", b =>

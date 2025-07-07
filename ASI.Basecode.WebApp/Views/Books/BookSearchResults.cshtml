@@ -4,9 +4,12 @@
     ViewData["Title"] = "Search Results";
     var categoryTitle = (string?)ViewData["CategoryTitle"] ?? "";
     var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
+    var allLanguages = (List<LanguageViewModel>)ViewData["AllLanguages"];
     var currentSearch = (string?)ViewData["CurrentSearch"];
+    var currentIsFeatured = (bool?)ViewData["CurrentIsFeatured"];
     var currentAuthor = (string?)ViewData["CurrentAuthor"];
     var currentRating = (int?)ViewData["CurrentRating"];
+    var currentLanguage = (string?)ViewData["CurrentLanguage"];
     var currentFromDate = (string?)ViewData["CurrentFromDate"];
     var currentToDate = (string?)ViewData["CurrentToDate"];
     var currentGenres = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>();
@@ -26,6 +29,10 @@
         routeValues["searchTerm"] = currentSearch;
         descriptionParts.Add($"Search: \"{currentSearch}\"");
     }
+    if (!string.IsNullOrWhiteSpace(currentLanguage)) {
+        routeValues["languageFilter"] = currentLanguage;
+        descriptionParts.Add($"Language: \"{currentLanguage}\"");
+    }
     if (!string.IsNullOrWhiteSpace(currentAuthor)) {
         routeValues["author"] = currentAuthor;
         descriptionParts.Add($"Author: {currentAuthor}");
@@ -34,6 +41,11 @@
         routeValues["rating"] = currentRating.Value.ToString();
         descriptionParts.Add($"Rating: {currentRating.Value}★ & up");
     }
+    if (currentIsFeatured == true) {
+      routeValues["isFeatured"] = "true";
+      descriptionParts.Add("Featured");
+    }
+
     if (!string.IsNullOrWhiteSpace(currentFromDate)) {
         routeValues["publishedFrom"] = currentFromDate;
         descriptionParts.Add($"Published from: {DateTime.Parse(currentFromDate).ToString("yyyy-MM-dd")} ");
@@ -95,6 +107,8 @@
         <option value="title"             selected="@(currentSort == "title")">Title</option>
         <option value="publicationdate"   selected="@(currentSort == "publicationdate")">Publication Date</option>
         <option value="rating"            selected="@(currentSort == "rating")">Rating</option>
+        <option value="uploaddate"        selected="@(currentSort == "uploaddate")">Upload Date</option>
+
       </select>
     </div>
 
@@ -175,11 +189,55 @@
       }
     </div>
   </fieldset>
+    <div class="col-md-2">
+    <div class="form-check mt-4">
+      <input 
+        class="form-check-input" 
+        type="checkbox" 
+        id="isFeatured" 
+        name="isFeatured" 
+        value="true"
+        @(currentIsFeatured == true ? "checked" : "") />
+      <label class="form-check-label" for="isFeatured">
+        Featured only
+      </label>
+    </div>
+  </div>
+
+    <fieldset class="mt-3">
+    <legend class="form-label">Language</legend>
+    <div class="row">
+      @foreach (var language in allLanguages)
+      {
+        <div class="col-sm-3">
+          <div class="form-check">
+           <input class="form-check-input"
+           type="radio"
+           name="languageFilter"
+           value="@language.LanguageId"
+           id="lang_@language.LanguageId"
+           @(currentLanguage == language.LanguageId ? "checked" : "") />
+
+
+
+
+            <label class="form-check-label" for="lang_@language.LanguageId">
+              @language.LanguageName
+            </label>
+          </div>
+        </div>
+      }
+    </div>
+  </fieldset>
 
   <div class="d-flex justify-content-end mt-3">
-    <a asp-action="SearchResults" class="btn btn-outline-secondary me-2">
+    <a asp-controller="Book"
+       asp-action="SearchResults"
+       asp-all-route-data="@(new Dictionary<string,string>())"
+       class="btn btn-outline-secondary me-2">
       Clear All
     </a>
+
     <button type="submit" class="btn btn-primary">
       Apply Filters
     </button>
@@ -244,7 +302,13 @@
                                     }
                                 </div>
                                 <span class="rating-text">@book.AverageRating/5</span>
+                              
+
                             </div>
+                              <span class="rating-text">Upload date: @book.UploadDate</span>
+                                 <hr/> 
+                                 <span class="rating-text">Publication date: @book.PublicationDate</span>
+
                         </div>
                     </div>
                 }

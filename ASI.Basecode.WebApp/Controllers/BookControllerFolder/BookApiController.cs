@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
-using System.Globalization;
+﻿using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
-using ASI.Basecode.Data.Models;
-using Microsoft.AspNetCore.Authorization;
 using ASI.Basecode.Services.ServiceModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Globalization;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 {
@@ -56,7 +57,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             {
                 return BadRequest(ModelState); // Return validation errors
             }
-
+            request.UpdatedDate = DateTime.UtcNow;
+            request.UpdatedBy = User.FindFirstValue(ClaimTypes.NameIdentifier);
             try
             {
                 // Call the service method, which now encapsulates the mapping and database operation
