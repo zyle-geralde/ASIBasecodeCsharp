@@ -40,14 +40,24 @@
 
             <div class="form-row">
                 <div class="form-group role-group">
-                    <div class="btn-group role-btn-group" role="group" aria-label="Role selection">
-                        <input type="radio" class="btn-check" name="Role" id="roleUser" value="User" autocomplete="off" checked>
-                        <label class="btn role-btn" for="roleUser">User</label>
+                    <div class="btn-group role-btn-group" role="group" aria-label="Role selection" asp-for="Role">
+                         <input type="radio"
+                   asp-for="Role"
+                   class="btn-check"
+                   id="roleUser"
+                   value="User"
+                   autocomplete="off" />
+            <label class="btn role-btn" for="roleUser">User</label>
 
-                        <input type="radio" class="btn-check" name="Role" id="roleAdmin" value="Admin" autocomplete="off">
-                        <label class="btn role-btn" for="roleAdmin">Admin</label>
+            <input type="radio"
+                   asp-for="Role"
+                   class="btn-check"
+                   id="roleAdmin"
+                   value="Admin"
+                   autocomplete="off" />
+            <label class="btn role-btn" for="roleAdmin">Admin</label>
                     </div>
-                    <span class="text-danger"></span>
+          <span asp-validation-for="Role" class="text-danger"></span>
                 </div>
             </div>
 
@@ -112,7 +122,7 @@
 
                 <div class="d-flex justify-content-center gap-2">
                     <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger-2 px-4" onclick="validateAndSubmitAddUserForm()">Add User</button>
+                    <button type="submit" class="btn btn-danger-2 px-4" onclick="validateAndSubmitAddUserForm()">Add User</button>
                 </div>
             </div>
         </div>
