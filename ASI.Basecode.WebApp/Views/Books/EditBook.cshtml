@@ -15,7 +15,7 @@
                 CancelButtonText = "Cancel",
                 ConfirmButtonText = "Save Changes",
                 ConfirmButtonId = "confirmEditAction",
-                ConfirmButtonClass = "btn-primary px-4"
+                ConfirmButtonClass = "btn-danger px-4"
             };
 
     var discardChangesConfirmationModel = new ConfirmationModalModel
@@ -465,18 +465,28 @@
                     let isValid = true;
                     const missingFields = [];
 
-                    // Validation checks 
-                    if (!titleInput.value.trim()) { missingFields.push('Title'); titleInput.classList.add('is-invalid'); isValid = false; } else { titleInput.classList.remove('is-invalid'); }
-                    if (!authorInput.value.trim()) { missingFields.push('Author'); document.getElementById('authorContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select'); isValid = false; } else { document.getElementById('authorContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select'); }
-                    if (!publicationDateInput.value) { missingFields.push('Publication Date'); publicationDateInput.classList.add('is-invalid'); isValid = false; } else { publicationDateInput.classList.remove('is-invalid'); }
+                    // Validation checks
+                    if (!titleInput.value.trim()) { missingFields.push('Title'); isValid = false; }
+                    if (!authorInput.value.trim()) { missingFields.push('Author'); isValid = false; }
+                    if (!publicationDateInput.value) { missingFields.push('Publication Date'); isValid = false; }
 
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     const pubDate = new Date(publicationDateInput.value);
 
-                    if (pubDate > today) { missingFields.push('Publication Date (cannot be in the future)'); publicationDateInput.classList.add('is-invalid'); isValid = false; } else { publicationDateInput.classList.remove('is-invalid'); }
-                    if (!languageInput.value.trim()) { missingFields.push('Language'); document.getElementById('languageContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select'); isValid = false; } else { document.getElementById('languageContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select'); }
-                    if (!genreInput.value) { missingFields.push('Genre'); document.getElementById('genreContainer').querySelector('.custom-select-btn').classList.add('is-invalid-select'); isValid = false; } else { document.getElementById('genreContainer').querySelector('.custom-select-btn').classList.remove('is-invalid-select'); }
+                    if (pubDate > today) { missingFields.push('Publication Date (cannot be in the future)'); isValid = false; }
+                    if (!languageInput.value.trim()) { missingFields.push('Language'); isValid = false; }
+                    if (!genreInput.value) { missingFields.push('Genre'); isValid = false; }
+
+
+                    const seriesNameInput = document.getElementById('seriesName');
+                    const seriesDescriptionInput = document.getElementById('seriesDescription');
+                    const seriesOrderInput = document.getElementById('seriesOrder');
+
+                    if ((seriesDescriptionInput.value.trim() || (seriesOrderInput.value !== '' && parseInt(seriesOrderInput.value) > 0)) && !seriesNameInput.value.trim()) {
+                        missingFields.push('Series Name (required if Series Description or Series Order is provided)');
+                        isValid = false;
+                    } 
 
                     const coverImageFileChanged = coverImageFileInput.files.length > 0;
                     if (!coverImageFileChanged && !coverImageUrlInput.value) {
