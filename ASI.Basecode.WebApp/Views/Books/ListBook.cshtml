@@ -87,9 +87,21 @@
     var descriptionText = descriptionParts.Any()
         ? string.Join(" | ", descriptionParts)
         : "Manage books";
+
+    var deleteBookConfirmationModel = new ConfirmationModalModel
+            {
+                Id = "deleteBookConfirmationModal", 
+                Title = "Delete Confirmation",
+                Message = "Are you sure you want to delete this book?",
+                CancelButtonText = "Cancel",
+                ConfirmButtonText = "Delete",
+                ConfirmButtonId = "confirmDeleteBookAction", 
+                ConfirmButtonClass = "btn-danger px-4"
+            };
 }
 @section styles {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/books/listbook.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pagination.css" asp-append-version="true" />
@@ -323,7 +335,13 @@
                                     <a href="/Book/EditBook/@book.BookId" class="action-icon-button text-primary">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <button type="button" class="action-icon-button text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" id="delete-modal-button" data-book-id="@book.BookId" data-cover-url="@book.CoverImageUrl" data-book-url="@book.BookFileUrl">
+                                     
+                                     <button type="button" class="action-icon-button text-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#@deleteBookConfirmationModel.Id" 
+                                            data-book-id="@book.BookId"
+                                            data-cover-url="@book.CoverImageUrl"
+                                            data-book-url="@book.BookFileUrl">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
@@ -344,41 +362,14 @@
         { "CurrentPage", Model.PageIndex },
         { "TotalPages", Model.TotalPages }
     }' />
-</div>
 
 
-<div class="modal fade confirmation-modal" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title" id="deleteModalLabel">Delete Confirmation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <p class="mb-4">Are you sure you want to delete this item?</p>
-                <div class="d-flex justify-content-center gap-2">
-                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger px-4" id="delete-book-button">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
-<div class="modal fade status-modal" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body text-center py-4">
-                <div class="status-icon mb-3">
-                    <i class="fas fa-check"></i>
-                </div>
-                <h5 class="modal-title mb-2" id="statusModalLabel">Success!</h5>
-                <p class="mb-4" id="statusModalMessage">Item deleted successfully!</p>
-                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="_ConfirmationModal" model="deleteBookConfirmationModel" />
+
+
+
 
 @section Scripts {
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -413,8 +404,8 @@
                 await deleteObject(fileRef);
                 console.log(`Successfully deleted file: ${fileUrl}`);
             } catch (error) {
-               
-                showStatusModal(`Failed to delete file ${fileUrl}: ${error.message}`, 'Error');
+
+                toastr.error(`Failed to delete file ${fileUrl}: ${error.message}`);
                 console.error(`Failed to delete file ${fileUrl}:`, error);
             }
         }
@@ -434,51 +425,51 @@
         }
 
 
-        function showStatusModal(message, type = 'Success') {
-            var deleteModalElement = document.getElementById('deleteModal');
-            var deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
-            if (deleteModal) {
-                deleteModal.hide();
-            }
+        // function showStatusModal(message, type = 'Success') {
+        //     var deleteModalElement = document.getElementById('deleteModal');
+        //     var deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
+        //     if (deleteModal) {
+        //         deleteModal.hide();
+        //     }
 
-            const statusModalTitle = document.getElementById('statusModalLabel');
-            const statusModalMessage = document.getElementById('statusModalMessage');
+        //     const statusModalTitle = document.getElementById('statusModalLabel');
+        //     const statusModalMessage = document.getElementById('statusModalMessage');
 
-            if (statusModalTitle) {
-                statusModalTitle.textContent = type;
-            }
-            if (statusModalMessage) {
-                statusModalMessage.textContent = message;
-            }
-
-
-            const statusIcon = document.querySelector('#statusModal .status-icon i');
-            if (statusIcon) {
-                statusIcon.classList.remove('fa-check', 'fa-times', 'fa-exclamation-triangle');
-                if (type === 'Success') {
-                    statusIcon.classList.add('fa-check');
-                    statusIcon.style.color = '#28a745'; 
-                } else if (type === 'Error') {
-                    statusIcon.classList.add('fa-times');
-                    statusIcon.style.color = '#dc3545'; 
-                } else if (type === 'Warning') {
-                    statusIcon.classList.add('fa-exclamation-triangle');
-                    statusIcon.style.color = '#ffc107'; 
-                } else {
-                    statusIcon.classList.add('fa-check'); 
-                    statusIcon.style.color = '#28a745';
-                }
-            }
+        //     if (statusModalTitle) {
+        //         statusModalTitle.textContent = type;
+        //     }
+        //     if (statusModalMessage) {
+        //         statusModalMessage.textContent = message;
+        //     }
 
 
-            setTimeout(function () {
-                var statusModalElement = document.getElementById('statusModal');
-                var statusModal = new bootstrap.Modal(statusModalElement);
-                statusModal.show();
-            }, 100);
-        }
-       
-        const deleteModalButtons = document.querySelectorAll("#delete-modal-button");
+        //     const statusIcon = document.querySelector('#statusModal .status-icon i');
+        //     if (statusIcon) {
+        //         statusIcon.classList.remove('fa-check', 'fa-times', 'fa-exclamation-triangle');
+        //         if (type === 'Success') {
+        //             statusIcon.classList.add('fa-check');
+        //             statusIcon.style.color = '#28a745'; 
+        //         } else if (type === 'Error') {
+        //             statusIcon.classList.add('fa-times');
+        //             statusIcon.style.color = '#dc3545'; 
+        //         } else if (type === 'Warning') {
+        //             statusIcon.classList.add('fa-exclamation-triangle');
+        //             statusIcon.style.color = '#ffc107'; 
+        //         } else {
+        //             statusIcon.classList.add('fa-check'); 
+        //             statusIcon.style.color = '#28a745';
+        //         }
+        //     }
+
+
+        //     setTimeout(function () {
+        //         var statusModalElement = document.getElementById('statusModal');
+        //         var statusModal = new bootstrap.Modal(statusModalElement);
+        //         statusModal.show();
+        //     }, 100);
+        // }
+
+        const deleteModalButtons = document.querySelectorAll("[data-bs-target='#@deleteBookConfirmationModel.Id']");
         
         let currentBookIdToDelete = null;
         let currentCoverUrlToDelete = null;
@@ -494,12 +485,16 @@
         });
 
 
-        const deleteBookButton = document.getElementById("delete-book-button");
-        if (deleteBookButton) {
-            
-            deleteBookButton.addEventListener("click", async function () {
+        const confirmDeleteBookButton = document.getElementById("@deleteBookConfirmationModel.ConfirmButtonId"); 
+        if (confirmDeleteBookButton) {
+            confirmDeleteBookButton.addEventListener("click", async function () {
+                var deleteModalElement = document.getElementById('@deleteBookConfirmationModel.Id'); 
+                var deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
+                if (deleteModal) {
+                    deleteModal.hide(); // Hide the confirmation modal
+                }
+
                 try {
-                    
                     const response = await fetch("/Book/Delete", {
                         method: "POST",
                         headers: {
@@ -509,11 +504,9 @@
                     });
 
                     if (response.ok) {
-                        
                         const result = await response.json();
-                        showStatusModal(result.message || "Book deleted successfully!", 'Success');
+                        toastr.success(result.message || "Book deleted successfully!");
 
-                       
                         if (currentCoverUrlToDelete) {
                             await deleteCoverUrl(currentCoverUrlToDelete);
                         }
@@ -526,12 +519,11 @@
                         }, 500);
 
                     } else {
-
                         const errorResult = await response.json();
-                        showStatusModal(`Error: ${errorResult.message || "Failed to delete book."}`, 'Error');
+                        toastr.error(`Error: ${errorResult.message || "Failed to delete book."}`);
                     }
                 } catch (error) {
-                    showStatusModal(`Error: An unexpected error occurred while deleting book data. Please try again.`, 'Error');
+                    toastr.error(`Error: An unexpected error occurred while deleting book data. Please try again.`);
                     console.error("Fetch error:", error);
                 }
             });
