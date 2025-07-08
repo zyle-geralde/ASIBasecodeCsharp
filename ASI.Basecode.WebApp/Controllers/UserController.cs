@@ -127,7 +127,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 }
                 else
                 {
-                    TempData["SuccessMessage"] = "User deleted successfully.";
+                    TempData["SuccessMessage"] = "User deleted successfully!";
                 }
             }
             catch (Exception e)
@@ -211,8 +211,8 @@ namespace ASI.Basecode.WebApp.Controllers
             try
             {
                 await _userService.UpdateUser(model);
-                ViewData["SaveSuccess"] = true;
-                return View("~/Views/Users/EditUser.cshtml", model);
+                TempData["SuccessMessage"] = "User updated successfully!";
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {

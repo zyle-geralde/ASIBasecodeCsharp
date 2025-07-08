@@ -3,12 +3,9 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ASI.Basecode.Services.Services
@@ -17,7 +14,6 @@ namespace ASI.Basecode.Services.Services
     {
         private readonly IReviewRepository _reviewRepository;
         private readonly IBookRepository _bookRepository;
-
         private readonly IMapper _mapper;
 
         public ReviewService(IReviewRepository reviewRepository, IBookRepository bookRepository, IMapper mapper)
@@ -34,21 +30,20 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ArgumentNullException(nameof(reviewModel), "Review cannot be null");
             }
-
-            var review = new Review
+            try
             {
-                ReviewId = Guid.NewGuid().ToString(),
-                BookId = reviewModel.BookId,
-                Rating = reviewModel.Rating,
-                Comment = reviewModel.Comment,
-                Likes = reviewModel.Likes,
-                UserId = reviewModel.UserId,
-                UploadDate = DateTime.UtcNow,
-                UpdatedDate = DateTime.UtcNow
-            };
+                var review = _mapper.Map<Review>(reviewModel);
+                review.ReviewId = Guid.NewGuid().ToString();
+                review.UploadDate = DateTime.UtcNow;
+                review.UpdatedDate = DateTime.UtcNow;
+                await _reviewRepository.AddReview(review);
+                await _bookRepository.calculateAverageRating(review.BookId);
+            }
 
-            await _reviewRepository.AddReview(review);
-            await _bookRepository.calculateAverageRating(review.BookId);
+            catch(Exception e)
+            {
+                throw;
+            }
         }
 
         public async Task<List<Review>> GetAllReviews()
@@ -73,40 +68,50 @@ namespace ASI.Basecode.Services.Services
                 throw new ArgumentException("No review id provided", nameof(reviewId));
             }
 
-            var existingReview = await _reviewRepository.GetReviewById(reviewId);
-            if (existingReview == null)
+            try
             {
-                return false;
+                var existingReview = await _reviewRepository.GetReviewById(reviewId);
+                if (existingReview == null)
+                {
+                    return false;
+                }
+                await _reviewRepository.DeleteReview(reviewId);
+                await _bookRepository.calculateAverageRating(existingReview.BookId);
+                return true;
+
             }
-
-            await _reviewRepository.DeleteReview(reviewId);
-            await _bookRepository.calculateAverageRating(existingReview.BookId);
-            return true;
-
-
+            catch(Exception e)
+            {
+                throw;
+            }
         }
 
         public async Task<bool> UpdateReview(ReviewViewModel reviewModel)
         {
             if (reviewModel == null)
                 throw new ArgumentNullException(nameof(reviewModel));
+            try
+            {
+                var existing = await _reviewRepository.GetReviewById(reviewModel.ReviewId);
+                if (existing == null)
+                {
+                    return false;
+                }
 
-            var existing = await _reviewRepository.GetReviewById(reviewModel.ReviewId);
-            if (existing == null)
-                return false;
+                _mapper.Map(reviewModel, existing);
 
-            _mapper.Map(reviewModel, existing);
+                existing.UpdatedDate = DateTime.UtcNow;
 
-            //existing.Rating = reviewModel.Rating;
-            //existing.Comment = reviewModel.Comment;
-            //existing.Likes = reviewModel.Likes;
-            //existing.ReviewImage = reviewModel.ReviewImage;
-            existing.UpdatedDate = DateTime.UtcNow;
+                await _reviewRepository.UpdateReview(existing);
+                await _bookRepository.calculateAverageRating(reviewModel.BookId);
 
-            await _reviewRepository.UpdateReview(existing);
-            await _bookRepository.calculateAverageRating(reviewModel.BookId);
+                return true;
 
-            return true;
+            }
+            catch(Exception e)
+            {
+                throw;
+            }
         }
 
         public async Task<List<Review>> GetReviewsByBookId(string bookId)

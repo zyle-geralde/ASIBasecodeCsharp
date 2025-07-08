@@ -1,13 +1,10 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
-using ASI.Basecode.Resources.Messages;
 using ASI.Basecode.Services.Interfaces;
-using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.WebApp.AccessControl;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -48,8 +45,9 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [Authorize]// Bypass authorization. No need to Log In 
         public async Task<IActionResult> AddBook()
         {
-            
 
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             // This will look for a view at /Views/Books/AddBook.cshtml
             return View("~/Views/Books/AddBook.cshtml");
         }
@@ -110,6 +108,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             int? page = 1
             )
         {
+                  bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             const int PageSize = 10;
             int pageIndex = page.GetValueOrDefault(1);
             string authorId = await _authorRepository.GetAuthorByName(author != null ? author : "");
@@ -161,20 +161,6 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             //List<Book> books = await _bookService.GetAllBooks();
             return View("~/Views/Books/ListBook.cshtml", books);
         }
-
-        //[HttpGet]
-        //[Route("Book/ListBook")]
-        //[Authorize]
-        //public async Task<IActionResult> ListBook()
-        //{
-        //    //For Routing
-        //    bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
-        //    if (!checkAdminAccess) return RedirectToAction("Index", "Home");
-
-        //    List<BookViewModel> books = await _bookService.GetAllBooks();
-
-        //    return View("~/Views/Books/ListBook.cshtml", books);
-        //}
 
         [HttpGet]
         [Route("Book/SearchResults")]
@@ -252,7 +238,6 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
 
             PaginatedList<BookViewModel> books = await _bookService.GetBooks(queryParams);
-            //List<Book> books = await _bookService.GetAllBooks();
             return View("~/Views/Books/BookSearchResults.cshtml", books);
             }
 
