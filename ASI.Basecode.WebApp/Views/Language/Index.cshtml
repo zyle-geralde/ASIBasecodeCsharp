@@ -49,6 +49,17 @@
         ConfirmButtonId = "edit-button-submit",
         ConfirmButtonClass = "add-language-btn"
     };
+
+    var editCancelConfirmationModal = new ConfirmationModalModel
+    {
+        Id = "editLanguageCancelModal",
+        Title = "Discard Changes?",
+        Message = "You have unsaved changes! Are you sure you want to discard them?",
+        CancelButtonText = "Keep Editing",
+        ConfirmButtonText = "Discard",
+        ConfirmButtonId = "confirmCancelEditBtn",
+        ConfirmButtonClass = "btn-discard"
+    };
 }
 
 
@@ -204,6 +215,7 @@
 </div>
 
 <partial name="_ConfirmationModal" model="deleteLanguageModal" />
+<partial name="_ConfirmationModal" model="editCancelConfirmationModal" />
 <partial name="_Notification" />
 
 <div class="modal fade" id="addLanguageModal" tabindex="-1" aria-labelledby="addLanguageLabel" aria-hidden="true">
@@ -236,16 +248,17 @@
         <div class="modal-content add-language-modal-content p-4">
             <div class="modal-header border-0 pb-0 mb-3">
                 <h5 class="modal-title add-language-title" id="editLanguageLabel">Edit Language</h5>
-                <button type="button" class="btn-close add-language-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close add-language-close" id="editCloseBtn" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-2">
                 <div id="editLanguageForm">
+                    <input type="hidden" id="originalLanguageName" />
                     <div class="mb-3">
                         <label for="editLanguage" class="form-label">Language</label>
                         <input type="text" class="form-control" id="editLanguage" />
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button type="button" class="btn add-language-btn" id="edit-button-submit">SAVE CHANGES</button>
+                        <button type="button" class="btn add-language-btn disabled-btn" id="edit-button-submit" disabled>SAVE CHANGES</button>
                     </div>
                 </div>
             </div>
@@ -258,7 +271,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
-        $(document).ready(function() {
+                $(document).ready(function() {
             toastr.options = {
                 "closeButton": true,
                 "debug": false,
@@ -311,7 +324,7 @@
             // Delete Language
             const deleteButtons = document.querySelectorAll(".delete-language-btn");
             let languageIdToDelete = null;
-            
+
             deleteButtons.forEach(button => {
                 button.addEventListener("click", function() {
                     languageIdToDelete = this.getAttribute("data-id");
@@ -320,7 +333,7 @@
 
             $("#delete-button-submit").on("click", function(e) {
                 e.preventDefault();
-                
+
                 $.ajax({
                     url: '/Language/Delete',
                     type: 'POST',
@@ -332,8 +345,6 @@
                         setTimeout(function() {
                             window.location.href = '/Language/Index';
                         }, 1500);
-                        
-                        
                     },
                     error: function(xhr) {
                         try {
@@ -346,28 +357,97 @@
                 });
             });
 
-            // Edit Language
+            // Edit Language - Updated with change tracking and confirmation
             const editButtons = document.querySelectorAll(".edit-language-btn");
             let languageIdToEdit = null;
-            
+            let hasLanguageChanges = false;
+            let originalLanguageName = "";
+
+            // Function to check for changes in edit form
+            function checkForLanguageChanges() {
+                const currentValue = $("#editLanguage").val();
+                hasLanguageChanges = currentValue !== originalLanguageName;
+
+                // Enable or disable save button based on changes
+                if (hasLanguageChanges) {
+                    $("#edit-button-submit").prop('disabled', false);
+                    $("#edit-button-submit").removeClass('disabled-btn');
+                } else {
+                    $("#edit-button-submit").prop('disabled', true);
+                    $("#edit-button-submit").addClass('disabled-btn');
+                }
+            }
+
+            // Initialize edit modal
             editButtons.forEach(button => {
                 button.addEventListener("click", function() {
                     languageIdToEdit = this.getAttribute("data-id");
-                    const languageName = this.getAttribute("data-name");
-                    $("#editLanguage").val(languageName);
+                    originalLanguageName = this.getAttribute("data-name");
+
+                    // Store original value and set current value
+                    $("#originalLanguageName").val(originalLanguageName);
+                    $("#editLanguage").val(originalLanguageName);
+
+                    // Initial check for changes (should be disabled at start)
+                    hasLanguageChanges = false;
+                    $("#edit-button-submit").prop('disabled', true);
+                    $("#edit-button-submit").addClass('disabled-btn');
                 });
             });
 
+            // Track changes in the edit language field
+            $("#editLanguage").on('input', function() {
+                checkForLanguageChanges();
+            });
+
+            // Handle close button with confirmation if there are changes
+            $("#editCloseBtn").on('click', function() {
+                if (hasLanguageChanges) {
+                    // First hide the edit modal
+                    $('#editLanguageModal').modal('hide');
+
+                    // Then show the confirmation modal after a brief delay
+                    setTimeout(function() {
+                        $('#editLanguageCancelModal').modal('show');
+                    }, 300);
+                } else {
+                    // Close the edit modal directly if no changes
+                    $('#editLanguageModal').modal('hide');
+                }
+            });
+
+            // Handle "Discard" button in confirmation modal
+            $("#confirmCancelEditBtn").on('click', function() {
+                // Just hide the confirmation modal
+                $('#editLanguageCancelModal').modal('hide');
+            });
+
+            // Handle "Keep Editing" button in confirmation modal
+            $(document).on('click', '#editLanguageCancelModal .btn-secondary', function() {
+                // Hide the confirmation modal first
+                $('#editLanguageCancelModal').modal('hide');
+
+                // Show edit modal again with a brief delay
+                setTimeout(function() {
+                    $('#editLanguageModal').modal('show');
+                }, 300);
+            });
+
+            // Submit edit changes
             $("#edit-button-submit").on("click", function(e) {
                 e.preventDefault();
-                
+
+                if (!hasLanguageChanges) {
+                    return; // Do nothing if no changes
+                }
+
                 $.ajax({
                     url: '/Language/Edit',
                     type: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({ 
-                        LanguageId: languageIdToEdit, 
-                        LanguageName: $("#editLanguage").val() 
+                    data: JSON.stringify({
+                        LanguageId: languageIdToEdit,
+                        LanguageName: $("#editLanguage").val()
                     }),
                     success: function() {
                         $('#editLanguageModal').modal('hide');
@@ -387,10 +467,6 @@
                 });
             });
 
-
-
-
-            //--------------------------FOR SORTING-----------------------------
             // Sort popup functionality
             const sortButton = document.getElementById('sortButton');
             const sortPopup = document.getElementById('sortPopup');
@@ -422,7 +498,6 @@
             });
 
             // Apply button
-            // Apply button
             applySortButton.addEventListener('click', function () {
                 // Get selected values
                 const sortOrderValue = document.querySelector('input[name="popupSortOrder"]:checked').value;
@@ -430,9 +505,7 @@
 
                 // Update hidden form fields
                 document.getElementById('sortOrderField').value = sortOrderValue;
-
                 document.getElementById('sortDescendingField').value = sortDirectionValue;
-
 
                 // Find the main form and submit it
                 document.querySelector('#searchFilterForm').submit();

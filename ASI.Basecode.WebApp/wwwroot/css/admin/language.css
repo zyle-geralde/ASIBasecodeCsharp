@@ -232,6 +232,11 @@ input[type="text"]
         align-content: center;
     }
 
+    .table-scroll-container td {
+        color: #374151;
+        font-size: 14px;
+    }
+
 .table-responsive {
     overflow: visible !important; /* Override Bootstrap's overflow behavior */
 }

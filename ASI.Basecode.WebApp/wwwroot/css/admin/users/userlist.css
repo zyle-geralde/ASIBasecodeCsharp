@@ -115,13 +115,14 @@ input[type="text"] {
     table-layout: fixed;
 }
 
-.user-table td 
-{
-    border-bottom: 1px solid #e0e0e0;
-    padding: 12px 15px;
-    height: 53px;
-    vertical-align: middle;
-}
+    .user-table td {
+        border-bottom: 1px solid #e0e0e0;
+        padding: 12px 15px;
+        height: 53px;
+        vertical-align: middle;
+        color: #374151;
+        font-size: 14px;
+    }
 
     .user-table th {
         font-weight: 600;
