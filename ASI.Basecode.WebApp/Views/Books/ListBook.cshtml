@@ -366,7 +366,11 @@
 
 </div>
 
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+</div>
 <partial name="_ConfirmationModal" model="deleteBookConfirmationModel" />
+
 
 
 
@@ -375,7 +379,8 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
-        
+        import { showLoadingOverlay, hideLoadingOverlay } from "/js/common/_loadingSpinner.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyA4CTMSbgGQN_yLn9lEZlswbZ_2A2Xhl0k",
             authDomain: "basabuzz-ca8fe.firebaseapp.com",
@@ -490,8 +495,12 @@
             confirmDeleteBookButton.addEventListener("click", async function () {
                 var deleteModalElement = document.getElementById('@deleteBookConfirmationModel.Id'); 
                 var deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
+
+                showLoadingOverlay(); 
+                confirmDeleteBookButton.disabled = true;
+
                 if (deleteModal) {
-                    deleteModal.hide(); // Hide the confirmation modal
+                    deleteModal.hide(); 
                 }
 
                 try {
@@ -525,6 +534,9 @@
                 } catch (error) {
                     toastr.error(`Error: An unexpected error occurred while deleting book data. Please try again.`);
                     console.error("Fetch error:", error);
+                } finally{
+                    hideLoadingOverlay();
+                    confirmDeleteBookButton.disabled = false;
                 }
             });
         }

@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/books/bookmaster.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin/books/bookmasterlist.css" asp-append-version="true" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pagination.css" asp-append-version="true" />
@@ -208,6 +209,8 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script type="module">
+        import { showLoadingOverlay, hideLoadingOverlay } from "/js/common/_loadingSpinner.js";
+
         //  Firebase configuration 
         const firebaseConfig = {
             apiKey: "AIzaSyA4CTMSbgGQN_yLn9lEZlswbZ_2A2Xhl0k",
@@ -287,14 +290,7 @@
             }
         }
 
-        // Loading Overlay Functions
-        function showLoadingOverlay() {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-        }
-
-        function hideLoadingOverlay() {
-            document.getElementById('loadingOverlay').style.display = 'none';
-        }
+      
 
         // --- DELETE AUTHOR MODAL LOGIC ---
         $('.delete-author-btn').on('click', function () {
