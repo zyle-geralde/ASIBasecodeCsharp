@@ -208,7 +208,7 @@ namespace ASI.Basecode.Services.Services
                 user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = true;
                 user.OtpCode = null;
-                user.Role = "User";
+                user.Role = model.Role;
                 user.OtpExpirationDate = null;
 
                 await _repository.AddUser(user);
@@ -223,7 +223,7 @@ namespace ASI.Basecode.Services.Services
                     Gender = null,
                     BirthDate = null,
                     Location = null,
-                    Role = "User", // Default role is User
+                    Role = model.Role,
                     AboutMe = string.Empty
                 };
                 await _personProfileService.AddPersonProfile(profile);

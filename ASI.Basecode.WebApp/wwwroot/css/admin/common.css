@@ -250,16 +250,22 @@ label
 /*------------------------------ Search Field -----------------------------*/
 .search-filter-container 
 {
-    display: flex !important;
+    /* display: flex !important;
     gap: 10px !important;
     margin-bottom: 24px !important;
     width: 100% !important;
     justify-content: space-evenly !important;
-    align-items: center !important;
+    align-items: center !important;*/
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
 }
 
 
-.search-field 
+/*.search-field 
 {
     flex-grow: 1 !important;
     padding: 8px 12px !important;
@@ -289,8 +295,53 @@ label
     transform: translateY(-50%) !important;
     color: #6c757d !important;
     pointer-events: none !important;
+}*/
+
+.search-container
+{
+    flex-grow: 1;
+    position: relative;
 }
 
+    .search-container i 
+    {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+
+    .search-container input 
+    {
+        padding-left: 40px;
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        height: 42px;
+    }
+
+/*---------------- Filter and Sort buttons space between -------------------------*/
+.action-buttons 
+{
+    position: relative;
+    display: flex;
+    gap: 8px; 
+}
+
+/*.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+    .action-buttons .btn {
+        border-radius: 8px;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }*/
+ 
 /*------------------------------ Sort and Filter Button -----------------------------*/
 
 .btn-outline-secondary 
@@ -299,6 +350,9 @@ label
     color: #647d7f;
     border-color: gray;
     border-color: #d0d0d1;
+    border-radius: 8px;
+padding: 8px 16px;
+font-weight: 500; 
 }
 
     .btn-outline-secondary:hover 
@@ -306,6 +360,17 @@ label
         background-color: #a7b8b9;
         border-color: #a7b8b9;
     }
+
+/*.action-buttons .btn-outline-secondary {
+    display: flex;
+    align-items: center; 
+    gap: 8px; 
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}*/
 
 /*------------------------------ Header Section Pages (Add, Edit, List) and Header Section Button -----------------------------*/
 .header-section 
@@ -347,7 +412,7 @@ label
 {
     position: relative;
     width: 100%;
-    /*z-index: 1000;*/
+    z-index: 90;
 }
 
 .custom-select-btn 
@@ -410,7 +475,7 @@ label
     border: 1.5px solid #e2e8f0;
     border-radius: 8px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    z-index: 1050;
+    z-index: 90;
     max-height: 240px;
     overflow-y: auto;
     display: none;
@@ -549,7 +614,7 @@ label
         }
 
 /* dropdown invalid state*/
-.is-invalid-select 
+/*.is-invalid-select 
 {
     border-color: #ef4444 !important;
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
@@ -558,7 +623,7 @@ label
     .is-invalid-select + .custom-dropdown 
     {
         border-color: #ef4444;
-    }
+    }*/
 
 .custom-multi-select 
 {
@@ -567,7 +632,7 @@ label
 
 .custom-dropdown 
 {
-    z-index: 9999 !important;
+    z-index: 90 !important;
 }
 
 .dropdown-empty 
@@ -579,16 +644,16 @@ label
 }
 
           
-.table-container 
+/*.table-container 
 {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0; 
-}
+}*/
 
 /*------------------Sort Button----------------------*/
-.sort-btn 
+/*.sort-btn 
 {
     padding: 8px 15px;
     border: 1px solid #ddd;
@@ -604,17 +669,17 @@ label
     .sort-btn:hover 
     {
         background-color: #f5f5f5;
-    }
+    }*/
 
 /* Sort Popup Styling */
 .sort-popup 
 {
     position: absolute;
-    z-index: 1000;
+    z-index: 90;
     width: 280px;
     border-radius: 8px;
     border: 1px solid #e0e0e0;
-    right: 0; /* Align to the right side of its positioned parent */
+    right: 0; 
 }
 
     .sort-popup .card-header 
@@ -662,6 +727,8 @@ label
             border-color: rgb(255, 115, 90);
         }
 
+
+/*----------------------------- Table Header ---------------------------------------*/
 .data-table {
     width: 100%;
     border-collapse: collapse;
@@ -681,6 +748,11 @@ label
         text-transform: uppercase;
     }
 
+    .data-table td {
+        color: #374151;
+        font-size: 14px;
+    }
+
 
 .data-table thead th {
     position: sticky;
@@ -691,3 +763,298 @@ label
     height: 53px;
     align-content: center;
 }
+
+
+/*--------------- Filter and Sort Design --------------------*/
+.filter-popup,
+.book-sort-popup 
+{
+    position: absolute;
+    top: 270px;
+    right: 20px;
+    width: 350px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    z-index: 90;
+    display: none;
+    margin-top: 5px;
+
+}
+
+.book-sort-popup 
+{
+    width: 280px;
+}
+
+    .filter-popup.show,
+    .book-sort-popup.show 
+    {
+        display: block;
+    }
+
+    /* header for the popup */
+    .filter-popup .popup-header,
+    .book-sort-popup .popup-header 
+    {
+        border-radius: 8px 8px 0 0;
+        background-color: rgb(100, 125, 127) !important;
+        height: 45px;
+        padding: 10px 15px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .filter-popup .popup-header h5,
+        .book-sort-popup .popup-header h5 
+        {
+            margin: 0;
+            font-size: 1rem;
+            color: white;
+        }
+
+    .filter-popup .popup-close,
+    .book-sort-popup .popup-close 
+    {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        line-height: 1;
+    }
+
+    /* contents */
+    .filter-popup form,
+    .book-sort-popup form 
+    {
+        padding: 15px;
+    }
+
+    /* forms */
+    .filter-popup .form-label,
+    .book-sort-popup .form-label 
+    {
+        color: #465b73;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .filter-popup .form-control,
+    .book-sort-popup .form-control,
+    .filter-popup .form-select,
+    .book-sort-popup .form-select 
+    {
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        padding: 8px 12px;
+    }
+
+    .filter-popup .form-check-input:checked,
+    .book-sort-popup .form-check-input:checked 
+    {
+        background-color: #465b73;
+        border-color: #465b73;
+    }
+
+    /* footer popup */
+    .filter-popup .popup-footer,
+    .book-sort-popup .popup-footer 
+    {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 15px;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    .filter-popup .btn-outline-secondary,
+    .book-sort-popup .btn-outline-secondary 
+    {
+        background-color: #fff;
+        color: dimgray;
+        font-size: 12px;
+        border-color: rgba(255, 115, 90, 0.5);
+    }
+
+        .filter-popup .btn-outline-secondary:hover,
+        .book-sort-popup .btn-outline-secondary:hover 
+        {
+            background-color: rgba(255, 115, 90, 0.3);
+            border-color: rgb(255, 115, 90);
+        }
+
+    .filter-popup .btn-primary,
+    .book-sort-popup .btn-primary 
+    {
+        background-color: rgba(100, 125, 127, 0.4);
+        font-size: 12px;
+        border-color: rgba(100, 125, 127, 0.8);
+        color: white;
+    }
+
+        .filter-popup .btn-primary:hover,
+        .book-sort-popup .btn-primary:hover 
+        {
+            background-color: rgba(100, 125, 127, 0.8);
+            border-color: rgb(100, 125, 127);
+        }
+
+/* specific filter popup designssss */
+.filter-popup .date-range 
+{
+    display: flex;
+    gap: 10px;
+}
+
+.filter-popup .genre-grid 
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.filter-popup .form-check 
+{
+    margin-bottom: 5px;
+}
+
+/* active button state */
+.filter-btn.active,
+.sort-btn.active 
+{
+    background-color: rgba(100, 125, 127, 0.1);
+    border-color: rgb(100, 125, 127);
+}
+
+
+/* --------------------- Loading Spinner ----------------------*/
+.loading-overlay
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-spinner 
+{
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin 
+{
+    0% 
+    {
+        transform: rotate(0deg);
+    }
+
+    100% 
+    {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------------- Discard changes ---------------- */
+.btn-discard {
+    background-color: #ff5252;
+    border: none;
+    color: white;
+    font-weight: 500;
+}
+
+    .btn-discard:hover {
+        background-color: #ff3939;
+        color: whitesmoke;
+    }
+
+.discard-modal .modal-content {
+    background-color: #f9f9f7;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.discard-modal .modal-header {
+    border: none;
+    padding-bottom: 0;
+    padding: 1rem 1.2rem 0.8rem;
+    background-color: #F2EDE5;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.discard-modal .modal-body {
+    padding: 20px 30px 30px;
+}
+
+.discard-modal .modal-title {
+    font-weight: 600;
+    color: #333;
+}
+
+.discard-modal .btn-close {
+    background-size: 0.8em;
+    opacity: 0.7;
+}
+
+.discard-modal p {
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 25px;
+    font-weight: 400;
+}
+
+.discard-modal .btn-keep {
+    background-color: #e9e9e7;
+    border: none;
+    color: #555;
+    font-weight: 500;
+    padding: 10px 25px;
+    border-radius: 8px;
+}
+
+.discard-modal .btn-discard {
+    background-color: #ff5252;
+    border: none;
+    color: white;
+    font-weight: 500;
+    padding: 10px 25px;
+    border-radius: 8px;
+}
+
+.discard-modal .btn-keep:hover {
+    background-color: #dededd;
+}
+
+.discard-modal .btn-discard:hover {
+    background-color: #ff3939;
+}
+
+.disabled-btn {
+    opacity: 0.65;
+    cursor: not-allowed;
+    background-color: #a0b4b0 !important;
+    border-color: #a0b4b0 !important;
+    box-shadow: none !important;
+}
+
+    .disabled-btn:hover {
+        background-color: #a0b4b0 !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }

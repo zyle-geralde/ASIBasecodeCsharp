@@ -1,8 +1,6 @@
 ﻿@using System.Security.Claims
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 @model ASI.Basecode.Services.ServiceModels.BookViewModel;
+@inject ASI.Basecode.WebApp.AccessControl.IAccessControlInterface AccessControl
 @{
     var current_author_details = ViewBag.AuthorDetails as ASI.Basecode.Services.ServiceModels.AuthorViewModel;
     string authorImage = "";
@@ -18,12 +16,38 @@
 }
 @{
     ViewData["Title"] = "BookDetails";
-    Layout = "_AdminSidebarLayout";
     
-    // Explicitly check if the user has already reviewed this book
+    var isAdmin = await AccessControl.CheckAdminAccess();
+    
+    @if (isAdmin)
+    {
+        Layout = "_AdminSidebarLayout";
+        <link rel="stylesheet" href="~/css/admin/adminsidebar.css" asp-append-version="true" />
+    
+        <style>
+            .container
+            {
+                margin-top: 70px;
+            }
+        </style>
+    }
+    else
+    {
+        <style>
+            .container
+            {
+                margin-top: 70px;
+            }
+        </style>
+    }
+
     var currentUserId = User.Identity.IsAuthenticated ? User.FindFirstValue(ClaimTypes.NameIdentifier) : null;
     bool userHasReviewed = Model?.Reviews?.Any(r => r.UserId == currentUserId) ?? false;
 }
+
+
+
+
 
 @section styles {
     <link rel="stylesheet" href="~/css/admin/book-details.css" asp-append-version="true" />
