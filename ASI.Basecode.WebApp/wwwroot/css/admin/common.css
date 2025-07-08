@@ -410,7 +410,7 @@ label
     border: 1.5px solid #e2e8f0;
     border-radius: 8px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    z-index: 1050;
+    z-index: 90;
     max-height: 240px;
     overflow-y: auto;
     display: none;
@@ -567,7 +567,7 @@ label
 
 .custom-dropdown 
 {
-    z-index: 9999 !important;
+    z-index: 90 !important;
 }
 
 .dropdown-empty 
