@@ -181,6 +181,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 model.OtpCode = otpCode;
                 model.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
 
+                model.Role = "User";
                 // Store model in memory with email as key
                 _pendingRegistrations[model.Email] = model;
 
@@ -263,6 +264,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 model.OtpCode = otpCode;
                 model.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
 
+                model.Role = "Admin";
                 // Store model in memory with email as key
                 _pendingRegistrations[model.Email] = model;
 
@@ -331,7 +333,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 }
 
                 // Get role based on registration path (could be stored in the UserViewModel during registration)
-                string role = userModel.Email.EndsWith("admin") ? "Admin" : "User";
+                //string role = userModel.Email.EndsWith("admin") ? "Admin" : "User";
+                string role = userModel.Role;
 
                 // Create verified user directly
                 await _userService.CreateVerifiedUser(userModel, role);
