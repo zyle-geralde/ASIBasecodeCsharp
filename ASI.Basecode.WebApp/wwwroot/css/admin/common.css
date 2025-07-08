@@ -681,6 +681,11 @@ label
         text-transform: uppercase;
     }
 
+    .data-table td {
+        color: #374151;
+        font-size: 14px;
+    }
+
 
 .data-table thead th {
     position: sticky;
