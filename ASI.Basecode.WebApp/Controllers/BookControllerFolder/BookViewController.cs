@@ -108,7 +108,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             int? page = 1
             )
         {
-                  bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             const int PageSize = 10;
             int pageIndex = page.GetValueOrDefault(1);
