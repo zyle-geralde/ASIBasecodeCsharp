@@ -26,7 +26,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Index(string? searchTerm, string? role, string? sortOrder, bool sortDescending = false, int? page = 1)
+        public async Task<IActionResult> Index(string? searchTerm, string? role, string? sortOrder, bool sortDescending = true, int? page = 1)
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
@@ -41,7 +41,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 SearchTerm = searchTerm,
                 Role = role,
-                SortOrder = sortOrder ?? "id",
+                SortOrder = sortOrder ?? "createdtime",
                 SortDescending = sortDescending,
                 PageIndex = pageIndex,
                 PageSize = PageSize
@@ -54,8 +54,9 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return View("~/Views/Users/Index.cshtml", users);
         }
+        [HttpGet]
         [Authorize] 
-        public async Task<IActionResult> AddUser()
+        public async Task<IActionResult> AddUser(string role="User")
         {
 
 
@@ -65,7 +66,11 @@ namespace ASI.Basecode.WebApp.Controllers
                 ViewData["ShowSuccessModal"] = null;
                 ViewData["SaveSuccess"] = null;
             }
-            return View("~/Views/Users/AddUser.cshtml");
+            var vm = new UserViewModel
+            {
+                Role = role
+            };
+            return View("~/Views/Users/AddUser.cshtml", vm);
         }
 
         [HttpPost]
@@ -91,7 +96,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Use ViewData instead of TempData for immediate display
                 TempData["ShowSuccessModal"] = true;
                 TempData["SuccessMessage"] = "User added successfully!";
-                return RedirectToAction("AddUser");
+                return RedirectToAction("Index");
             }
             catch (InvalidDataException ex)
             {

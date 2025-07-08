@@ -10,8 +10,8 @@ namespace ASI.Basecode.Data.Interfaces
     {
         public string? SearchTerm { get; set; }
         public string? Role { get; set; }
-        public string SortOrder { get; set; } = "id";
-        public bool SortDescending { get; set; } = false;
+        public string SortOrder { get; set; } = "createdtime";
+        public bool SortDescending { get; set; } = true;
         public int PageIndex { get; set; } = 1;
         public int PageSize { get; set; } = 10;
     }

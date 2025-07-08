@@ -42,11 +42,10 @@ namespace ASI.Basecode.Data.Repositories
                     (b.UserName != null && b.UserName.Contains(term)) || 
                     (b.Email != null && b.Email.Contains(term)));
             }
-            //if (!string.IsNullOrEmpty(queryParams.Role))
-            //{
-            //    query = query.Where(u => u.Role == queryParams.Role);
-            //}
-            // Apply sorting if provided
+            if (!string.IsNullOrEmpty(queryParams.Role))
+            {
+                query = query.Where(u => u.Role == queryParams.Role);
+            }
             if (!string.IsNullOrEmpty(queryParams.SortOrder))
             {
                 bool desc = queryParams.SortDescending;
@@ -69,7 +68,7 @@ namespace ASI.Basecode.Data.Repositories
                            : query.OrderBy(b => b.Email);
                         break;
                     default:
-                        query = query.OrderBy(u => u.Id); // Default sort by ID
+                        query = query.OrderBy(u => u.CreatedTime);
                         break;
                 }
             }
