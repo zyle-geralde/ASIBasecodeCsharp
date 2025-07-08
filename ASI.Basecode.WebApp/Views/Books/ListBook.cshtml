@@ -271,10 +271,6 @@
            value="@language.LanguageId"
            id="lang_@language.LanguageId"
            @(currentLanguage == language.LanguageId ? "checked" : "") />
-
-
-
-
             <label class="form-check-label" for="lang_@language.LanguageId">
               @language.LanguageName
             </label>
@@ -285,8 +281,6 @@
   </fieldset>
 </form>
 
-    
-
     <p class="no-search-results-message" style="display: none;">No books found matching your search criteria.</p> 
 
     @if (Model != null && Model.Any())
@@ -296,7 +290,7 @@
             <thead>
                 <tr>
                     <th>Cover</th>
-<th>Title</th>
+      <th>Title</th>
       <th>Subtitle</th>
       <th>Author</th>
       <th>Publication Date</th>
@@ -337,7 +331,7 @@
         }
         @string.Join(", ", names)
 
-      </td*@>  
+      </td*@  
       <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
                         <td>@book.Language</td>
                         @* <td>@book.NumberOfPages</td> *@
