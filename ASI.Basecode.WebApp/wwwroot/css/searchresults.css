@@ -190,10 +190,10 @@
     transition: all 0.2s;
 }
 
-.close-filter-btn:hover {
-    color: #0d6efd;
-    background-color: rgba(134, 168, 170, 0.3);
-}
+    .close-filter-btn:hover {
+        color: rgb(100, 125, 127);
+        background-color: rgb(100, 125, 127, 0.3);
+    }
 
 /* Enhanced Filter Container with dual color palette */
 .filter-container {
@@ -595,20 +595,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-color: rgba(210, 196, 158, 0.8);
 }
 
-.filter-actions .btn-primary {
-    background-color: rgba(134, 168, 170, 0.8);
-    border-color: rgba(134, 168, 170, 1);
-    color: white;
-    box-shadow: 0 4px 10px rgba(134, 168, 170, 0.4);
-    font-size: 14px;
-}
+    .filter-actions .btn-primary {
+        background-color: rgb(100, 125, 127, 0.9);
+        border-color: rgb(100, 125, 127);
+        color: white;
+        box-shadow: 0 4px 10px rgba(134, 168, 170, 0.4);
+        font-size: 14px;
+    }
 
-.filter-actions .btn-primary:hover {
-    background-color: rgba(134, 168, 170, 1);
-    border-color: rgba(134, 168, 170, 1);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(134, 168, 170, 0.5);
-}
+        .filter-actions .btn-primary:hover {
+            background-color: rgb(100, 125, 127);
+            border-color: rgb(100, 125, 127);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(134, 168, 170, 0.5);
+        }
 
 /* Animation for loading filter panel */
 @keyframes slideInRight {
