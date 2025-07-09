@@ -73,7 +73,7 @@
     <link rel="stylesheet" href="~/css/pagination.css" asp-append-version="true" />
 }
 
-<div class="users-container p-4">
+<div class="users-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="header-section">
             <h1>Languages</h1>
@@ -88,22 +88,26 @@
 
     <div class="card">
         <div class="card-body">
-            @*--------------------------------------For Searching sort and filter---------------------------------------------*@
-            <form asp-action="Index" asp-controller="Language" method="get" class="d-flex align-items-center mb-3" id="searchFilterForm">
-                <input type="text"
-                       name="searchTerm"
-                       value="@currentSearch"
-                       class="form-control me-2" style="font-weight: 300; color: #374151"
-                       placeholder="Search languages…" />
+            <div class="search-filter-container" style="height: 50px; align-items: stretch; margin-top: 10px; margin-bottom: 15px">
+                <form asp-action="Index" asp-controller="Language" method="get" class="d-flex align-items-center mb-3" id="searchFilterForm">
+                    <div class="search-container" style="margin-right: 10px">
+                        <i class="fas fa-search"></i>
+                        <input type="text"
+                               name="searchTerm"
+                               value="@currentSearch"
+                               class="book-master-form-input align-self-center" style="font-weight: 300; margin-right: 10px"
+                               placeholder="Search languages…" />
+                    </div>
 
-                <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
-                <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
-
-                <button type="submit" class="btn btn-primary">Apply</button>
-
-                <button type="button" id="sortButton" class="btn-sort">Sort By <i class="fas fa-caret-down"></i></button>
-
-            </form>
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">Apply</button>
+                        <button type="button" id="sortButton" class="btn btn-outline-secondary sort-btn"> <i class="fas fa-sort"></i> Sort</button>
+                    </div>
+                    <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
+                    <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
+                </form>
+            </div>
+           
             <div class="sort-popup card shadow" id="sortPopup" style="display: none;">
                 <div class="card-header bg-secondary text-white justify-center">
                     <h6 class="mb-0" style="margin-top: 6px;">Sort By:</h6>

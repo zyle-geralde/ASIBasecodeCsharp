@@ -105,7 +105,15 @@
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/books/listbook.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pagination.css" asp-append-version="true" />
+    <style>
+        input[type="text"] {
+            transform: translateY(-3px);
+        }
 
+            input[type="text"]:hover {
+                transform: translateY(-2px);
+            }
+    </style>
 }
 
 <div class="content-card p-4">
@@ -129,7 +137,7 @@
                    name="searchTerm"
                    value="@ViewData["CurrentSearch"]"
                    placeholder="Search title, subtitle, author…"
-                   class="form-control" id="globalSearchInput" />
+                   class="book-master-form-input align-self-center" id="globalSearchInput" style="font-weight: 300; margin-right: 10px" class="book-master-form-input align-self-center" style="font-weight: 300; margin-right: 10px" />
         </div>
 
         <!-- Filter and Sort Buttons -->
