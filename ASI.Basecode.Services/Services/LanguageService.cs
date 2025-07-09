@@ -140,6 +140,8 @@ namespace ASI.Basecode.Services.Services
 
                 existing_language.LanguageName = language.LanguageName;
                 existing_language.UpdatedDate = DateTime.Now;
+                existing_language.UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName");
+
 
                 await _languageRepository.EditLanguage();
             }

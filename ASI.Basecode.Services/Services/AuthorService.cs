@@ -126,6 +126,7 @@ namespace ASI.Basecode.Services.Services
                 existing_author.AuthorDescription = author.AuthorDescription;
                 existing_author.AuthorImageUrl = author.AuthorImageUrl;
                 existing_author.UpdatedDate = DateTime.Now;
+                existing_author.UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName");
 
                 await _authorRepository.EditAuthor();
             }
