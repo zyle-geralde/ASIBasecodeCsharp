@@ -3,9 +3,7 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
-using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +16,10 @@ namespace ASI.Basecode.Services.Services
     {
         private readonly IAuthorRepository _authorRepository;
         private readonly ILanguageRepository _languageRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly SessionManager _sessionManager;
-        public AuthorService(IAuthorRepository authorRepository,ILanguageRepository languageRepository, IHttpContextAccessor httpContextAccessor)
+        public AuthorService(IAuthorRepository authorRepository,ILanguageRepository languageRepository)
         {
             _authorRepository = authorRepository;
             _languageRepository = languageRepository;
-            _httpContextAccessor = httpContextAccessor;
-            this._sessionManager = new SessionManager(httpContextAccessor.HttpContext.Session);
         }
 
         public async Task AddAuthor(AuthorViewModel author)
@@ -55,8 +49,8 @@ namespace ASI.Basecode.Services.Services
                     AuthorName = author.AuthorName,
                     AuthorDescription = author.AuthorDescription,
                     AuthorImageUrl = author.AuthorImageUrl,
-                    CreatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName"),
-                    UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName"),
+                    CreatedBy = "admin1",
+                    UpdatedBy = "admin1",
                     UpdatedDate = DateTime.Now,
                     UploadDate = DateTime.Now,
                 };
@@ -125,8 +119,7 @@ namespace ASI.Basecode.Services.Services
                 existing_author.AuthorName = author.AuthorName;
                 existing_author.AuthorDescription = author.AuthorDescription;
                 existing_author.AuthorImageUrl = author.AuthorImageUrl;
-                existing_author.UpdatedDate = DateTime.Now;
-                existing_author.UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName");
+                existing_author.UpdatedDate = DateTime.UtcNow;
 
                 await _authorRepository.EditAuthor();
             }
@@ -239,8 +232,8 @@ namespace ASI.Basecode.Services.Services
                         ISBN10 = bookEntity.ISBN10,
                         ISBN13 = bookEntity.ISBN13,
                         Edition = bookEntity.Edition,
-                        CreatedBy = bookEntity.CreatedBy,
-                        UpdatedBy = bookEntity.UpdatedBy
+                        CreatedBy = "admin1",
+                        UpdatedBy = "Logged Admin"
                     });
                 }
 

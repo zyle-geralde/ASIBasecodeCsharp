@@ -15,7 +15,7 @@ namespace ASI.Basecode.Data.Interfaces
         bool UserExists(string userId);
         Task AddUser(User user);
         Task<User> GetUserById(int Id);
-        Task DeleteUser(int Id);
+        Task DeleteUser(string userId);
         Task<User> FindUserByEmail(string email);
         Task UpdateUser(User user);
         bool UserNameExists(string userName);

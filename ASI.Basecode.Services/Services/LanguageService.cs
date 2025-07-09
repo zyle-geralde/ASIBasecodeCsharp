@@ -3,9 +3,7 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
-using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +16,10 @@ namespace ASI.Basecode.Services.Services
     {
         private readonly ILanguageRepository _languageRepository;
         private readonly IAuthorRepository _authorRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly SessionManager _sessionManager;
 
-        public LanguageService(ILanguageRepository languageRepository,IAuthorRepository authorRepository, IHttpContextAccessor httpContextAccessor) { 
+        public LanguageService(ILanguageRepository languageRepository,IAuthorRepository authorRepository) { 
             _languageRepository = languageRepository;
             _authorRepository = authorRepository;
-            _httpContextAccessor = httpContextAccessor;
-            this._sessionManager = new SessionManager(httpContextAccessor.HttpContext.Session);
         }
 
         public async Task AddLanguage(LanguageViewModel language)
@@ -52,8 +46,8 @@ namespace ASI.Basecode.Services.Services
                 {
                     LanguageId = Guid.NewGuid().ToString(),
                     LanguageName = language.LanguageName,
-                    CreatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName"),
-                    UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName"),
+                    CreatedBy = "admin1",
+                    UpdatedBy = "admin1",
                     UpdatedDate = DateTime.Now,
                     UploadDate = DateTime.Now,
                 };
@@ -139,8 +133,7 @@ namespace ASI.Basecode.Services.Services
                 }
 
                 existing_language.LanguageName = language.LanguageName;
-                existing_language.UpdatedDate = DateTime.Now;
-                existing_language.UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName");
+                existing_language.UpdatedDate = DateTime.UtcNow;
 
                 await _languageRepository.EditLanguage();
             }
@@ -201,8 +194,8 @@ namespace ASI.Basecode.Services.Services
                         ISBN10 = bookEntity.ISBN10,
                         ISBN13 = bookEntity.ISBN13,
                         Edition = bookEntity.Edition,
-                        CreatedBy = bookEntity.CreatedBy,
-                        UpdatedBy = bookEntity.UpdatedBy
+                        CreatedBy = "admin1",
+                        UpdatedBy = "Logged Admin"
                     });
                 }
 

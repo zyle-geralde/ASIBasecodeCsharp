@@ -3,9 +3,7 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
-using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -21,16 +19,12 @@ namespace ASI.Basecode.Services.Services
         private readonly IBookRepository _bookRepository;
         private readonly ILanguageRepository _languageRepository;
         private readonly IAuthorRepository _authorRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly SessionManager _sessionManager;
 
-        public BookService(IBookRepository bookRepository, ILanguageRepository languageRepository, IAuthorRepository authorRepository,IHttpContextAccessor httpContextAccessor)
+        public BookService(IBookRepository bookRepository, ILanguageRepository languageRepository, IAuthorRepository authorRepository)
         {
             _bookRepository = bookRepository;
             _languageRepository = languageRepository;
             _authorRepository = authorRepository;
-            _httpContextAccessor = httpContextAccessor;
-            this._sessionManager = new SessionManager(httpContextAccessor.HttpContext.Session);
         }
 
         public async Task AddBook(BookViewModel request)
@@ -92,8 +86,7 @@ namespace ASI.Basecode.Services.Services
                 ISBN10 = request.ISBN10,
                 ISBN13 = request.ISBN13,
                 Edition = request.Edition,
-                CreatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName"),
-                UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName")
+                CreatedBy = "admin1"
             };
 
             try
@@ -203,8 +196,8 @@ namespace ASI.Basecode.Services.Services
                     ISBN10 = book.ISBN10,
                     ISBN13 = book.ISBN13,
                     Edition = book.Edition,
-                    CreatedBy = book.CreatedBy,
-                    UpdatedBy = book.UpdatedBy,
+                    CreatedBy = "admin1",
+                    UpdatedBy = "Logged Admin",
 
                 };
                 bookViewModel_list.Add(viewModel);
@@ -250,8 +243,8 @@ namespace ASI.Basecode.Services.Services
                 ISBN10 = requestBook.ISBN10,
                 ISBN13 = requestBook.ISBN13,
                 Edition = requestBook.Edition,
-                CreatedBy = requestBook.CreatedBy,
-                UpdatedBy = requestBook.UpdatedBy,
+                CreatedBy = "admin1",
+                UpdatedBy = "Logged Admin",
             };
             //return await _bookRepository.GetBookById(bookId);
             return book;
@@ -290,7 +283,8 @@ namespace ASI.Basecode.Services.Services
                 ISBN10 = request.ISBN10,
                 ISBN13 = request.ISBN13,
                 Edition = request.Edition,
-                UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName")
+                CreatedBy = "admin1",
+                UpdatedBy = "Logged Admin"
             };
 
 

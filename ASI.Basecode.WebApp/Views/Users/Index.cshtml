@@ -181,7 +181,7 @@
                                             </a>
                                             <button type="button" class="btn btn-icon text-danger"
                                                     onclick="setupDeleteModal(this)"
-                                                    data-user-id="@u.Id"
+                                                    data-user-id="@u.Email"
                                                     data-user-name="@u.Email">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -205,7 +205,7 @@
 
 <form id="deleteUserForm" method="post" action="/User/Delete" style="display:none;">
     @Html.AntiForgeryToken()
-    <input type="hidden" name="id" id="deleteUserId" />
+    <input type="hidden" name="userId" id="deleteUserId" />
 </form>
 
 <!-- Hidden field for TempData success message -->
