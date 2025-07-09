@@ -29,7 +29,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/books/bookmaster.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/admin/books/listbook.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin/books/bookmasterlist.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/css/admin/books/listbook.css" asp-append-version="true" /> *@
     <link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pagination.css" asp-append-version="true" />
 }
@@ -117,7 +118,7 @@
                                     <th>Cover</th>
                                     <th>Name</th>
                                     <th>Description</th>
-                                    <th>Actions</th>
+                                    <th class="text-md-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -138,8 +139,8 @@
                                     </td>
                                     <td>@genre.GenreName</td>
                                     <td>@genre.GenreDescription</td>
-                                    <td>
-                                        <div class="d-flex gap-2">
+                                    <td class="text-center">
+                                        <div class="d-flex gap-2 justify-content-center">
                                             <a asp-controller="Book"
                                                asp-action="ListBook"
                                                asp-route-genreFilter="@genre.BookGenreId"
