@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ASI.Basecode.WebApp.Authentication;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -19,10 +20,13 @@ namespace ASI.Basecode.WebApp.Controllers
     {
         private readonly IUserService _userService;
         private readonly IAccessControlInterface _accessControlInterface;
-        public UserController(IUserService userService,IAccessControlInterface accessControlInterface)
+        private readonly SignInManager _signInManager;
+
+        public UserController(IUserService userService,IAccessControlInterface accessControlInterface, SignInManager signInManager)
         {
             _userService = userService;
             _accessControlInterface = accessControlInterface;
+            _signInManager = signInManager;
         }
         [HttpGet]
         [Authorize]
@@ -113,22 +117,30 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpPost]
         [Authorize]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string userId)
         {
 
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             try
             {
-                bool deleted = await _userService.DeleteUser(id);
+                bool deleted = await _userService.DeleteUser(userId);
 
                 if (!deleted)
                 {
                     TempData["ErrorMessage"] = "User could not be deleted.";
+                    return RedirectToAction(nameof(Index));
+
                 }
-                else
+                if (currentUserId == userId.ToString())
                 {
-                    TempData["SuccessMessage"] = "User deleted successfully!";
+                    await _signInManager.SignOutAsync();                  
+
+                    return RedirectToAction("Index", "Home");
                 }
+
+
+
             }
             catch (Exception e)
             {
