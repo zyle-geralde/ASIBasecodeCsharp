@@ -263,7 +263,9 @@
                     <option value="publicationdate" selected="@(currentSort == "publicationdate" ? "selected" : null)">Publication Date</option>
                     <option value="rating" selected="@(currentSort == "rating" ? "selected" : null)">Rating</option>
                     <option value="uploaddate" selected="@(currentSort == "uploaddate" ? "selected" : null)">Upload Date</option>
-                </select>
+                    <option value="uploaddate" selected="@(currentSort == "updateddate" ? "selected" : null)">Updated Date</option>
+                
+</select>
             </div>
 
             <div class="filter-section">
@@ -428,51 +430,6 @@
                 await deleteFileFromFirebase(bookUrlCopy);
             }
         }
-
-
-        // function showStatusModal(message, type = 'Success') {
-        //     var deleteModalElement = document.getElementById('deleteModal');
-        //     var deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
-        //     if (deleteModal) {
-        //         deleteModal.hide();
-        //     }
-
-        //     const statusModalTitle = document.getElementById('statusModalLabel');
-        //     const statusModalMessage = document.getElementById('statusModalMessage');
-
-        //     if (statusModalTitle) {
-        //         statusModalTitle.textContent = type;
-        //     }
-        //     if (statusModalMessage) {
-        //         statusModalMessage.textContent = message;
-        //     }
-
-
-        //     const statusIcon = document.querySelector('#statusModal .status-icon i');
-        //     if (statusIcon) {
-        //         statusIcon.classList.remove('fa-check', 'fa-times', 'fa-exclamation-triangle');
-        //         if (type === 'Success') {
-        //             statusIcon.classList.add('fa-check');
-        //             statusIcon.style.color = '#28a745'; 
-        //         } else if (type === 'Error') {
-        //             statusIcon.classList.add('fa-times');
-        //             statusIcon.style.color = '#dc3545'; 
-        //         } else if (type === 'Warning') {
-        //             statusIcon.classList.add('fa-exclamation-triangle');
-        //             statusIcon.style.color = '#ffc107'; 
-        //         } else {
-        //             statusIcon.classList.add('fa-check'); 
-        //             statusIcon.style.color = '#28a745';
-        //         }
-        //     }
-
-
-        //     setTimeout(function () {
-        //         var statusModalElement = document.getElementById('statusModal');
-        //         var statusModal = new bootstrap.Modal(statusModalElement);
-        //         statusModal.show();
-        //     }, 100);
-        // }
 
         const deleteModalButtons = document.querySelectorAll("[data-bs-target='#@deleteBookConfirmationModel.Id']");
         
