@@ -97,13 +97,13 @@
 }
 
 .filter-tag {
-    background-color: #f0f8ff;
-    border: 1px solid #bcdaff;
-    color: #0066cc;
+    background-color: rgba(134, 168, 170, 0.7);
+    border-color: rgba(134, 168, 170, 1);
+    color: black;
     padding: 6px 14px; /* Increased from 4px 10px */
     border-radius: 20px;
     font-size: 0.9rem; /* Increased from 0.85rem */
-    font-weight: 500;
+    font-weight: 400;
 }
 
 /* Updated Filter Controls positioning */
