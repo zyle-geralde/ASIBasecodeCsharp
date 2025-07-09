@@ -56,12 +56,16 @@ namespace ASI.Basecode.Data.Repositories
                            ? query.OrderByDescending(b => b.Id)
                            : query.OrderBy(b => b.Id);
                         break;
-                    case "createdtime":
+                    case "createddate":
                         query = desc
                         ? query.OrderByDescending(b => b.CreatedTime)
                         : query.OrderBy(b => b.CreatedTime);
                         break;
-
+                    case "updateddate":
+                        query = desc
+                        ? query.OrderByDescending(b => b.UpdatedTime)
+                        : query.OrderBy(b => b.UpdatedTime);
+                        break;
                     case "email":
                         query = desc
                            ? query.OrderByDescending(b => b.Email)

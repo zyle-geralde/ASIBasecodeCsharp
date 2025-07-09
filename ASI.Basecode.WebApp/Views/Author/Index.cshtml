@@ -83,8 +83,12 @@
                                 <label class="form-check-label" for="sortId">Name</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortDate" value="CreatedTime" @(currentSort == "CreatedTime" ? "checked" : "")>
-                                <label class="form-check-label" for="sortDate">Created Date</label>
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortCreatedDate" value="CreatedDate" @(currentSort == "CreatedDate" ? "checked" : "")>
+                                <label class="form-check-label" for="sortCreatedDate">Created Date</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortUpdatedDate" value="UpdatedDate" @(currentSort == "UpdatedDate" ? "checked" : "")>
+                                <label class="form-check-label" for="sortUpdatedDate">Updated Date</label>
                             </div>
                         </div>
                     </div>
@@ -100,6 +104,7 @@
                                 <input class="form-check-input" type="radio" name="popupSortDirection" id="sortDesc" value="true" @(currentSortDescending ? "checked" : "")>
                                 <label class="form-check-label" for="sortDesc">Descending <i class="fas fa-arrow-down"></i></label>
                             </div>
+
                         </div>
                     </div>
 
