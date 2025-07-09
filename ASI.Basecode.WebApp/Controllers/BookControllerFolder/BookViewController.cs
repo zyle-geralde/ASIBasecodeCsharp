@@ -102,7 +102,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             string[]? genreFilter,
             string? languageFilter,
             string? sortOrder,
-            bool sortDescending = false,
+            bool sortDescending = true,
             bool? isFeatured = null,
 
             int? page = 1
@@ -114,8 +114,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             int pageIndex = page.GetValueOrDefault(1);
             string authorId = await _authorRepository.GetAuthorByName(author != null ? author : "");
             string authorIdFromSearch = await _authorRepository.GetAuthorByName(searchTerm != null ? searchTerm : "");
-            //string authorIdForSearch = await _authorRepository.GetAuthorByName(searchTerm != null ? searchTerm : "");
-            // authorName != null ? authorName.AuthorName : ""
+
 
             var queryParams = new BookQueryParams
             {
@@ -130,7 +129,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 SortDescending = sortDescending,
                 PageIndex = page.GetValueOrDefault(1),
                 IsFeatured = isFeatured,
-                SortOrder = sortOrder ?? "title",
+                SortOrder = sortOrder ?? "updateddate",
                 PageSize = PageSize,
 
 
