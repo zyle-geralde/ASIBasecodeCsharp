@@ -140,14 +140,14 @@
     box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
 }
 
-/* Updated Filter Panel - Modern Sliding Panel */
+/* Updated Filter Panel with dual color palette */
 .filter-panel {
     position: fixed;
     right: 0;
     top: 0;
     width: 500px;
     height: 100vh;
-    background-color: #ffffff;
+    background: rgb(255, 255, 255, 0.9);
     border-radius: 0;
     padding: 25px 30px;
     margin-bottom: 0;
@@ -169,14 +169,14 @@
     align-items: center;
     margin-bottom: 30px;
     padding-bottom: 15px;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid rgba(134, 168, 170, 0.4);
 }
 
 .filter-panel-title {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 600;
     margin: 0;
-    color: #333;
+    color: #647D7F;
 }
 
 .close-filter-btn {
@@ -184,7 +184,7 @@
     border: none;
     font-size: 1.25rem;
     cursor: pointer;
-    color: #6c757d;
+    color: #3E4F4E;
     padding: 8px;
     border-radius: 50%;
     transition: all 0.2s;
@@ -192,19 +192,19 @@
 
 .close-filter-btn:hover {
     color: #0d6efd;
-    background-color: rgba(13, 110, 253, 0.1);
+    background-color: rgba(134, 168, 170, 0.3);
 }
 
-/* Enhanced Filter Container */
+/* Enhanced Filter Container with dual color palette */
 .filter-container {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 15px;
 }
 
 .filter-section {
-    border-bottom: 1px solid #e9ecef;
-    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(134, 168, 170, 0.4);
+    padding-bottom: 15px;
     margin-bottom: 5px;
     animation: fadeIn 0.5s ease-in-out;
 }
@@ -222,33 +222,34 @@
     font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 20px;
-    color: #333;
+    color: #3E4F4E;
     display: flex;
     align-items: center;
 }
 
 .filter-section-title i {
     margin-right: 8px;
-    color: #0d6efd;
+    color: rgba(134, 168, 170, 0.9);
 }
 
 .filter-section-content {
     padding-left: 5px;
 }
 
-/* Form Controls Styling */
+/* Form Controls Styling with dual color palette */
 .form-control, .form-select {
-    padding: 12px 15px;
+    padding: 10px 12px;
     border-radius: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(134, 168, 170, 0.6);
     transition: all 0.3s;
-    font-size: 14px;
+    font-size: 12px;
+    background-color: rgba(255, 255, 255, 0.8);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
 }
 
 .form-control:focus, .form-select:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+    border-color: rgba(134, 168, 170, 1);
+    box-shadow: 0 0 0 3px rgba(134, 168, 170, 0.25);
 }
 
 .input-group {
@@ -262,9 +263,9 @@
     justify-content: center;
     padding: 0.375rem 0.75rem;
     border-radius: 10px 0 0 10px;
-    border: 1px solid #ddd;
-    background-color: #f8f9fa;
-    color: #6c757d;
+    border: 1px solid rgba(134, 168, 170, 0.6);
+    background-color: rgba(134, 168, 170, 0.2);
+    color: #3E4F4E;
     min-width: 42px;
     border-right: none;
 }
@@ -301,10 +302,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 8px;
-    color: #647D7F;
+    color: #3E4F4E;
 }
 
-/* Checkbox Chips Styling */
+/* Chip and Radio Styling with dual color palette */
 .chip-container {
     display: flex;
     flex-wrap: wrap;
@@ -319,15 +320,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: 0;
 }
 
-.chip-label {
+.chip-label, .radio-chip-label {
     display: inline-flex;
     align-items: center;
     padding: 8px 16px;
-    background-color: #f5f7fa;
-    border: 1px solid #e1e5eb;
+    background-color: rgba(210, 196, 158, 0.2);
+    border: 1px solid rgba(210, 196, 158, 0.6);
     border-radius: 50px;
-    font-size: 14px;
-    color: #495057;
+    font-size: 12px;
+    color: #3E4F4E;
     cursor: pointer;
     transition: all 0.25s ease;
     user-select: none;
@@ -337,22 +338,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .chip-checkbox:checked + .chip-label {
-    background-color: rgba(13, 110, 253, 0.1);
-    border-color: #0d6efd;
-    color: #0d6efd;
-    box-shadow: 0 2px 5px rgba(13, 110, 253, 0.2);
+    background-color: rgba(210, 196, 158, 0.7);
+    border-color: rgba(210, 196, 158, 1);
+    color: #3E4F4E;
+    box-shadow: 0 2px 5px rgba(210, 196, 158, 0.4);
 }
 
-.chip-label:hover {
-    background-color: #eaeef2;
+.chip-label:hover, .radio-chip-label:hover {
+    background-color: rgba(210, 196, 158, 0.4);
     transform: translateY(-2px);
 }
 
-.chip-checkbox:focus + .chip-label {
-    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
-}
-
-/* Radio Chips Styling */
 .radio-chip {
     position: absolute;
     opacity: 0;
@@ -360,37 +356,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: 0;
 }
 
-.radio-chip-label {
-    display: inline-flex;
-    align-items: center;
-    padding: 8px 16px;
-    background-color: #f5f7fa;
-    border: 1px solid #e1e5eb;
-    border-radius: 50px;
-    font-size: 14px;
-    color: #495057;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    user-select: none;
-    font-weight: 500;
-    position: relative;
-    overflow: hidden;
-}
-
 .radio-chip:checked + .radio-chip-label {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-    color: white;
-    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
+    background-color: rgba(134, 168, 170, 0.7);
+    border-color: rgba(134, 168, 170, 1);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(134, 168, 170, 0.5);
 }
 
 .radio-chip-label:hover {
-    background-color: #eaeef2;
-    transform: translateY(-2px);
-}
-
-.radio-chip:focus + .radio-chip-label {
-    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+    background-color: rgba(134, 168, 170, 0.3);
 }
 
 /* Ripple effect for chips */
@@ -416,14 +390,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     align-items: center;
     margin-top: 15px;
     padding: 10px 15px;
-    background-color: #f8f9fa;
+    background-color: rgba(255, 255, 255, 0.6);
     border-radius: 10px;
-    border: 1px solid #e1e5eb;
+    border: 1px solid rgba(210, 196, 158, 0.4);
     transition: all 0.3s;
 }
 
 .featured-toggle:hover {
-    background-color: #f0f3f6;
+    background-color: rgba(210, 196, 158, 0.2);
 }
 
 .featured-toggle input[type="checkbox"] {
@@ -448,7 +422,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     width: 50px;
     height: 26px;
     border-radius: 13px;
-    background-color: #e1e5eb;
+    background-color: rgba(210, 196, 158, 0.4);
     transition: all 0.3s;
 }
 
@@ -466,7 +440,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .featured-toggle input[type="checkbox"]:checked + .toggle-switch-inner {
-    background-color: #0d6efd;
+    background-color: rgba(134, 168, 170, 0.8);
 }
 
 .featured-toggle input[type="checkbox"]:checked + .toggle-switch-inner::after {
@@ -478,7 +452,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: #495057;
 }
 
-/* Modern Toggle Switch */
+/* Modern Toggle Switch styling with dual color palette */
 .toggle-container {
     margin: 15px 0;
 }
@@ -501,7 +475,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: inline-block;
     width: 50px;
     height: 24px;
-    background-color: #e1e1e1;
+    background-color: rgba(210, 196, 158, 0.3);
     border-radius: 34px;
     transition: all 0.3s;
     margin-right: 12px;
@@ -523,7 +497,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .toggle-input:checked + .toggle-label {
-    background-color: #0d6efd;
+    background-color: rgba(134, 168, 170, 0.7);
 }
 
 .toggle-input:checked + .toggle-label .toggle-button {
@@ -533,7 +507,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .toggle-text {
     font-size: 14px;
     font-weight: 500;
-    color: #495057;
+    color: #3E4F4E;
     user-select: none;
 }
 
@@ -556,7 +530,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
 }
 
-/* Filter Actions Styling */
+/* Filter Actions Styling with dual color palette */
 .filter-actions {
     display: flex;
     justify-content: flex-end;
@@ -572,26 +546,30 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .filter-actions .btn-outline-secondary {
-    border-color: #ddd;
-    color: #6c757d;
+    border-color: rgba(210, 196, 158, 0.6);
+    color: #3E4F4E;
+    background-color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
 }
 
 .filter-actions .btn-outline-secondary:hover {
-    background-color: #f8f9fa;
-    border-color: #c8c8c8;
+    background-color: rgba(210, 196, 158, 0.3);
+    border-color: rgba(210, 196, 158, 0.8);
 }
 
 .filter-actions .btn-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
+    background-color: rgba(134, 168, 170, 0.8);
+    border-color: rgba(134, 168, 170, 1);
+    color: white;
+    box-shadow: 0 4px 10px rgba(134, 168, 170, 0.4);
+    font-size: 14px;
 }
 
 .filter-actions .btn-primary:hover {
-    background-color: #0b5ed7;
-    border-color: #0b5ed7;
+    background-color: rgba(134, 168, 170, 1);
+    border-color: rgba(134, 168, 170, 1);
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(13, 110, 253, 0.3);
+    box-shadow: 0 6px 15px rgba(134, 168, 170, 0.5);
 }
 
 /* Animation for loading filter panel */
@@ -614,10 +592,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     transition: opacity 0.3s ease;
 }
 
-.filter-backdrop.active {
-    display: block !important;
-    opacity: 1 !important;
-}
+    .filter-backdrop.active {
+        display: block !important;
+        background-color: rgba(255, 255, 255, 0.5);
+        opacity: 1 !important;
+    }
 
 /* Genre and Language Lists */
 .genre-list, .language-list {
