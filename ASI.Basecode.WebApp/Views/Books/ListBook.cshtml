@@ -285,11 +285,11 @@
                         <th>Title</th>
                         <th>Subtitle</th>
                         <th>Author</th>
-                        <th>Publication Date</th>
+                        
                         <th>Language</th>
                         <th>Rating</th>
+                        <th>Publication Date</th>
                         <th>Upload Date</th>
-                        <th>Series</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -310,11 +310,11 @@
                             <td>@book.Title</td>
                             <td>@book.Subtitle</td>
                             <td>@book.Author</td>
-                            <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
+                            
                             <td>@book.Language</td>
                             <td>@book.AverageRating</td>
+                            <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
                             <td>@book.UploadDate</td>
-                            <td>@book.SeriesName</td>
                             <td>
                                 <div class="d-flex gap-2">
                                     <a href="/Book/BookDetails/@book.BookId" class="action-icon-button text-secondary">
