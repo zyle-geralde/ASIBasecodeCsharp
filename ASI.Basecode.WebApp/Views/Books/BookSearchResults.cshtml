@@ -516,6 +516,34 @@
                     }, 500);
                 });
             });
+
+            const radioLabels = document.querySelectorAll('.radio-chip-label');
+    
+            radioLabels.forEach(label => {
+                // Add deselectable class
+                label.classList.add('deselectable');
+        
+                // Create clear button
+                const clearBtn = document.createElement('span');
+                clearBtn.className = 'radio-chip-clear';
+                clearBtn.innerHTML = '×';
+                label.appendChild(clearBtn);
+        
+                // Add click handler for the clear button
+                clearBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+            
+                    // Get the associated radio button
+                    const radioId = label.getAttribute('for');
+                    const radioBtn = document.getElementById(radioId);
+            
+                    // Uncheck the radio button
+                    if (radioBtn) {
+                        radioBtn.checked = false;
+                    }
+                });
+            });
         });
 
         document.querySelectorAll('input[type="date"]').forEach(input => {
