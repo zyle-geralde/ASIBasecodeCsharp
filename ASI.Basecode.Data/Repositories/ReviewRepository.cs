@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace ASI.Basecode.Data.Repositories
 {
     public class ReviewRepository : IReviewRepository
@@ -61,7 +62,8 @@ namespace ASI.Basecode.Data.Repositories
             existingReview.BookId = review.BookId;
             existingReview.Rating = review.Rating;
             existingReview.Comment = review.Comment;
-            existingReview.UpdatedDate = DateTime.UtcNow;
+            existingReview.UpdatedDate = DateTime.Now;
+            
 
             await _dbContext.SaveChangesAsync();
         }
