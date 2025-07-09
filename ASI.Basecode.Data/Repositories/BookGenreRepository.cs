@@ -149,6 +149,11 @@ namespace ASI.Basecode.Data.Repositories
                         ? query.OrderByDescending(b => b.UploadDate)
                         : query.OrderBy(b => b.UploadDate);
                         break;
+                    case "updateddate":
+                        query = desc
+                            ? query.OrderByDescending(b => b.UpdatedDate)
+                            : query.OrderBy(b => b.UpdatedDate);
+                        break;
                     default:
                         query = desc
                         ? query.OrderByDescending(b => b.GenreName)

@@ -83,7 +83,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpGet]
         [Route("BookGenre/ListGenre")]
         [Authorize]
-        public async Task<IActionResult> ListGenre(string? searchTerm, string? sortOrder, bool sortDescending = false, int? page = 1)
+        public async Task<IActionResult> ListGenre(string? searchTerm, string? sortOrder, bool sortDescending = true, int? page = 1)
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
@@ -95,7 +95,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 var queryParams = new GenreQueryParams
                 {
                     SearchTerm = searchTerm,
-                    SortOrder = sortOrder ?? "Name",
+                    SortOrder = sortOrder ?? "UpdatedDate",
                     SortDescending = sortDescending,
                     PageIndex = pageIndex,
                     PageSize = PageSize
