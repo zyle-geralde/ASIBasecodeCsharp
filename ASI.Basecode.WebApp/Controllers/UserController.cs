@@ -41,7 +41,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 SearchTerm = searchTerm,
                 Role = role,
-                SortOrder = sortOrder ?? "createdtime",
+                SortOrder = sortOrder ?? "updateddate",
                 SortDescending = sortDescending,
                 PageIndex = pageIndex,
                 PageSize = PageSize

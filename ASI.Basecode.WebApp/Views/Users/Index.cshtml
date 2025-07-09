@@ -119,8 +119,12 @@
                                 <label class="form-check-label" for="sortEmail">Email</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortDate" value="createdtime" @(currentSort == "createdtime" ? "checked" : "")>
-                                <label class="form-check-label" for="sortDate">Created Date</label>
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortCreatedDate" value="createddate" @(currentSort == "createddate" ? "checked" : "")>
+                                <label class="form-check-label" for="sortCreatedDate">Created Date</label>
+                            </div>
+                                                        <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortUpdatedDate" value="updatedate" @(currentSort == "updateddate" ? "checked" : "")>
+                                <label class="form-check-label" for="sortUpdatedDate">Updated Date</label>
                             </div>
                         </div>
                     </div>
