@@ -18,6 +18,8 @@
     ViewData["Title"] = "BookDetails";
     
     var isAdmin = await AccessControl.CheckAdminAccess();
+    var currentUserId = User.Identity.IsAuthenticated ? User.FindFirstValue(ClaimTypes.NameIdentifier) : null;
+    bool userHasReviewed = Model?.Reviews?.Any(r => r.UserId == currentUserId) ?? false;
     
     @if (isAdmin)
     {
@@ -39,15 +41,8 @@
                 margin-top: 70px;
             }
         </style>
-    }
-
-    var currentUserId = User.Identity.IsAuthenticated ? User.FindFirstValue(ClaimTypes.NameIdentifier) : null;
-    bool userHasReviewed = Model?.Reviews?.Any(r => r.UserId == currentUserId) ?? false;
+    }   
 }
-
-
-
-
 
 @section styles {
     <link rel="stylesheet" href="~/css/admin/book-details.css" asp-append-version="true" />
@@ -837,138 +832,142 @@
         }
 
         // Updated JavaScript function to properly capture and send the upload date
-function editReview(reviewId, bookId, rating, comment, uploadDate) {
-    try {
-        // Add debug logging
-        console.log("Edit Review Function Called with parameters:");
-        console.log("- reviewId:", reviewId);
-        console.log("- bookId:", bookId);
-        console.log("- rating:", rating, "type:", typeof rating);
-        console.log("- comment:", comment);
-        console.log("- uploadDate:", uploadDate);
+        function editReview(reviewId, bookId, rating, comment, uploadDate) {
+            try {
+                // Add debug logging
+                console.log("Edit Review Function Called with parameters:");
+                console.log("- reviewId:", reviewId);
+                console.log("- bookId:", bookId);
+                console.log("- rating:", rating, "type:", typeof rating);
+                console.log("- comment:", comment);
+                console.log("- uploadDate:", uploadDate);
 
-        // Make sure bookId isn't empty
-        if (!bookId) {
-            bookId = '@Model.BookId';  // Use the book ID from the page model as fallback
-            console.log("Using fallback BookId:", bookId);
+                // Make sure bookId isn't empty
+                if (!bookId) {
+                    bookId = '@Model.BookId';  // Use the book ID from the page model as fallback
+                    console.log("Using fallback BookId:", bookId);
+                }
+
+                // Make sure the rating is a number
+                const numericRating = parseFloat(rating);
+        
+                // Set values in form
+                $('#edit-reviewId').val(reviewId);
+                $('#edit-bookId').val(bookId);
+                $('#edit-comment').val(comment);
+                $('#edit-rating-value').val(numericRating);
+                $('#edit-uploadDate').val(uploadDate);
+        
+                // Store the rating for later use - this ensures we have the original rating
+                // even if the user doesn't interact with the stars
+                editSelectedRating = numericRating;
+        
+                // Set book information
+                $('.edit-book-title').text('@Model.Title');
+                $('.edit-book-author').text('by @Model.Author');
+        
+                // Open the modal
+                var editModal = new bootstrap.Modal(document.getElementById('editReview'));
+                editModal.show();
+        
+                // Wait for modal to be fully visible before handling stars
+                $('#editReview').one('shown.bs.modal', function() {
+                    console.log("Modal shown, setting stars to rating:", numericRating);
+            
+                    // Reset stars first
+                    editStars.removeClass('fas').addClass('far');
+            
+                    // Then apply the correct rating
+                    editStars.each(function(index) {
+                        if (index < numericRating) {
+                            $(this).removeClass('far').addClass('fas');
+                        }
+                    });
+            
+                    // Lock the selection - we've removed this to allow changing the rating
+                    // $('#editStarsRating').addClass('selection-locked');
+                });
+            } catch (error) {
+                console.error("Error preparing review edit:", error);
+                toastr.error("Error preparing review for editing: " + error.message);
+            }
         }
 
-        // Make sure the rating is a number
-        const numericRating = parseFloat(rating);
-        
-        // Set values in form
-        $('#edit-reviewId').val(reviewId);
-        $('#edit-bookId').val(bookId);
-        $('#edit-comment').val(comment);
-        $('#edit-rating-value').val(numericRating);
-        $('#edit-uploadDate').val(uploadDate);
-        
-        // Store the rating for later use
-        editSelectedRating = numericRating;
-        
-        // Set book information
-        $('.edit-book-title').text('@Model.Title');
-        $('.edit-book-author').text('by @Model.Author');
-        
-        // Open the modal
-        var editModal = new bootstrap.Modal(document.getElementById('editReview'));
-        editModal.show();
-        
-        // Wait for modal to be fully visible before handling stars
-        $('#editReview').one('shown.bs.modal', function() {
-            console.log("Modal shown, setting stars to rating:", numericRating);
-            
-            // Reset stars first
-            editStars.removeClass('fas').addClass('far');
-            
-            // Then apply the correct rating
-            editStars.each(function(index) {
-                if (index < numericRating) {
-                    $(this).removeClass('far').addClass('fas');
+        // Update review button click handler
+        $('#updateReviewBtn').click(function() {
+            // Validate the form
+            const comment = $('#edit-comment').val().trim();
+            const reviewId = $('#edit-reviewId').val();
+            const bookId = $('#edit-bookId').val() || '@Model.BookId';  // Use fallback if empty
+            const uploadDate = $('#edit-uploadDate').val();
+    
+            // Check if we have the original rating from when the modal was opened
+            let rating = $('#edit-rating-value').val();
+    
+            // If rating is 0 or empty but editSelectedRating has a value, use that instead
+            // This ensures we keep the original rating if the user didn't click on stars
+            if (!rating || rating == 0) {
+                rating = editSelectedRating;
+            }
+
+            console.log("Submitting review update:", {
+                reviewId: reviewId,
+                bookId: bookId,
+                rating: rating,
+                comment: comment,
+                uploadDate: uploadDate
+            });
+
+            // Only validate comment - the rating should already be valid
+            if (!comment) {
+                toastr.warning("Please provide a comment about the book.");
+                return;
+            }
+
+            // Get the token
+            const token = $('#editReviewForm input[name="__RequestVerificationToken"]').val();
+
+            // Create a complete form data object with all necessary fields
+            const formData = {
+                ReviewId: reviewId,
+                BookId: bookId, 
+                Rating: rating,
+                Comment: comment,
+                UserId: $('#edit-userId').val(),
+                UploadDate: uploadDate,
+                __RequestVerificationToken: token
+            };
+
+            // Submit the form via AJAX
+            $.ajax({
+                url: '@Url.Action("Edit", "Review")',
+                type: 'POST',
+                data: formData,
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                success: function(response) {
+                    if (response && response.success) {
+                        // Close the modal
+                        var editReviewModal = bootstrap.Modal.getInstance(document.getElementById('editReview'));
+                        editReviewModal.hide();
+
+                        toastr.success("Review updated successfully!");
+
+                        // Refresh the page after a short delay to show the updated review
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        toastr.error("Error: " + ((response && response.errors) ? response.errors.join(", ") : "Unknown error"));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error details:", xhr.responseText);
+                    toastr.error("Error updating review: " + error);
                 }
             });
-            
-            // Lock the selection
-            $('#editStarsRating').addClass('selection-locked');
         });
-    } catch (error) {
-        console.error("Error preparing review edit:", error);
-        toastr.error("Error preparing review for editing: " + error.message);
-    }
-}
-
-// Update the updateReviewBtn click handler to properly handle the form data
-$('#updateReviewBtn').click(function() {
-    // Validate the form
-    const rating = $('#edit-rating-value').val();
-    const comment = $('#edit-comment').val().trim();
-    const reviewId = $('#edit-reviewId').val();
-    const bookId = $('#edit-bookId').val() || '@Model.BookId';  // Use fallback if empty
-    const uploadDate = $('#edit-uploadDate').val();
-
-    // Debug logging
-    console.log("Submitting review update:", {
-        reviewId: reviewId,
-        bookId: bookId,
-        rating: rating,
-        comment: comment,
-        uploadDate: uploadDate
-    });
-
-    if (!rating || rating == 0) {
-        toastr.warning("Please select a rating for the book.");
-        return;
-    }
-
-    if (!comment) {
-        toastr.warning("Please provide a comment about the book.");
-        return;
-    }
-
-    // Get the token
-    const token = $('#editReviewForm input[name="__RequestVerificationToken"]').val();
-
-    // Create a complete form data object with all necessary fields
-    const formData = {
-        ReviewId: reviewId,
-        BookId: bookId, 
-        Rating: rating,
-        Comment: comment,
-        UserId: $('#edit-userId').val(),
-        UploadDate: uploadDate,
-        __RequestVerificationToken: token
-    };
-
-    // Submit the form via AJAX
-    $.ajax({
-        url: '@Url.Action("Edit", "Review")',
-        type: 'POST',
-        data: formData,
-        headers: {
-            'RequestVerificationToken': token
-        },
-        success: function(response) {
-            if (response && response.success) {
-                // Close the modal
-                var editReviewModal = bootstrap.Modal.getInstance(document.getElementById('editReview'));
-                editReviewModal.hide();
-
-                toastr.success("Review updated successfully!");
-
-                // Refresh the page after a short delay to show the updated review
-                setTimeout(function() {
-                    location.reload();
-                }, 1500);
-            } else {
-                toastr.error("Error: " + ((response && response.errors) ? response.errors.join(", ") : "Unknown error"));
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error("Error details:", xhr.responseText);
-            toastr.error("Error updating review: " + error);
-        }
-    });
-});
 
         $(document).ready(async function() {
             
@@ -1063,18 +1062,40 @@ $('#updateReviewBtn').click(function() {
                 }
             );
 
-            // Handle star hover effect for edit review
+            // Handle star hover effect for edit review - MODIFIED
             editStars.hover(
                 function() { // mouseenter
                     if (!$('#editStarsRating').hasClass('selection-locked')) {
                         const star = $(this);
                         const hoverRating = parseInt(star.data('rating'));
-                        highlightStars(hoverRating, editStars);
+                        
+                        // Only change visual appearance without changing the actual value
+                        editStars.each(function() {
+                            const s = $(this);
+                            const r = parseInt(s.data('rating'));
+                            
+                            // Visual change only - no value change
+                            if (r <= hoverRating) {
+                                s.removeClass('far').addClass('fas');
+                            } else {
+                                s.removeClass('fas').addClass('far');
+                            }
+                        });
                     }
                 },
                 function() { // mouseleave
                     if (!$('#editStarsRating').hasClass('selection-locked')) {
-                        highlightStars(editSelectedRating, editStars);
+                        // Reset visual appearance to match the stored value
+                        editStars.each(function() {
+                            const s = $(this);
+                            const r = parseInt(s.data('rating'));
+                            
+                            if (r <= editSelectedRating) {
+                                s.removeClass('far').addClass('fas');
+                            } else {
+                                s.removeClass('fas').addClass('far');
+                            }
+                        });
                     }
                 }
             );
@@ -1115,7 +1136,7 @@ editStars.click(function() {
     $('#editStarsRating').addClass('selection-locked');
 });
 
-            // Handle clicking outside the stars to deselect
+            // Handle clicking outside the stars - MODIFIED
             $(document).on('click', function(event) {
                 // For add review stars
                 if (!$(event.target).closest('#starsRating').length &&
@@ -1126,14 +1147,9 @@ editStars.click(function() {
                     resetStars(stars, '#starsRating');
                 }
 
-                // For edit review stars
-                if (!$(event.target).closest('#editStarsRating').length &&
-                    !$(event.target).is('#editStarsRating') &&
-                    editSelectedRating !== 0) {
-                    editSelectedRating = 0;
-                    $('#edit-rating-value').val(editSelectedRating);
-                    resetStars(editStars, '#editStarsRating');
-                }
+                // For edit review stars - REMOVED this behavior for edit stars
+                // This was causing the rating to be reset when clicking elsewhere
+                // We want to keep the original rating value
             });
 
             // Prevent clicks inside the modal from triggering the document click handler
@@ -1183,7 +1199,7 @@ editStars.click(function() {
                             var addReviewModal = bootstrap.Modal.getInstance(document.getElementById('addReview'));
                             addReviewModal.hide();
 
-                           // showSuccessNotification("Review submitted successfully!");
+                            showSuccessNotification("Review submitted successfully!");
 
                             // Refresh the page after a short delay to show the new review
                             setTimeout(function() {
@@ -1202,17 +1218,22 @@ editStars.click(function() {
 
             // Update review button click handler
 $('#updateReviewBtn').click(function() {
-    // Validate the form
-    const rating = $('#edit-rating-value').val();
+    // Get form values
+    let rating = $('#edit-rating-value').val();
     const comment = $('#edit-comment').val().trim();
     const reviewId = $('#edit-reviewId').val();
     const bookId = $('#edit-bookId').val();
-
+    const uploadDate = $('#edit-uploadDate').val();
+    
+    // If rating is empty/zero, use the stored editSelectedRating value instead
+    // This ensures we retain the original rating if the user didn't select a new one
     if (!rating || rating == 0) {
-        toastr.warning("Please select a rating for the book.");
-        return;
+        rating = editSelectedRating;
+        // Also update the hidden field with this value
+        $('#edit-rating-value').val(editSelectedRating);
     }
 
+    // Only validate comment
     if (!comment) {
         toastr.warning("Please provide a comment about the book.");
         return;
@@ -1235,8 +1256,6 @@ $('#updateReviewBtn').click(function() {
                 var editReviewModal = bootstrap.Modal.getInstance(document.getElementById('editReview'));
                 editReviewModal.hide();
 
-               // toastr.success("Review updated successfully!");
-
                 // Refresh the page after a short delay to show the updated review
                 setTimeout(function() {
                     location.reload();
@@ -1251,7 +1270,6 @@ $('#updateReviewBtn').click(function() {
         }
     });
 });
-
             console.log("Book details and review functionality initialized");
 
             // Set toastr options
