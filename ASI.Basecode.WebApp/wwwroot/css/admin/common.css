@@ -888,9 +888,8 @@ font-weight: 500;
         }
 
     .filter-popup .btn-primary,
-    .book-sort-popup .btn-primary 
-    {
-        background-color: rgba(100, 125, 127, 0.4);
+    .book-sort-popup .btn-primary {
+        background-color: rgb(108 129 130);
         font-size: 12px;
         border-color: rgba(100, 125, 127, 0.8);
         color: white;
@@ -899,8 +898,8 @@ font-weight: 500;
         .filter-popup .btn-primary:hover,
         .book-sort-popup .btn-primary:hover 
         {
-            background-color: rgba(100, 125, 127, 0.8);
-            border-color: rgb(100, 125, 127);
+            background-color: rgb(24 70 73 / 40%);
+            border-color: rgb(208 221 222);
         }
 
 /* specific filter popup designssss */
@@ -926,8 +925,8 @@ font-weight: 500;
 .filter-btn.active,
 .sort-btn.active 
 {
-    background-color: rgba(100, 125, 127, 0.1);
-    border-color: rgb(100, 125, 127);
+    background-color: rgb(24 70 73 / 40%);
+    border-color: rgb(208 221 222);
 }
 
 
