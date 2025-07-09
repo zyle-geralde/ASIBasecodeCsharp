@@ -13,7 +13,7 @@
 .success-icon {
     width: 60px;
     height: 60px;
-    background-color: #647D7F; /* Changed from #28a745 to #647D7F to match the button */
+    background-color: #647D7F; 
     color: white;
     border-radius: 50%;
     display: flex;
