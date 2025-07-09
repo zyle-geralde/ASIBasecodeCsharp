@@ -179,7 +179,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Generate OTP without creating user in database
                 string otpCode = await _userService.SendOtpCodeEmail(model.Email);
                 model.OtpCode = otpCode;
-                model.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
+                model.OtpExpirationDate = DateTime.Now.AddMinutes(2);
 
                 model.Role = "User";
                 // Store model in memory with email as key
@@ -208,7 +208,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return userModel.OtpCode == otpCode &&
                    userModel.OtpExpirationDate.HasValue &&
-                   userModel.OtpExpirationDate.Value > DateTime.UtcNow;
+                   userModel.OtpExpirationDate.Value > DateTime.Now;
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Generate OTP without creating user in database
                 string otpCode = await _userService.SendOtpCodeEmail(model.Email);
                 model.OtpCode = otpCode;
-                model.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
+                model.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                 model.Role = "Admin";
                 // Store model in memory with email as key
@@ -368,7 +368,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Generate new OTP and send email
                 string otpCode = await _userService.SendOtpCodeEmail(email);
                 userModel.OtpCode = otpCode;
-                userModel.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
+                userModel.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                 // Update in pending registrations
                 _pendingRegistrations[email] = userModel;
