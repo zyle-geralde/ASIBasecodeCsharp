@@ -135,7 +135,6 @@ namespace ASI.Basecode.Services.Services
                 existing_language.LanguageName = language.LanguageName;
                 existing_language.UpdatedDate = DateTime.UtcNow;
 
-
                 await _languageRepository.EditLanguage();
             }
             catch(ArgumentException ex)

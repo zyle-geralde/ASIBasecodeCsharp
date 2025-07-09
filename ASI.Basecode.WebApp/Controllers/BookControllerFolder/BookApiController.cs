@@ -57,7 +57,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             {
                 return BadRequest(ModelState); // Return validation errors
             }
-            request.UpdatedDate = DateTime.Now;
+            request.UpdatedDate = DateTime.UtcNow;
             request.UpdatedBy = User.FindFirstValue(ClaimTypes.NameIdentifier);
             try
             {

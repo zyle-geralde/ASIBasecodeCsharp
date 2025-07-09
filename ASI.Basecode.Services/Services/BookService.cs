@@ -75,8 +75,8 @@ namespace ASI.Basecode.Services.Services
                 BookFile = request.BookFileUrl,
 
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
-                UploadDate = DateTime.Now,
-                UpdatedDate = DateTime.Now,
+                UploadDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow,
                 PublicationDate = request.PublicationDate,
 
                 // Handle comma-separated strings
@@ -273,7 +273,7 @@ namespace ASI.Basecode.Services.Services
                 BookFile = request.BookFileUrl,
 
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
-                UpdatedDate = DateTime.Now,
+                UpdatedDate = DateTime.UtcNow,
                 PublicationDate = request.PublicationDate,
 
                 // Handle comma-separated strings

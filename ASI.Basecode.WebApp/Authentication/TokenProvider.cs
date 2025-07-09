@@ -36,7 +36,7 @@ namespace ASI.Basecode.WebApp.Authentication
         /// <returns></returns>
         public string GetJwtSecurityToken(ClaimsIdentity identity, TokenProviderOptions tokenProvider)
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var jwt = new JwtSecurityToken(
                                             issuer: tokenProvider.Issuer,
                                             audience: tokenProvider.Audience,

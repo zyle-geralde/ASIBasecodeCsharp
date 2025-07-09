@@ -1,4 +1,7 @@
-﻿@model ASI.Basecode.Services.ServiceModels.AuthorViewModel
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model ASI.Basecode.Services.ServiceModels.AuthorViewModel
 @{
     ViewData["Title"] = "Add New Author";
     Layout = "_AdminSidebarLayout";
@@ -10,35 +13,11 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <link rel="stylesheet" href="~/css/admin/books/bookmaster.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
-    <style>
-        /* General style fixes */
-        .book-master-file-input-text {
-            width: 100%;
-            padding: 8px 12px;
-            text-align: center;
-            margin-top: 10px;
-        }
 
-        #authorImageFileNameDisplay {
-            display: block;
-            background-color: #f9fafb;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-        }
-
-        .master-browse-button {
-            margin: 10px auto;
-            display: block;
-        }
-
-        .master-upload-status {
-            text-align: center;
-        }
-    </style>
 }
 
-<div class="admin-common-container-add">
-    <div class="admin-common-content-wrapper-add">
+<div class="admin-common-container">
+    <div class="admin-common-content-wrapper">
         <div class="header-section">
             <h1>Add New Author</h1>
             <p>Enter details of the new author here</p>
@@ -49,11 +28,11 @@
         <form asp-action="AddAuthor" asp-controller="Author" method="post" id="addAuthorForm">
             <input type="hidden" id="authorImageUrl" name="AuthorImageUrl">
 
-            <div class="content-master-grid-add">
+            <div class="content-master-grid">
                 <div class="image-upload-section">
                     <div class="author-image-preview-container">
                         <img id="authorImagePreview" src="" alt="Author Image Preview" style="display:none;">
-                        <span id="imagePlaceholder" class="placeholder-text">No Image</span>
+                        <span id="imagePlaceholder" class="placeholder-text ">No Image</span>
                     </div>
 
                     <input type="text" class="book-master-file-input-text" readonly id="authorImageFileNameDisplay">
@@ -61,19 +40,24 @@
                     <input type="file" id="authorImageFile" accept="image/*" name="AuthorImageFile" style="display: none;">
 
                     <p id="authorImageUploadStatus" class="master-upload-status">
-                        <span class="file-size-info required-label">Max file size: 10MB</span>
+                        <span class="file-size-info  required-label">Max file size: 10MB</span>
                         <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                     </p>
                 </div>
 
-                <div class="form-column">
-                    <div class="book-master-form-group">
-                        <label for="authorName" class="required-label">Author Name</label>
-                        <input type="text" id="authorName" name="AuthorName" class="book-master-form-input" value="@Model?.AuthorName" required>
-                    </div>
-                    <div class="book-master-form-group">
-                        <label for="authorDescription">Description</label>
-                        <input type="text" id="authorDescription" name="AuthorDescription" class="book-master-form-input" value="@Model?.AuthorDescription">
+                <div>
+                    <div class="book-master-form-grid">
+                        <div class="book-master-form-group">
+                            <label for="authorName" class="required-label">Author Name</label>
+                            <input type="text" id="authorName" name="AuthorName" class="book-master-form-input" value="@Model?.AuthorName" required>
+                            @* <span asp-validation-for="AuthorName" class="text-danger"></span> *@
+                        </div>
+                        <div class="book-master-form-group">
+                            <label for="authorDescription">Description</label>
+                            <input type="text" id="authorDescription" name="AuthorDescription" class="book-master-form-input" value="@Model?.AuthorDescription">
+
+                            @* <span asp-validation-for="AuthorDescription" class="text-danger"></span> *@
+                        </div>
                     </div>
                 </div>
             </div>

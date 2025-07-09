@@ -66,7 +66,7 @@ namespace ASI.Basecode.WebApp.Authentication
         private async Task GenerateTokenUser(HttpContext context)
         {
             string encodedJwt;
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var username = context.Request.Form["username"];
             var password = context.Request.Form["password"];
             var identity = await _options.IdentityResolver(username, password);

@@ -359,7 +359,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
             if (ModelState.IsValid)
             {
-                book.UpdatedDate = DateTime.Now;
+                book.UpdatedDate = DateTime.UtcNow;
                 book.UpdatedBy = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 try
                 {
