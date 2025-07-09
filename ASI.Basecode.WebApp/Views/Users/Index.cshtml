@@ -68,22 +68,29 @@
 
     <div class="card">
         <div class="card-body">  
-            <form asp-action="Index" asp-controller="User" method="get" class="d-flex align-items-center mb-3">
-                <input type="text"
-                       name="searchTerm"
-                       value="@currentSearch"
-                       class="form-control me-2"
-                       placeholder="Search users…" />
+            <div class="search-filter-container" style="height: 50px; align-items: stretch; margin-top: 10px; margin-bottom: 15px">
+                <form asp-action="Index" asp-controller="User" method="get" class="d-flex align-items-center mb-3">
+                    <div class="search-container" style="margin-right: 10px">
+                        <i class="fas fa-search"></i>
+                        <input type="text"
+                               name="searchTerm"
+                               value="@currentSearch"
+                               class="book-master-form-input align-self-center" style="font-weight: 300; margin-right: 10px"
+                               placeholder="Search users…" />
+                    </div>
 
-                <input type="hidden" id="roleField" name="role" value="@currentRoleFilter" />
-                <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
-                <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">Apply</button>
 
-                <button type="submit" class="btn btn-primary">Apply</button>
+                        <button type="button" id="sortButton" class="btn btn-outline-secondary sort-btn"><i class="fas fa-sort"></i> Sort</button>
+                    </div>                  
+                    <input type="hidden" id="roleField" name="role" value="@currentRoleFilter" />
+                    <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
+                    <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
 
-                <button type="button" id="sortButton" class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
-
-            </form>
+                    
+                </form>
+            </div>          
             <div class="sort-popup card shadow" id="sortPopup" style="display: none;">
                 <div class="card-header bg-secondary text-white justify-center">
                     <h6 class="mb-0" style="margin-top: 6px;">Sort By:</h6>

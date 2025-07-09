@@ -26,6 +26,108 @@ body
     flex-direction: column;
 }
 
+.admin-common-content-wrapper-add {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 3rem;
+}
+
+.admin-common-container-add {
+    max-width: 1250px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    padding: 0 24px;
+    box-sizing: border-box;
+    display: block;
+    margin-top: 24px;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.content-master-grid-add {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 60px;
+    align-items: start;
+    margin-top: 20px;
+}
+
+.form-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.image-upload-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+@media (max-width: 1030px) {
+    .content-master-grid-add {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 30px !important;
+    }
+
+    .image-upload-section {
+        margin: 0 auto 20px !important;
+        width: 100% !important;
+        max-width: 250px !important;
+    }
+
+    .form-column {
+        width: 100% !important;
+    }
+
+    #authorImageFileNameDisplay {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+        margin-top: 10px !important;
+    }
+
+    /* Fix text overflow */
+    .book-master-form-input {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+}
+
+.book-master-form-input {
+    width: 100%;
+    padding: 12px 16px;
+    margin-top: 8px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #374151;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+    transition: border-color 0.2s ease;
+}
+
+    .book-master-form-input:hover {
+        border-color: #a0b4b7;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .book-master-form-input:focus {
+        border-color: #647D7F;
+        box-shadow: 0 0 0 3px rgba(100, 125, 127, 0.15), 0 2px 8px 0 rgba(0, 0, 0, 0.12);
+        outline: none;
+        transform: translateY(-1px);
+    }
+
 /*------------------------------ Label -----------------------------*/
 label 
 {
@@ -256,12 +358,16 @@ label
     width: 100% !important;
     justify-content: space-evenly !important;
     align-items: center !important;*/
-    
+    width:100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
     gap: 10px;
+}
+
+.card-body form {
+    width: 100%;
 }
 
 
@@ -301,6 +407,7 @@ label
 {
     flex-grow: 1;
     position: relative;
+
 }
 
     .search-container i 
@@ -312,10 +419,21 @@ label
         color: #6c757d;
     }
 
+        .search-container i.fas.fa-search {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            z-index: 1;
+            pointer-events: none;
+            align-self: center;
+        }
+
     .search-container input 
     {
-        padding-left: 40px;
-        border-radius: 8px;
+        padding-left: 40px !important;
+        border-radius: 8px !important;
         border: 1px solid #ced4da;
         height: 42px;
     }
@@ -1083,3 +1201,5 @@ font-weight: 500;
         box-shadow: none !important;
         transform: none !important;
     }
+
+

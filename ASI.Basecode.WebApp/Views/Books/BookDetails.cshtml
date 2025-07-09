@@ -1217,59 +1217,59 @@ editStars.click(function() {
             });
 
             // Update review button click handler
-$('#updateReviewBtn').click(function() {
-    // Get form values
-    let rating = $('#edit-rating-value').val();
-    const comment = $('#edit-comment').val().trim();
-    const reviewId = $('#edit-reviewId').val();
-    const bookId = $('#edit-bookId').val();
-    const uploadDate = $('#edit-uploadDate').val();
+            $('#updateReviewBtn').click(function() {
+                // Get form values
+                let rating = $('#edit-rating-value').val();
+                const comment = $('#edit-comment').val().trim();
+                const reviewId = $('#edit-reviewId').val();
+                const bookId = $('#edit-bookId').val();
+                const uploadDate = $('#edit-uploadDate').val();
     
-    // If rating is empty/zero, use the stored editSelectedRating value instead
-    // This ensures we retain the original rating if the user didn't select a new one
-    if (!rating || rating == 0) {
-        rating = editSelectedRating;
-        // Also update the hidden field with this value
-        $('#edit-rating-value').val(editSelectedRating);
-    }
+                // If rating is empty/zero, use the stored editSelectedRating value instead
+                // This ensures we retain the original rating if the user didn't select a new one
+                if (!rating || rating == 0) {
+                    rating = editSelectedRating;
+                    // Also update the hidden field with this value
+                    $('#edit-rating-value').val(editSelectedRating);
+                }
 
-    // Only validate comment
-    if (!comment) {
-        toastr.warning("Please provide a comment about the book.");
-        return;
-    }
+                // Only validate comment
+                if (!comment) {
+                    toastr.warning("Please provide a comment about the book.");
+                    return;
+                }
 
-    // Get the token
-    const token = $('#editReviewForm input[name="__RequestVerificationToken"]').val();
+                // Get the token
+                const token = $('#editReviewForm input[name="__RequestVerificationToken"]').val();
 
-    // Submit the form via AJAX
-    $.ajax({
-        url: '@Url.Action("Edit", "Review")',
-        type: 'POST',
-        data: $('#editReviewForm').serialize(),
-        headers: {
-            'RequestVerificationToken': token
-        },
-        success: function(response) {
-            if (response && response.success) {
-                // Close the modal
-                var editReviewModal = bootstrap.Modal.getInstance(document.getElementById('editReview'));
-                editReviewModal.hide();
+                // Submit the form via AJAX
+                $.ajax({
+                    url: '@Url.Action("Edit", "Review")',
+                    type: 'POST',
+                    data: $('#editReviewForm').serialize(),
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function(response) {
+                        if (response && response.success) {
+                            // Close the modal
+                            var editReviewModal = bootstrap.Modal.getInstance(document.getElementById('editReview'));
+                            editReviewModal.hide();
 
-                // Refresh the page after a short delay to show the updated review
-                setTimeout(function() {
-                    location.reload();
-                }, 1500);
-            } else {
-                toastr.error("Error: " + ((response && response.errors) ? response.errors.join(", ") : "Unknown error"));
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error("Error details:", xhr.responseText);
-            toastr.error("Error updating review: " + error);
-        }
-    });
-});
+                            // Refresh the page after a short delay to show the updated review
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            toastr.error("Error: " + ((response && response.errors) ? response.errors.join(", ") : "Unknown error"));
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error details:", xhr.responseText);
+                        toastr.error("Error updating review: " + error);
+                    }
+                });
+            });
             console.log("Book details and review functionality initialized");
 
             // Set toastr options
