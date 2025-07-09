@@ -943,6 +943,18 @@ font-weight: 500;
     border-color: rgb(208 221 222);
 }
 
+.sort-btn {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    width: 10%;
+    margin-left: 8px;
+}
+
 
 /* --------------------- Loading Spinner ----------------------*/
 .loading-overlay
