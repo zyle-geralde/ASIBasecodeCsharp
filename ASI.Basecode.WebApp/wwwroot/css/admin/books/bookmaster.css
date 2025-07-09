@@ -233,6 +233,13 @@ span[data-valmsg-for="PublicationDate"]
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
+    .book-master-submit-button:disabled 
+    {
+        background-color: #5f7c78;
+        cursor: not-allowed;
+        opacity: 0.8;
+    }
+
 .cancel-button 
 {
     display: inline-flex;
@@ -591,9 +598,9 @@ input:checked + .slider
 
 
 /*--------------- Author List: table adjustment for the action buttons -----------------*/
-.data-table th:last-child,
+/*.data-table th:last-child,
 .data-table td:last-child {
-    text-align: center;
+    text-align: left;
     vertical-align: middle;
 }
 
@@ -604,3 +611,4 @@ input:checked + .slider
     gap: 0.5rem;
     white-space: nowrap;
 }
+*/

@@ -93,7 +93,7 @@ namespace ASI.Basecode.Services.Services
             var existingUnverifiedUser = await _repository.FindUserByEmail(model.Email);
             if (existingUnverifiedUser != null)
             {
-                await _repository.DeleteUser(existingUnverifiedUser.Id);
+                await _repository.DeleteUser(existingUnverifiedUser.Email);
 
                 try
                 {
@@ -105,7 +105,7 @@ namespace ASI.Basecode.Services.Services
                 }
             }
 
-            // Create new user as verified
+
             var user = new User
             {
                 Email = model.Email,
@@ -216,7 +216,7 @@ namespace ASI.Basecode.Services.Services
                 var profile = new PersonProfile
                 {
                     ProfileID = user.Email,
-                    FirstName = null, // Use username as first name or you could add FirstName to your model
+                    FirstName = null,
                     LastName = null,
                     MiddleName = null,
                     Suffix = null,
@@ -542,16 +542,16 @@ namespace ASI.Basecode.Services.Services
             return vmList;
         }
 
-        public async Task<bool> DeleteUser(int id)
+        public async Task<bool> DeleteUser(string userId)
         {
-            var user = await _repository.GetUserById(id);
+            var user = await _repository.FindByEmailForEdit(userId);
 
             if (user == null)
             {
                 return false;
             }
 
-            await _repository.DeleteUser(id);
+            await _repository.DeleteUser(userId);
             if (!string.IsNullOrEmpty(user.Email))
             {
                 await _personProfileService.DeletePersonProfile(user.Email);

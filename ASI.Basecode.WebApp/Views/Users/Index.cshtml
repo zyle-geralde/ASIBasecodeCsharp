@@ -119,8 +119,12 @@
                                 <label class="form-check-label" for="sortEmail">Email</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortDate" value="createdtime" @(currentSort == "createdtime" ? "checked" : "")>
-                                <label class="form-check-label" for="sortDate">Created Date</label>
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortCreatedDate" value="createddate" @(currentSort == "createddate" ? "checked" : "")>
+                                <label class="form-check-label" for="sortCreatedDate">Created Date</label>
+                            </div>
+                                                        <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortUpdatedDate" value="updatedate" @(currentSort == "updateddate" ? "checked" : "")>
+                                <label class="form-check-label" for="sortUpdatedDate">Updated Date</label>
                             </div>
                         </div>
                     </div>
@@ -177,7 +181,7 @@
                                             </a>
                                             <button type="button" class="btn btn-icon text-danger"
                                                     onclick="setupDeleteModal(this)"
-                                                    data-user-id="@u.Id"
+                                                    data-user-id="@u.Email"
                                                     data-user-name="@u.Email">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -201,7 +205,7 @@
 
 <form id="deleteUserForm" method="post" action="/User/Delete" style="display:none;">
     @Html.AntiForgeryToken()
-    <input type="hidden" name="id" id="deleteUserId" />
+    <input type="hidden" name="userId" id="deleteUserId" />
 </form>
 
 <!-- Hidden field for TempData success message -->

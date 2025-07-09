@@ -67,7 +67,7 @@
 
                 <button type="submit" class="btn btn-primary">Apply</button>
 
-                <button type="button" id="sortButton" class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
+                <button type="button" id="sortButton" class="btn-sort">Sort By <i class="fas fa-caret-down"></i></button>
 
             </form>
             <div class="sort-popup card shadow" id="sortPopup" style="display: none;">
@@ -83,8 +83,12 @@
                                 <label class="form-check-label" for="sortId">Name</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortDate" value="CreatedTime" @(currentSort == "CreatedTime" ? "checked" : "")>
-                                <label class="form-check-label" for="sortDate">Created Date</label>
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortCreatedDate" value="CreatedDate" @(currentSort == "CreatedDate" ? "checked" : "")>
+                                <label class="form-check-label" for="sortCreatedDate">Created Date</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortUpdatedDate" value="UpdatedDate" @(currentSort == "UpdatedDate" ? "checked" : "")>
+                                <label class="form-check-label" for="sortUpdatedDate">Updated Date</label>
                             </div>
                         </div>
                     </div>
@@ -100,6 +104,7 @@
                                 <input class="form-check-input" type="radio" name="popupSortDirection" id="sortDesc" value="true" @(currentSortDescending ? "checked" : "")>
                                 <label class="form-check-label" for="sortDesc">Descending <i class="fas fa-arrow-down"></i></label>
                             </div>
+
                         </div>
                     </div>
 
@@ -143,7 +148,7 @@
                                         <td class="align-middle">@author.AuthorDescription</td>
                                         <td class="align-middle">@author.UploadDate?.ToShortDateString()</td>
                                         <td class="align-middle" style="white-space:nowrap;">
-                                            <div class="action-buttons">
+                                            <div class="d-flex gap-2 justify-content-center">
                                                 <a asp-controller="Book"
                                                    asp-action="ListBook"
                                                    asp-route-author="@author.AuthorName"

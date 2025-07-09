@@ -344,7 +344,7 @@ label
  
 /*------------------------------ Sort and Filter Button -----------------------------*/
 
-.btn-outline-secondary 
+.btn-outline-secondary
 {
     max-width: 150px;
     color: #647d7f;
@@ -653,7 +653,7 @@ font-weight: 500;
 }*/
 
 /*------------------Sort Button----------------------*/
-/*.sort-btn 
+.btn-sort
 {
     padding: 8px 15px;
     border: 1px solid #ddd;
@@ -666,10 +666,10 @@ font-weight: 500;
     margin-left: 8px;
 }
 
-    .sort-btn:hover 
+    .btn-sort:hover 
     {
         background-color: #f5f5f5;
-    }*/
+    }
 
 /* Sort Popup Styling */
 .sort-popup 
@@ -767,8 +767,7 @@ font-weight: 500;
 
 /*--------------- Filter and Sort Design --------------------*/
 .filter-popup,
-.book-sort-popup 
-{
+.book-sort-popup {
     position: absolute;
     top: 270px;
     right: 20px;
@@ -780,7 +779,10 @@ font-weight: 500;
     z-index: 90;
     display: none;
     margin-top: 5px;
-
+    padding-bottom: 15px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
 .book-sort-popup 
@@ -792,6 +794,8 @@ font-weight: 500;
     .book-sort-popup.show 
     {
         display: block;
+        opacity: 1; 
+        transform: translateY(0); 
     }
 
     /* header for the popup */
@@ -822,10 +826,17 @@ font-weight: 500;
         background: none;
         border: none;
         color: white;
-        font-size: 1.5rem;
+        font-size: 1.6rem;
         cursor: pointer;
         line-height: 1;
+        transition: color 0.2s ease-in-out;
     }
+
+        .filter-popup .popup-close:hover,
+        .book-sort-popup .popup-close:hover
+        {
+            color: rgba(255, 255, 255, 0.8);
+        }
 
     /* contents */
     .filter-popup form,
@@ -841,6 +852,7 @@ font-weight: 500;
         color: #465b73;
         font-weight: 500;
         margin-bottom: 8px;
+        margin-top: 10px;
     }
 
     .filter-popup .form-control,
@@ -851,6 +863,7 @@ font-weight: 500;
         border: 1px solid #e0e0e0;
         border-radius: 4px;
         padding: 8px 12px;
+        /*margin-bottom: 10px;*/
     }
 
     .filter-popup .form-check-input:checked,
@@ -868,6 +881,7 @@ font-weight: 500;
         justify-content: flex-end;
         gap: 10px;
         padding: 15px;
+        margin-top: 20px;
         border-top: 1px solid #e0e0e0;
     }
 
@@ -888,9 +902,8 @@ font-weight: 500;
         }
 
     .filter-popup .btn-primary,
-    .book-sort-popup .btn-primary 
-    {
-        background-color: rgba(100, 125, 127, 0.4);
+    .book-sort-popup .btn-primary {
+        background-color: rgb(108 129 130);
         font-size: 12px;
         border-color: rgba(100, 125, 127, 0.8);
         color: white;
@@ -899,8 +912,8 @@ font-weight: 500;
         .filter-popup .btn-primary:hover,
         .book-sort-popup .btn-primary:hover 
         {
-            background-color: rgba(100, 125, 127, 0.8);
-            border-color: rgb(100, 125, 127);
+            background-color: rgb(24 70 73 / 40%);
+            border-color: rgb(208 221 222);
         }
 
 /* specific filter popup designssss */
@@ -926,9 +939,21 @@ font-weight: 500;
 .filter-btn.active,
 .sort-btn.active 
 {
-    background-color: rgba(100, 125, 127, 0.1);
-    border-color: rgb(100, 125, 127);
+    background-color: rgb(24 70 73 / 40%);
+    border-color: rgb(208 221 222);
 }
+
+/*.sort-btn {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    width: 10%;
+    margin-left: 8px;
+}*/
 
 
 /* --------------------- Loading Spinner ----------------------*/
