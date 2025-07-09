@@ -3,7 +3,9 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +19,15 @@ namespace ASI.Basecode.Services.Services
         private readonly IBookGenreRepository BookGenreRepository;
         private readonly ILanguageRepository _languageRepository;
         private readonly IAuthorRepository _authorRepository;
-        public BookGenreService(IBookGenreRepository book_genre_repositry, ILanguageRepository languageRepository,IAuthorRepository authorRepository) 
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly SessionManager _sessionManager;
+        public BookGenreService(IBookGenreRepository book_genre_repositry, ILanguageRepository languageRepository,IAuthorRepository authorRepository, IHttpContextAccessor httpContextAccessor) 
         {
             BookGenreRepository = book_genre_repositry;
             _languageRepository = languageRepository;
             _authorRepository = authorRepository;
+            _httpContextAccessor = httpContextAccessor;
+            this._sessionManager = new SessionManager(httpContextAccessor.HttpContext.Session);
         }
 
         public async Task AddGenre(BookGenreViewModel book_genre)
@@ -55,8 +61,8 @@ namespace ASI.Basecode.Services.Services
                 GenreName = book_genre.GenreName,
                 GenreDescription = book_genre.GenreDescription,
                 GenreImageUrl = book_genre.GenreImageUrl,
-                CreatedBy = "admin1",
-                UpdatedBy = "admin1",
+                CreatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName"),
+                UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName"),
                 UpdatedDate = DateTime.Now,
                 UploadDate = DateTime.Now,
             };
@@ -158,6 +164,7 @@ namespace ASI.Basecode.Services.Services
                 existing_genre.GenreDescription = book_genre.GenreDescription;
                 existing_genre.GenreImageUrl = book_genre.GenreImageUrl;
                 existing_genre.UpdatedDate = DateTime.UtcNow;
+                existing_genre.UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName");
 
                 await BookGenreRepository.EditGenre();
             }
@@ -229,8 +236,8 @@ namespace ASI.Basecode.Services.Services
                         ISBN10 = bookEntity.ISBN10,
                         ISBN13 = bookEntity.ISBN13,
                         Edition = bookEntity.Edition,
-                        CreatedBy = "admin1",
-                        UpdatedBy = "Logged Admin"
+                        CreatedBy = bookEntity.CreatedBy,
+                        UpdatedBy = bookEntity.UpdatedBy
                     });
                 }
 

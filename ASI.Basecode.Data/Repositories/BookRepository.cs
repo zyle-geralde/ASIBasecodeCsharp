@@ -27,7 +27,6 @@ namespace ASI.Basecode.Data.Repositories
             await _dbContext.Books.AddAsync(book);
             await _dbContext.SaveChangesAsync();
         }
-        //public async Task<List<Book>> GetBooks(BookQueryParams? queryParams = null)
         public async Task<PaginatedList<Book>> GetBooks(BookQueryParams? queryParams = null)
         {
             queryParams ??= new BookQueryParams();
@@ -92,7 +91,11 @@ namespace ASI.Basecode.Data.Repositories
                             ? query.OrderByDescending(b => b.PublicationDate)
                             : query.OrderBy(b => b.PublicationDate);
                         break;
-
+                    case "updateddate":
+                        query = desc
+                            ? query.OrderByDescending(b => b.UpdatedDate)
+                            : query.OrderBy(b => b.UpdatedDate);
+                        break;
                     case "rating":
                         query = desc
                             ? query.OrderByDescending(b => b.AverageRating)
