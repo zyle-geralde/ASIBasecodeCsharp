@@ -140,14 +140,13 @@
     box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
 }
 
-/* Updated Filter Panel with dual color palette */
 .filter-panel {
     position: fixed;
     right: 0;
     top: 0;
     width: 500px;
     height: 100vh;
-    background: rgb(255, 255, 255, 0.9);
+    background: rgb(255, 255, 255, 0.92);
     border-radius: 0;
     padding: 25px 30px;
     margin-bottom: 0;
