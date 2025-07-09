@@ -163,7 +163,7 @@ namespace ASI.Basecode.Services.Services
                 existing_genre.GenreName = book_genre.GenreName;
                 existing_genre.GenreDescription = book_genre.GenreDescription;
                 existing_genre.GenreImageUrl = book_genre.GenreImageUrl;
-                existing_genre.UpdatedDate = DateTime.UtcNow;
+                existing_genre.UpdatedDate = DateTime.Now;
                 existing_genre.UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName");
 
                 await BookGenreRepository.EditGenre();
