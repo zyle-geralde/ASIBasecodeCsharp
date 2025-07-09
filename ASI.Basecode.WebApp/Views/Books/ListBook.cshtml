@@ -110,10 +110,9 @@
             transform: translateY(-3px);
         }
 
-            input[type="text"]:hover {
-                transform: translateY(-2px);
-            }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
 }
 
 <div class="content-card p-4">
@@ -195,42 +194,27 @@
 
             <div class="filter-section">
                 <label class="form-label">Genres</label>
-                <div class="genre-grid">
+                <select name="genreFilter" class="form-select" id="filterGenres" multiple="multiple" style="width: 100%;">
                     @foreach (var genre in allGenres)
                     {
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="checkbox"
-                                   name="genreFilter"
-                                   value="@genre.BookGenreId"
-                                   id="g_@genre.BookGenreId"
-                            @(currentGenres.Contains(genre.BookGenreId) ? "checked" : null) />
-                            <label class="form-check-label" for="g_@genre.BookGenreId">
-                                @genre.GenreName
-                            </label>
-                        </div>
+                        <option value="@genre.BookGenreId" selected="@(currentGenres.Contains(genre.BookGenreId) ? "selected" : null)">
+                            @genre.GenreName
+                        </option>
                     }
-                </div>
+                </select>
             </div>
 
             <div class="filter-section">
                 <label class="form-label">Language</label>
-                <div class="genre-grid">
+                <select name="languageFilter" class="form-select" id="filterLanguage" style="width: 100%;">
+                    <option value="">Any</option> @* Add "Any" option for language filter *@
                     @foreach (var language in allLanguages)
                     {
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="languageFilter"
-                                   value="@language.LanguageId"
-                                   id="lang_@language.LanguageId"
-                            @(currentLanguage == language.LanguageId ? "checked" : null) />
-                            <label class="form-check-label" for="lang_@language.LanguageId">
-                                @language.LanguageName
-                            </label>
-                        </div>
+                        <option value="@language.LanguageId" selected="@(currentLanguage == language.LanguageId ? "selected" : null)">
+                            @language.LanguageName
+                        </option>
                     }
-                </div>
+                </select>
             </div>
 
             <div class="form-check filter-section">
@@ -240,7 +224,7 @@
                        name="isFeatured"
                        value="true"
                 @(currentIsFeatured == true ? "checked" : null) />
-                <label class="form-check-label" for="isFeaturedFilter">
+                <label class="form-check-label mt-3" for="isFeaturedFilter">
                     Featured only
                 </label>
             </div>
@@ -271,7 +255,9 @@
                     <option value="publicationdate" selected="@(currentSort == "publicationdate" ? "selected" : null)">Publication Date</option>
                     <option value="rating" selected="@(currentSort == "rating" ? "selected" : null)">Rating</option>
                     <option value="uploaddate" selected="@(currentSort == "uploaddate" ? "selected" : null)">Upload Date</option>
-                </select>
+                    <option value="uploaddate" selected="@(currentSort == "updateddate" ? "selected" : null)">Updated Date</option>
+                
+</select>
             </div>
 
             <div class="filter-section">
@@ -305,11 +291,11 @@
                         <th>Title</th>
                         <th>Subtitle</th>
                         <th>Author</th>
-                        <th>Publication Date</th>
+                        
                         <th>Language</th>
                         <th>Rating</th>
+                        <th>Publication Date</th>
                         <th>Upload Date</th>
-                        <th>Series</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -330,11 +316,11 @@
                             <td>@book.Title</td>
                             <td>@book.Subtitle</td>
                             <td>@book.Author</td>
-                            <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
+                            
                             <td>@book.Language</td>
                             <td>@book.AverageRating</td>
+                            <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
                             <td>@book.UploadDate</td>
-                            <td>@book.SeriesName</td>
                             <td>
                                 <div class="d-flex gap-2">
                                     <a href="/Book/BookDetails/@book.BookId" class="action-icon-button text-secondary">
@@ -386,6 +372,9 @@
 @section Scripts {
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script type="module">
         import { showLoadingOverlay, hideLoadingOverlay } from "/js/common/_loadingSpinner.js";
 
@@ -436,51 +425,6 @@
                 await deleteFileFromFirebase(bookUrlCopy);
             }
         }
-
-
-        // function showStatusModal(message, type = 'Success') {
-        //     var deleteModalElement = document.getElementById('deleteModal');
-        //     var deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
-        //     if (deleteModal) {
-        //         deleteModal.hide();
-        //     }
-
-        //     const statusModalTitle = document.getElementById('statusModalLabel');
-        //     const statusModalMessage = document.getElementById('statusModalMessage');
-
-        //     if (statusModalTitle) {
-        //         statusModalTitle.textContent = type;
-        //     }
-        //     if (statusModalMessage) {
-        //         statusModalMessage.textContent = message;
-        //     }
-
-
-        //     const statusIcon = document.querySelector('#statusModal .status-icon i');
-        //     if (statusIcon) {
-        //         statusIcon.classList.remove('fa-check', 'fa-times', 'fa-exclamation-triangle');
-        //         if (type === 'Success') {
-        //             statusIcon.classList.add('fa-check');
-        //             statusIcon.style.color = '#28a745'; 
-        //         } else if (type === 'Error') {
-        //             statusIcon.classList.add('fa-times');
-        //             statusIcon.style.color = '#dc3545'; 
-        //         } else if (type === 'Warning') {
-        //             statusIcon.classList.add('fa-exclamation-triangle');
-        //             statusIcon.style.color = '#ffc107'; 
-        //         } else {
-        //             statusIcon.classList.add('fa-check'); 
-        //             statusIcon.style.color = '#28a745';
-        //         }
-        //     }
-
-
-        //     setTimeout(function () {
-        //         var statusModalElement = document.getElementById('statusModal');
-        //         var statusModal = new bootstrap.Modal(statusModalElement);
-        //         statusModal.show();
-        //     }, 100);
-        // }
 
         const deleteModalButtons = document.querySelectorAll("[data-bs-target='#@deleteBookConfirmationModel.Id']");
         
@@ -560,6 +504,25 @@
             const closeSortPopup = document.getElementById('closeSortPopup');
             const globalSearchInput = document.getElementById('globalSearchInput');
 
+            $('#filterGenres').select2({
+                placeholder: "Select genres",
+                allowClear: true, 
+                theme: "bootstrap-5" 
+            });
+
+            $('#filterLanguage').select2({
+                placeholder: "Select a language",
+                allowClear: true, 
+                theme: "bootstrap-5" 
+            });
+
+            const currentGenresArray = @Html.Raw(Json.Serialize(currentGenres));
+            $('#filterGenres').val(currentGenresArray).trigger('change');
+
+            const currentLanguageValue = "@currentLanguage";
+            if (currentLanguageValue) {
+                $('#filterLanguage').val(currentLanguageValue).trigger('change');
+            }
 
             filterToggleBtn?.addEventListener('click', function (e) {
                 e.stopPropagation();
