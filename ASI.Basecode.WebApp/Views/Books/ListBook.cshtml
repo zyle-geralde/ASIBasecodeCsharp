@@ -290,7 +290,7 @@
                         <th>Rating</th>
                         <th>Publication Date</th>
                         <th>Upload Date</th>
-                        <th class="text-md-center">Actions</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -316,7 +316,7 @@
                             <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
                             <td>@book.UploadDate</td>
                             <td>
-                                <div class="d-flex gap-2 justify-content-center">
+                                <div class="d-flex gap-2">
                                     <a href="/Book/BookDetails/@book.BookId" class="action-icon-button text-secondary">
                                         <i class="fas fa-info-circle"></i>
                                     </a>

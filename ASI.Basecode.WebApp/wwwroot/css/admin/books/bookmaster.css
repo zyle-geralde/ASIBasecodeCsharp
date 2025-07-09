@@ -598,9 +598,9 @@ input:checked + .slider
 
 
 /*--------------- Author List: table adjustment for the action buttons -----------------*/
-/*.data-table th:last-child,
+.data-table th:last-child,
 .data-table td:last-child {
-    text-align: left;
+    text-align: center;
     vertical-align: middle;
 }
 
@@ -611,4 +611,3 @@ input:checked + .slider
     gap: 0.5rem;
     white-space: nowrap;
 }
-*/
