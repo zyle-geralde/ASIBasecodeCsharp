@@ -148,7 +148,7 @@
                                         <td class="align-middle">@author.AuthorDescription</td>
                                         <td class="align-middle">@author.UploadDate?.ToShortDateString()</td>
                                         <td class="align-middle" style="white-space:nowrap;">
-                                            <div class="action-buttons">
+                                            <div class="d-flex gap-2 justify-content-center">
                                                 <a asp-controller="Book"
                                                    asp-action="ListBook"
                                                    asp-route-author="@author.AuthorName"
