@@ -255,7 +255,7 @@ namespace ASI.Basecode.Services.Services
                     throw new InvalidDataException("A user with this username already exists!");
 
                 user.UserName = model.UserName;
-                user.UpdatedTime = DateTime.Now;
+                user.UpdatedTime = DateTime.Now.ToLocalTime();
                 user.UpdatedBy = System.Environment.UserName;
 
                 // Update password if provided
@@ -377,8 +377,8 @@ namespace ASI.Basecode.Services.Services
                 user.Email = model.Email;
                 user.UserName = model.UserName;
                 user.Password = PasswordManager.EncryptPassword(model.Password);
-                user.CreatedTime = DateTime.Now;
-                user.UpdatedTime = DateTime.Now;
+                user.CreatedTime = DateTime.Now.ToLocalTime();
+                user.UpdatedTime = DateTime.Now.ToLocalTime();
                 user.CreatedBy = System.Environment.UserName;
                 user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = false;
@@ -417,8 +417,8 @@ namespace ASI.Basecode.Services.Services
                         get_user.Email = model.Email;
                         get_user.UserName = model.UserName;
                         get_user.Password = PasswordManager.EncryptPassword(model.Password);
-                        get_user.CreatedTime = DateTime.Now;
-                        get_user.UpdatedTime = DateTime.Now;
+                        get_user.CreatedTime = DateTime.Now.ToLocalTime();
+                        get_user.UpdatedTime = DateTime.Now.ToLocalTime();
                         get_user.CreatedBy = System.Environment.UserName;
                         get_user.UpdatedBy = System.Environment.UserName;
                         get_user.IsEmailVerified = false;

@@ -273,7 +273,7 @@ namespace ASI.Basecode.Services.Services
                 BookFile = request.BookFileUrl,
 
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
-                UpdatedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow.ToLocalTime(),
                 PublicationDate = request.PublicationDate,
 
                 // Handle comma-separated strings
