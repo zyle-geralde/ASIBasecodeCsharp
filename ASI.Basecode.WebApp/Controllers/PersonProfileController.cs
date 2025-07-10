@@ -125,7 +125,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             var updatedProfile = await _personProfileService.GetPersonProfile(model.UserId);
             HttpContext.Session.SetString("ProfilePicture", updatedProfile.ProfilePicture ?? "");
-
+            
             TempData["Success"] = "Personal info updated successfully!";
             return RedirectToAction("Index", new { success = "personal" });
         }
@@ -144,6 +144,10 @@ namespace ASI.Basecode.WebApp.Controllers
             try
             {
                 await _userService.UpdateUser(uvm);
+
+                var updatedUser = await _userService.GetUserById(vm.Id);
+                HttpContext.Session.SetString("UserName", updatedUser?.UserName ?? "");
+
                 TempData["Success"] = "User info updated successfully!";
             }
             catch (InvalidDataException ex)
