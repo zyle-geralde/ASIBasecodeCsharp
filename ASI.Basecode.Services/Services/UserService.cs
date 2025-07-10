@@ -29,14 +29,18 @@ namespace ASI.Basecode.Services.Services
         private readonly IPersonProfileService _personProfileService;
         private readonly IPersonProfileRepository _personProfileRepository;
         private readonly IEmailSender _emailSenderService;
+        private readonly IReviewRepository _reviewRepository;
+        private readonly IBookRepository _bookRepository;
 
-        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService)
+        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService, IReviewRepository reviewRepository, IBookRepository bookRepository)
         {
             _mapper = mapper;
             _repository = repository;
             _personProfileService = personProfileService;
             _personProfileRepository = personProfileRepository;
             _emailSenderService = emailSenderService;
+            _reviewRepository = reviewRepository;
+            _bookRepository = bookRepository;
         }
 
 
@@ -196,6 +200,8 @@ namespace ASI.Basecode.Services.Services
             if (_repository.UserNameExists(model.UserName))
                 throw new InvalidDataException("A user with this username already exists!");
 
+            await CheckValidPassWord(model.Password);
+
             var user = new User();
             if (!_repository.UserExists(model.Email))
             {
@@ -252,7 +258,18 @@ namespace ASI.Basecode.Services.Services
                 }
 
                 if (_repository.GetUsers().Any(u => u.UserName == model.UserName && u.Id != model.Id))
+                {
                     throw new InvalidDataException("A user with this username already exists!");
+                }
+                    
+
+                if (!string.IsNullOrEmpty(model.Password))
+                {
+                    if (model.Password.Length < 8)
+                    {
+                        throw new InvalidDataException("Password must not be less than 8 characters");
+                    }
+                }
 
                 user.UserName = model.UserName;
                 user.UpdatedTime = DateTime.Now;
@@ -261,6 +278,7 @@ namespace ASI.Basecode.Services.Services
                 // Update password if provided
                 if (!string.IsNullOrEmpty(model.Password))
                 {
+                    
                     user.Password = PasswordManager.EncryptPassword(model.Password);
                 }
 
@@ -546,15 +564,26 @@ namespace ASI.Basecode.Services.Services
         {
             var user = await _repository.FindByEmailForEdit(userId);
 
+
             if (user == null)
             {
                 return false;
             }
+            var userReviews = await _reviewRepository.GetReviewByUser(userId);
+            var impactedBookIds = userReviews
+                .Select(r => r.BookId)
+                .Distinct()
+                .ToList();
 
             await _repository.DeleteUser(userId);
             if (!string.IsNullOrEmpty(user.Email))
             {
                 await _personProfileService.DeletePersonProfile(user.Email);
+            }
+            foreach(var bookId in impactedBookIds)
+            {
+                await _bookRepository.GetReviewCount(bookId);
+                await _bookRepository.calculateAverageRating(bookId);
             }
             return true;
         }
@@ -647,6 +676,14 @@ namespace ASI.Basecode.Services.Services
 
         }
 
+        public async Task CheckValidPassWord(string password)
+        {
+            if(password == null || password.Trim() == "" || password.Length < 8)
+            {
+                throw new InvalidDataException("Password should not be less than 8 characters");
+            }
+        }
+
         public async Task UpdatePassword(UserViewModel user)
         {
             if(user == null)
@@ -682,6 +719,10 @@ namespace ASI.Basecode.Services.Services
             var currentHash = PasswordManager.EncryptPassword(currentPassword);
             if (user.Password != currentHash)
                 return false;
+            if(newPassword == null || newPassword.Trim() == "" ||newPassword.Trim().Length < 8)
+            {
+                return false;
+            }
 
             user.Password = PasswordManager.EncryptPassword(newPassword);
             await _repository.UpdateUser(user);

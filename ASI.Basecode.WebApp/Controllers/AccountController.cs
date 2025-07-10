@@ -112,11 +112,12 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 // 認証OK
                 await this._signInManager.SignInAsync(user);
-                this._session.SetString("UserName", user.UserName);
+                this._session.SetString("UserName", user.UserName ?? "");
                 this._session.SetString("UserEmail", user.Email);
                 PersonProfile userProfile = await _personProfileService.GetPersonProfile(model.UserId);
 
                 this._session.SetString("UserRole", userProfile.Role);
+                this._session.SetString("ProfilePicture", userProfile.ProfilePicture ?? "");
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -175,6 +176,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 {
                     throw new InvalidDataException("Username already exists.");
                 }
+
+                await _userService.CheckValidPassWord(model.Password);
 
                 // Generate OTP without creating user in database
                 string otpCode = await _userService.SendOtpCodeEmail(model.Email);
@@ -258,6 +261,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 {
                     throw new InvalidDataException("Username already exists.");
                 }
+
+                await _userService.CheckValidPassWord(model.Password);
 
                 // Generate OTP without creating user in database
                 string otpCode = await _userService.SendOtpCodeEmail(model.Email);
@@ -419,6 +424,7 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             try
             {
+                await _userService.CheckValidPassWord(userObject.Password);
                 await _userService.UpdatePassword(userObject);
                 return Ok(new { Message = "Successfully Updated Password" });
             }

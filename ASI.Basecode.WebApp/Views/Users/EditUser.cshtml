@@ -5,6 +5,7 @@
     Layout = "_AdminSidebarLayout";
     var errorMessage = TempData["ErrorMessage"] as string;
     var isUsernameError = errorMessage != null && errorMessage.ToLower().Contains("username");
+    var isPasswordError = errorMessage != null && errorMessage.ToLower().Contains("password");
 
     var successModal = new SuccessModalModel
     {
@@ -305,7 +306,11 @@
         document.addEventListener('DOMContentLoaded', function () {
             var errorMessage = '@(errorMessage ?? "")';
             var isUsernameError = @isUsernameError.ToString().ToLower();
+             var isPasswordError = @isPasswordError.ToString().ToLower();
             if (errorMessage && isUsernameError) {
+                toastr.warning(errorMessage);
+            }
+            if (errorMessage && isPasswordError) {
                 toastr.warning(errorMessage);
             }
         });

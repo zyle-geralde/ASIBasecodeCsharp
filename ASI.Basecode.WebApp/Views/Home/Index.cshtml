@@ -15,19 +15,18 @@
 <div class="main-grid">
     <!-- Left Column -->
     <div class="left-column">
-               <form asp-controller="Book" asp-action="SearchResults" method="get" class="mb-4">
-          <div class="input-group">
-            <input
-              type="search"
-              name="searchTerm"
-              value="@(ViewData["CurrentSearch"] ?? "")"
-              placeholder="Title, subtitle, author…"
-              class="form-control"
-              aria-label="Search books" />
-            <button class="btn btn-primary" type="submit">
-              Search
-            </button>
-          </div>
+        <form asp-controller="Book" asp-action="SearchResults" method="get" class="mb-4 home-search-bar">
+            <div class="input-group">
+                <input type="search"
+                       name="searchTerm"
+                       value="@(ViewData["CurrentSearch"] ?? "")"
+                       placeholder="Title, subtitle, author…"
+                       class="form-control home-search-input"
+                       aria-label="Search books" />
+                <button class="btn home-search-btn" type="submit">
+                    Search
+                </button>
+            </div>
         </form>
 
         <!-- What Do You Feel Like Reading? Section -->
@@ -90,7 +89,8 @@
                                             }
                                         }
                                     </div>
-                                    <span class="rating-text">@book.AverageRating/5</span>
+                    <span class="rating-text">@book.AverageRating?.ToString("0.00") / 5.0 (@book.ReviewCount reviews)</span>
+
                                 </div>
                                 <div class="genre-tags">
                                     @{
@@ -156,7 +156,7 @@
                                             }
                                         }
                                     </div>
-                                    <span class="rating-text">@book.AverageRating/5</span>
+                    <span class="rating-text">@book.AverageRating?.ToString("0.00") / 5.0 (@book.ReviewCount reviews)</span>
                                 </div>
                                 <div class="genre-tags">
                                     @{
@@ -223,7 +223,7 @@
                                 }
                             }
                         </div>
-                        <span class="rating-text">@book.AverageRating/5</span>
+                    <span class="rating-text">@book.AverageRating?.ToString("0.00") / 5.0 (@book.ReviewCount reviews)</span>
                     </div>
                     <div class="genre-tags">
                         @{

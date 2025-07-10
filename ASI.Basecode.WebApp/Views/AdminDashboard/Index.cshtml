@@ -64,78 +64,7 @@
             </div>
         </div>
 
-        <!-- Newly Added Books Section -->
-        <section class="section-card admin-carousel-section">
-            <div class="book-list-header">
-                <h2>Newly Added Books</h2>
-                <div class="see-more-link-wrapper">
-                    <a asp-controller="Book"
-                       asp-action="ListBook"
-                       asp-route-sortOrder="uploaddate"
-                       asp-route-sortDescending="true"
-                       asp-route-category="New Books">See More</a>
-                </div>
-            </div>
-            <div class="admin-book-carousel-container new-books-carousel">
-                <button class="carousel-button admin-carousel-btn prev-button"
-                        aria-label="Previous books">
-                    <span class="button-icon">&#x25C0;</span>
-                </button>
-                <div class="admin-book-display-wrapper">
-                    @for (int i = 0; i < Model.NewBooks.Count; i++)
-                    {
-                        var book = Model.NewBooks[i];
-                        <div class="admin-carousel-card hidden-book-card" onclick="window.location.href='/Book/BookDetails/@book.BookId'" style="cursor: pointer">
-                            <img class="admin-carousel-img" src="@book.CoverImage" alt="@book.Title Book Cover">
-                            <div class="admin-carousel-content">
-                                <h3 class="admin-carousel-title">@book.Title</h3>
-                                <p class="admin-carousel-author">by @book.Author</p>
-                                <p class="admin-carousel-desc text-truncate"><i>@book.Description</i></p>
-                                <div class="star-rating admin-star-rating">
-                                    <div class="stars">
-                                        @for (int j = 0; j < 5; j++)
-                                        {
-                                            if (j < book.AverageRating)
-                                            {
-                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-                                            }
-                                            else
-                                            {
-                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-                                            }
-                                        }
-                                    </div>
-                                </div>
-                                <div class="genre-tags">
-                                    @{
-                                        var genres = book.GenreList?.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                                        .Select(s => s.Trim())
-                                        .ToList() ?? new List<string>();
-
-                                        var colorClasses = new string[] {
-                                                                "dynamic-genre-1", "dynamic-genre-2", "dynamic-genre-3", "dynamic-genre-4", "dynamic-genre-5",
-                                                                "dynamic-genre-6", "dynamic-genre-7", "dynamic-genre-8", "dynamic-genre-9", "dynamic-genre-10"
-                                                                };
-
-                                        foreach (var tag in genres)
-                                        {
-                                            var colorIndex = Math.Abs(tag.GetHashCode()) % colorClasses.Length;
-                                            <span class="genre-tag @colorClasses[colorIndex]" id="genre-tag-id">@tag</span>
-                                        }
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-                <button class="carousel-button admin-carousel-btn next-button"
-                        aria-label="Next books">
-                    <span class="button-icon">&#x25B6;</span>
-                </button>
-            </div>
-        </section>
-
-        <!-- Top 10 Rated Books Section -->
+         <!-- Top 10 Rated Books Section -->
         <section class="section-card admin-carousel-section">
             <div class="book-list-header">
                 <h2>Top 10 Rated Books</h2>
@@ -176,7 +105,10 @@
                                             }
                                         }
                                     </div>
+                                      <p style="font-size: 10px">(@book.ReviewCount)</p>
                                 </div>
+                                                                                                    <p style="font-size: 10px">@book.AverageRating/5.0</p>
+
                                 <div class="genre-tags">
                                     @{
                                         var genres = book.GenreList?.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
@@ -205,6 +137,81 @@
                 </button>
             </div>
         </section>  
+        <!-- Newly Added Books Section -->
+        <section class="section-card admin-carousel-section">
+            <div class="book-list-header">
+                <h2>Newly Added Books</h2>
+                <div class="see-more-link-wrapper">
+                    <a asp-controller="Book"
+                       asp-action="ListBook"
+                       asp-route-sortOrder="uploaddate"
+                       asp-route-sortDescending="true"
+                       asp-route-category="New Books">See More</a>
+                </div>
+            </div>
+            <div class="admin-book-carousel-container new-books-carousel">
+                <button class="carousel-button admin-carousel-btn prev-button"
+                        aria-label="Previous books">
+                    <span class="button-icon">&#x25C0;</span>
+                </button>
+                <div class="admin-book-display-wrapper">
+                    @for (int i = 0; i < Model.NewBooks.Count; i++)
+                    {
+                        var book = Model.NewBooks[i];
+                        <div class="admin-carousel-card hidden-book-card" onclick="window.location.href='/Book/BookDetails/@book.BookId'" style="cursor: pointer">
+                            <img class="admin-carousel-img" src="@book.CoverImage" alt="@book.Title Book Cover">
+                            <div class="admin-carousel-content">
+                                <h3 class="admin-carousel-title">@book.Title</h3>
+                                <p class="admin-carousel-author">by @book.Author</p>
+                                <p class="admin-carousel-desc text-truncate"><i>@book.Description</i></p>
+                                <div class="star-rating admin-star-rating">
+                                    <div class="stars">
+                                        @for (int j = 0; j < 5; j++)
+                                        {
+                                            if (j < book.AverageRating)
+                                            {
+                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                            else
+                                            {
+                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                        }
+
+                                    </div>                                      <p style="font-size: 10px">(@book.ReviewCount)</p>
+
+
+                                </div>
+                                                                    <p style="font-size: 10px">@book.AverageRating/5.0</p>
+
+                                <div class="genre-tags">
+                                    @{
+                                        var genres = book.GenreList?.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                        .Select(s => s.Trim())
+                                        .ToList() ?? new List<string>();
+
+                                        var colorClasses = new string[] {
+                                                                "dynamic-genre-1", "dynamic-genre-2", "dynamic-genre-3", "dynamic-genre-4", "dynamic-genre-5",
+                                                                "dynamic-genre-6", "dynamic-genre-7", "dynamic-genre-8", "dynamic-genre-9", "dynamic-genre-10"
+                                                                };
+
+                                        foreach (var tag in genres)
+                                        {
+                                            var colorIndex = Math.Abs(tag.GetHashCode()) % colorClasses.Length;
+                                            <span class="genre-tag @colorClasses[colorIndex]" id="genre-tag-id">@tag</span>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <button class="carousel-button admin-carousel-btn next-button"
+                        aria-label="Next books">
+                    <span class="button-icon">&#x25B6;</span>
+                </button>
+            </div>
+        </section>
     </div>
 </div>
 
@@ -324,10 +331,61 @@
             setupTwoBookCarousel('.new-books-carousel');
             setupTwoBookCarousel('.top-rated-carousel');
 
-            // Keep your genre tags overflow code
             function setupGenreTagsOverflow() {
-                // Your existing code...
-            }
+            $('.genre-tags').each(function () {
+                const $container = $(this);
+                let $tags = $container.find('.genre-tag');
+
+                $container.find('.genre-tags-more-indicator').remove();
+                $tags.removeClass('hidden-tag').css('display', 'inline-flex');
+
+                if ($tags.length === 0) {
+                    $container.css('max-height', 'none');
+                    return;
+                }
+
+                const containerHeight = $container[0].scrollHeight;
+                const maxHeight = parseInt($container.css('max-height')) || 56;
+
+                if (containerHeight <= maxHeight) {
+                    return;
+                }
+
+                let visibleHeight = 0;
+                let visibleTagsCount = 0;
+                $tags.each(function (index) {
+                    const $tempContainer = $('<div>').css({
+                        display: 'flex',
+                        'flex-wrap': 'wrap',
+                        gap: '8px',
+                        width: $container.width(),
+                        'max-height': 'none',
+                        visibility: 'hidden',
+                        position: 'absolute',
+                        left: '-9999px'
+                    }).append($tags.slice(0, index + 1).clone());
+                    $('body').append($tempContainer);
+                    visibleHeight = $tempContainer[0].scrollHeight;
+                    $tempContainer.remove();
+
+                    if (visibleHeight <= maxHeight) {
+                        visibleTagsCount++;
+                    } else {
+                        $(this).addClass('hidden-tag');
+                    }
+                });
+
+                const hiddenTagsCount = $tags.length - visibleTagsCount;
+
+                if (hiddenTagsCount > 0) {
+                    const $moreIndicator = $(`<span class="genre-tags-more-indicator">+${hiddenTagsCount}</span>`);
+                    $container.append($moreIndicator);
+                    $container.addClass('has-overflow');
+                } else {
+                    $container.removeClass('has-overflow');
+                }
+            });
+        }
 
             setupGenreTagsOverflow();
             $(window).on('resize', setupGenreTagsOverflow);

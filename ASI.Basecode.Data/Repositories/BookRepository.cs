@@ -103,11 +103,18 @@ namespace ASI.Basecode.Data.Repositories
                             ? query.OrderByDescending(b => b.UploadDate) 
                             : query.OrderBy(b => b.UploadDate);
                         break;
+
+                    case "updateddate":
+                        query = desc
+                            ? query.OrderByDescending(b => b.UpdatedDate)
+                            : query.OrderBy(b => b.UpdatedDate);
+                        break;
                     default:
                         query = query.OrderBy(b => b.Title);
                         break;
                 }
             }
+            
             return await GetPaged(query, queryParams.PageIndex, queryParams.PageSize);
         }
 
@@ -202,6 +209,15 @@ namespace ASI.Basecode.Data.Repositories
             }
         }
 
+        public async Task GetReviewCount(string bookId)
+        {
+            var book = await _dbContext.Books.FindAsync(bookId);
+            if (book != null)
+            {
+                book.ReviewCount = await _dbContext.Reviews.CountAsync(r => r.BookId == bookId);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
         public async Task calculateAverageRating(string bookId)
         {
             var reviews = _dbContext.Reviews
