@@ -180,7 +180,7 @@ namespace ASI.Basecode.Services.Services
                 user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = false;
                 user.OtpCode = await GenerateOtpCode(model.Email);
-                user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
+                user.OtpExpirationDate = DateTime.Now.AddMinutes(2);
 
                 await _repository.AddUser(user);
                 return user;
@@ -290,7 +290,7 @@ namespace ASI.Basecode.Services.Services
                 user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = false;
                 user.OtpCode = await GenerateOtpCode(model.Email);
-                user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
+                user.OtpExpirationDate = DateTime.Now.AddMinutes(2);
 
                 await _repository.AddUser(user);
 
@@ -330,7 +330,7 @@ namespace ASI.Basecode.Services.Services
                         get_user.UpdatedBy = System.Environment.UserName;
                         get_user.IsEmailVerified = false;
                         get_user.OtpCode = await GenerateOtpCode(model.Email);
-                        get_user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
+                        get_user.OtpExpirationDate = DateTime.Now.AddMinutes(2);
 
                         await _repository.UpdateUser(get_user);
 
@@ -386,7 +386,7 @@ namespace ASI.Basecode.Services.Services
                 user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = false;
                 user.OtpCode = await GenerateOtpCode(model.Email);
-                user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
+                user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                 await _repository.AddUser(user);
 
@@ -426,7 +426,7 @@ namespace ASI.Basecode.Services.Services
                         get_user.UpdatedBy = System.Environment.UserName;
                         get_user.IsEmailVerified = false;
                         get_user.OtpCode = await GenerateOtpCode(model.Email);
-                        get_user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
+                        get_user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                         await _repository.UpdateUser(get_user);
 
@@ -490,7 +490,7 @@ namespace ASI.Basecode.Services.Services
                 }
 
                 // Validate OTP
-                if (user.OtpCode == model.OtpCode && user.OtpExpirationDate.HasValue && user.OtpExpirationDate.Value > DateTime.UtcNow)
+                if (user.OtpCode == model.OtpCode && user.OtpExpirationDate.HasValue && user.OtpExpirationDate.Value > DateTime.Now)
                 {
                     user.IsEmailVerified = true;
                     user.OtpCode = null;
@@ -620,7 +620,7 @@ namespace ASI.Basecode.Services.Services
             }
 
             user.OtpCode = await GenerateOtpCode(email);
-            user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5); // New expiry
+            user.OtpExpirationDate = DateTime.Now.AddMinutes(5); // New expiry
             await _repository.UpdateUser(user);
 
             OtpViewModel user_otp = new OtpViewModel

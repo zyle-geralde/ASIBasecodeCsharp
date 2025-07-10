@@ -119,7 +119,7 @@ namespace ASI.Basecode.Services.Services
                 existing_author.AuthorName = author.AuthorName;
                 existing_author.AuthorDescription = author.AuthorDescription;
                 existing_author.AuthorImageUrl = author.AuthorImageUrl;
-                existing_author.UpdatedDate = DateTime.UtcNow;
+                existing_author.UpdatedDate = DateTime.Now;
 
                 await _authorRepository.EditAuthor();
             }
