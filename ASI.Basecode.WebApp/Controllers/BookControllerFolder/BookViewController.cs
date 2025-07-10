@@ -25,7 +25,6 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         private readonly IAuthorRepository _authorRepository;
         private readonly IAuthorService _authorService;
         private readonly ILanguageService _languageService;
-        //private readonly IBookRepository _bookRepository;
         public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface,IAuthorRepository authorRepository, IAuthorService authorService, ILanguageService languageService)
         {
             _bookService = bookService;
@@ -93,6 +92,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [HttpGet]
         [Route("Book/ListBook")]
         [Authorize]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+
         public async Task<IActionResult> ListBook(
             string? searchTerm,
             string? author,
@@ -102,7 +103,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             string[]? genreFilter,
             string? languageFilter,
             string? sortOrder,
-            bool sortDescending = false,
+            bool sortDescending = true,
             bool? isFeatured = null,
 
             int? page = 1
@@ -130,7 +131,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 SortDescending = sortDescending,
                 PageIndex = page.GetValueOrDefault(1),
                 IsFeatured = isFeatured,
-                SortOrder = sortOrder ?? "title",
+                SortOrder = sortOrder ?? "updateddate",
                 PageSize = PageSize,
 
 
@@ -180,19 +181,14 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         string? category = null
         )
         {
-                bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
-                if (!checkUserAccess) return RedirectToAction("Index", "AdminDashboard");
-
-                const int PageSize = 18;
+                const int PageSize = 10;
                 int pageIndex = page.GetValueOrDefault(1);
-                string authorId = await _authorRepository.GetAuthorByName(author != null ? author : "");
-                string authorIdFromSearch = await _authorRepository.GetAuthorByName(searchTerm != null ? searchTerm : "");
 
-            var queryParams = new BookQueryParams
+                var queryParams = new BookQueryParams
                 {
-                    SearchAuhtor = !string.IsNullOrEmpty(authorIdFromSearch) ? authorIdFromSearch : "",
+                    SearchAuhtor = searchTerm ?? "",
                     SearchTerm = searchTerm,
-                    Author = !string.IsNullOrEmpty(authorId) ? authorId : "",
+                    Author = author,
                     Rating = rating,
                     PublishedFrom = publishedFrom,
                     PublishedTo = publishedTo,
@@ -261,6 +257,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpGet]
         [Route("Book/BookDetails/{bookId}", Name="BookDetails")]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+
         [Authorize]
         public async Task<IActionResult> GetBook(string bookId)
         {
@@ -364,7 +362,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
             if (ModelState.IsValid)
             {
-                book.UpdatedDate = DateTime.Now;
+                book.UpdatedDate = DateTime.UtcNow;
+                book.UpdatedBy = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 try
                 {
                     await _bookService.EditBook(book);

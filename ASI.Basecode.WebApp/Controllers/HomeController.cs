@@ -54,6 +54,7 @@ namespace ASI.Basecode.WebApp.Controllers
         //[AllowAnonymous] //This is to bypass authentication. Ex. if you want to access this route without loging in
         [HttpGet]
         [Authorize]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> Index()
         {
             bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
@@ -64,7 +65,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 SortOrder = "rating",
                 SortDescending = true,
-                PageSize = 3
+                PageSize = 5
             };
             var topRatedBooks = await _bookService.GetBooks(topRatedParams);
 
@@ -72,7 +73,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 SortOrder = "uploaddate",
                 SortDescending = true,
-                PageSize = 3
+                PageSize = 5
             };
             var newlyAddedBooks = await _bookService.GetBooks(newlyAddedParams);
 

@@ -92,7 +92,7 @@
                             <div class="info-value">
                                 @(Model.Birthdate
                                                                 ?.ToString("MM/dd/yyyy")
-                                                                ?? "MM/DD/YYYY" )
+                                                                ?? "" )
                             </div>
                         </div>
                         <div class="info-field-col">
@@ -879,42 +879,7 @@
                 // Error already handled in uploadFileToFirebase
             }
         });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function getQueryParam(name) {
-                const url = new URL(window.location.href);
-                return url.searchParams.get(name);
-            }
-            var type = getQueryParam('success');
-            if (type) {
-                var title = "";
-                var message = "";
-                if (type === "personal") {
-                    title = "Success!";
-                    message = "Personal Information saved successfully!";
-                } else if (type === "user") {
-                    title = "Success!";
-                    message = "User Information saved successfully!";
-                } else if (type === "password") {
-                    title = "Updated";
-                    message = "Password updated successfully!";
-                }
-                document.getElementById('successLanguageModalTitle').textContent = title;
-                document.getElementById('successLanguageModalMessage').textContent = message;
-                var modal = new bootstrap.Modal(document.getElementById('successLanguageModal'));
-                modal.show();
-
-                if (window.history.replaceState) {
-                    const url = new URL(window.location);
-                    url.searchParams.delete('success');
-                    window.history.replaceState({}, document.title, url.pathname + url.search);
-                }
-            }
-        });
-
-    </script>
+    </script>  
       <script>
     toastr.options = {
       closeButton: true,
@@ -924,21 +889,21 @@
     };
 
     document.addEventListener('DOMContentLoaded', function() {
-      @if (TempData["Success"] as string == "password")
-      {
-        <text>toastr.success("Your password has been changed.");</text>
-      }
+          @if (TempData["Success"] is string successMsg)
+                {
+                        <text>toastr.success("@successMsg");</text>
+                }
 
-      @if (TempData["PwdErrors"] is string[] errs && errs.Any())
-      {
-        var error = errs[0];
-        <text>toastr.error("@error");</text>
-      }
+                @if (TempData["PwdErrors"] is string[] errs && errs.Any())
+                {
+                        var error = errs[0];
+                        <text>toastr.error("@error");</text>
+                }
 
-      @if (TempData["UserInfoError"] is string userInfoError)
-       {
-        <text>toastr.error("@userInfoError");</text>
-       }
+                @if (TempData["UserInfoError"] is string userInfoError)
+                {
+                        <text>toastr.error("@userInfoError");</text>
+                }
 
       var pwdModalEl = document.getElementById('updatePass');
       if (pwdModalEl) {

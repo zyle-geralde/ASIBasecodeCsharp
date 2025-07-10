@@ -1,6 +1,22 @@
 ﻿@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 
+@section styles
+{
+    <style>
+        .dp {
+            position: center;
+            height: 40px;
+            width: 40px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            object-fit: fill;
+            overflow: hidden;
+        }
+    </style>
+}
+
 
 <header class="@((ViewBag.LoginView == true) ? "hide-navbar" : "")">
     <div class="logosec">
@@ -12,9 +28,16 @@
         <div class="mr-20 hover-pointer profile-dropdown-trigger">
 
             <div class="dp">
-                <img src="~/img/profile-logo.png"
-                     class="dpicn"
-                     alt="dp">
+                @{
+                    var profilePicture = HttpContextAccessor.HttpContext.Session.GetString("ProfilePicture");
+                    if (string.IsNullOrEmpty(profilePicture))
+                    {
+                        profilePicture = "/img/null_profilepicture.png";
+                    }
+                }
+                <img src="@profilePicture"
+                     alt="dp"
+                style="width: 40px; height:40px;">
             </div>
             <span class="username-display">@HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
 

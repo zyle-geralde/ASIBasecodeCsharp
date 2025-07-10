@@ -30,13 +30,23 @@
     <link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pagination.css" asp-append-version="true" />
 
+    <style>
+        input[type="text"] {
+            transform: translateY(-3px);
+        }
+
+            input[type="text"]:hover {
+                transform: translateY(-2px);
+            }
+    </style>
 }
+
 
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
 </div>
 
-<div class="content-card p-4">
+<div class="content-card">
     @Html.AntiForgeryToken()
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="header-section">
@@ -49,27 +59,30 @@
                 <i class="fas fa-plus me-2" style="color: #fff"></i> ADD AUTHOR
             </a>
         </p>
-
     </div>
 
     <div class="card">
         <div class="card-body">
-            @*--------------------------------------For Searching sort and filter---------------------------------------------*@
-            <form asp-action="Index" asp-controller="Author" method="get" class="d-flex align-items-center mb-3" id="searchFilterForm">
-                <input type="text"
-                       name="searchTerm"
-                       value="@currentSearch"
-                       class="book-master-form-input align-content-center" style="margin-right: 10px; align-self: center; font-weight: 300"
-                       placeholder="Search authors…" />
+            <div class="search-filter-container" style="height: 50px; align-items: stretch; margin-top: 10px; margin-bottom: 15px">
+                <form asp-action="Index" asp-controller="Author" method="get" class="d-flex align-items-center mb-3" id="searchFilterForm">
+                    <div class="search-container" style="margin-right: 10px">
+                        <i class="fas fa-search"></i>
+                        <input type="text"
+                               name="searchTerm"
+                               value="@currentSearch"
+                               class="book-master-form-input align-content-center" style="margin-right: 10px; align-self: center; font-weight: 300"
+                               placeholder="Search authors…" />
+                    </div>
 
-                <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
-                <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">Apply</button>
+                        <button type="button" id="sortButton" class="btn btn-outline-secondary sort-btn"> <i class="fas fa-sort"></i> Sort </button>
+                    </div>
+                    <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
+                    <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
+                </form>
+            </div>
 
-                <button type="submit" class="btn btn-primary">Apply</button>
-
-                <button type="button" id="sortButton" class="btn-sort">Sort By <i class="fas fa-caret-down"></i></button>
-
-            </form>
             <div class="sort-popup card shadow" id="sortPopup" style="display: none;">
                 <div class="card-header bg-secondary text-white justify-center">
                     <h6 class="mb-0" style="margin-top: 6px;">Sort By:</h6>
@@ -114,6 +127,8 @@
                     </div>
                 </div>
             </div>
+                        <p style="font-size: 12px; color:"gray">Showing  @Model.StartIndex - @Model.EndIndex out of @Model.TotalCount authors</p>
+
             @*------------------------------------------------------------For searching sort and filter-----------------------------------------------*@
 
             <div  class="table-container">

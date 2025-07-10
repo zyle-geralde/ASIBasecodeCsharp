@@ -75,11 +75,16 @@
     var descriptionText = descriptionParts.Any()
         ? string.Join(" | ", descriptionParts)
         : "Manage books";
+
+    ViewData["CurrentPage"] = Model.PageIndex;
+    ViewData["TotalPages"] = Model.TotalPages;
+    ViewData["RouteValues"] = routeValues;
 }
 
 @section styles {
     <link rel="stylesheet" href="~/css/searchresults.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/pagination.css" asp-append-version="true" />
 }
 
 <div class="search-results-container">
@@ -89,7 +94,7 @@
             <div class="search-header">
                 <div class="search-header-content">
                     <h2>@(string.IsNullOrEmpty(categoryTitle) ? "Search Results" : $"Results for: {categoryTitle}")</h2>
-                    <p>Displaying @Model.PageIndex of @Model.TotalPages out of @Model.TotalCount results</p>
+                    <p>Displaying @Model.StartIndex - @Model.EndIndex out of @Model.TotalCount results</p>
                     @if(descriptionParts.Any())
                     {
                         <div class="active-filters">
@@ -182,42 +187,7 @@
                 }
             }
         </div>
-
-        <div class="pagination-container">
-            <nav aria-label="Search results pages">
-                <ul class="pagination">
-                    <li class="page-nav @(Model.HasPreviousPage ? "" : "disabled")">
-                        <a class="page-link"
-                           asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
-                                ["page"] = (Model.PageIndex - 1).ToString()
-                           })">
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
-                    </li>
-
-                    @for (int i = 1; i <= Model.TotalPages; i++)
-                    {
-                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                            <a class="page-link"
-                               asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
-                                    ["page"] = i.ToString()
-                               })">
-                                @i
-                            </a>
-                        </li>
-                    }
-
-                    <li class="page-nav @(Model.HasNextPage ? "" : "disabled")">
-                        <a class="page-link"
-                           asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
-                                ["page"] = (Model.PageIndex + 1).ToString()
-                           })">
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+        <partial name="_PaginationPartial" view-data="ViewData" />        
     </div>
 </div>
 
