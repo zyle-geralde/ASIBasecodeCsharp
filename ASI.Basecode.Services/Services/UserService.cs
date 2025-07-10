@@ -201,6 +201,8 @@ namespace ASI.Basecode.Services.Services
             if (_repository.UserNameExists(model.UserName))
                 throw new InvalidDataException("A user with this username already exists!");
 
+            await CheckValidPassWord(model.Password);
+
             var user = new User();
             if (!_repository.UserExists(model.Email))
             {
@@ -257,7 +259,18 @@ namespace ASI.Basecode.Services.Services
                 }
 
                 if (_repository.GetUsers().Any(u => u.UserName == model.UserName && u.Id != model.Id))
+                {
                     throw new InvalidDataException("A user with this username already exists!");
+                }
+                    
+
+                if (!string.IsNullOrEmpty(model.Password))
+                {
+                    if (model.Password.Length < 8)
+                    {
+                        throw new InvalidDataException("Password must not be less than 8 characters");
+                    }
+                }
 
                 user.UserName = model.UserName;
                 user.UpdatedTime = DateTime.Now;
@@ -266,6 +279,7 @@ namespace ASI.Basecode.Services.Services
                 // Update password if provided
                 if (!string.IsNullOrEmpty(model.Password))
                 {
+                    
                     user.Password = PasswordManager.EncryptPassword(model.Password);
                 }
 

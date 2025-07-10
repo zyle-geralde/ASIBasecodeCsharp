@@ -222,6 +222,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
+
                 await _userService.UpdateUser(model);
                 TempData["SuccessMessage"] = "User updated successfully!";
                 return RedirectToAction("Index");
