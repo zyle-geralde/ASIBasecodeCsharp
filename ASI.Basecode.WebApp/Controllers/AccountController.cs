@@ -423,6 +423,7 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             try
             {
+                await _userService.CheckValidPassWord(userObject.Password);
                 await _userService.UpdatePassword(userObject);
                 return Ok(new { Message = "Successfully Updated Password" });
             }
