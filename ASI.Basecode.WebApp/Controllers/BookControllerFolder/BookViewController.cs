@@ -359,8 +359,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
             if (ModelState.IsValid)
             {
-                book.UpdatedDate = DateTime.UtcNow;
-                book.UpdatedBy = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                book.UpdatedDate = DateTime.Now;
                 try
                 {
                     await _bookService.EditBook(book);
