@@ -114,6 +114,7 @@ namespace ASI.Basecode.Data.Repositories
                         break;
                 }
             }
+            
             return await GetPaged(query, queryParams.PageIndex, queryParams.PageSize);
         }
 
@@ -208,6 +209,15 @@ namespace ASI.Basecode.Data.Repositories
             }
         }
 
+        public async Task GetReviewCount(string bookId)
+        {
+            var book = await _dbContext.Books.FindAsync(bookId);
+            if (book != null)
+            {
+                book.ReviewCount = await _dbContext.Reviews.CountAsync(r => r.BookId == bookId);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
         public async Task calculateAverageRating(string bookId)
         {
             var reviews = _dbContext.Reviews

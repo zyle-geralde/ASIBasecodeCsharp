@@ -300,6 +300,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 SeriesOrder = book.SeriesOrder,
                 SeriesDescription = book.SeriesDescription,
                 AverageRating = book.AverageRating,
+                ReviewCount = book.ReviewCount,
                 CreatedBy = book.CreatedBy,
                 UpdatedBy = book.UpdatedBy,
                 Author = authorName != null ? authorName.AuthorName : "",

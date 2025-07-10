@@ -110,6 +110,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
     <style>
+    .sort-popup {
+            top: 276px;
+        }
+
         input[type="text"] {
             transform: translateY(-3px);
         }
@@ -147,7 +151,7 @@
         </div>
 
         <!-- Filter and Sort Buttons -->
-        <div class="action-buttons">
+        <div class="action-buttons position-relative">
             <button type="button" class="btn btn-outline-secondary filter-btn" id="filterToggleBtn">
                 <i class="fas fa-filter"></i> Filter
             </button>
@@ -174,8 +178,8 @@
 
             <div class="filter-section">
                 <label class="form-label">Rating</label>
-                <select name="rating" class="form-select" id="filterRating">
-                    <option value="">Any</option>
+                <select name="rating" class="form-select select2-rating" id="filterRating">
+                    <option value="">Any Rating</option>
                     @for (int i = 1; i <= 5; i++)
                     {
                         <option value="@i" selected="@(currentRating == i ? "selected" : null)">
@@ -183,6 +187,7 @@
                         </option>
                     }
                 </select>
+
             </div>
 
             <div class="filter-section">
@@ -248,40 +253,56 @@
     </div>
 
     <!-- Sort Popup -->
-    <div class="book-sort-popup" id="sortPopup">
-        <div class="popup-header">
-            <h5>Sort By</h5>
-            <button class="popup-close" id="closeSortPopup">&times;</button>
+    <div class="sort-popup card shadow" id="sortPopup">
+        <div class="card-header bg-secondary text-white justify-content-center">
+            <h6 class="mb-0" style="top: 6px;">Sort By:</h6>
         </div>
         <form asp-action="ListBook" method="get" id="sortForm">
-            <div class="filter-section">
-                <label class="form-label">Sort by</label>
-                <select name="sortOrder" class="form-select" id="sortOrderSelect">
-                    <option value="title" selected="@(currentSort == "title" ? "selected" : null)">Title</option>
-                    <option value="author" selected="@(currentSort == "author" ? "selected" : null)">Author</option>
-                    <option value="publicationdate" selected="@(currentSort == "publicationdate" ? "selected" : null)">Publication Date</option>
-                    <option value="rating" selected="@(currentSort == "rating" ? "selected" : null)">Rating</option>
-                    <option value="uploaddate" selected="@(currentSort == "uploaddate" ? "selected" : null)">Upload Date</option>
-                    <option value="updateddate" selected="@(currentSort == "updateddate" ? "selected" : null)">Updated Date</option>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Sort by:</label>
+                    <div class="ms-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortTitle" value="title" @(currentSort == "title" ? "checked" : null)>
+                            <label class="form-check-label" for="sortTitle">Title</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortPublicationDate" value="publicationdate" @(currentSort == "publicationdate" ? "checked" : null)>
+                            <label class="form-check-label" for="sortPublicationDate">Publication Date</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortRating" value="rating" @(currentSort == "rating" ? "checked" : null)>
+                            <label class="form-check-label" for="sortRating">Rating</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortUploadDate" value="uploaddate" @(currentSort == "uploaddate" ? "checked" : null)>
+                            <label class="form-check-label" for="sortUploadDate">Upload Date</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortUpdatedDate" value="updateddate" @(currentSort == "updateddate" ? "checked" : null)>
+                            <label class="form-check-label" for="sortUpdatedDate">Updated Date</label>
+                        </div>
+                    </div>
+                </div>
 
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Direction:</label>
+                    <div class="ms-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortDescending" id="sortAsc" value="false" @(!currentSortDescending ? "checked" : null)>
+                            <label class="form-check-label" for="sortAsc">Ascending <i class="fas fa-arrow-up"></i></label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortDescending" id="sortDesc" value="true" @(currentSortDescending ? "checked" : null)>
+                            <label class="form-check-label" for="sortDesc">Descending <i class="fas fa-arrow-down"></i></label>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="filter-section">
-                <label class="form-label">Direction</label>
-                <select name="sortDescending" class="form-select" id="sortDirectionSelect">
-                    <option value="false" selected="@(!currentSortDescending ? "selected" : null)">Ascending</option>
-                    <option value="true" selected="@(currentSortDescending ? "selected" : null)">Descending</option>
-                </select>
-            </div>
-
-            <div class="popup-footer">
-                <a asp-action="ListBook" class="btn btn-outline-secondary">
-                    Clear Sort
-                </a>
-                <button type="submit" class="btn btn-primary">
-                    Apply Sort
-                </button>
+                <div class="d-flex justify-content-end">
+                    <a asp-action="ListBook" class="btn btn-outline-secondary" style="margin-right: 10px">Clear Sort</a>
+                    <button type="submit" class="btn btn-secondary">Apply Sort</button>
+                </div>
             </div>
         </form>
     </div>
@@ -551,21 +572,46 @@
             const sortToggleBtn = document.getElementById('sortToggleBtn');
             const filterPopup = document.getElementById('filterPopup');
             const sortPopup = document.getElementById('sortPopup');
-            const closeFilterPopup = document.getElementById('closeFilterPopup');
-            const closeSortPopup = document.getElementById('closeSortPopup');
-            const globalSearchInput = document.getElementById('globalSearchInput');
+
+            const cancelSortButton = document.getElementById('cancelSortButton');
+            const applySortButton = document.getElementById('applySortButton');
 
             $('#filterGenres').select2({
                 placeholder: "Select genres",
-                allowClear: true, 
-                theme: "bootstrap-5" 
+                allowClear: true,
+                theme: "bootstrap-5"
             });
 
             $('#filterLanguage').select2({
                 placeholder: "Select a language",
-                allowClear: true, 
-                theme: "bootstrap-5" 
+                allowClear: true,
+                theme: "bootstrap-5"
             });
+
+            $('.select2-rating').select2({
+                theme: 'bootstrap-5',
+                minimumResultsForSearch: Infinity,
+                templateResult: formatRatingOption,
+                templateSelection: formatRatingSelection
+            });
+
+            function formatRatingOption(state) {
+                if (!state.id) return state.text;
+                return $('<span>').addClass('rating-option').html(
+                    '<span class="rating-stars">' +
+                    '★'.repeat(parseInt(state.id)) +
+                    '</span> <span class="rating-text">& up</span>'
+                );
+            }
+
+            function formatRatingSelection(state) {
+                if (!state.id) return state.text;
+                return $('<span>').addClass('rating-selection').html(
+                    '<span class="rating-stars">' +
+                    '★'.repeat(parseInt(state.id)) +
+                    '</span> <span class="rating-text">& up</span>'
+                );
+            }
 
             const currentGenresArray = @Html.Raw(Json.Serialize(currentGenres));
             $('#filterGenres').val(currentGenresArray).trigger('change');
@@ -575,57 +621,73 @@
                 $('#filterLanguage').val(currentLanguageValue).trigger('change');
             }
 
+            // filter popup
             filterToggleBtn?.addEventListener('click', function (e) {
                 e.stopPropagation();
-                sortPopup.classList.remove('show');
-                filterPopup.classList.toggle('show');
-
-                if (filterPopup.classList.contains('show')) {
-                    filterToggleBtn.classList.add('active');
-                    sortToggleBtn.classList.remove('active');
-                } else {
-                    filterToggleBtn.classList.remove('active');
-                }
-            });
-
-            sortToggleBtn?.addEventListener('click', function (e) {
-                e.stopPropagation();
-                filterPopup.classList.remove('show');
-                sortPopup.classList.toggle('show');
 
                 if (sortPopup.classList.contains('show')) {
-                    sortToggleBtn.classList.add('active');
-                    filterToggleBtn.classList.remove('active');
-                } else {
+                    sortPopup.classList.remove('show');
                     sortToggleBtn.classList.remove('active');
+                }
+
+                filterPopup.classList.toggle('show');
+                if (filterPopup.classList.contains('show')) {
+                    filterToggleBtn.classList.add('active');
+                } else {
+                    filterToggleBtn.classList.remove('active');
                 }
             });
 
-            closeFilterPopup?.addEventListener('click', function () {
-                filterPopup.classList.remove('show');
-                filterToggleBtn.classList.remove('active');
-            });
 
-            closeSortPopup?.addEventListener('click', function () {
-                sortPopup.classList.remove('show');
-                sortToggleBtn.classList.remove('active');
-            });
 
-            document.addEventListener('click', function (e) {
-                if (!filterPopup.contains(e.target) && e.target !== filterToggleBtn) {
+
+            // sort sort popup
+            sortToggleBtn?.addEventListener('click', function (e) {
+                e.stopPropagation();
+
+                if (filterPopup.classList.contains('show')) {
                     filterPopup.classList.remove('show');
                     filterToggleBtn.classList.remove('active');
                 }
 
-                if (!sortPopup.contains(e.target) && e.target !== sortToggleBtn) {
+                sortPopup.classList.toggle('show');
+                if (sortPopup.classList.contains('show')) {
+                    sortToggleBtn.classList.add('active');
+                } else {
+                    sortToggleBtn.classList.remove('active');
+                }
+            });
+
+            document.getElementById('closeFilterPopup')?.addEventListener('click', function () {
+                filterPopup.classList.remove('show');
+                filterToggleBtn.classList.remove('active');
+            });
+
+            cancelSortButton?.addEventListener('click', function () {
+                sortPopup.classList.remove('show');
+                sortToggleBtn.classList.remove('active');
+            });
+
+            applySortButton?.addEventListener('click', function () {
+                submitAllFilters();
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!filterPopup.contains(e.target) && e.target !== filterToggleBtn && !filterToggleBtn.contains(e.target)) {
+                    filterPopup.classList.remove('show');
+                    filterToggleBtn.classList.remove('active');
+                }
+
+                if (!sortPopup.contains(e.target) && e.target !== sortToggleBtn && !sortToggleBtn.contains(e.target)) {
                     sortPopup.classList.remove('show');
                     sortToggleBtn.classList.remove('active');
                 }
             });
 
 
+
             let typingTimer;
-            const doneTypingInterval = 500; 
+            const doneTypingInterval = 500;
 
             globalSearchInput?.addEventListener('input', function () {
                 clearTimeout(typingTimer);
@@ -636,7 +698,7 @@
                 const currentUrl = new URL(window.location.origin + window.location.pathname);
                 const params = new URLSearchParams();
 
-                // global search 
+                // global search
                 if (globalSearchInput && globalSearchInput.value) {
                     params.set('searchTerm', globalSearchInput.value);
                 }
@@ -647,14 +709,22 @@
                     const filterFormData = new FormData(filterForm);
                     filterFormData.forEach((value, key) => {
                         if (key === 'genreFilter') {
-                            const existingParam = params.get(key);
-                            if (existingParam) {
-                                params.set(key, existingParam + ',' + value);
+                            const selectedGenres = Array.from(filterForm.querySelectorAll('#filterGenres option:checked'))
+                                .map(option => option.value);
+                            if (selectedGenres.length > 0) {
+                                params.set(key, selectedGenres.join(','));
                             } else {
-                                params.set(key, value);
+                                params.delete(key);
                             }
-                        } else {
-                            if (value) { 
+                        } else if (key === 'languageFilter') {
+                            if (value) {
+                                params.set(key, value);
+                            } else {
+                                params.delete(key);
+                            }
+                        }
+                        else {
+                            if (value) {
                                 params.set(key, value);
                             }
                         }
@@ -671,17 +741,26 @@
                 // sort
                 const sortForm = document.getElementById('sortForm');
                 if (sortForm) {
-                    const sortFormData = new FormData(sortForm);
-                    sortFormData.forEach((value, key) => {
-                        if (value) {
-                            params.set(key, value);
-                        }
-                    });
+                    const selectedSortOrder = sortForm.querySelector('input[name="sortOrder"]:checked')?.value;
+                    const selectedSortDirection = sortForm.querySelector('input[name="sortDescending"]:checked')?.value;
+
+                    if (selectedSortOrder) {
+                        params.set('sortOrder', selectedSortOrder);
+                    } else {
+                        params.delete('sortOrder');
+                    }
+
+                    if (selectedSortDirection) {
+                        params.set('sortDescending', selectedSortDirection);
+                    } else {
+                        params.delete('sortDescending');
+                    }
                 }
 
                 currentUrl.search = params.toString();
                 window.location.href = currentUrl.toString();
             }
+
 
             const filterForm = document.getElementById('filterForm');
             const sortForm = document.getElementById('sortForm');
@@ -693,14 +772,7 @@
                 });
             }
 
-            if (sortForm) {
-                sortForm.addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    submitAllFilters();
-                });
-            }
 
-            
             function checkActiveFilters() {
                 const urlParams = new URLSearchParams(window.location.search);
 
@@ -708,8 +780,11 @@
                     ([key, value]) =>
                         key !== 'searchTerm' &&
                         key !== 'sortOrder' &&
-                        key !== 'sortDescending'
+                        key !== 'sortDescending' &&
+                        value !== '' &&
+                        !(key === 'isFeatured' && value === 'false')
                 );
+
 
                 if (hasFilters) {
                     filterToggleBtn.classList.add('active');
@@ -718,10 +793,14 @@
                 const sortOrder = urlParams.get('sortOrder');
                 const sortDescending = urlParams.get('sortDescending');
 
-                if ((sortOrder && sortOrder !== 'title') || sortDescending === 'true') {
+                if ((sortOrder && sortOrder !== 'title') || (sortDescending === 'true')) {
                     sortToggleBtn.classList.add('active');
+                } else if (sortOrder === null && sortDescending === null && !urlParams.has('sortOrder') && !urlParams.has('sortDescending')) {
+                    sortToggleBtn.classList.remove('active');
                 }
             }
+
+
 
             checkActiveFilters();
         });
