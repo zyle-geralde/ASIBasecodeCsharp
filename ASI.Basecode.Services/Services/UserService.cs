@@ -656,7 +656,7 @@ namespace ASI.Basecode.Services.Services
         {
             if(password == null || password.Trim() == "" || password.Length < 8)
             {
-                throw new InvalidDataException("Password should be greater thatn 8 characters");
+                throw new InvalidDataException("Password should not be less than 8 characters");
             }
         }
 
