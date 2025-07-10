@@ -182,19 +182,14 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         string? category = null
         )
         {
-                bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
-                if (!checkUserAccess) return RedirectToAction("Index", "AdminDashboard");
-
                 const int PageSize = 18;
                 int pageIndex = page.GetValueOrDefault(1);
-                string authorId = await _authorRepository.GetAuthorByName(author != null ? author : "");
-                string authorIdFromSearch = await _authorRepository.GetAuthorByName(searchTerm != null ? searchTerm : "");
 
-            var queryParams = new BookQueryParams
+                var queryParams = new BookQueryParams
                 {
-                    SearchAuhtor = !string.IsNullOrEmpty(authorIdFromSearch) ? authorIdFromSearch : "",
+                    SearchAuhtor = searchTerm ?? "",
                     SearchTerm = searchTerm,
-                    Author = !string.IsNullOrEmpty(authorId) ? authorId : "",
+                    Author = author,
                     Rating = rating,
                     PublishedFrom = publishedFrom,
                     PublishedTo = publishedTo,
@@ -368,7 +363,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
             if (ModelState.IsValid)
             {
-                book.UpdatedDate = DateTime.Now;
+                book.UpdatedDate = DateTime.UtcNow;
+                book.UpdatedBy = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 try
                 {
                     await _bookService.EditBook(book);
