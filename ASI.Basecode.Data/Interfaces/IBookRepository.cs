@@ -29,5 +29,7 @@ namespace ASI.Basecode.Data.Interfaces
 
         Task<bool> CheckBookNameAndAuthorExist(string author, string bookName);
 
+        Task GetReviewCount(string bookId);
+
     }
 }
