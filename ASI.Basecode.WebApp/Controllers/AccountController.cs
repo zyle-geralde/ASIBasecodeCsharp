@@ -112,7 +112,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 // 認証OK
                 await this._signInManager.SignInAsync(user);
-                this._session.SetString("UserName", user.UserName);
+                this._session.SetString("UserName", user.UserName ?? "");
                 this._session.SetString("UserEmail", user.Email);
                 PersonProfile userProfile = await _personProfileService.GetPersonProfile(model.UserId);
 
