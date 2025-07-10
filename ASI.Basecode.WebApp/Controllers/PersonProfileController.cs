@@ -126,6 +126,7 @@ namespace ASI.Basecode.WebApp.Controllers
             var updatedProfile = await _personProfileService.GetPersonProfile(model.UserId);
             HttpContext.Session.SetString("ProfilePicture", updatedProfile.ProfilePicture ?? "");
 
+            TempData["Success"] = "Personal info updated successfully!";
             return RedirectToAction("Index", new { success = "personal" });
         }
 
@@ -143,7 +144,7 @@ namespace ASI.Basecode.WebApp.Controllers
             try
             {
                 await _userService.UpdateUser(uvm);
-                TempData["Success"] = "User info saved!";
+                TempData["Success"] = "User info updated successfully!";
             }
             catch (InvalidDataException ex)
             {
@@ -171,7 +172,7 @@ namespace ASI.Basecode.WebApp.Controllers
             }
             else
             {
-                TempData["Success"] = "password";
+                TempData["Success"] = "Password updated successfully!";
             }
 
             return RedirectToAction(nameof(Index));
