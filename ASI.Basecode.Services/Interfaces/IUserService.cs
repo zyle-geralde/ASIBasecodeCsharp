@@ -37,6 +37,8 @@ namespace ASI.Basecode.Services.Interfaces
         Task<string> SendOtpCodeEmail(string email);
         Task<User> CreateVerifiedUser(UserViewModel model, string role = "User");
 
+        Task CheckValidPassWord(string password);
+
 
 
     }
