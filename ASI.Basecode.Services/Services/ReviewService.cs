@@ -34,8 +34,8 @@ namespace ASI.Basecode.Services.Services
             {
                 var review = _mapper.Map<Review>(reviewModel);
                 review.ReviewId = Guid.NewGuid().ToString();
-                review.UploadDate = DateTime.UtcNow;
-                review.UpdatedDate = DateTime.UtcNow;
+                review.UploadDate = DateTime.Now;
+                review.UpdatedDate = DateTime.Now;
                 await _reviewRepository.AddReview(review);
                 await _bookRepository.GetReviewCount(review.BookId);
                 await _bookRepository.calculateAverageRating(review.BookId);
@@ -102,7 +102,7 @@ namespace ASI.Basecode.Services.Services
 
                 _mapper.Map(reviewModel, existing);
 
-                existing.UpdatedDate = DateTime.UtcNow;
+                existing.UpdatedDate = DateTime.Now;
 
                 await _reviewRepository.UpdateReview(existing);
                 await _bookRepository.GetReviewCount(reviewModel.BookId);
