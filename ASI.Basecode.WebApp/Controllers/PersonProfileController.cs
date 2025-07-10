@@ -222,6 +222,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     .Select(r => new ReviewViewModel
                     {
                         ReviewId = r.ReviewId,
+                        BookTitle = r.Book.Title,
                         BookId = r.BookId,
                         UserId = r.UserId,
                         Rating = r.Rating,
