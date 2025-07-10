@@ -5,6 +5,7 @@
 @model PaginatedList<ASI.Basecode.Services.ServiceModels.BookViewModel>
 @using Microsoft.AspNetCore.Routing;
 @using ASI.Basecode.Services.ServiceModels;
+@using Microsoft.AspNetCore.Html; 
 
 @{
     ViewData["Title"] = "Book List";
@@ -90,12 +91,12 @@
 
     var deleteBookConfirmationModel = new ConfirmationModalModel
             {
-                Id = "deleteBookConfirmationModal", 
+                Id = "deleteBookConfirmationModal",
                 Title = "Delete Confirmation",
                 Message = "Are you sure you want to delete this book?",
                 CancelButtonText = "Cancel",
                 ConfirmButtonText = "Delete",
-                ConfirmButtonId = "confirmDeleteBookAction", 
+                ConfirmButtonId = "confirmDeleteBookAction",
                 ConfirmButtonClass = "btn-danger px-4"
             };
 }
@@ -108,7 +109,11 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-
+    <style>
+        .sort-popup {
+            top: 276px;
+        }
+    </style>
 }
 
 <div class="content-card p-4">
@@ -125,7 +130,6 @@
     </div>
 
     <div class="search-filter-container">
-        <!-- Search Bar -->
         <div class="search-container">
             <i class="fas fa-search"></i>
             <input type="text"
@@ -135,8 +139,7 @@
                    class="form-control" id="globalSearchInput" />
         </div>
 
-        <!-- Filter and Sort Buttons -->
-        <div class="action-buttons">
+        <div class="action-buttons position-relative">
             <button type="button" class="btn btn-outline-secondary filter-btn" id="filterToggleBtn">
                 <i class="fas fa-filter"></i> Filter
             </button>
@@ -146,11 +149,9 @@
         </div>
     </div>
 
-    <!-- Filter Popup -->
     <div class="filter-popup" id="filterPopup">
         <div class="popup-header">
             <h5>Filter By</h5>
-            <button class="popup-close" id="closeFilterPopup">&times;</button>
         </div>
         <form asp-action="ListBook" method="get" id="filterForm">
             <div class="filter-section">
@@ -163,8 +164,8 @@
 
             <div class="filter-section">
                 <label class="form-label">Rating</label>
-                <select name="rating" class="form-select" id="filterRating">
-                    <option value="">Any</option>
+                <select name="rating" class="form-select select2-rating" id="filterRating">
+                    <option value="">Any Rating</option>
                     @for (int i = 1; i <= 5; i++)
                     {
                         <option value="@i" selected="@(currentRating == i ? "selected" : null)">
@@ -236,39 +237,52 @@
         </form>
     </div>
 
-    <!-- Sort Popup -->
-    <div class="book-sort-popup" id="sortPopup">
-        <div class="popup-header">
-            <h5>Sort By</h5>
-            <button class="popup-close" id="closeSortPopup">&times;</button>
+    <div class="sort-popup card shadow" id="sortPopup">
+        <div class="card-header bg-secondary text-white justify-content-center">
+            <h6 class="mb-0" style="top: 6px;">Sort By:</h6>
         </div>
         <form asp-action="ListBook" method="get" id="sortForm">
-            <div class="filter-section">
-                <label class="form-label">Sort by</label>
-                <select name="sortOrder" class="form-select" id="sortOrderSelect">
-                    <option value="title" selected="@(currentSort == "title" ? "selected" : null)">Title</option>
-                    <option value="author" selected="@(currentSort == "author" ? "selected" : null)">Author</option>
-                    <option value="publicationdate" selected="@(currentSort == "publicationdate" ? "selected" : null)">Publication Date</option>
-                    <option value="rating" selected="@(currentSort == "rating" ? "selected" : null)">Rating</option>
-                    <option value="uploaddate" selected="@(currentSort == "uploaddate" ? "selected" : null)">Upload Date</option>
-                </select>
-            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Sort by:</label> 
+                    <div class="ms-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortTitle" value="title" @(currentSort == "title" ? "checked" : null)>
+                            <label class="form-check-label" for="sortTitle">Title</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortPublicationDate" value="publicationdate" @(currentSort == "publicationdate" ? "checked" : null)>
+                            <label class="form-check-label" for="sortPublicationDate">Publication Date</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortRating" value="rating" @(currentSort == "rating" ? "checked" : null)>
+                            <label class="form-check-label" for="sortRating">Rating</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortUploadDate" value="uploaddate" @(currentSort == "uploaddate" ? "checked" : null)>
+                            <label class="form-check-label" for="sortUploadDate">Upload Date</label>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="filter-section">
-                <label class="form-label">Direction</label>
-                <select name="sortDescending" class="form-select" id="sortDirectionSelect">
-                    <option value="false" selected="@(!currentSortDescending ? "selected" : null)">Ascending</option>
-                    <option value="true" selected="@(currentSortDescending ? "selected" : null)">Descending</option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Direction:</label>
+                    <div class="ms-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortDescending" id="sortAsc" value="false" @(!currentSortDescending ? "checked" : null)>
+                            <label class="form-check-label" for="sortAsc">Ascending <i class="fas fa-arrow-up"></i></label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortDescending" id="sortDesc" value="true" @(currentSortDescending ? "checked" : null)>
+                            <label class="form-check-label" for="sortDesc">Descending <i class="fas fa-arrow-down"></i></label>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="popup-footer">
-                <a asp-action="ListBook" class="btn btn-outline-secondary">
-                    Clear Sort
-                </a>
-                <button type="submit" class="btn btn-primary">
-                    Apply Sort
-                </button>
+                <div class="d-flex justify-content-end">
+                    <a asp-action="ListBook" class="btn btn-outline-secondary" style="margin-right: 10px">Clear Sort</a>
+                    <button type="submit" class="btn btn-secondary">Apply Sort</button>
+                </div>
             </div>
         </form>
     </div>
@@ -285,7 +299,7 @@
                         <th>Title</th>
                         <th>Subtitle</th>
                         <th>Author</th>
-                        
+
                         <th>Language</th>
                         <th>Rating</th>
                         <th>Publication Date</th>
@@ -310,7 +324,7 @@
                             <td>@book.Title</td>
                             <td>@book.Subtitle</td>
                             <td>@book.Author</td>
-                            
+
                             <td>@book.Language</td>
                             <td>@book.AverageRating</td>
                             <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
@@ -323,10 +337,10 @@
                                     <a href="/Book/EditBook/@book.BookId" class="action-icon-button text-primary">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                     
-                                     <button type="button" class="action-icon-button text-danger"
+
+                                    <button type="button" class="action-icon-button text-danger"
                                             data-bs-toggle="modal"
-                                            data-bs-target="#@deleteBookConfirmationModel.Id" 
+                                            data-bs-target="#@deleteBookConfirmationModel.Id"
                                             data-book-id="@book.BookId"
                                             data-cover-url="@book.CoverImageUrl"
                                             data-book-url="@book.BookFileUrl">
@@ -381,21 +395,21 @@
             appId: "1:206533484485:web:2c71a06a17d5244efe75ac"
         };
 
-   
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
         import { getStorage, ref, deleteObject } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
 
         const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
 
-        
+
         async function deleteFileFromFirebase(fileUrl) {
             if (!fileUrl) {
                 console.warn("Attempted to delete null or empty file URL.");
                 return;
             }
             try {
-                
+
                 const fileRef = ref(storage, fileUrl);
                 await deleteObject(fileRef);
                 console.log(`Successfully deleted file: ${fileUrl}`);
@@ -421,57 +435,13 @@
         }
 
 
-        // function showStatusModal(message, type = 'Success') {
-        //     var deleteModalElement = document.getElementById('deleteModal');
-        //     var deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
-        //     if (deleteModal) {
-        //         deleteModal.hide();
-        //     }
-
-        //     const statusModalTitle = document.getElementById('statusModalLabel');
-        //     const statusModalMessage = document.getElementById('statusModalMessage');
-
-        //     if (statusModalTitle) {
-        //         statusModalTitle.textContent = type;
-        //     }
-        //     if (statusModalMessage) {
-        //         statusModalMessage.textContent = message;
-        //     }
-
-
-        //     const statusIcon = document.querySelector('#statusModal .status-icon i');
-        //     if (statusIcon) {
-        //         statusIcon.classList.remove('fa-check', 'fa-times', 'fa-exclamation-triangle');
-        //         if (type === 'Success') {
-        //             statusIcon.classList.add('fa-check');
-        //             statusIcon.style.color = '#28a745'; 
-        //         } else if (type === 'Error') {
-        //             statusIcon.classList.add('fa-times');
-        //             statusIcon.style.color = '#dc3545'; 
-        //         } else if (type === 'Warning') {
-        //             statusIcon.classList.add('fa-exclamation-triangle');
-        //             statusIcon.style.color = '#ffc107'; 
-        //         } else {
-        //             statusIcon.classList.add('fa-check'); 
-        //             statusIcon.style.color = '#28a745';
-        //         }
-        //     }
-
-
-        //     setTimeout(function () {
-        //         var statusModalElement = document.getElementById('statusModal');
-        //         var statusModal = new bootstrap.Modal(statusModalElement);
-        //         statusModal.show();
-        //     }, 100);
-        // }
-
         const deleteModalButtons = document.querySelectorAll("[data-bs-target='#@deleteBookConfirmationModel.Id']");
-        
+
         let currentBookIdToDelete = null;
         let currentCoverUrlToDelete = null;
         let currentBookUrlToDelete = null;
 
-        
+
         deleteModalButtons.forEach(button => {
             button.addEventListener("click", function () {
                 currentBookIdToDelete = this.dataset.bookId;
@@ -481,17 +451,17 @@
         });
 
 
-        const confirmDeleteBookButton = document.getElementById("@deleteBookConfirmationModel.ConfirmButtonId"); 
+        const confirmDeleteBookButton = document.getElementById("@deleteBookConfirmationModel.ConfirmButtonId");
         if (confirmDeleteBookButton) {
             confirmDeleteBookButton.addEventListener("click", async function () {
-                var deleteModalElement = document.getElementById('@deleteBookConfirmationModel.Id'); 
+                var deleteModalElement = document.getElementById('@deleteBookConfirmationModel.Id');
                 var deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
 
-                showLoadingOverlay(); 
+                showLoadingOverlay();
                 confirmDeleteBookButton.disabled = true;
 
                 if (deleteModal) {
-                    deleteModal.hide(); 
+                    deleteModal.hide();
                 }
 
                 try {
@@ -516,8 +486,7 @@
 
                         setTimeout(() => {
                             window.location.reload();
-                        }, 500);
-
+                        }, 500); 
                     } else {
                         const errorResult = await response.json();
                         toastr.error(`Error: ${errorResult.message || "Failed to delete book."}`);
@@ -525,7 +494,7 @@
                 } catch (error) {
                     toastr.error(`Error: An unexpected error occurred while deleting book data. Please try again.`);
                     console.error("Fetch error:", error);
-                } finally{
+                } finally {
                     hideLoadingOverlay();
                     confirmDeleteBookButton.disabled = false;
                 }
@@ -539,21 +508,46 @@
             const sortToggleBtn = document.getElementById('sortToggleBtn');
             const filterPopup = document.getElementById('filterPopup');
             const sortPopup = document.getElementById('sortPopup');
-            const closeFilterPopup = document.getElementById('closeFilterPopup');
-            const closeSortPopup = document.getElementById('closeSortPopup');
-            const globalSearchInput = document.getElementById('globalSearchInput');
+
+            const cancelSortButton = document.getElementById('cancelSortButton');
+            const applySortButton = document.getElementById('applySortButton');
 
             $('#filterGenres').select2({
                 placeholder: "Select genres",
-                allowClear: true, 
-                theme: "bootstrap-5" 
+                allowClear: true,
+                theme: "bootstrap-5"
             });
 
             $('#filterLanguage').select2({
                 placeholder: "Select a language",
-                allowClear: true, 
-                theme: "bootstrap-5" 
+                allowClear: true,
+                theme: "bootstrap-5"
             });
+
+            $('.select2-rating').select2({
+                theme: 'bootstrap-5',
+                minimumResultsForSearch: Infinity, 
+                templateResult: formatRatingOption,
+                templateSelection: formatRatingSelection
+            });
+
+            function formatRatingOption(state) {
+                if (!state.id) return state.text;
+                return $('<span>').addClass('rating-option').html(
+                    '<span class="rating-stars">' +
+                    '★'.repeat(parseInt(state.id)) +
+                    '</span> <span class="rating-text">& up</span>'
+                );
+            }
+
+            function formatRatingSelection(state) {
+                if (!state.id) return state.text;
+                return $('<span>').addClass('rating-selection').html(
+                    '<span class="rating-stars">' +
+                    '★'.repeat(parseInt(state.id)) +
+                    '</span> <span class="rating-text">& up</span>'
+                );
+            }
 
             const currentGenresArray = @Html.Raw(Json.Serialize(currentGenres));
             $('#filterGenres').val(currentGenresArray).trigger('change');
@@ -563,57 +557,73 @@
                 $('#filterLanguage').val(currentLanguageValue).trigger('change');
             }
 
+            // filter popup
             filterToggleBtn?.addEventListener('click', function (e) {
                 e.stopPropagation();
-                sortPopup.classList.remove('show');
-                filterPopup.classList.toggle('show');
-
-                if (filterPopup.classList.contains('show')) {
-                    filterToggleBtn.classList.add('active');
-                    sortToggleBtn.classList.remove('active');
-                } else {
-                    filterToggleBtn.classList.remove('active');
-                }
-            });
-
-            sortToggleBtn?.addEventListener('click', function (e) {
-                e.stopPropagation();
-                filterPopup.classList.remove('show');
-                sortPopup.classList.toggle('show');
 
                 if (sortPopup.classList.contains('show')) {
-                    sortToggleBtn.classList.add('active');
-                    filterToggleBtn.classList.remove('active');
-                } else {
+                    sortPopup.classList.remove('show');
                     sortToggleBtn.classList.remove('active');
+                }
+
+                filterPopup.classList.toggle('show');
+                if (filterPopup.classList.contains('show')) {
+                    filterToggleBtn.classList.add('active');
+                } else {
+                    filterToggleBtn.classList.remove('active');
                 }
             });
 
-            closeFilterPopup?.addEventListener('click', function () {
-                filterPopup.classList.remove('show');
-                filterToggleBtn.classList.remove('active');
-            });
 
-            closeSortPopup?.addEventListener('click', function () {
-                sortPopup.classList.remove('show');
-                sortToggleBtn.classList.remove('active');
-            });
 
-            document.addEventListener('click', function (e) {
-                if (!filterPopup.contains(e.target) && e.target !== filterToggleBtn) {
+
+            // sort sort popup 
+            sortToggleBtn?.addEventListener('click', function (e) {
+                e.stopPropagation();
+
+                if (filterPopup.classList.contains('show')) { 
                     filterPopup.classList.remove('show');
                     filterToggleBtn.classList.remove('active');
                 }
 
-                if (!sortPopup.contains(e.target) && e.target !== sortToggleBtn) {
+                sortPopup.classList.toggle('show'); 
+                if (sortPopup.classList.contains('show')) {
+                    sortToggleBtn.classList.add('active');
+                } else {
+                    sortToggleBtn.classList.remove('active');
+                }
+            });
+
+            document.getElementById('closeFilterPopup')?.addEventListener('click', function () {
+                filterPopup.classList.remove('show');
+                filterToggleBtn.classList.remove('active');
+            });
+
+            cancelSortButton?.addEventListener('click', function () {
+                sortPopup.classList.remove('show'); 
+                sortToggleBtn.classList.remove('active');
+            });
+
+            applySortButton?.addEventListener('click', function () {
+                submitAllFilters(); 
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!filterPopup.contains(e.target) && e.target !== filterToggleBtn && !filterToggleBtn.contains(e.target)) {
+                    filterPopup.classList.remove('show');
+                    filterToggleBtn.classList.remove('active');
+                }
+
+                if (!sortPopup.contains(e.target) && e.target !== sortToggleBtn && !sortToggleBtn.contains(e.target)) {
                     sortPopup.classList.remove('show');
                     sortToggleBtn.classList.remove('active');
                 }
             });
 
 
+
             let typingTimer;
-            const doneTypingInterval = 500; 
+            const doneTypingInterval = 500;
 
             globalSearchInput?.addEventListener('input', function () {
                 clearTimeout(typingTimer);
@@ -624,7 +634,7 @@
                 const currentUrl = new URL(window.location.origin + window.location.pathname);
                 const params = new URLSearchParams();
 
-                // global search 
+                // global search
                 if (globalSearchInput && globalSearchInput.value) {
                     params.set('searchTerm', globalSearchInput.value);
                 }
@@ -635,14 +645,22 @@
                     const filterFormData = new FormData(filterForm);
                     filterFormData.forEach((value, key) => {
                         if (key === 'genreFilter') {
-                            const existingParam = params.get(key);
-                            if (existingParam) {
-                                params.set(key, existingParam + ',' + value);
+                            const selectedGenres = Array.from(filterForm.querySelectorAll('#filterGenres option:checked'))
+                                .map(option => option.value);
+                            if (selectedGenres.length > 0) {
+                                params.set(key, selectedGenres.join(','));
                             } else {
-                                params.set(key, value);
+                                params.delete(key);
                             }
-                        } else {
-                            if (value) { 
+                        } else if (key === 'languageFilter') {
+                            if (value) {
+                                params.set(key, value);
+                            } else {
+                                params.delete(key);
+                            }
+                        }
+                        else {
+                            if (value) {
                                 params.set(key, value);
                             }
                         }
@@ -659,17 +677,26 @@
                 // sort
                 const sortForm = document.getElementById('sortForm');
                 if (sortForm) {
-                    const sortFormData = new FormData(sortForm);
-                    sortFormData.forEach((value, key) => {
-                        if (value) {
-                            params.set(key, value);
-                        }
-                    });
+                    const selectedSortOrder = sortForm.querySelector('input[name="sortOrder"]:checked')?.value;
+                    const selectedSortDirection = sortForm.querySelector('input[name="sortDescending"]:checked')?.value;
+
+                    if (selectedSortOrder) {
+                        params.set('sortOrder', selectedSortOrder);
+                    } else {
+                        params.delete('sortOrder');
+                    }
+
+                    if (selectedSortDirection) {
+                        params.set('sortDescending', selectedSortDirection);
+                    } else {
+                        params.delete('sortDescending');
+                    }
                 }
 
                 currentUrl.search = params.toString();
                 window.location.href = currentUrl.toString();
             }
+
 
             const filterForm = document.getElementById('filterForm');
             const sortForm = document.getElementById('sortForm');
@@ -681,14 +708,7 @@
                 });
             }
 
-            if (sortForm) {
-                sortForm.addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    submitAllFilters();
-                });
-            }
 
-            
             function checkActiveFilters() {
                 const urlParams = new URLSearchParams(window.location.search);
 
@@ -696,8 +716,11 @@
                     ([key, value]) =>
                         key !== 'searchTerm' &&
                         key !== 'sortOrder' &&
-                        key !== 'sortDescending'
+                        key !== 'sortDescending' &&
+                        value !== '' &&
+                        !(key === 'isFeatured' && value === 'false')
                 );
+
 
                 if (hasFilters) {
                     filterToggleBtn.classList.add('active');
@@ -706,8 +729,10 @@
                 const sortOrder = urlParams.get('sortOrder');
                 const sortDescending = urlParams.get('sortDescending');
 
-                if ((sortOrder && sortOrder !== 'title') || sortDescending === 'true') {
+                if ((sortOrder && sortOrder !== 'title') || (sortDescending === 'true')) {
                     sortToggleBtn.classList.add('active');
+                } else if (sortOrder === null && sortDescending === null && !urlParams.has('sortOrder') && !urlParams.has('sortDescending')) {
+                    sortToggleBtn.classList.remove('active');
                 }
             }
 

@@ -188,7 +188,7 @@ label
 
 /*------------------------------ Status Modal -----------------------------*/
 
-.status-modal .modal-content 
+/*.status-modal .modal-content 
 {
     border-radius: 12px;
     background-color: #f5f2ef;
@@ -243,7 +243,7 @@ label
     .status-modal .btn-secondary:hover 
     {
         background-color: #4f6466;
-    }
+    }*/
 
 
 
@@ -679,8 +679,19 @@ font-weight: 500;
     width: 280px;
     border-radius: 8px;
     border: 1px solid #e0e0e0;
-    right: 0; 
+    right: 20px;
+    margin-top: 5px;
+    transform: translateY(-10px);
+    display: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
+    .sort-popup.show 
+    {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
 
     .sort-popup .card-header 
     {
@@ -936,7 +947,7 @@ font-weight: 500;
 }
 
 /* active button state */
-.filter-btn.active,
+/*.filter-btn.active,*/
 .sort-btn.active 
 {
     background-color: rgb(24 70 73 / 40%);
@@ -1083,3 +1094,18 @@ font-weight: 500;
         box-shadow: none !important;
         transform: none !important;
     }
+
+
+/* -------------------- Rating ----------------------*/
+/* Add to your existing CSS file */
+.rating-option .rating-stars,
+.rating-selection .rating-stars {
+    color: #ffc107; /* Bootstrap's warning color for stars */
+    font-size: 1.1em;
+}
+
+.select2-container--bootstrap-5 .select2-selection--single {
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+}
