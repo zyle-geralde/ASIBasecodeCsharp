@@ -104,7 +104,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             string[]? genreFilter,
             string? languageFilter,
             string? sortOrder,
-            bool sortDescending = false,
+            bool sortDescending = true,
             bool? isFeatured = null,
 
             int? page = 1
@@ -132,7 +132,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 SortDescending = sortDescending,
                 PageIndex = page.GetValueOrDefault(1),
                 IsFeatured = isFeatured,
-                SortOrder = sortOrder ?? "title",
+                SortOrder = sortOrder ?? "updateddate",
                 PageSize = PageSize,
 
 
