@@ -582,6 +582,7 @@ namespace ASI.Basecode.Services.Services
             }
             foreach(var bookId in impactedBookIds)
             {
+                await _bookRepository.GetReviewCount(bookId);
                 await _bookRepository.calculateAverageRating(bookId);
             }
             return true;

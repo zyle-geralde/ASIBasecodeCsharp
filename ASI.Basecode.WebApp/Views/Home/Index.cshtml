@@ -89,7 +89,8 @@
                                             }
                                         }
                                     </div>
-                                    <span class="rating-text">@book.AverageRating/5</span>
+                    <span class="rating-text">@book.AverageRating?.ToString("0.00") / 5.0 (@book.ReviewCount reviews)</span>
+
                                 </div>
                                 <div class="genre-tags">
                                     @{
@@ -155,7 +156,7 @@
                                             }
                                         }
                                     </div>
-                                    <span class="rating-text">@book.AverageRating/5</span>
+                    <span class="rating-text">@book.AverageRating?.ToString("0.00") / 5.0 (@book.ReviewCount reviews)</span>
                                 </div>
                                 <div class="genre-tags">
                                     @{
@@ -222,7 +223,7 @@
                                 }
                             }
                         </div>
-                        <span class="rating-text">@book.AverageRating/5</span>
+                    <span class="rating-text">@book.AverageRating?.ToString("0.00") / 5.0 (@book.ReviewCount reviews)</span>
                     </div>
                     <div class="genre-tags">
                         @{
