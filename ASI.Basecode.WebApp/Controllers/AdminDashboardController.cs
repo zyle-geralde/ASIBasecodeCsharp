@@ -40,6 +40,8 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpGet]
         [Authorize]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+
         public async Task<IActionResult> Index()
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();

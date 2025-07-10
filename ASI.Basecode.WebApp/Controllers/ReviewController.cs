@@ -109,15 +109,6 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
-                //var deleted = await _reviewService.DeleteReview(id);
-                //if (!deleted)
-                //{
-                //    TempData["Error"] = "Review not found or could not be deleted.";
-                //}
-                //else
-                //{
-                //    TempData["Success"] = "Review deleted successfully.";
-                //}
 
                 var review = await _reviewService.GetReviewById(id);
                 if (review == null)

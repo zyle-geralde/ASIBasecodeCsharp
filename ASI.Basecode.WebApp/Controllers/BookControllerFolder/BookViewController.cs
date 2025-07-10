@@ -93,6 +93,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [HttpGet]
         [Route("Book/ListBook")]
         [Authorize]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+
         public async Task<IActionResult> ListBook(
             string? searchTerm,
             string? author,
