@@ -25,7 +25,6 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         private readonly IAuthorRepository _authorRepository;
         private readonly IAuthorService _authorService;
         private readonly ILanguageService _languageService;
-        //private readonly IBookRepository _bookRepository;
         public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface,IAuthorRepository authorRepository, IAuthorService authorService, ILanguageService languageService)
         {
             _bookService = bookService;
@@ -182,7 +181,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         string? category = null
         )
         {
-                const int PageSize = 18;
+                const int PageSize = 10;
                 int pageIndex = page.GetValueOrDefault(1);
 
                 var queryParams = new BookQueryParams

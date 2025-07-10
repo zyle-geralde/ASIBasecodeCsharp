@@ -31,8 +31,7 @@ namespace ASI.Basecode.Services.Services
         private readonly IEmailSender _emailSenderService;
         private readonly IReviewRepository _reviewRepository;
         private readonly IBookRepository _bookRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly SessionManager _sessionManager;
+
         public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService, IReviewRepository reviewRepository, IBookRepository bookRepository)
         {
             _mapper = mapper;
@@ -40,8 +39,6 @@ namespace ASI.Basecode.Services.Services
             _personProfileService = personProfileService;
             _personProfileRepository = personProfileRepository;
             _emailSenderService = emailSenderService;
-            _httpContextAccessor = httpContextAccessor;
-            this._sessionManager = new SessionManager(httpContextAccessor.HttpContext.Session);
             _reviewRepository = reviewRepository;
             _bookRepository = bookRepository;
         }
