@@ -258,6 +258,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpGet]
         [Route("Book/BookDetails/{bookId}", Name="BookDetails")]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+
         [Authorize]
         public async Task<IActionResult> GetBook(string bookId)
         {

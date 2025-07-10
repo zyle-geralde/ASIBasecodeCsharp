@@ -29,14 +29,17 @@ namespace ASI.Basecode.Services.Services
         private readonly IPersonProfileService _personProfileService;
         private readonly IPersonProfileRepository _personProfileRepository;
         private readonly IEmailSender _emailSenderService;
-
-        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService)
+        private readonly IReviewRepository _reviewRepository;
+        private readonly IBookRepository _bookRepository;
+        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService, IReviewRepository reviewRepository, IBookRepository bookRepository)
         {
             _mapper = mapper;
             _repository = repository;
             _personProfileService = personProfileService;
             _personProfileRepository = personProfileRepository;
             _emailSenderService = emailSenderService;
+            _reviewRepository = reviewRepository;
+            _bookRepository = bookRepository;
         }
 
 
@@ -546,15 +549,25 @@ namespace ASI.Basecode.Services.Services
         {
             var user = await _repository.FindByEmailForEdit(userId);
 
+
             if (user == null)
             {
                 return false;
             }
+            var userReviews = await _reviewRepository.GetReviewByUser(userId);
+            var impactedBookIds = userReviews
+                .Select(r => r.BookId)
+                .Distinct()
+                .ToList();
 
             await _repository.DeleteUser(userId);
             if (!string.IsNullOrEmpty(user.Email))
             {
                 await _personProfileService.DeletePersonProfile(user.Email);
+            }
+            foreach(var bookId in impactedBookIds)
+            {
+                await _bookRepository.calculateAverageRating(bookId);
             }
             return true;
         }

@@ -106,6 +106,8 @@
                                         }
                                     </div>
                                 </div>
+                                                                    <p style="font-size: 10px">@book.AverageRating/5.0</p>
+
                                 <div class="genre-tags">
                                     @{
                                         var genres = book.GenreList?.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
@@ -177,6 +179,8 @@
                                         }
                                     </div>
                                 </div>
+                                                                                                    <p style="font-size: 10px">@book.AverageRating/5.0</p>
+
                                 <div class="genre-tags">
                                     @{
                                         var genres = book.GenreList?.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
