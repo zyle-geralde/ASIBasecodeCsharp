@@ -75,21 +75,52 @@
     var descriptionText = descriptionParts.Any()
         ? string.Join(" | ", descriptionParts)
         : "Manage books";
+
+    ViewData["CurrentPage"] = Model.PageIndex;
+    ViewData["TotalPages"] = Model.TotalPages;
+    ViewData["RouteValues"] = routeValues;
 }
 
 @section styles {
     <link rel="stylesheet" href="~/css/searchresults.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/pagination.css" asp-append-version="true" />
 }
 
-<div class="search-results-container">
+<div class="search-results-container">   
     <!-- Left Side - Scrollable Book Results -->
     <div class="search-results-left">
         <div class="sticky-header-wrapper">
+            <form asp-controller="Book" asp-action="SearchResults" method="get" class="search-bar-form mb-4" style="padding: 0 20px; width:100%">
+                <div style="display: flex; flex-direction: row; gap: 15px; width: 100%; align-items: stretch;">
+                    <div style="flex: 1;">
+                        <div class="input-group h-100">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text"
+                                   name="searchTerm"
+                                   value="@ViewData["CurrentSearch"]"
+                                   placeholder="Title, subtitle..."
+                                   class="form-control" />
+                        </div>
+                    </div>
+                    <div>
+                        <button type="button"
+                                class="btn clear-toggle-btn"
+                                onclick="location.href='@Url.Action("SearchResults", "Book")'">
+                            <i class="fas fa-times"></i> Clear All
+                        </button>
+                    </div>
+                    <div>
+                        <button id="toggleFilters" type="button" class="btn filter-toggle-btn">
+                            <i class="fas fa-sliders-h"></i> Filters & Sort
+                        </button>
+                    </div>
+                </div>
+            </form>
             <div class="search-header">
                 <div class="search-header-content">
                     <h2>@(string.IsNullOrEmpty(categoryTitle) ? "Search Results" : $"Results for: {categoryTitle}")</h2>
-                    <p>Displaying @Model.PageIndex of @Model.TotalPages out of @Model.TotalCount results</p>
+                    <p>Displaying @Model.StartIndex - @Model.EndIndex out of @Model.TotalCount results</p>
                     @if(descriptionParts.Any())
                     {
                         <div class="active-filters">
@@ -101,12 +132,7 @@
                             </div>
                         </div>
                     }
-                </div>
-                <div class="filter-controls">
-                    <button id="toggleFilters" class="btn filter-toggle-btn">
-                        <i class="fas fa-sliders-h"></i> Filters & Sort
-                    </button>
-                </div>
+                </div>               
             </div>
         </div>
 
@@ -182,42 +208,7 @@
                 }
             }
         </div>
-
-        <div class="pagination-container">
-            <nav aria-label="Search results pages">
-                <ul class="pagination">
-                    <li class="page-nav @(Model.HasPreviousPage ? "" : "disabled")">
-                        <a class="page-link"
-                           asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
-                                ["page"] = (Model.PageIndex - 1).ToString()
-                           })">
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
-                    </li>
-
-                    @for (int i = 1; i <= Model.TotalPages; i++)
-                    {
-                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                            <a class="page-link"
-                               asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
-                                    ["page"] = i.ToString()
-                               })">
-                                @i
-                            </a>
-                        </li>
-                    }
-
-                    <li class="page-nav @(Model.HasNextPage ? "" : "disabled")">
-                        <a class="page-link"
-                           asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
-                                ["page"] = (Model.PageIndex + 1).ToString()
-                           })">
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+        <partial name="_PaginationPartial" view-data="ViewData" />        
     </div>
 </div>
 
@@ -237,32 +228,21 @@
                     <i class="fas fa-search"></i> Search & Sort
                 </h4>
                 <div class="filter-section-content">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Search</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                <input type="text"
-                                    name="searchTerm"
-                                    value="@ViewData["CurrentSearch"]"
-                                    placeholder="Title, subtitle..."
-                                    class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
+                    <div class="row g-3 mb-3">                       
+                        <div class="col-md-12">
                             <label class="form-label">Author</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-user-edit"></i></span>
                                 <input type="text"
-                                    name="author"
-                                    value="@currentAuthor"
-                                    placeholder="Author name"
-                                    class="form-control" />
+                                       name="author"
+                                       value="@currentAuthor"
+                                       placeholder="Author name"
+                                       class="form-control" />
                             </div>
                         </div>
                     </div>
                 
-                    <div class="row g-3 mt-3">
+                    <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label">Sort by</label>
                             <select name="sortOrder" class="form-select">
@@ -328,8 +308,8 @@
                             </div>
                         </div>
                     </div>
-                   <div class="toggle-container mt-4">
-                        <div class="toggle-wrapper">
+                   <div class="toggle-container" style="margin-top: 15px; margin-bottom: 0">
+                        <div class="toggle-wrapper" style="padding: 0">
                             <input type="checkbox" 
                                    id="isFeatured" 
                                    name="isFeatured" 

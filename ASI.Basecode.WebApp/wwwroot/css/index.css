@@ -40,6 +40,57 @@ body
     margin-top: 50px;
 }
 
+.home-search-bar .input-group {
+    background: #F7F4ED;
+    border: 2px solid #DCD7C9;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(62, 79, 78, 0.04);
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 24px;
+}
+
+.home-search-input {
+    background: rgb(247, 244, 237);
+    border: none;
+    color: #3E4F4E;
+    font-family: 'Lara', sans-serif;
+    font-size: 16px;
+    padding: 12px 16px;
+    outline: none;
+    box-shadow: none;
+    flex: 1 1 auto;
+}
+    .home-search-input:focus {
+        background: #F8F8F9;
+    }
+
+    .home-search-input::placeholder {
+        color: dimgray;
+        opacity: 1;
+    }
+
+.home-search-btn {
+    background: rgb(220, 215, 201, 0.6);
+    color: #3E4F4E;
+    border: none;
+    border-left: 1.5px solid #DCD7C9;
+    font-family: 'Lara', sans-serif;
+    font-size: 16px;
+    padding: 0 24px;
+    transition: background 0.2s, color 0.2s;
+    border-radius: 0 10px 10px 0;
+    box-shadow: none;
+    font-weight: 600;
+}
+
+    .home-search-btn:hover, .home-search-btn:focus {
+        background: rgb(220, 215, 201);
+        color: #1f2937;
+        font-weight: 700;
+    }
+
 .section-card-genre h2,
 .featured-column h2,
 .section-card .book-list-header h2,
