@@ -652,6 +652,14 @@ namespace ASI.Basecode.Services.Services
 
         }
 
+        public async Task CheckValidPassWord(string password)
+        {
+            if(password == null || password.Trim() == "" || password.Length < 8)
+            {
+                throw new InvalidDataException("Password should be greater thatn 8 characters");
+            }
+        }
+
         public async Task UpdatePassword(UserViewModel user)
         {
             if(user == null)

@@ -176,6 +176,8 @@ namespace ASI.Basecode.WebApp.Controllers
                     throw new InvalidDataException("Username already exists.");
                 }
 
+                await _userService.CheckValidPassWord(model.Password);
+
                 // Generate OTP without creating user in database
                 string otpCode = await _userService.SendOtpCodeEmail(model.Email);
                 model.OtpCode = otpCode;
