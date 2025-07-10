@@ -181,14 +181,19 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         string? category = null
         )
         {
+                bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
+                if (!checkUserAccess) return RedirectToAction("Index", "AdminDashboard");
+
+                string authorId = await _authorRepository.GetAuthorByName(author != null ? author : "");
+                string authorIdFromSearch = await _authorRepository.GetAuthorByName(searchTerm != null ? searchTerm : "");
                 const int PageSize = 10;
                 int pageIndex = page.GetValueOrDefault(1);
 
                 var queryParams = new BookQueryParams
                 {
-                    SearchAuhtor = searchTerm ?? "",
+                    SearchAuhtor = !string.IsNullOrEmpty(authorIdFromSearch) ? authorIdFromSearch : "",
                     SearchTerm = searchTerm,
-                    Author = author,
+                    Author = !string.IsNullOrEmpty(authorId) ? authorId : "",
                     Rating = rating,
                     PublishedFrom = publishedFrom,
                     PublishedTo = publishedTo,
