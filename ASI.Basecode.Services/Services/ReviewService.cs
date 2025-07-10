@@ -37,6 +37,7 @@ namespace ASI.Basecode.Services.Services
                 review.UploadDate = DateTime.UtcNow;
                 review.UpdatedDate = DateTime.UtcNow;
                 await _reviewRepository.AddReview(review);
+                await _bookRepository.GetReviewCount(review.BookId);
                 await _bookRepository.calculateAverageRating(review.BookId);
             }
 
@@ -76,6 +77,7 @@ namespace ASI.Basecode.Services.Services
                     return false;
                 }
                 await _reviewRepository.DeleteReview(reviewId);
+                await _bookRepository.GetReviewCount(existingReview.BookId);
                 await _bookRepository.calculateAverageRating(existingReview.BookId);
                 return true;
 
@@ -103,6 +105,7 @@ namespace ASI.Basecode.Services.Services
                 existing.UpdatedDate = DateTime.UtcNow;
 
                 await _reviewRepository.UpdateReview(existing);
+                await _bookRepository.GetReviewCount(reviewModel.BookId);
                 await _bookRepository.calculateAverageRating(reviewModel.BookId);
 
                 return true;

@@ -138,7 +138,8 @@ namespace ASI.Basecode.Services.Services
                     NumberOfPages = b.NumberOfPages,
                     Publisher = b.Publisher,
                     PublicationLocation = b.PublicationLocation,
-                    SeriesName = b.SeriesName
+                    SeriesName = b.SeriesName,
+                    ReviewCount = b.ReviewCount
                 });
             }
 
@@ -225,6 +226,7 @@ namespace ASI.Basecode.Services.Services
                 GenreList= requestBook.GenreList,
                 AverageRating =requestBook.AverageRating,
                 IsFeatured = requestBook.IsFeatured,
+                ReviewCount = requestBook.ReviewCount,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImageUrl = requestBook.CoverImage,

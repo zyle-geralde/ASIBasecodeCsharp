@@ -169,7 +169,8 @@
                                         }
                                     }
                                 </div>
-                                <span class="rating-value">@((book.AverageRating ?? 0).ToString("0.0"))</span>
+                                <span class="rating-value">@((book.AverageRating ?? 0).ToString("0.0"))  (@book.ReviewCount reviews)</span>
+
                             </div>
                             
                             <div class="book-meta">

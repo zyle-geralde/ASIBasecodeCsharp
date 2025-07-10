@@ -38,6 +38,8 @@ namespace ASI.Basecode.Data.Models
 
         public bool? IsFeatured { get; set; } = false;
         public List<Review> Reviews { get; set; } = new();
+        public int ReviewCount { get; set; }
+
 
     }
 }
