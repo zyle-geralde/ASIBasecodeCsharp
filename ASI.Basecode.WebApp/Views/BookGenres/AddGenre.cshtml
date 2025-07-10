@@ -5,6 +5,17 @@
 @{
     ViewData["Title"] = "Add New Book Genre";
     Layout = "_AdminSidebarLayout";
+
+    var addGenreConfirmationModel = new ASI.Basecode.WebApp.Models.ConfirmationModalModel
+            {
+                Id = "addGenreConfirmationModal",
+                Title = "Add Genre Confirmation",
+                Message = "Are you sure you want to add this genre?",
+                CancelButtonText = "Cancel",
+                ConfirmButtonText = "Add Genre",
+                ConfirmButtonId = "confirmAddGenreAction",
+                ConfirmButtonClass = "book-master-submit-button" 
+            };
 }
 
 @section styles {
@@ -66,23 +77,8 @@
             </div>
         </div>
 
-<div class="modal fade confirmation-modal" id="addGenreConfirmationModal" tabindex="-1" aria-labelledby="addGenreConfirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title" id="addGenreConfirmationModalLabel">Add Genre Confirmation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <p class="mb-4" id="confirmationModalMessage">Are you sure you want to add this genre?</p>
-                <div class="d-flex justify-content-center gap-2">
-                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn book-master-submit-button px-4" id="confirmAddGenreAction">Add Genre</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="_ConfirmationModal" model="addGenreConfirmationModel" />
+
 
 
 
@@ -261,22 +257,10 @@
                 isValid = false;
             } 
 
-            if (!genreImageFile && !genreImageUrlInput.value) { // no new file selected & no existing URL
+            if (!genreImageFile && !genreImageUrlInput.value) { 
                 missingFields.push('Genre Image');
-                // const fileSizeInfoSpan = genreImageUploadStatus.querySelector('.file-size-info');
-                // if (fileSizeInfoSpan) {
-                //     fileSizeInfoSpan.textContent = 'Genre image is required.';
-                // }
-                // genreImageUploadStatus.classList.add('error-message');
                 isValid = false;
             } 
-            // else {
-            //     const fileSizeInfoSpan = genreImageUploadStatus.querySelector('.file-size-info');
-            //     if (fileSizeInfoSpan) {
-            //         fileSizeInfoSpan.textContent = 'Max file size: 1GB';
-            //     }
-            //     genreImageUploadStatus.classList.remove('error-message');
-            // }
 
             if (!isValid) {
                 toastr.warning(`Please fill in all required fields. Missing: ${missingFields.join(', ')}.`, 'Warning');
