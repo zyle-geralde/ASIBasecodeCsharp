@@ -25,7 +25,6 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         private readonly IAuthorRepository _authorRepository;
         private readonly IAuthorService _authorService;
         private readonly ILanguageService _languageService;
-        //private readonly IBookRepository _bookRepository;
         public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface,IAuthorRepository authorRepository, IAuthorService authorService, ILanguageService languageService)
         {
             _bookService = bookService;
@@ -104,7 +103,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             string[]? genreFilter,
             string? languageFilter,
             string? sortOrder,
-            bool sortDescending = false,
+            bool sortDescending = true,
             bool? isFeatured = null,
 
             int? page = 1
@@ -132,7 +131,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 SortDescending = sortDescending,
                 PageIndex = page.GetValueOrDefault(1),
                 IsFeatured = isFeatured,
-                SortOrder = sortOrder ?? "title",
+                SortOrder = sortOrder ?? "updateddate",
                 PageSize = PageSize,
 
 
@@ -182,7 +181,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         string? category = null
         )
         {
-                const int PageSize = 18;
+                const int PageSize = 10;
                 int pageIndex = page.GetValueOrDefault(1);
 
                 var queryParams = new BookQueryParams

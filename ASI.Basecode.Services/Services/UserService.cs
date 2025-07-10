@@ -31,6 +31,7 @@ namespace ASI.Basecode.Services.Services
         private readonly IEmailSender _emailSenderService;
         private readonly IReviewRepository _reviewRepository;
         private readonly IBookRepository _bookRepository;
+
         public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService, IReviewRepository reviewRepository, IBookRepository bookRepository)
         {
             _mapper = mapper;

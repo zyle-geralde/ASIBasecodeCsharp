@@ -120,7 +120,7 @@
             <div class="search-header">
                 <div class="search-header-content">
                     <h2>@(string.IsNullOrEmpty(categoryTitle) ? "Search Results" : $"Results for: {categoryTitle}")</h2>
-                    <p>Displaying @Model.PageIndex of @Model.TotalPages out of @Model.TotalCount results</p>
+                    <p>Displaying @Model.StartIndex - @Model.EndIndex out of @Model.TotalCount results</p>
                     @if(descriptionParts.Any())
                     {
                         <div class="active-filters">

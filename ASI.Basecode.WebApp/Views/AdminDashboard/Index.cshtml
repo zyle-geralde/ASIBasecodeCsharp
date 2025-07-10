@@ -64,6 +64,78 @@
             </div>
         </div>
 
+         <!-- Top 10 Rated Books Section -->
+        <section class="section-card admin-carousel-section">
+            <div class="book-list-header">
+                <h2>Top 10 Rated Books</h2>
+                <div class="see-more-link-wrapper">
+                    <a asp-controller="Book"
+                       asp-action="ListBook"
+                       asp-route-sortOrder="rating"
+                       asp-route-sortDescending="true"
+                       asp-route-category="Top Rated">See More</a>
+                </div>
+            </div>
+            <div class="admin-book-carousel-container top-rated-carousel">
+                <button class="carousel-button admin-carousel-btn prev-button"
+                        aria-label="Previous books">
+                    <span class="button-icon">&#x25C0;</span>
+                </button>
+                <div class="admin-book-display-wrapper">
+                    @for (int i = 0; i < Model.TopRatedBooks.Count; i++)
+                    {
+                        var book = Model.TopRatedBooks[i];
+                        <div class="admin-carousel-card hidden-book-card" onclick="window.location.href='/Book/BookDetails/@book.BookId'" style="cursor: pointer">
+                            <img class="admin-carousel-img" src="@book.CoverImage" alt="@book.Title Book Cover">
+                            <div class="admin-carousel-content">
+                                <h3 class="admin-carousel-title">@book.Title</h3>
+                                <p class="admin-carousel-author">by @book.Author</p>
+                                <p class="admin-carousel-desc"><i>@book.Description</i></p>
+                                <div class="star-rating admin-star-rating">
+                                    <div class="stars">
+                                        @for (int j = 0; j < 5; j++)
+                                        {
+                                            if (j < book.AverageRating)
+                                            {
+                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                            else
+                                            {
+                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                                                                                    <p style="font-size: 10px">@book.AverageRating/5.0</p>
+
+                                <div class="genre-tags">
+                                    @{
+                                        var genres = book.GenreList?.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                        .Select(s => s.Trim())
+                                        .ToList() ?? new List<string>();
+
+                                        var colorClasses = new string[] {
+                                                                "dynamic-genre-1", "dynamic-genre-2", "dynamic-genre-3", "dynamic-genre-4", "dynamic-genre-5",
+                                                                "dynamic-genre-6", "dynamic-genre-7", "dynamic-genre-8", "dynamic-genre-9", "dynamic-genre-10"
+                                                                };
+
+                                        foreach (var tag in genres)
+                                        {
+                                            var colorIndex = Math.Abs(tag.GetHashCode()) % colorClasses.Length;
+                                            <span class="genre-tag @colorClasses[colorIndex]" id="genre-tag-id">@tag</span>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <button class="carousel-button admin-carousel-btn next-button"
+                        aria-label="Next books">
+                    <span class="button-icon">&#x25B6;</span>
+                </button>
+            </div>
+        </section>  
         <!-- Newly Added Books Section -->
         <section class="section-card admin-carousel-section">
             <div class="book-list-header">
@@ -136,79 +208,6 @@
                 </button>
             </div>
         </section>
-
-        <!-- Top 10 Rated Books Section -->
-        <section class="section-card admin-carousel-section">
-            <div class="book-list-header">
-                <h2>Top 10 Rated Books</h2>
-                <div class="see-more-link-wrapper">
-                    <a asp-controller="Book"
-                       asp-action="ListBook"
-                       asp-route-sortOrder="rating"
-                       asp-route-sortDescending="true"
-                       asp-route-category="Top Rated">See More</a>
-                </div>
-            </div>
-            <div class="admin-book-carousel-container top-rated-carousel">
-                <button class="carousel-button admin-carousel-btn prev-button"
-                        aria-label="Previous books">
-                    <span class="button-icon">&#x25C0;</span>
-                </button>
-                <div class="admin-book-display-wrapper">
-                    @for (int i = 0; i < Model.TopRatedBooks.Count; i++)
-                    {
-                        var book = Model.TopRatedBooks[i];
-                        <div class="admin-carousel-card hidden-book-card" onclick="window.location.href='/Book/BookDetails/@book.BookId'" style="cursor: pointer">
-                            <img class="admin-carousel-img" src="@book.CoverImage" alt="@book.Title Book Cover">
-                            <div class="admin-carousel-content">
-                                <h3 class="admin-carousel-title">@book.Title</h3>
-                                <p class="admin-carousel-author">by @book.Author</p>
-                                <p class="admin-carousel-desc"><i>@book.Description</i></p>
-                                <div class="star-rating admin-star-rating">
-                                    <div class="stars">
-                                        @for (int j = 0; j < 5; j++)
-                                        {
-                                            if (j < book.AverageRating)
-                                            {
-                                                <svg viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-                                            }
-                                            else
-                                            {
-                                                <svg class="empty-star" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.212L12 18.896l-7.416 3.948 1.48-8.212L.001 9.306l8.332-1.151L12 .587z" /></svg>
-                                            }
-                                        }
-                                    </div>
-                                </div>
-                                                                                                    <p style="font-size: 10px">@book.AverageRating/5.0</p>
-
-                                <div class="genre-tags">
-                                    @{
-                                        var genres = book.GenreList?.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                                        .Select(s => s.Trim())
-                                        .ToList() ?? new List<string>();
-
-                                        var colorClasses = new string[] {
-                                                                "dynamic-genre-1", "dynamic-genre-2", "dynamic-genre-3", "dynamic-genre-4", "dynamic-genre-5",
-                                                                "dynamic-genre-6", "dynamic-genre-7", "dynamic-genre-8", "dynamic-genre-9", "dynamic-genre-10"
-                                                                };
-
-                                        foreach (var tag in genres)
-                                        {
-                                            var colorIndex = Math.Abs(tag.GetHashCode()) % colorClasses.Length;
-                                            <span class="genre-tag @colorClasses[colorIndex]" id="genre-tag-id">@tag</span>
-                                        }
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-                <button class="carousel-button admin-carousel-btn next-button"
-                        aria-label="Next books">
-                    <span class="button-icon">&#x25B6;</span>
-                </button>
-            </div>
-        </section>  
     </div>
 </div>
 
