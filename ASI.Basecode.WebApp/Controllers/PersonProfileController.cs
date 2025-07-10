@@ -4,6 +4,7 @@ using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.AccessControl;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IO;
@@ -118,12 +119,14 @@ namespace ASI.Basecode.WebApp.Controllers
             //if(!ModelState.IsValid)
             //    return View("~/Views/PersonProfile/Edit.cshtml", model);
 
-            var updated = await _personProfileService.EditPersonProfile(model);
-            if (!updated)
+            var success = await _personProfileService.EditPersonProfile(model);
+            if (!success)
                 return NotFound();
 
-            return RedirectToAction("Index", new { success = "personal" });
+            var updatedProfile = await _personProfileService.GetPersonProfile(model.UserId);
+            HttpContext.Session.SetString("ProfilePicture", updatedProfile.ProfilePicture ?? "");
 
+            return RedirectToAction("Index", new { success = "personal" });
         }
 
         [HttpPost]
