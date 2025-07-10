@@ -709,6 +709,10 @@ namespace ASI.Basecode.Services.Services
             var currentHash = PasswordManager.EncryptPassword(currentPassword);
             if (user.Password != currentHash)
                 return false;
+            if(newPassword == null || newPassword.Trim() == "" ||newPassword.Trim().Length < 8)
+            {
+                return false;
+            }
 
             user.Password = PasswordManager.EncryptPassword(newPassword);
             await _repository.UpdateUser(user);
