@@ -117,7 +117,6 @@ namespace ASI.Basecode.WebApp.Controllers
                 PersonProfile userProfile = await _personProfileService.GetPersonProfile(model.UserId);
 
                 this._session.SetString("UserRole", userProfile.Role);
-                this._session.SetString("ProfilePicture", userProfile.ProfilePicture ?? "");
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -180,7 +179,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Generate OTP without creating user in database
                 string otpCode = await _userService.SendOtpCodeEmail(model.Email);
                 model.OtpCode = otpCode;
-                model.OtpExpirationDate = DateTime.Now.AddMinutes(2);
+                model.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                 model.Role = "User";
                 // Store model in memory with email as key
