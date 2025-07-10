@@ -19,7 +19,6 @@ using ASI.Basecode.Data.Repositories;
 using static System.Net.WebRequestMethods;
 using System.Security.Policy;
 using System.Data.Entity;
-using Microsoft.AspNetCore.Http;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -30,18 +29,14 @@ namespace ASI.Basecode.Services.Services
         private readonly IPersonProfileService _personProfileService;
         private readonly IPersonProfileRepository _personProfileRepository;
         private readonly IEmailSender _emailSenderService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly SessionManager _sessionManager;
 
-        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService, IHttpContextAccessor httpContextAccessor)
+        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService)
         {
             _mapper = mapper;
             _repository = repository;
             _personProfileService = personProfileService;
             _personProfileRepository = personProfileRepository;
             _emailSenderService = emailSenderService;
-            _httpContextAccessor = httpContextAccessor;
-            this._sessionManager = new SessionManager(httpContextAccessor.HttpContext.Session);
         }
 
 
@@ -118,8 +113,8 @@ namespace ASI.Basecode.Services.Services
                 Password = PasswordManager.EncryptPassword(model.Password),
                 CreatedTime = DateTime.Now,
                 UpdatedTime = DateTime.Now,
-                CreatedBy = model.UserName,
-                UpdatedBy = model.UserName,
+                CreatedBy = System.Environment.UserName,
+                UpdatedBy = System.Environment.UserName,
                 IsEmailVerified = true,
                 OtpCode = null,
                 Role = role,
@@ -178,11 +173,11 @@ namespace ASI.Basecode.Services.Services
                 user.Password = PasswordManager.EncryptPassword(model.Password);
                 user.CreatedTime = DateTime.Now;
                 user.UpdatedTime = DateTime.Now;
-                user.CreatedBy = model.UserName;
-                user.UpdatedBy = model.UserName;
+                user.CreatedBy = System.Environment.UserName;
+                user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = false;
                 user.OtpCode = await GenerateOtpCode(model.Email);
-                user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
+                user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
 
                 await _repository.AddUser(user);
                 return user;
@@ -209,8 +204,8 @@ namespace ASI.Basecode.Services.Services
                 user.Password = PasswordManager.EncryptPassword(model.Password);
                 user.CreatedTime = DateTime.Now;
                 user.UpdatedTime = DateTime.Now;
-                user.CreatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName");
-                user.UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName");
+                user.CreatedBy = System.Environment.UserName;
+                user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = true;
                 user.OtpCode = null;
                 user.Role = model.Role;
@@ -261,7 +256,7 @@ namespace ASI.Basecode.Services.Services
 
                 user.UserName = model.UserName;
                 user.UpdatedTime = DateTime.Now;
-                user.UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName");
+                user.UpdatedBy = System.Environment.UserName;
 
                 // Update password if provided
                 if (!string.IsNullOrEmpty(model.Password))
@@ -288,11 +283,11 @@ namespace ASI.Basecode.Services.Services
                 user.Password = PasswordManager.EncryptPassword(model.Password);
                 user.CreatedTime = DateTime.Now;
                 user.UpdatedTime = DateTime.Now;
-                user.CreatedBy = model.UserName;
-                user.UpdatedBy = model.UserName;
+                user.CreatedBy = System.Environment.UserName;
+                user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = false;
                 user.OtpCode = await GenerateOtpCode(model.Email);
-                user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
+                user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
 
                 await _repository.AddUser(user);
 
@@ -328,11 +323,11 @@ namespace ASI.Basecode.Services.Services
                         get_user.Password = PasswordManager.EncryptPassword(model.Password);
                         get_user.CreatedTime = DateTime.Now;
                         get_user.UpdatedTime = DateTime.Now;
-                        get_user.CreatedBy = model.UserName;
-                        get_user.UpdatedBy = model.UserName;
+                        get_user.CreatedBy = System.Environment.UserName;
+                        get_user.UpdatedBy = System.Environment.UserName;
                         get_user.IsEmailVerified = false;
                         get_user.OtpCode = await GenerateOtpCode(model.Email);
-                        get_user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
+                        get_user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
 
                         await _repository.UpdateUser(get_user);
 
@@ -384,11 +379,11 @@ namespace ASI.Basecode.Services.Services
                 user.Password = PasswordManager.EncryptPassword(model.Password);
                 user.CreatedTime = DateTime.Now;
                 user.UpdatedTime = DateTime.Now;
-                user.CreatedBy = model.UserName;
-                user.UpdatedBy = model.UserName;
+                user.CreatedBy = System.Environment.UserName;
+                user.UpdatedBy = System.Environment.UserName;
                 user.IsEmailVerified = false;
                 user.OtpCode = await GenerateOtpCode(model.Email);
-                user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
+                user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
 
                 await _repository.AddUser(user);
 
@@ -424,11 +419,11 @@ namespace ASI.Basecode.Services.Services
                         get_user.Password = PasswordManager.EncryptPassword(model.Password);
                         get_user.CreatedTime = DateTime.Now;
                         get_user.UpdatedTime = DateTime.Now;
-                        get_user.CreatedBy = model.UserName;
-                        get_user.UpdatedBy = model.UserName;
+                        get_user.CreatedBy = System.Environment.UserName;
+                        get_user.UpdatedBy = System.Environment.UserName;
                         get_user.IsEmailVerified = false;
                         get_user.OtpCode = await GenerateOtpCode(model.Email);
-                        get_user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
+                        get_user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
 
                         await _repository.UpdateUser(get_user);
 
@@ -492,7 +487,7 @@ namespace ASI.Basecode.Services.Services
                 }
 
                 // Validate OTP
-                if (user.OtpCode == model.OtpCode && user.OtpExpirationDate.HasValue && user.OtpExpirationDate.Value > DateTime.Now)
+                if (user.OtpCode == model.OtpCode && user.OtpExpirationDate.HasValue && user.OtpExpirationDate.Value > DateTime.UtcNow)
                 {
                     user.IsEmailVerified = true;
                     user.OtpCode = null;
@@ -612,7 +607,7 @@ namespace ASI.Basecode.Services.Services
             }
 
             user.OtpCode = await GenerateOtpCode(email);
-            user.OtpExpirationDate = DateTime.Now.AddMinutes(5); // New expiry
+            user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5); // New expiry
             await _repository.UpdateUser(user);
 
             OtpViewModel user_otp = new OtpViewModel
