@@ -104,18 +104,33 @@ namespace ASI.Basecode.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(string id)
         {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            bool isAdmin = await _accessControlInterface.CheckAdminAccess();
+
             try
             {
-                var deleted = await _reviewService.DeleteReview(id);
-                if (!deleted)
-                {
-                    TempData["Error"] = "Review not found or could not be deleted.";
-                }
-                else
-                {
-                    TempData["Success"] = "Review deleted successfully.";
-                }
+                //var deleted = await _reviewService.DeleteReview(id);
+                //if (!deleted)
+                //{
+                //    TempData["Error"] = "Review not found or could not be deleted.";
+                //}
+                //else
+                //{
+                //    TempData["Success"] = "Review deleted successfully.";
+                //}
 
+                var review = await _reviewService.GetReviewById(id);
+                if (review == null)
+                    return NotFound("Review not found");
+                if (!isAdmin && review.UserId != currentUserId)
+                    return Forbid();
+                bool deleted = await _reviewService.DeleteReview(id);
+                if (!deleted)
+                    TempData["Error"] = "Could not delete review.";
+                else
+                    TempData["Success"] = "Review deleted successfully.";
+
+                return RedirectToAction("Index");
             }
             catch (Exception e)
             {
