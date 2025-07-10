@@ -47,7 +47,7 @@ namespace ASI.Basecode.WebApp.Controllers
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
 
-            var books = await _bookRepository.GetBooks() ?? new List<Book>();
+            var books = await _bookRepository.GetAllBooks() ?? new List<Book>();
             var genres = await _bookGenreRepository.GetAllGenreList() ?? new List<BookGenre>();
             var users = _userRepository.GetUsers()?.ToList()?? new List<User>();
             var reviews = await _reviewRepository.GetAllReviews() ?? new List<Review>();

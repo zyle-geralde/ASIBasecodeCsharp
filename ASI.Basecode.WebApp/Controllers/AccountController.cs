@@ -117,6 +117,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 PersonProfile userProfile = await _personProfileService.GetPersonProfile(model.UserId);
 
                 this._session.SetString("UserRole", userProfile.Role);
+                this._session.SetString("ProfilePicture", userProfile.ProfilePicture ?? "");
                 return RedirectToAction("Index", "Home");
             }
             else

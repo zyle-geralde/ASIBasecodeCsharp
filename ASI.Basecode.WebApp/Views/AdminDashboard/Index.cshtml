@@ -327,10 +327,61 @@
             setupTwoBookCarousel('.new-books-carousel');
             setupTwoBookCarousel('.top-rated-carousel');
 
-            // Keep your genre tags overflow code
             function setupGenreTagsOverflow() {
-                // Your existing code...
-            }
+            $('.genre-tags').each(function () {
+                const $container = $(this);
+                let $tags = $container.find('.genre-tag');
+
+                $container.find('.genre-tags-more-indicator').remove();
+                $tags.removeClass('hidden-tag').css('display', 'inline-flex');
+
+                if ($tags.length === 0) {
+                    $container.css('max-height', 'none');
+                    return;
+                }
+
+                const containerHeight = $container[0].scrollHeight;
+                const maxHeight = parseInt($container.css('max-height')) || 56;
+
+                if (containerHeight <= maxHeight) {
+                    return;
+                }
+
+                let visibleHeight = 0;
+                let visibleTagsCount = 0;
+                $tags.each(function (index) {
+                    const $tempContainer = $('<div>').css({
+                        display: 'flex',
+                        'flex-wrap': 'wrap',
+                        gap: '8px',
+                        width: $container.width(),
+                        'max-height': 'none',
+                        visibility: 'hidden',
+                        position: 'absolute',
+                        left: '-9999px'
+                    }).append($tags.slice(0, index + 1).clone());
+                    $('body').append($tempContainer);
+                    visibleHeight = $tempContainer[0].scrollHeight;
+                    $tempContainer.remove();
+
+                    if (visibleHeight <= maxHeight) {
+                        visibleTagsCount++;
+                    } else {
+                        $(this).addClass('hidden-tag');
+                    }
+                });
+
+                const hiddenTagsCount = $tags.length - visibleTagsCount;
+
+                if (hiddenTagsCount > 0) {
+                    const $moreIndicator = $(`<span class="genre-tags-more-indicator">+${hiddenTagsCount}</span>`);
+                    $container.append($moreIndicator);
+                    $container.addClass('has-overflow');
+                } else {
+                    $container.removeClass('has-overflow');
+                }
+            });
+        }
 
             setupGenreTagsOverflow();
             $(window).on('resize', setupGenreTagsOverflow);
