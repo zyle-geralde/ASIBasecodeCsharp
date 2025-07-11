@@ -11,7 +11,9 @@ public class PaginatedList<T> : List<T>
     public int TotalPages { get; }
     public int PageSize { get; }
     public int TotalCount { get; }
-    public int StartIndex => (PageIndex - 1) * PageSize + 1;
+    public int StartIndex => TotalCount == 0? 0 :
+        (PageIndex - 1) * PageSize + 1;
+
     public int EndIndex => Math.Min(PageIndex * PageSize, TotalCount);
 
     public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)

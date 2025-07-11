@@ -128,7 +128,26 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="header-section">
             <h1>@display_name</h1>
-            <p>@descriptionText</p>
+            @if (descriptionParts.Any())
+            {
+                                <p>Search Results</p>
+
+            }
+            else
+            {
+                                <p>Manage your books</p>
+            }
+            @if(descriptionParts.Any())
+                    {
+                        <div class="active-filters">
+                            <div class="filter-tags">
+                                @foreach(var part in descriptionParts)
+                                {
+                                    <p class="filter-tag">@part</p>
+                                }
+                            </div>
+                        </div>
+                    }
         </div>
         <p>
             <a href="/Book/AddBook" class="btn btn-secondary">
@@ -306,6 +325,7 @@
             </div>
         </form>
     </div>
+      
                 <p style="font-size: 12px; color:"gray">Showing  @Model.StartIndex - @Model.EndIndex out of @Model.TotalCount books</p>
 
     <p class="no-search-results-message" style="display: none;">No books found matching your search criteria.</p>

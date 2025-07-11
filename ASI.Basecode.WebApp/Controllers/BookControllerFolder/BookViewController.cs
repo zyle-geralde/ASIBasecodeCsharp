@@ -238,7 +238,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             }
             else
             {
-                ViewData["CategoryTitle"] = "Search Results";
+                ViewData["CategoryTitle"] = "";
             }
 
 
