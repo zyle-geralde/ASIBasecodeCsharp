@@ -150,7 +150,9 @@
             @*------------------------------------------------------------For searching sort and filter-----------------------------------------------*@
 
             <div class="table-container">
-                <div class="table-scroll-container">
+                @if(Model!=null && Model.Any())
+                {
+                     <div class="table-scroll-container">
                     <table class="table table-hover">
 
                         <colgroup>
@@ -210,6 +212,13 @@
                         </tbody>
                     </table>
                 </div>
+                }
+                else
+                {
+                                        <p class="empty-message">No languages found. Why not add some?</p>
+
+                }
+               
 
                 <partial name="_PaginationPartial" view-data='@new ViewDataDictionary(ViewData) { { "RouteValues", routeValues } }' />
 

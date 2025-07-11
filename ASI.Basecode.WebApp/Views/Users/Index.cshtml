@@ -88,7 +88,14 @@
                     <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
                 </form>
             </div>
-            <p style="font-size: 12px; color:gray">Showing  @Model.StartIndex - @Model.EndIndex out of @Model.TotalCount users</p>
+            @* @if (Model.TotalCount != 0)
+            {
+            <p style="font-size: 12px; color:"gray">Showing  @Model.StartIndex - @Model.EndIndex out of @Model.TotalCount users</p>
+            }
+            @(Model.TotalCount!=0)?{ *@
+                            <p style="font-size: 12px; color:"gray">Showing  @Model.StartIndex - @Model.EndIndex out of @Model.TotalCount users</p>
+
+            @* } *@
 
             <div class="sort-popup card shadow" id="sortPopup" style="display: none;">
                 <div class="card-header bg-secondary text-white justify-center">
@@ -157,6 +164,8 @@
             </div>
 
             <div class="table-container">
+                          @if (Model != null && Model.Any())
+                {
                 <div class="scrollable-table-container">
                     <table class="table table-hover user-table">
                         <colgroup>
@@ -200,7 +209,13 @@
                             }
                         </tbody>
                     </table>
-                </div>
+                    </div>
+                }
+                else
+                {
+                    <p class="empty-message">No users found. Why not add some?</p>
+
+                }
                 <partial name="_PaginationPartial" view-data='@new ViewDataDictionary(ViewData) { { "RouteValues", routeValues } }' />
             </div>
         </div>

@@ -45,7 +45,7 @@ namespace ASI.Basecode.Data.Repositories
                 var term = queryParams.SearchTerm.Trim();
                 var authorTerm = queryParams.SearchAuhtor?.Trim() ?? "";
                 query = query.Where(b =>
-                (b.Title != null && b.Title.Contains(term) || (b.Subtitle != null && b.Subtitle.Contains(term)) || (b.Author != null && authorTerm.Trim().Contains(b.Author))));
+                (b.Title != null && b.Title.Contains(term)  || (b.Author != null && authorTerm.Trim().Contains(b.Author))));
 
             }
 
