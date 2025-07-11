@@ -61,8 +61,8 @@
         routeValues["isFeatured"] = "true";
         descriptionParts.Add("Featured");
     }
-    if (currentGenres.Any())
-    {
+
+        if (currentGenres.Any()) {
         routeValues["genreFilter"] = string.Join(",", currentGenres);
         var selectedNames = allGenres
             .Where(g => currentGenres.Contains(g.BookGenreId))
@@ -167,12 +167,14 @@
             <input type="text"
                    name="searchTerm"
                    value="@ViewData["CurrentSearch"]"
-                   placeholder="Search title, subtitle, author…"
+                   placeholder="Search title, author…"
                    class="book-master-form-input align-self-center" 
                    style="font-weight: 300; margin-right: 10px"
                    id="globalSearchInput" />
         </div>
-
+                        <a asp-action="ListBook" class="btn btn-outline-secondary">
+                    Clear All
+                </a>
         <!-- Filter and Sort Buttons -->
         <div class="action-buttons position-relative">
             <button type="button" class="btn btn-outline-secondary filter-btn" id="filterToggleBtn">
@@ -709,10 +711,12 @@
             let typingTimer;
             const doneTypingInterval = 500;
 
-            globalSearchInput?.addEventListener('input', function () {
-                clearTimeout(typingTimer);
-                typingTimer = setTimeout(submitAllFilters, doneTypingInterval);
-            });
+ globalSearchInput?.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault(); // Prevent form submission if it's inside a form
+        submitAllFilters();
+    }
+});
 
             function submitAllFilters() {
                 const currentUrl = new URL(window.location.origin + window.location.pathname);
