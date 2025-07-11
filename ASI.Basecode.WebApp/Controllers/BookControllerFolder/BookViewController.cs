@@ -166,6 +166,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [HttpGet]
         [Route("Book/SearchResults")]
         [Authorize]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> SearchResults(
         string? searchTerm,
         string? author,
