@@ -14,5 +14,6 @@ namespace ASI.Basecode.Services.ServiceModels
         public List<BookViewModel> FeaturedBooks { get; set; }
 
         public List <AuthorViewModel> Authors { get; set; }
+        public List<LanguageViewModel> Languages { get; set; }
     }
 }
