@@ -53,8 +53,8 @@
 
          <!-- Author Section -->
         <section class="section-card-genre">
-            @*<h2>Authors Section?</h2>*@
-            <p>Find books of your favorite authors!</p>
+            <h2>Discover Authors</h2>
+            <p>Explore the captivating works of your favorite authors.</p>
             <div class="category-scroll-container">
                 @foreach (var author in Model.Authors)
                 {
@@ -67,6 +67,26 @@
                              alt="@author.AuthorName Books" />
                         <div class="category-card-overlay">
                             <span>@author.AuthorName</span>
+                        </div>
+                    </a>
+                }
+            </div>
+        </section>
+
+        <!-- Language Section -->
+        <section class="section-card-genre">
+            <h2>Explore Languages</h2>
+            <p>Discover a diverse collection of books in various languages.</p>
+            <div class="category-scroll-container">
+                @foreach (var language in Model.Languages)
+                {
+                    <a asp-controller="Book"
+                       asp-action="SearchResults"
+                       asp-route-languageFilter="@language.LanguageId"
+                       asp-route-category="@language.LanguageName"
+                       class="category-card">
+                        <div class="category-card-overlay">
+                            <span>@language.LanguageName</span>
                         </div>
                     </a>
                 }
