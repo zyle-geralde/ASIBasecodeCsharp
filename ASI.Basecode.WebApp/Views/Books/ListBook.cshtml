@@ -219,7 +219,7 @@
             <div class="filter-section">
                 <label class="form-label">Language</label>
                 <select name="languageFilter" class="form-select" id="filterLanguage" style="width: 100%;">
-                    <option value="">Any</option> @* Add "Any" option for language filter *@
+                    <option value="">Any</option> 
                     @foreach (var language in allLanguages)
                     {
                         <option value="@language.LanguageId" selected="@(currentLanguage == language.LanguageId ? "selected" : null)">
