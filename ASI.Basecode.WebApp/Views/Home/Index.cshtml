@@ -50,6 +50,28 @@
                 }
             </div>
         </section>
+
+         <!-- Author Section -->
+        <section class="section-card-genre">
+            <h2>Authors Section?</h2>
+            <p>Find books of your favorite authos</p>
+            <div class="category-scroll-container">
+                @foreach (var author in Model.Authors)
+                {
+                    <a asp-controller="Book"
+                       asp-action="SearchResults"
+                       asp-route-author="@author.AuthorName"
+                       asp-route-category="@author.AuthorName"
+                       class="category-card">
+                        <img src="@author.AuthorImageUrl"
+                             alt="@author.AuthorName Books" />
+                        <div class="category-card-overlay">
+                            <span>@author.AuthorName</span>
+                        </div>
+                    </a>
+                }
+            </div>
+        </section>
        
         <section class="section-card">
             <div class="book-list-header">

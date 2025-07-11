@@ -26,6 +26,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IBookService _bookService;
         private readonly IBookGenreService _bookGenreService;
         private readonly IAccessControlInterface _accessControlInterface;
+        private readonly IAuthorService _authorService;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -40,10 +41,12 @@ namespace ASI.Basecode.WebApp.Controllers
                               IBookGenreService bookGenreService,
                               IBookService bookService,
                               IAccessControlInterface accessControlInterface,
+                              IAuthorService authorService,
                               IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
             _bookService = bookService;
             _bookGenreService = bookGenreService;
+            _authorService = authorService;
             this._accessControlInterface = accessControlInterface;
         }
 
@@ -61,6 +64,8 @@ namespace ASI.Basecode.WebApp.Controllers
             if (!checkUserAccess) return RedirectToAction("Index", "AdminDashboard");
 
             var allGenres = await _bookGenreService.GetAllGenreList();
+            var allAuthor = await _authorService.GetAllAuthorList();
+
             var topRatedParams = new BookQueryParams
             {
                 SortOrder = "rating",
@@ -89,7 +94,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 Genres = allGenres,
                 TopRatedBooks = topRatedBooks,
                 NewBooks = newlyAddedBooks,
-                FeaturedBooks = featuredBooks
+                FeaturedBooks = featuredBooks,
+                Authors = allAuthor
             };
             return View(vm);
         }
