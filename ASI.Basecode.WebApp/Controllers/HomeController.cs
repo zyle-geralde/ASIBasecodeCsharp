@@ -1,4 +1,5 @@
 ﻿using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
@@ -27,6 +28,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IBookGenreService _bookGenreService;
         private readonly IAccessControlInterface _accessControlInterface;
         private readonly IAuthorService _authorService;
+        private readonly ILanguageService _languageService;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -42,11 +44,13 @@ namespace ASI.Basecode.WebApp.Controllers
                               IBookService bookService,
                               IAccessControlInterface accessControlInterface,
                               IAuthorService authorService,
+                              ILanguageService languageService,
                               IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
             _bookService = bookService;
             _bookGenreService = bookGenreService;
             _authorService = authorService;
+            _languageService = languageService;
             this._accessControlInterface = accessControlInterface;
         }
 
@@ -65,6 +69,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             var allGenres = await _bookGenreService.GetAllGenreList();
             var allAuthor = await _authorService.GetAllAuthorList();
+            var allLanguage = await _languageService.GetAllLanguage();
 
             var topRatedParams = new BookQueryParams
             {
@@ -95,7 +100,8 @@ namespace ASI.Basecode.WebApp.Controllers
                 TopRatedBooks = topRatedBooks,
                 NewBooks = newlyAddedBooks,
                 FeaturedBooks = featuredBooks,
-                Authors = allAuthor
+                Authors = allAuthor,
+                Languages = allLanguage
             };
             return View(vm);
         }
