@@ -91,7 +91,7 @@
     <!-- Left Side - Scrollable Book Results -->
     <div class="search-results-left">
         <div class="sticky-header-wrapper">
-            <form asp-controller="Book" asp-action="SearchResults" method="get" class="search-bar-form mb-4" style="padding: 0 20px; width:100%">
+            @*<form asp-controller="Book" asp-action="SearchResults" method="get" class="search-bar-form mb-4" style="padding: 0 20px; width:100%">*@
                 <div style="display: flex; flex-direction: row; gap: 15px; width: 100%; align-items: stretch;">
                     <div style="flex: 1;">
                         <div class="input-group h-100">
@@ -100,7 +100,9 @@
                                    name="searchTerm"
                                    value="@ViewData["CurrentSearch"]"
                                    placeholder="Title, subtitle..."
-                                   class="form-control" />
+                                   class="form-control"
+                                   id = "mainSearchTerm"
+                                    />
                         </div>
                     </div>
                     <div>
@@ -116,7 +118,7 @@
                         </button>
                     </div>
                 </div>
-            </form>
+            @*</form>*@
             <div class="search-header">
                 <div class="search-header-content">
                     <h2>@(string.IsNullOrEmpty(categoryTitle) ? "Search Results" : $"Results for: {categoryTitle}")</h2>
@@ -221,8 +223,8 @@
             <i class="fas fa-times"></i>
         </button>
     </div>
-    <form asp-controller="Book" asp-action="SearchResults" method="get">
-        <input type="hidden" name="searchTerm" value="@currentSearch" />
+    <form asp-controller="Book" asp-action="SearchResults" method="get" id="filterForm">
+        <input type="hidden" name="searchTerm" value="@currentSearch" id = "hiddenSearchTerm"/>
         <div class="filter-container">
             
             <!-- Search and Sort Section -->
@@ -385,7 +387,7 @@
                     class="btn btn-outline-secondary">
                     <i class="fas fa-times"></i> Clear All
                 </a>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary" id="applyFiltersButton">
                     <i class="fas fa-check"></i> Apply Filters
                 </button>
             </div>
@@ -400,6 +402,10 @@
             const closeFilterButton = document.getElementById('closeFilterPanel');
             const filterPanel = document.getElementById('filterPanel');
             const filterBackdrop = document.querySelector('.filter-backdrop');
+            const mainSearchTermInput = document.getElementById('mainSearchTerm');
+            const hiddenSearchTermInput = document.getElementById('hiddenSearchTerm');
+            //const filterForm = document.getElementById('filterForm');
+
             
             // Initialize filter panel (hidden by default)
             if (filterPanel) {
@@ -408,6 +414,12 @@
             
             if (filterBackdrop) {
                 filterBackdrop.classList.remove('active');
+            }
+
+            if (mainSearchTermInput && hiddenSearchTermInput) {
+                mainSearchTermInput.addEventListener('keyup', function () {
+                    hiddenSearchTermInput.value = this.value;
+                });
             }
             
             // Toggle filter panel
@@ -527,6 +539,24 @@
                     }
                 });
             });
+
+            /*if (filterForm) {
+                console.log("Enter pressed")
+                // Select all relevant input types within the filter form
+                const inputsInFilterForm = filterForm.querySelectorAll('input[type="text"], input[type="date"],input[type="hidden"], select');
+                console.log(inputsInFilterForm)
+
+                inputsInFilterForm.forEach(input => {
+                    input.addEventListener('keypress', (event) =>{
+                        console.log("Successful input")
+                        if (event.key === 'Enter') {
+                            console.log("Enter pressed")
+                            event.preventDefault(); // Prevent adding a newline or other default behavior
+                            filterForm.submit(); // Explicitly submit the filter form
+                        }
+                    });
+                });
+            }*/
         });
 
         document.querySelectorAll('input[type="date"]').forEach(input => {
@@ -549,5 +579,23 @@
                 input.showPicker();
             });
         });
+
+
+        const form = document.getElementById('mainSearchTerm');
+        const applyButton = document.getElementById('applyFiltersButton');
+
+        form.addEventListener('keypress', function (event) {
+            console.log("Enter success")
+            // Check if the pressed key is Enter (key code 13)
+            if (event.key === 'Enter') {
+                // Prevent the default form submission behavior for a single input field,
+                // which often submits the form on Enter
+                event.preventDefault();
+
+                // Programmatically click the "Apply Filters" button
+                applyButton.click();
+            }
+        });
+
     </script>
 }
