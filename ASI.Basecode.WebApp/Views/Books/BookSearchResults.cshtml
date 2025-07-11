@@ -222,7 +222,9 @@
         </button>
     </div>
     <form asp-controller="Book" asp-action="SearchResults" method="get">
+        <input type="hidden" name="searchTerm" value="@currentSearch" />
         <div class="filter-container">
+            
             <!-- Search and Sort Section -->
             <div class="filter-section">
                 <h4 class="filter-section-title">
