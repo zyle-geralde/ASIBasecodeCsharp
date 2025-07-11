@@ -68,8 +68,8 @@
     </style>
 }
 
-<div class="admin-common-container">
-    <div class="admin-common-content-wrapper">
+<div class="admin-common-container-add">
+    <div class="admin-common-content-wrapper-add">
         <div class="header-section">
             <h1>Edit Author</h1>
             <p>Edit author details here</p>
@@ -83,7 +83,7 @@
             <input type="hidden" id="originalAuthorDescription" value="@originalAuthorDescription" />
             <input type="hidden" id="originalAuthorImageUrl" value="@originalAuthorImageUrl" />
 
-            <div class="content-master-grid">
+            <div class="content-master-grid-add">
                 <div class="image-upload-section">
                     <div class="author-image-preview-container">
                         <img id="authorImagePreview" src="@Model?.AuthorImageUrl" style="@(string.IsNullOrEmpty(Model?.AuthorImageUrl) ? "display:none;" : "")">
@@ -101,8 +101,7 @@
                     <input type="text" id="authorImageUrl" name="AuthorImageUrl" value="@Model?.AuthorImageUrl">
                 </div>
 
-                <div>
-                    <div class="book-master-form-grid">
+                    <div class="form-column">
                         <div class="book-master-form-group">
                             <label for="authorName" class="required-label">Author Name</label>
                             <input type="text" id="authorName" name="AuthorName" class="book-master-form-input tracked-field" value="@Model?.AuthorName" required>
@@ -114,7 +113,6 @@
                             <span asp-validation-for="AuthorDescription" class="text-danger"></span>
                         </div>
                     </div>
-                </div>
             </div>
 
             <div class="button-container">
