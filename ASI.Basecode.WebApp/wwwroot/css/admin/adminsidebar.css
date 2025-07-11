@@ -21,8 +21,7 @@
     width: 100%;
 }
 
-.admin-sidebar 
-{
+.admin-sidebar {
     width: 256px;
     background-color: #3e4f4a;
     color: #e5e7eb;
@@ -37,6 +36,11 @@
     overflow-y: auto;
     z-index: 1;
 }
+
+.admin-sidebar::-webkit-scrollbar {
+    display: none;
+}
+
 
 .admin-sidebar-header 
 {
