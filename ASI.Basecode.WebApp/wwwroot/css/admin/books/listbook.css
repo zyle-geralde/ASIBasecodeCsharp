@@ -345,5 +345,27 @@
 
 
 
+/* Active Filters */
+.active-filters {
+    margin-top: 10px;
+}
 
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
 
+.filter-tag {
+    background-color: rgba(134, 168, 170, 0.7);
+    border-color: rgba(134, 168, 170, 1);
+    color: black;
+    padding: 6px 14px; /* Increased from 4px 10px */
+    border-radius: 20px;
+    font-size: 0.9rem; /* Increased from 0.85rem */
+    font-weight: 400;
+}
+
+.form-container {
+    display: flex;
+}

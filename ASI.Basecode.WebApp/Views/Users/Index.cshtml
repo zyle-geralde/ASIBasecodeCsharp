@@ -88,7 +88,14 @@
                     <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
                 </form>
             </div>
+            @* @if (Model.TotalCount != 0)
+            {
             <p style="font-size: 12px; color:"gray">Showing  @Model.StartIndex - @Model.EndIndex out of @Model.TotalCount users</p>
+            }
+            @(Model.TotalCount!=0)?{ *@
+                            <p style="font-size: 12px; color:"gray">Showing  @Model.StartIndex - @Model.EndIndex out of @Model.TotalCount users</p>
+
+            @* } *@
 
             <div class="sort-popup card shadow" id="sortPopup" style="display: none;">
                 <div class="card-header bg-secondary text-white justify-center">
@@ -157,6 +164,8 @@
             </div>
 
             <div class="table-container">
+                          @if (Model != null && Model.Any())
+                {
                 <div class="scrollable-table-container">
                     <table class="table table-hover user-table">
                         <colgroup>
@@ -170,7 +179,7 @@
                                 <th>User ID</th>
                                 <th asp-action="Index" asp-route-searchTerm=@ViewData["CurrentSearch"]>Username</th>
                                 <th asp-action="Index" asp-route-searchTerm=@ViewData["CurrentSearch"]>Email</th>
-                                <th>Actions</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -180,27 +189,33 @@
                                     <td>@u.Id</td>
                                     <td>@u.UserName</td>
                                     <td>@u.Email</td>
-                                    <td>
-                                        <div class="action-buttons justify-content-center align-items-center">
+                                    <td class="text-center">
+                                            <div class="d-flex gap-2 justify-content-center">
                                             <a class="action-icon-button text-secondary" onclick="window.location.href='@Url.Action("ViewUserProfile", "PersonProfile", new { id = u.Id })'" style="cursor: pointer">
                                                 <i class="fas fa-info-circle"></i>
                                             </a>
-                                            <button type="button" class="btn btn-icon text-danger"
+                                                <a href="/User/EditUser/@u.Id" class="action-icon-button text-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                                <button type="button" class="action-icon-button text-danger delete"
                                                     onclick="setupDeleteModal(this)"
                                                     data-user-id="@u.Email"
                                                     data-user-name="@u.Email">
                                                 <i class="fas fa-trash"></i>
                                             </button>
-                                            <a href="/User/EditUser/@u.Id" class="btn btn-icon text-primary">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
                                         </div>
                                     </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
-                </div>
+                    </div>
+                }
+                else
+                {
+                    <p class="empty-message">No users found. Why not add some?</p>
+
+                }
                 <partial name="_PaginationPartial" view-data='@new ViewDataDictionary(ViewData) { { "RouteValues", routeValues } }' />
             </div>
         </div>

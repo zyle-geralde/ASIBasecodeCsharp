@@ -73,9 +73,13 @@
     {
         routeValues["sortOrder"] = currentSort;
     }
-    if (!string.IsNullOrWhiteSpace(currentLanguage))
-    {
+    if (!string.IsNullOrWhiteSpace(currentLanguage)) {
         routeValues["languageFilter"] = currentLanguage;
+       var languageName = allLanguages
+        .FirstOrDefault(l => l.LanguageId == currentLanguage)?.LanguageName ?? currentLanguage;
+    
+        descriptionParts.Add($"Language: {languageName}");
+
     }
 
     if (currentSortDescending)
@@ -128,7 +132,26 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="header-section">
             <h1>@display_name</h1>
-            <p>@descriptionText</p>
+            @if (descriptionParts.Any())
+            {
+                                <p>Search Results</p>
+
+            }
+            else
+            {
+                                <p>Manage your books</p>
+            }
+            @if(descriptionParts.Any())
+                    {
+                        <div class="active-filters">
+                            <div class="filter-tags">
+                                @foreach(var part in descriptionParts)
+                                {
+                                    <p class="filter-tag">@part</p>
+                                }
+                            </div>
+                        </div>
+                    }
         </div>
         <p>
             <a href="/Book/AddBook" class="btn btn-secondary">
@@ -155,9 +178,7 @@
             <button type="button" class="btn btn-outline-secondary filter-btn" id="filterToggleBtn">
                 <i class="fas fa-filter"></i> Filter
             </button>
-            <button type="button" class="btn btn-outline-secondary sort-btn" id="sortToggleBtn">
-                <i class="fas fa-sort"></i> Sort
-            </button>
+       
         </div>
     </div>
 
@@ -167,8 +188,12 @@
             <h5>Filter By</h5>
             <button class="popup-close" id="closeFilterPopup">&times;</button>
         </div>
+
         <form asp-action="ListBook" method="get" id="filterForm">
-            <div class="filter-section">
+
+        <div class="card-body filter-sections-container">
+        <div class="filter-section">
+        <div class="filter-section">
                 <label class="form-label">Author</label>
                 <input type="text"
                        name="author"
@@ -219,7 +244,7 @@
             <div class="filter-section">
                 <label class="form-label">Language</label>
                 <select name="languageFilter" class="form-select" id="filterLanguage" style="width: 100%;">
-                    <option value="">Any</option> @* Add "Any" option for language filter *@
+                    <option value="">Any</option> 
                     @foreach (var language in allLanguages)
                     {
                         <option value="@language.LanguageId" selected="@(currentLanguage == language.LanguageId ? "selected" : null)">
@@ -240,25 +265,10 @@
                     Featured only
                 </label>
             </div>
-
-            <div class="popup-footer">
-                <a asp-action="ListBook" class="btn btn-outline-secondary">
-                    Clear All
-                </a>
-                <button type="submit" class="btn btn-primary">
-                    Apply Filter
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Sort Popup -->
-    <div class="sort-popup card shadow" id="sortPopup">
-        <div class="card-header bg-secondary text-white justify-content-center">
-            <h6 class="mb-0" style="top: 6px;">Sort By:</h6>
         </div>
-        <form asp-action="ListBook" method="get" id="sortForm">
-            <div class="card-body">
+          
+        </div>
+                      <div class="card-body">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Sort by:</label>
                     <div class="ms-2">
@@ -298,14 +308,24 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="d-flex justify-content-end">
-                    <a asp-action="ListBook" class="btn btn-outline-secondary" style="margin-right: 10px">Clear Sort</a>
-                    <button type="submit" class="btn btn-secondary">Apply Sort</button>
-                </div>
+            <div class="popup-footer">
+                <a asp-action="ListBook" class="btn btn-outline-secondary">
+                    Clear All
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    Apply Filter
+                </button>
             </div>
         </form>
     </div>
+
+    <!-- Sort Popup -->
+    <div class="sort-popup card shadow" id="sortPopup">
+        
+    </div>
+      
                 <p style="font-size: 12px; color:"gray">Showing  @Model.StartIndex - @Model.EndIndex out of @Model.TotalCount books</p>
 
     <p class="no-search-results-message" style="display: none;">No books found matching your search criteria.</p>
@@ -767,6 +787,13 @@
 
             if (filterForm) {
                 filterForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    submitAllFilters();
+                });
+            }
+
+            if (sortForm) {
+                 filterForm.addEventListener('submit', function (e) {
                     e.preventDefault();
                     submitAllFilters();
                 });
