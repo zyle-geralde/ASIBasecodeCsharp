@@ -109,6 +109,11 @@ namespace ASI.Basecode.Data.Repositories
                             ? query.OrderByDescending(b => b.UpdatedDate)
                             : query.OrderBy(b => b.UpdatedDate);
                         break;
+                    case "reviewcount":
+                        query = desc
+                            ? query.OrderByDescending(b=> b.ReviewCount)
+                            : query.OrderBy(b => b.ReviewCount);
+                        break;
                     default:
                         query = query.OrderBy(b => b.Title);
                         break;

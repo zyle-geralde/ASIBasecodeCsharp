@@ -89,7 +89,8 @@ namespace ASI.Basecode.WebApp.Controllers
 
             var featuredBooksParams = new BookQueryParams
             {
-                IsFeatured = true,
+                SortOrder = "reviewcount",
+                SortDescending = true,
                 PageSize = 5
             };
             var featuredBooks = await _bookService.GetBooks(featuredBooksParams);

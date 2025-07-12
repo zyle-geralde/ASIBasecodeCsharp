@@ -179,7 +179,6 @@
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>User ID</th>
                                 <th asp-action="Index" asp-route-searchTerm=@ViewData["CurrentSearch"]>Username</th>
                                 <th asp-action="Index" asp-route-searchTerm=@ViewData["CurrentSearch"]>Email</th>
                                 <th class="text-center">Actions</th>
@@ -189,7 +188,6 @@
                             @foreach (var u in Model)
                             {
                                 <tr>
-                                    <td>@u.Id</td>
                                     <td>@u.UserName</td>
                                     <td>@u.Email</td>
                                     <td class="text-center">

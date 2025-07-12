@@ -20,7 +20,7 @@
                 <input type="search"
                        name="searchTerm"
                        value="@(ViewData["CurrentSearch"] ?? "")"
-                       placeholder="Title, subtitle, author…"
+                       placeholder="Title, author…"
                        class="form-control home-search-input"
                        aria-label="Search books" />
                 <button class="btn home-search-btn" type="submit">
@@ -235,10 +235,11 @@
             <h2>Featured Reads</h2>
             @* <a href="#">See More</a>
                     <div class="see-more-link-wrapper"> *@
-                    <a asp-controller="Book"
+                                   <a asp-controller="Book"
                        asp-action="SearchResults"
-                       asp-route-isFeatured="true"
-                       asp-route-category="Featured">See More</a>
+                       asp-route-sortOrder="reviewcount"
+                       asp-route-sortDescending="true"
+                       asp-route-category="Featured Books">See More</a>
                 @* </div> *@
         </div>
 
