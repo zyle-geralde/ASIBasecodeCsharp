@@ -156,14 +156,15 @@
                     <table class="table table-hover">
 
                         <colgroup>
-                            <col style="width: 5%;">
-                            <col style="width: 70%;">
+                            <col style="width: 50%;">
+                            <col style="width: 25%;">
                             <col style="width: 25%;">
                         </colgroup>
                         <thead>
                             <tr>
-                                <th></th>
                                 <th style="padding-left: 10px">Language</th>
+                                
+                                <th>Books</th>
                                 <th class="text-md-center" style="width: 25%;">Actions</th>
                             </tr>
                         </thead>
@@ -174,8 +175,16 @@
                                 @foreach (var language in Model)
                                 {
                                     <tr>
-                                        <td></td>
                                         <td class="align-middle" style="padding-left: 10px">@language.LanguageName</td>
+                                        <td>
+                                            <a asp-controller="Book"
+                                                   asp-action="ListBook"
+                                                   asp-route-languageFilter="@language.LanguageId"
+                                                   asp-route-category="@language.LanguageName"
+                                                   class="action-icon-button text-secondary">
+                                                   View books
+                                                </a>
+                                        </td>
                                         <td class="align-middle" style="white-space:nowrap;">
                                                 <div class="d-flex gap-2 justify-content-center">
                                                 <a asp-controller="Book"
@@ -183,7 +192,6 @@
                                                    asp-route-languageFilter="@language.LanguageId"
                                                    asp-route-category="@language.LanguageName"
                                                    class="action-icon-button text-secondary">
-                                                    <i class="fas fa-info-circle"></i>
                                                 </a>
                                                 @*<a href="/Language/LanguageView/@language.LanguageId" class="action-icon-button text-secondary">
                                                     <i class="fas fa-info-circle"></i>

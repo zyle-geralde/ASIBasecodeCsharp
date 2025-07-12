@@ -141,7 +141,9 @@
                                     <th style="padding-left: 10px">Image</th>
                                     <th>Author Name</th>
                                     <th>Description</th>
-                                    <th>Upload Date</th>
+                                                                        <th>Books</th>
+
+                                    <th>Created Date</th>
                                     <th class="text-md-center">Actions</th>
                                 </tr>
                             </thead>
@@ -160,17 +162,25 @@
                                             }
                                         </td>
                                         <td class="align-middle" style="padding-left: 10px">@author.AuthorName</td>
-                                        <td class="align-middle">@author.AuthorDescription</td>
-                                        <td class="align-middle">@author.UploadDate?.ToShortDateString()</td>
-                                        <td class="align-middle" style="white-space:nowrap;">
-                                            <div class="d-flex gap-2 justify-content-center">
+<td class="align-middle">
+    <span class="truncate-description" title="@author.AuthorDescription">
+        @author.AuthorDescription
+    </span>
+</td>
+                        
+                                        <td class="align-middle">
                                                 <a asp-controller="Book"
                                                    asp-action="ListBook"
                                                    asp-route-author="@author.AuthorName"
                                                    asp-route-category="@author.AuthorName"
                                                    class="action-icon-button text-secondary">
-                                                    <i class="fas fa-info-circle"></i>
+                                                   View books
                                                 </a>
+                                        </td>
+                                        <td class="align-middle">@author.UploadDate?.ToShortDateString()</td>
+                                        <td class="align-middle" style="white-space:nowrap;">
+                                            <div class="d-flex gap-2 justify-content-center">
+                                            
                                                 <a href="/Author/EditAuthor/@author.AuthorId" class="action-icon-button text-primary">
                                                     <i class="fas fa-edit"></i>
                                                 </a>

@@ -31,7 +31,14 @@
 {
     margin-bottom: 0;
 }
-
+.truncate-description {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+}
 /* Enhanced form Inputs and dropdown style */
 .book-master-form-input,
 .book-master-form-textarea,
