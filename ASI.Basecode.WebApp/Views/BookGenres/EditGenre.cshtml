@@ -38,8 +38,8 @@
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
 }
 
-<div class="admin-common-container">
-    <div class="admin-common-content-wrapper">
+<div class="admin-common-container-add">
+    <div class="admin-common-content-wrapper-add">
         <div class="header-section">
             <h1>Edit Genre Details</h1>
             <p>Edit details of the genre here</p>
@@ -51,7 +51,7 @@
             <input type="hidden" id="hiddenGenreId" name="BookGenreId" value="@Model?.BookGenreId" required>
             <input type="hidden" id="genreImageUrl" name="GenreImageUrl" value="@Model?.GenreImageUrl">
 
-            <div class="content-master-grid">
+            <div class="content-master-grid-add">
                 <div class="image-upload-section">
                     <div class="image-preview-container">
                         <img id="genreImagePreview" src="@Model?.GenreImageUrl" alt="Genre Image Preview" style="@(string.IsNullOrEmpty(Model?.GenreImageUrl) ? "display:none;" : "")">
@@ -68,8 +68,7 @@
                     </p>
                 </div>
 
-                <div>
-                    <div class="book-master-form-grid">
+                    <div class="form-column">
                         <div class="book-master-form-group">
                             <label for="genrename" class="required-label">Genre</label>
                             <input type="text" id="genrename" name="GenreName" class="book-master-form-input" value="@Model?.GenreName" required>
@@ -81,7 +80,6 @@
                             <span asp-validation-for="GenreDescription" class="text-danger"></span>
                         </div>
                     </div>
-                </div>
             </div>
 
             <div class="button-container">

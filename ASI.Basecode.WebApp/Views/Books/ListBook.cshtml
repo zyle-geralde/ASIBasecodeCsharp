@@ -73,9 +73,13 @@
     {
         routeValues["sortOrder"] = currentSort;
     }
-    if (!string.IsNullOrWhiteSpace(currentLanguage))
-    {
+    if (!string.IsNullOrWhiteSpace(currentLanguage)) {
         routeValues["languageFilter"] = currentLanguage;
+       var languageName = allLanguages
+        .FirstOrDefault(l => l.LanguageId == currentLanguage)?.LanguageName ?? currentLanguage;
+    
+        descriptionParts.Add($"Language: {languageName}");
+
     }
 
     if (currentSortDescending)
