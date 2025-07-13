@@ -14,7 +14,7 @@ namespace ASI.Basecode.Services.ServiceModels
         [Range(0, 5, ErrorMessage = "Rating must be between 0 and 5.")]
         public float Rating { get; set; }
 
-        [StringLength(500, ErrorMessage = "Comment cannot exceed 500 characters.")]
+        [StringLength(1000, ErrorMessage = "Comment cannot exceed 1000 characters.")]
         public string Comment { get; set; }
 
         public int Likes { get; set; }

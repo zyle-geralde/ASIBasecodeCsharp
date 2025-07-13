@@ -399,6 +399,8 @@
     color: #495057;
     line-height: 1.6;
     font-size: 15px;
+    word-break: break-word;
+    white-space: pre-wrap;
 }
 
 .review-footer {

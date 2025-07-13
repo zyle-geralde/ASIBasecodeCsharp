@@ -610,6 +610,8 @@
     color: #333;
     line-height: 1.6;
     font-size: 0.95rem;
+    word-break: break-word;
+    white-space: pre-wrap;
 }
 
 .review-actions {
