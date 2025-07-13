@@ -98,8 +98,8 @@
             <div class="button-container">
                 <div class="button-group">
                     <button type="button" class="cancel-btn" onclick="window.location.href='/User/Index'">CANCEL</button>
-                    <button type="button" class="submit-btn" data-bs-toggle="modal" data-bs-target="#addModal">ADD USER</button>
-                </div>
+					<button type="button" class="submit-btn" id="addUserBtn">ADD USER</button>
+				</div>
             </div>
         </form>
     </div>
@@ -133,69 +133,42 @@
     <script src="~/js/modal-helper.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script>
-        function validateAndSubmitAddUserForm() {
-            var form = document.getElementById('addUserForm');
-            // If using jQuery validation (unobtrusive), trigger validation
-            if (typeof $ !== 'undefined' && typeof $.validator !== 'undefined') {
-                if ($(form).valid()) {
-                    form.submit();
-                }
-            } else {
-                // fallback: submit anyway
-                form.submit();
-            }
-        }
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+		  const addBtn = document.getElementById('addUserBtn');
+		  const pwd    = document.getElementById('password');
+		  const cpwd   = document.getElementById('confirmpassword');
+		  const modalEl = document.getElementById('addModal');
+		  const modal = new bootstrap.Modal(modalEl);
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // Show error messages in toast if there are any
-            var errorMessage = '@(errorMessage ?? "")';
-            if (errorMessage) {
-                toastr.error(errorMessage);
-            }
+		  addBtn.addEventListener('click', function (e) {
+			e.preventDefault();
+			pwd.classList.remove('is-invalid');
+			cpwd.classList.remove('is-invalid');
 
-                    // Initialize tooltips
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-                new bootstrap.Tooltip(tooltipTriggerEl);
-            });
+			if (pwd.value.length < 8) {
+			  toastr.error("Password must be at least 8 characters long.");
+			  pwd.classList.add('is-invalid');
+			  return;
+			}
+			if (pwd.value !== cpwd.value) {
+			  toastr.error("Passwords do not match.");
+			  cpwd.classList.add('is-invalid');
+			  return;
+			}
+			modal.show();
+		  });
 
-            // Show tooltip for username error if it exists
-            var isUsernameError = @isUsernameError.ToString().ToLower();
-            if (isUsernameError) {
-                var usernameInput = document.getElementById('name');
-                usernameInput.setAttribute('data-bs-title', errorMessage);
-                var tooltip = bootstrap.Tooltip.getOrCreateInstance(usernameInput);
-                tooltip.show();
-                usernameInput.classList.add('is-invalid');
-            }
+		});
 
-            // Show tooltip for email error if it exists
-            var isEmailError = @isEmailError.ToString().ToLower();
-            if (isEmailError) {
-                var emailInput = document.getElementById('userId');
-                emailInput.setAttribute('data-bs-title', errorMessage);
-                var tooltip = bootstrap.Tooltip.getOrCreateInstance(emailInput);
-                tooltip.show();
-                emailInput.classList.add('is-invalid');
-            }
+		function validateAndSubmitAddUserForm() {
+		  var form = document.getElementById('addUserForm');
+		  if (typeof $ !== 'undefined' && typeof $.validator !== 'undefined') {
+			if ($(form).valid()) form.submit();
+		  } else {
+			form.submit();
+		  }
+		}
+	</script>
 
-            toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "timeOut": "3000"
-        };
-
-        // Show toastr for success messages
-        @if (TempData["SuccessMessage"] != null)
-        {
-                var msg = TempData["SuccessMessage"] as string;
-                if (!string.IsNullOrEmpty(msg))
-                {
-                        <text>toastr.success("@msg");</text>
-                }
-        }
-        });
-    </script>
 }

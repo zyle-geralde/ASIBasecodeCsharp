@@ -254,7 +254,7 @@
                 <div id="addLanguageForm">
                     <div class="mb-3">
                         <label for="newLanguage" class="form-label">Language</label>
-                        <input type="text" class="form-control" id="newLanguage" name="LanguageName">
+                        <input type="text" class="form-control" id="newLanguage" name="LanguageName" maxlength="300">
                         <span id="languageNameError" class="text-danger"></span>
                     </div>
                     <div class="d-flex justify-content-end">
@@ -278,7 +278,7 @@
                     <input type="hidden" id="originalLanguageName" />
                     <div class="mb-3">
                         <label for="editLanguage" class="form-label">Language</label>
-                        <input type="text" class="form-control" id="editLanguage" />
+						<input type="text" class="form-control" id="editLanguage" maxlength="300" />
                     </div>
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn add-language-btn disabled-btn" id="edit-button-submit" disabled>SAVE CHANGES</button>

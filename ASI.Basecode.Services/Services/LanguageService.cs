@@ -1,7 +1,6 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
 using ASI.Basecode.Data.QueryParams;
-using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
@@ -14,14 +13,15 @@ using System.Threading.Tasks;
 
 namespace ASI.Basecode.Services.Services
 {
-    public class LanguageService:ILanguageService
+    public class LanguageService : ILanguageService
     {
         private readonly ILanguageRepository _languageRepository;
         private readonly IAuthorRepository _authorRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly SessionManager _sessionManager;
 
-        public LanguageService(ILanguageRepository languageRepository,IAuthorRepository authorRepository, IHttpContextAccessor httpContextAccessor) { 
+        public LanguageService(ILanguageRepository languageRepository, IAuthorRepository authorRepository, IHttpContextAccessor httpContextAccessor)
+        {
             _languageRepository = languageRepository;
             _authorRepository = authorRepository;
             _httpContextAccessor = httpContextAccessor;
@@ -30,7 +30,8 @@ namespace ASI.Basecode.Services.Services
 
         public async Task AddLanguage(LanguageViewModel language)
         {
-            if (language == null) {
+            if (language == null)
+            {
                 throw new ArgumentException("Langugage should not be null");
             }
             if (string.IsNullOrEmpty(language.LanguageName))
@@ -62,7 +63,7 @@ namespace ASI.Basecode.Services.Services
                 {
                     await _languageRepository.AddLanguage(mapped_language);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw new ApplicationException("Failed in adding language to repository");
                 }
@@ -71,7 +72,7 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ApplicationException(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new ApplicationException("Failed in adding language");
             }
@@ -112,7 +113,7 @@ namespace ASI.Basecode.Services.Services
             {
                 await _languageRepository.DeleteLanguage(languageId);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new ApplicationException($"Failed to Delete Language");
             }
@@ -144,11 +145,11 @@ namespace ASI.Basecode.Services.Services
 
                 await _languageRepository.EditLanguage();
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 throw new ArgumentException(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new ApplicationException("Failed to edit book genre by id.");
             }
@@ -224,7 +225,7 @@ namespace ASI.Basecode.Services.Services
 
             try
             {
-                Language retreived_language= await _languageRepository.GetLanguageByName(languageId);
+                Language retreived_language = await _languageRepository.GetLanguageByName(languageId);
 
                 LanguageViewModel mapped_language = new LanguageViewModel
                 {
@@ -237,7 +238,7 @@ namespace ASI.Basecode.Services.Services
 
                 return mapped_language;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new ApplicationException("Failed to retrieve language by name.");
             }
@@ -246,7 +247,6 @@ namespace ASI.Basecode.Services.Services
         public async Task<PaginatedList<Language>> GetLanguageQueried(LanguageQueryParams queryParams)
         {
             return await _languageRepository.GetLanguageQueried(queryParams);
-            //return users.ToList();
 
         }
     }

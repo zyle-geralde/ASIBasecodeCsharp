@@ -93,15 +93,15 @@
                         <label class="form-label fw-bold">Sort By:</label>
                         <div class="ms-2">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortName" value="Name" @(currentSort == "Name" ? "checked" : "")>
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortName" value="name" @(currentSort == "name" ? "checked" : "")>
                                 <label class="form-check-label" for="sortId">Name</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortCreatedDate" value="CreatedDate" @(currentSort == "CreatedDate" ? "checked" : "")>
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortCreatedDate" value="createddate" @(currentSort == "createddate" ? "checked" : "")>
                                 <label class="form-check-label" for="sortCreatedDate">Created Date</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortUpdatedDate" value="UpdatedDate" @(currentSort == "UpdatedDate" ? "checked" : "")>
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortUpdatedDate" value="updateddate" @(currentSort == "updateddate" ? "checked" : "")>
                                 <label class="form-check-label" for="sortUpdatedDate">Updated Date</label>
                             </div>
                         </div>

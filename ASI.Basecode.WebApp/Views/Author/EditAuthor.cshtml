@@ -109,8 +109,8 @@
                         </div>
                         <div class="book-master-form-group">
                             <label for="authorDescription">Description</label>
-                            <textarea maxlength="5000" type="text" id="authorDescription" name="AuthorDescription" class="book-master-form-input tracked-field" value="@Model?.AuthorDescription">
-                            </textarea>
+						<textarea maxlength="5000" id="authorDescription" name="AuthorDescription" class="book-master-form-input tracked-field">@Model?.AuthorDescription</textarea>
+
 								<span asp-validation-for="AuthorDescription" class="text-danger"></span>
                         </div>
                     </div>

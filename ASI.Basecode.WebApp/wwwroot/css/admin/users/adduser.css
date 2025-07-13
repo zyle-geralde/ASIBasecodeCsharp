@@ -15,6 +15,12 @@
     width: 100%;
     display: flex;
 }
+#addUserBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #6c757d; /* greyed out */
+    border-color: #6c757d;
+}
 
 .role-btn {
     flex: 1 1 0;

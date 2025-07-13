@@ -174,8 +174,9 @@
                     <table class="table table-hover user-table">
                         <colgroup>
                             <col style="width: 20%;">
-                            <col style="width: 30%;">
                             <col style="width: 20%;">
+                            <col style="width: 20%;">
+								<col style="width: 20%;">
 
                             <col style="width: 30%;">
                         </colgroup>
@@ -184,6 +185,7 @@
                                 <th asp-action="Index" asp-route-searchTerm=@ViewData["CurrentSearch"]>Username</th>
                                 <th asp-action="Index" asp-route-searchTerm=@ViewData["CurrentSearch"]>Email</th>
                                                                 <th>Created Date</th>
+									<th> Role</th>
 
                                 <th class="text-center">Actions</th>
                             </tr>
@@ -197,11 +199,10 @@
                                     <td>@u.UserName</td>
                                     <td>@u.Email</td>
                                     <td>@u.CreatedTime</td>
+									<td>@u.Role</td>
                                     <td class="text-center">
                                             <div class="d-flex gap-2 justify-content-center">
-                                            @* <a class="action-icon-button text-secondary" onclick="window.location.href='@Url.Action("ViewUserProfile", "PersonProfile", new { id = u.Id })'" style="cursor: pointer">
-                                                <i class="fas fa-info-circle"></i>
-                                            </a> *@
+                                           
                                                 <a href="/User/EditUser/@u.Id" class="action-icon-button text-primary">
                                                 <i class="fas fa-edit"></i>
                                             </a>
