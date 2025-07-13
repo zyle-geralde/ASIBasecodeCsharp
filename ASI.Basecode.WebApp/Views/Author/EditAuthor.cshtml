@@ -104,13 +104,14 @@
                     <div class="form-column">
                         <div class="book-master-form-group">
                             <label for="authorName" class="required-label">Author Name</label>
-                            <input type="text" id="authorName" name="AuthorName" class="book-master-form-input tracked-field" value="@Model?.AuthorName" required>
+                            <input maxlength="450" type="text" id="authorName" name="AuthorName" class="book-master-form-input tracked-field" value="@Model?.AuthorName" required>
                             <span asp-validation-for="AuthorName" class="text-danger"></span>
                         </div>
                         <div class="book-master-form-group">
                             <label for="authorDescription">Description</label>
-                            <input type="text" id="authorDescription" name="AuthorDescription" class="book-master-form-input tracked-field" value="@Model?.AuthorDescription">
-                            <span asp-validation-for="AuthorDescription" class="text-danger"></span>
+                            <textarea maxlength="5000" type="text" id="authorDescription" name="AuthorDescription" class="book-master-form-input tracked-field" value="@Model?.AuthorDescription">
+                            </textarea>
+								<span asp-validation-for="AuthorDescription" class="text-danger"></span>
                         </div>
                     </div>
             </div>

@@ -1,7 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model ASI.Basecode.Services.ServiceModels.AuthorViewModel
+﻿@model ASI.Basecode.Services.ServiceModels.AuthorViewModel
 @{
     ViewData["Title"] = "Add New Author";
     Layout = "_AdminSidebarLayout";
@@ -51,8 +48,6 @@
             <p>Enter details of the new author here</p>
         </div>
 
-        @* <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div> *@
-
         <form asp-action="AddAuthor" asp-controller="Author" method="post" id="addAuthorForm">
             <input type="hidden" id="authorImageUrl" name="AuthorImageUrl">
 
@@ -76,12 +71,15 @@
                     <div class="form-column">
                         <div class="book-master-form-group">
                             <label for="authorName" class="required-label">Author Name</label>
-                            <input type="text" id="authorName" name="AuthorName" class="book-master-form-input" value="@Model?.AuthorName" required>
-                        </div>
+                            <input maxlength="450" type="text" id="authorName" name="AuthorName" class="book-master-form-input" value="@Model?.AuthorName" required>
+							<span asp-validation-for="AuthorName" class="text-danger"></span>
+						</div>
                         <div class="book-master-form-group">
                             <label for="authorDescription">Description</label>
-                            <input type="text" id="authorDescription" name="AuthorDescription" class="book-master-form-input" value="@Model?.AuthorDescription">
-                        </div>
+                            <textarea rows="5" maxlength="5000" type="text" id="authorDescription" name="AuthorDescription" class="book-master-form-input" value="@Model?.AuthorDescription">
+                       </textarea>
+								<span asp-validation-for="AuthorDescription" class="text-danger"></span>
+						</div>
                     </div>
             </div>
 
@@ -95,31 +93,9 @@
 
 <partial name="_ConfirmationModal" model="addAuthorConfirmationModal" />
 
-
-@* <div class="modal fade confirmation-modal" id="addAuthorConfirmationModal" tabindex="-1" aria-labelledby="addAuthorConfirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title" id="addAuthorConfirmationModalLabel">Add Author Confirmation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <p class="mb-4" id="addConfirmationModalMessage">Are you sure you want to add this author?</p>
-                <div class="d-flex justify-content-center gap-2">
-                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn book-master-submit-button px-4" id="confirmAddAuthorAction">Add Author</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> *@
-
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
-
-        // Your Firebase configuration
-        //Transfer this secretes into AnalyserNode env or file, and include it in gitignore.
         const firebaseConfig = {
             apiKey: "AIzaSyA4CTMSbgGQN_yLn9lEZlswbZ_2A2Xhl0k",
             authDomain: "basabuzz-ca8fe.firebaseapp.com",
