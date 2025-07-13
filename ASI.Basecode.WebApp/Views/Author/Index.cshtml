@@ -75,8 +75,9 @@
                     </div>
 
                     <div class="action-buttons">
-                        <button type="submit" class="btn btn-outline-secondary">Apply</button>
-                        <button type="button" id="sortButton" class="btn btn-outline-secondary sort-btn"> <i class="fas fa-sort"></i> Sort </button>
+                        <button type="button" id="sortButton" class="btn btn-outline-secondary sort-btn"> <i class="fas fa-sort"></i> Sort & Filter </button>
+                                             <a asp-action="Index" class="btn btn-outline-secondary">Clear All</a>
+
                     </div>
                     <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
                     <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />

@@ -81,9 +81,10 @@
                     <div class="action-buttons">
 
 
-                        <a asp-action="Index" class="btn btn-outline-secondary">
+
+                        <button type="button" id="sortButton" class="btn btn-outline-secondary sort-btn"><i class="fas fa-sort"></i> Sort & Filter</button>
+                                                <a asp-action="Index" class="btn btn-outline-secondary">
                     Clear All</a>
-                        <button type="button" id="sortButton" class="btn btn-outline-secondary sort-btn"><i class="fas fa-sort"></i> Sort</button>
                     </div>
 
                     <input type="hidden" id="roleField" name="role" value="@currentRoleFilter" />
@@ -139,7 +140,7 @@
                                 <label class="form-check-label" for="sortCreatedDate">Created Date</label>
                             </div>
                                                         <div class="form-check">
-                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortUpdatedDate" value="updatedate" @(currentSort == "updateddate" ? "checked" : "")>
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortUpdatedDate" value="updateddate" @(currentSort == "updateddate" ? "checked" : "")>
                                 <label class="form-check-label" for="sortUpdatedDate">Updated Date</label>
                             </div>
                         </div>

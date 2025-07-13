@@ -155,29 +155,39 @@
             </a>
         </p>
     </div>
+    <div class="card">
+        <div class="card-body">
+             <div class="search-filter-container" style="height: 50px; align-items: stretch; margin-top: 10px; margin-bottom: 15px">
+                    <div class="search-container" style="margin-right: 10px">
+                         <!-- Search Bar -->
 
-    <div class="search-filter-container">
-        <!-- Search Bar -->
-        <div class="search-container">
-            <i class="fas fa-search"></i>
-            <input type="text"
-                   name="searchTerm"
-                   value="@ViewData["CurrentSearch"]"
-                   placeholder="Search title, author…"
-                   class="book-master-form-input align-self-center" 
-                   style="font-weight: 300; margin-right: 10px"
-                   id="globalSearchInput" />
+                        <i class="fas fa-search"></i>
+                        <input type="text"
+                               name="searchTerm"
+                               value=@currentSearch
+                               placeholder="Search title, author…"
+                               class="book-master-form-input align-self-center" 
+                               style="font-weight: 300; margin-right: 10px"
+                               id="globalSearchInput" />
+                    </div>
+                    <div class="action-buttons position-relative">
+                        <button type="button" class="btn btn-outline-secondary filter-btn" id="filterToggleBtn">
+                            <i class="fas fa-sort"></i> Sort & Filter
+                        </button>
+                          <a asp-action="ListBook" class="btn btn-outline-secondary">
+                                Clear All
+                            </a>
+                    </div>
+
+            </div>
+
+
         </div>
-                        <a asp-action="ListBook" class="btn btn-outline-secondary">
-                    Clear All
-                </a>
-        <!-- Filter and Sort Buttons -->
-        <div class="action-buttons position-relative">
-            <button type="button" class="btn btn-outline-secondary filter-btn" id="filterToggleBtn">
-                <i class="fas fa-filter"></i> Filter
-            </button>
-       
-        </div>
+
+    </div>
+        
+      
+        
     </div>
 
     <!-- Filter Popup -->
