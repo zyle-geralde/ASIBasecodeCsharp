@@ -190,15 +190,17 @@
                         <tbody>
                             @foreach (var u in Model)
                             {
-                                <tr>
+                                                        <tr style="cursor:pointer" onclick="window.location.href='@Url.Action("ViewUserProfile", "PersonProfile", new { id = u.Id })'">
+
+                                @* <tr style="cursor:pointer" onclick="window.location='/> *@
                                     <td>@u.UserName</td>
                                     <td>@u.Email</td>
                                     <td>@u.CreatedTime</td>
                                     <td class="text-center">
                                             <div class="d-flex gap-2 justify-content-center">
-                                            <a class="action-icon-button text-secondary" onclick="window.location.href='@Url.Action("ViewUserProfile", "PersonProfile", new { id = u.Id })'" style="cursor: pointer">
+                                            @* <a class="action-icon-button text-secondary" onclick="window.location.href='@Url.Action("ViewUserProfile", "PersonProfile", new { id = u.Id })'" style="cursor: pointer">
                                                 <i class="fas fa-info-circle"></i>
-                                            </a>
+                                            </a> *@
                                                 <a href="/User/EditUser/@u.Id" class="action-icon-button text-primary">
                                                 <i class="fas fa-edit"></i>
                                             </a>

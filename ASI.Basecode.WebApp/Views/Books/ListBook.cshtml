@@ -1,7 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@using ASI.Basecode.Data.Interfaces;
+﻿@using ASI.Basecode.Data.Interfaces;
 @model PaginatedList<ASI.Basecode.Services.ServiceModels.BookViewModel>
 @using Microsoft.AspNetCore.Routing;
 @using ASI.Basecode.Services.ServiceModels;
@@ -10,7 +7,6 @@
     ViewData["Title"] = "Book List";
     Layout = "_AdminSidebarLayout";
     string display_name = "Books";
-    string description = "Manage books";
     var allLanguages = (List<LanguageViewModel>)ViewData["AllLanguages"];
     var currentCategory = (string?)ViewContext.HttpContext.Request.Query["category"];
     var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
@@ -352,7 +348,7 @@
                 <tbody>
                     @foreach (var book in Model)
                     {
-                        <tr>
+                        <tr style="cursor:pointer" onclick="window.location='/Book/BookDetails/@book.BookId'" >
                             <td>
                                 @if (!string.IsNullOrWhiteSpace(book.CoverImage))
                                 {
@@ -372,9 +368,6 @@
                             <td>@book.UploadDate</td>
                             <td>
                                 <div class="d-flex gap-2 justify-content-center">
-                                    <a href="/Book/BookDetails/@book.BookId" class="action-icon-button text-secondary">
-                                        <i class="fas fa-info-circle"></i>
-                                    </a>
                                     <a href="/Book/EditBook/@book.BookId" class="action-icon-button text-primary">
                                         <i class="fas fa-edit"></i>
                                     </a>
@@ -474,52 +467,6 @@
                 await deleteFileFromFirebase(bookUrlCopy);
             }
         }
-
-
-        // function showStatusModal(message, type = 'Success') {
-        //     var deleteModalElement = document.getElementById('deleteModal');
-        //     var deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
-        //     if (deleteModal) {
-        //         deleteModal.hide();
-        //     }
-
-        //     const statusModalTitle = document.getElementById('statusModalLabel');
-        //     const statusModalMessage = document.getElementById('statusModalMessage');
-
-        //     if (statusModalTitle) {
-        //         statusModalTitle.textContent = type;
-        //     }
-        //     if (statusModalMessage) {
-        //         statusModalMessage.textContent = message;
-        //     }
-
-
-        //     const statusIcon = document.querySelector('#statusModal .status-icon i');
-        //     if (statusIcon) {
-        //         statusIcon.classList.remove('fa-check', 'fa-times', 'fa-exclamation-triangle');
-        //         if (type === 'Success') {
-        //             statusIcon.classList.add('fa-check');
-        //             statusIcon.style.color = '#28a745'; 
-        //         } else if (type === 'Error') {
-        //             statusIcon.classList.add('fa-times');
-        //             statusIcon.style.color = '#dc3545'; 
-        //         } else if (type === 'Warning') {
-        //             statusIcon.classList.add('fa-exclamation-triangle');
-        //             statusIcon.style.color = '#ffc107'; 
-        //         } else {
-        //             statusIcon.classList.add('fa-check'); 
-        //             statusIcon.style.color = '#28a745';
-        //         }
-        //     }
-
-
-        //     setTimeout(function () {
-        //         var statusModalElement = document.getElementById('statusModal');
-        //         var statusModal = new bootstrap.Modal(statusModalElement);
-        //         statusModal.show();
-        //     }, 100);
-        // }
-
         const deleteModalButtons = document.querySelectorAll("[data-bs-target='#@deleteBookConfirmationModel.Id']");
         
         let currentBookIdToDelete = null;
