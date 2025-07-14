@@ -1,19 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
-using ASI.Basecode.Services.ServiceModels;
-using ASI.Basecode.Data.Models;
-using ASI.Basecode.Services.Services;
-using System.Linq;
-using ASI.Basecode.Services.Interfaces;
-using Microsoft.CodeAnalysis.Host;
-using ASI.Basecode.WebApp.Payload.BooksPayload;
-using ASI.Basecode.WebApp.Payload.AuthorPayload;
-using ASI.Basecode.WebApp.AccessControl;
-using Microsoft.Extensions.DependencyInjection;
+﻿using ASI.Basecode.Data.Models;
 using ASI.Basecode.Data.QueryParams;
+using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.ServiceModels;
+using ASI.Basecode.WebApp.AccessControl;
+using ASI.Basecode.WebApp.Payload.AuthorPayload;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -46,7 +42,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 var queryParams = new AuthorQueryParams
                 {
                     SearchTerm = searchTerm,
-                    SortOrder = sortOrder ?? "Name",
+                    SortOrder = sortOrder ?? "name",
                     SortDescending = sortDescending,
                     PageIndex = pageIndex,
                     PageSize = PageSize
@@ -59,47 +55,21 @@ namespace ASI.Basecode.WebApp.Controllers
 
                 return View("~/Views/Author/Index.cshtml", authorList);
             }
-            catch (ApplicationException ex)
+            catch (ApplicationException)
             {
 
                 return View("~/Views/Author/Index.cshtml", new List<LanguageViewModel>());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return View("~/Views/Author/Index.cshtml", new List<LanguageViewModel>());
 
             }
         }
 
-        /*[HttpGet]
-        [Route("Author/Index")]
-        [Authorize]
-        public async Task<IActionResult> GenreList()
-        {
-            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
-            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
-
-            try
-            {
-                List<AuthorViewModel> language_list = await _authorService.GetAllAuthorList();
-
-                return View("~/Views/Author/Index.cshtml", language_list);
-            }
-            catch (ApplicationException ex)
-            {
-
-                return View("~/Views/Author/Index.cshtml", new List<LanguageViewModel>());
-            }
-            catch (Exception ex)
-            {
-                return View("~/Views/Author/Index.cshtml", new List<LanguageViewModel>());
-
-            }
-        }*/
-
 
         [HttpGet]
-        [Route("Author/AddAuthor")] 
+        [Route("Author/AddAuthor")]
         [Authorize]
         public async Task<IActionResult> AddAuthor()
         {
@@ -119,7 +89,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
-                AuthorViewModel retreived_author = await _authorService.GetAuthorById(author_id) ;
+                AuthorViewModel retreived_author = await _authorService.GetAuthorById(author_id);
 
                 return View("~/Views/Author/EditAuthor.cshtml", retreived_author);
             }
@@ -135,7 +105,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 return StatusCode(500, new { Message = ex.Message });
             }
-            
+
         }
 
 
@@ -152,7 +122,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 try
                 {
                     await _authorService.AddAuthor(author);
-                    return Ok(new { Message ="Author Successfully added" });
+                    return Ok(new { Message = "Author Successfully added" });
                 }
                 catch (ArgumentException ex)
                 {
@@ -249,7 +219,6 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
-                //Change this during code cleaning
                 List<BookViewModel> retreived_books_by_author = await _authorService.GetBooksByAuthor(authorId);
                 AuthorViewModel retreived_author_by_Id = await _authorService.GetAuthorById(authorId);
 

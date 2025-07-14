@@ -2,12 +2,8 @@
 using ASI.Basecode.Data.Models;
 using Basecode.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-//using System.Data.Entity;
 
 namespace ASI.Basecode.Data.Repositories
 {
@@ -33,7 +29,6 @@ namespace ASI.Basecode.Data.Repositories
 
             IQueryable<User> query = this.GetDbSet<User>().AsNoTracking(); 
             
-            // Apply search filter if provided
             if (!string.IsNullOrEmpty(queryParams.SearchTerm))
             {
                 var term = queryParams.SearchTerm.Trim();
@@ -42,11 +37,10 @@ namespace ASI.Basecode.Data.Repositories
                     (b.UserName != null && b.UserName.Contains(term)) || 
                     (b.Email != null && b.Email.Contains(term)));
             }
-            //if (!string.IsNullOrEmpty(queryParams.Role))
-            //{
-            //    query = query.Where(u => u.Role == queryParams.Role);
-            //}
-            // Apply sorting if provided
+            if (!string.IsNullOrEmpty(queryParams.Role))
+            {
+                query = query.Where(u => u.Role == queryParams.Role);
+            }
             if (!string.IsNullOrEmpty(queryParams.SortOrder))
             {
                 bool desc = queryParams.SortDescending;
@@ -57,19 +51,23 @@ namespace ASI.Basecode.Data.Repositories
                            ? query.OrderByDescending(b => b.Id)
                            : query.OrderBy(b => b.Id);
                         break;
-                    case "createdtime":
+                    case "createddate":
                         query = desc
                         ? query.OrderByDescending(b => b.CreatedTime)
                         : query.OrderBy(b => b.CreatedTime);
                         break;
-
+                    case "updateddate":
+                        query = desc
+                        ? query.OrderByDescending(b => b.UpdatedTime)
+                        : query.OrderBy(b => b.UpdatedTime);
+                        break;
                     case "email":
                         query = desc
                            ? query.OrderByDescending(b => b.Email)
                            : query.OrderBy(b => b.Email);
                         break;
                     default:
-                        query = query.OrderBy(u => u.Id); // Default sort by ID
+                        query = query.OrderBy(u => u.CreatedTime);
                         break;
                 }
             }
@@ -100,9 +98,9 @@ namespace ASI.Basecode.Data.Repositories
             return await this.GetDbSet<User>().FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task DeleteUser(int id)
+        public async Task DeleteUser(string userId)
         {
-            var user = await GetUserById(id);
+            var user = await FindByEmailForEdit(userId);
             if (user == null) return;
 
             this.GetDbSet<User>().Remove(user);

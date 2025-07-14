@@ -4,8 +4,10 @@ using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.AccessControl;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -62,6 +64,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     .Select(r => new ReviewViewModel
                     {
                         ReviewId = r.ReviewId,
+                        BookTitle = r.Book.Title,
                         BookId = r.BookId,
                         UserId = r.UserId,
                         Rating = r.Rating,
@@ -116,12 +119,15 @@ namespace ASI.Basecode.WebApp.Controllers
             //if(!ModelState.IsValid)
             //    return View("~/Views/PersonProfile/Edit.cshtml", model);
 
-            var updated = await _personProfileService.EditPersonProfile(model);
-            if (!updated)
+            var success = await _personProfileService.EditPersonProfile(model);
+            if (!success)
                 return NotFound();
 
+            var updatedProfile = await _personProfileService.GetPersonProfile(model.UserId);
+            HttpContext.Session.SetString("ProfilePicture", updatedProfile.ProfilePicture ?? "");
+            
+            TempData["Success"] = "Personal info updated successfully!";
             return RedirectToAction("Index", new { success = "personal" });
-
         }
 
         [HttpPost]
@@ -134,10 +140,20 @@ namespace ASI.Basecode.WebApp.Controllers
                 Id = vm.Id,
                 UserName = vm.Username,
                 Email = vm.Email,
-           };
-            await _userService.UpdateUser(uvm);
+            };
+            try
+            {
+                await _userService.UpdateUser(uvm);
 
-            TempData["Success"] = "User info saved!";
+                var updatedUser = await _userService.GetUserById(vm.Id);
+                HttpContext.Session.SetString("UserName", updatedUser?.UserName ?? "");
+
+                TempData["Success"] = "User info updated successfully!";
+            }
+            catch (InvalidDataException ex)
+            {
+                TempData["UserInfoError"] = ex.Message;
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -156,11 +172,11 @@ namespace ASI.Basecode.WebApp.Controllers
             if (!ok)
             {
                 
-                TempData["PwdErrors"] = new[] { "Current password is incorrect." };
+                TempData["PwdErrors"] = new[] { "Current password is incorrect or New Password must not be less than 8 characters." };
             }
             else
             {
-                TempData["Success"] = "password";
+                TempData["Success"] = "Password updated successfully!";
             }
 
             return RedirectToAction(nameof(Index));
@@ -214,6 +230,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     .Select(r => new ReviewViewModel
                     {
                         ReviewId = r.ReviewId,
+                        BookTitle = r.Book.Title,
                         BookId = r.BookId,
                         UserId = r.UserId,
                         Rating = r.Rating,

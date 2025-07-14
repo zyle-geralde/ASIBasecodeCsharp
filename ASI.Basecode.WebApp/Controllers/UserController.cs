@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ASI.Basecode.WebApp.Authentication;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -19,10 +20,13 @@ namespace ASI.Basecode.WebApp.Controllers
     {
         private readonly IUserService _userService;
         private readonly IAccessControlInterface _accessControlInterface;
-        public UserController(IUserService userService,IAccessControlInterface accessControlInterface)
+        private readonly SignInManager _signInManager;
+
+        public UserController(IUserService userService,IAccessControlInterface accessControlInterface, SignInManager signInManager)
         {
             _userService = userService;
             _accessControlInterface = accessControlInterface;
+            _signInManager = signInManager;
         }
         [HttpGet]
         [Authorize]
@@ -30,8 +34,10 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
-            TempData.Remove("SuccessMessage");
-            // Remove pagination parameters - get all users
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewData["SuccessMessage"] = TempData["SuccessMessage"];
+            }
             const int PageSize = 10;
             int pageIndex = page.GetValueOrDefault(1);
 
@@ -39,7 +45,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 SearchTerm = searchTerm,
                 Role = role,
-                SortOrder = sortOrder ?? "id",
+                SortOrder = sortOrder ?? "email",
                 SortDescending = sortDescending,
                 PageIndex = pageIndex,
                 PageSize = PageSize
@@ -52,8 +58,9 @@ namespace ASI.Basecode.WebApp.Controllers
 
             return View("~/Views/Users/Index.cshtml", users);
         }
+        [HttpGet]
         [Authorize] 
-        public async Task<IActionResult> AddUser()
+        public async Task<IActionResult> AddUser(string role="User")
         {
 
 
@@ -63,7 +70,11 @@ namespace ASI.Basecode.WebApp.Controllers
                 ViewData["ShowSuccessModal"] = null;
                 ViewData["SaveSuccess"] = null;
             }
-            return View("~/Views/Users/AddUser.cshtml");
+            var vm = new UserViewModel
+            {
+                Role = role
+            };
+            return View("~/Views/Users/AddUser.cshtml", vm);
         }
 
         [HttpPost]
@@ -89,7 +100,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Use ViewData instead of TempData for immediate display
                 TempData["ShowSuccessModal"] = true;
                 TempData["SuccessMessage"] = "User added successfully!";
-                return RedirectToAction("AddUser");
+                return RedirectToAction("Index");
             }
             catch (InvalidDataException ex)
             {
@@ -106,22 +117,30 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpPost]
         [Authorize]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string userId)
         {
 
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             try
             {
-                bool deleted = await _userService.DeleteUser(id);
+                bool deleted = await _userService.DeleteUser(userId);
 
                 if (!deleted)
                 {
                     TempData["ErrorMessage"] = "User could not be deleted.";
+                    return RedirectToAction(nameof(Index));
+
                 }
-                else
+                if (currentUserId == userId.ToString())
                 {
-                    TempData["SuccessMessage"] = "User deleted successfully.";
+                    await _signInManager.SignOutAsync();                  
+
+                    return RedirectToAction("Index", "Home");
                 }
+
+
+
             }
             catch (Exception e)
             {
@@ -203,9 +222,10 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
+
                 await _userService.UpdateUser(model);
-                ViewData["SaveSuccess"] = true;
-                return View("~/Views/Users/EditUser.cshtml", model);
+                TempData["SuccessMessage"] = "User updated successfully!";
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {

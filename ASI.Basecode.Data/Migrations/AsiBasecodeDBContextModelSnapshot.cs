@@ -109,6 +109,9 @@ namespace ASI.Basecode.Data.Migrations
                     b.Property<string>("Publisher")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("ReviewCount")
+                        .HasColumnType("int");
+
                     b.Property<string>("SeriesDescription")
                         .HasColumnType("nvarchar(max)");
 
@@ -240,7 +243,8 @@ namespace ASI.Basecode.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("BookId")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
@@ -258,9 +262,15 @@ namespace ASI.Basecode.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("UserId");
 
                     b.HasKey("ReviewId");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Reviews");
                 });
@@ -303,6 +313,9 @@ namespace ASI.Basecode.Data.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<string>("Role")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -341,9 +354,36 @@ namespace ASI.Basecode.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ASI.Basecode.Data.Models.Review", b =>
+                {
+                    b.HasOne("ASI.Basecode.Data.Models.Book", "Book")
+                        .WithMany("Reviews")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ASI.Basecode.Data.Models.User", "User")
+                        .WithMany("Reviews")
+                        .HasForeignKey("UserId")
+                        .HasPrincipalKey("Email")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ASI.Basecode.Data.Models.Book", b =>
+                {
+                    b.Navigation("Reviews");
+                });
+
             modelBuilder.Entity("ASI.Basecode.Data.Models.User", b =>
                 {
                     b.Navigation("PersonProfile");
+
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

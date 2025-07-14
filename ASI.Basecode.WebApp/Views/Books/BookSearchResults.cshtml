@@ -4,9 +4,12 @@
     ViewData["Title"] = "Search Results";
     var categoryTitle = (string?)ViewData["CategoryTitle"] ?? "";
     var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
+    var allLanguages = (List<LanguageViewModel>)ViewData["AllLanguages"];
     var currentSearch = (string?)ViewData["CurrentSearch"];
+    var currentIsFeatured = (bool?)ViewData["CurrentIsFeatured"];
     var currentAuthor = (string?)ViewData["CurrentAuthor"];
     var currentRating = (int?)ViewData["CurrentRating"];
+    var currentLanguage = (string?)ViewData["CurrentLanguage"];
     var currentFromDate = (string?)ViewData["CurrentFromDate"];
     var currentToDate = (string?)ViewData["CurrentToDate"];
     var currentGenres = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>();
@@ -26,6 +29,14 @@
         routeValues["searchTerm"] = currentSearch;
         descriptionParts.Add($"Search: \"{currentSearch}\"");
     }
+    if (!string.IsNullOrWhiteSpace(currentLanguage)) {
+        routeValues["languageFilter"] = currentLanguage;
+       var languageName = allLanguages
+        .FirstOrDefault(l => l.LanguageId == currentLanguage)?.LanguageName ?? currentLanguage;
+    
+        descriptionParts.Add($"Language: {languageName}");
+
+    }
     if (!string.IsNullOrWhiteSpace(currentAuthor)) {
         routeValues["author"] = currentAuthor;
         descriptionParts.Add($"Author: {currentAuthor}");
@@ -34,6 +45,11 @@
         routeValues["rating"] = currentRating.Value.ToString();
         descriptionParts.Add($"Rating: {currentRating.Value}★ & up");
     }
+    if (currentIsFeatured == true) {
+      routeValues["isFeatured"] = "true";
+      descriptionParts.Add("Featured");
+    }
+
     if (!string.IsNullOrWhiteSpace(currentFromDate)) {
         routeValues["publishedFrom"] = currentFromDate;
         descriptionParts.Add($"Published from: {DateTime.Parse(currentFromDate).ToString("yyyy-MM-dd")} ");
@@ -56,148 +72,80 @@
         routeValues["sortDescending"] = "true";
     }
 
-        var descriptionText = descriptionParts.Any()
+    var descriptionText = descriptionParts.Any()
         ? string.Join(" | ", descriptionParts)
         : "Manage books";
+
+    ViewData["CurrentPage"] = Model.PageIndex;
+    ViewData["TotalPages"] = Model.TotalPages;
+    ViewData["RouteValues"] = routeValues;
 }
 
 @section styles {
     <link rel="stylesheet" href="~/css/searchresults.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/pagination.css" asp-append-version="true" />
 }
 
-<div class="search-results-container">
+<div class="search-results-container">   
     <!-- Left Side - Scrollable Book Results -->
     <div class="search-results-left">
         <div class="sticky-header-wrapper">
-            <div class="search-header">
-                <h2>Results for: @categoryTitle</h2>
-                <p>Displaying @Model.PageIndex of @Model.TotalPages out of @Model.TotalCount results</p>
-            </div>
-            
-
-       
-    <form asp-controller="Book" asp-action="SearchResults"  method="get" class="mb-3">
-
-<div class="row g-3 align-items-end">
-    <div class="col-md-4">
-      <label class="form-label">Search</label>
-      <input type="text"
-             name="searchTerm"
-             value="@ViewData["CurrentSearch"]"
-             placeholder="Title, subtitle, author…"
-             class="form-control" />
-    </div>
-
-      <div class="col-md-3">
-      <label class="form-label">Sort by</label>
-      <select name="sortOrder" class="form-select">
-        <option value="title"             selected="@(currentSort == "title")">Title</option>
-        <option value="publicationdate"   selected="@(currentSort == "publicationdate")">Publication Date</option>
-        <option value="rating"            selected="@(currentSort == "rating")">Rating</option>
-      </select>
-    </div>
-
-     <div class="col-md-2">
-      <label class="form-label">Direction</label>
-      <select name="sortDescending" class="form-select">
-        <option value="false" selected="@(!currentSortDescending)">Ascending</option>
-        <option value="true"  selected="@( currentSortDescending)">Descending</option>
-      </select>
-    </div>
-
-
-
-    <div class="col-md-3">
-      <label class="form-label">Author</label>
-      <input type="text"
-             name="author"
-             value="@currentAuthor"
-             class="form-control" />
-    </div>
-
-    <div class="col-md-2">
-      <label class="form-label">Rating</label>
-       <select name="rating" class="form-select">
-      <option value="">Any</option>
-          @for (int i = 1; i <= 5; i++)
-          {
-            if (currentRating == i)
-            {
-              <option value="@i" selected>
-                @i ★ & up
-              </option>
-            }
-            else
-            {
-              <option value="@i">
-                @i ★ & up
-              </option>
-            }
-          }
-    </select>
-
-    </div>
-
-    <div class="col-md-3">
-      <label class="form-label">Date Published</label>
-      <div class="d-flex">
-        <input type="date"
-               name="publishedFrom"
-               value="@currentFromDate"
-               class="form-control me-1" />
-        <input type="date"
-               name="publishedTo"
-               value="@currentToDate"
-               class="form-control" />
-      </div>
-    </div>
-  </div>
-
-  <fieldset class="mt-3">
-    <legend class="form-label">Genres</legend>
-    <div class="row">
-      @foreach (var genre in allGenres)
-      {
-        <div class="col-sm-3">
-          <div class="form-check">
-            <input class="form-check-input"
-                   type="checkbox"
-                   name="genreFilter"
-                   value="@genre.BookGenreId"
-                   id="g_@genre.BookGenreId"
-                   @(currentGenres.Contains(genre.BookGenreId) ? "checked" : "") />
-            <label class="form-check-label" for="g_@genre">
-              @genre.GenreName
-            </label>
-          </div>
-        </div>
-      }
-    </div>
-  </fieldset>
-
-  <div class="d-flex justify-content-end mt-3">
-    <a asp-action="SearchResults" class="btn btn-outline-secondary me-2">
-      Clear All
-    </a>
-    <button type="submit" class="btn btn-primary">
-      Apply Filters
-    </button>
-  </div>
-
-</form>
-            <div class="search-filters">
-                <div class="filter-group">
-                    <button class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
-                    <button class="filter-btn">Filter <i class="fas fa-caret-down"></i></button>
+            @*<form asp-controller="Book" asp-action="SearchResults" method="get" class="search-bar-form mb-4" style="padding: 0 20px; width:100%">*@
+                <div style="display: flex; flex-direction: row; gap: 15px; width: 100%; align-items: stretch;">
+                    <div style="flex: 1;">
+                        <div class="input-group h-100">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text"
+                                   name="searchTerm"
+                                   value="@ViewData["CurrentSearch"]"
+                                   placeholder="Title, subtitle..."
+                                   class="form-control"
+                                   id = "mainSearchTerm"
+                                    />
+                        </div>
+                    </div>                   
+                    <div>
+                        <button id="toggleFilters" type="button" class="btn filter-toggle-btn">
+                            <i class="fas fa-sliders-h"></i> Filters & Sort
+                        </button>
+                    </div>
+                <div>
+                    <button type="button"
+                            class="btn clear-toggle-btn"
+                            onclick="location.href='@Url.Action("SearchResults", "Book")'">
+                        <i class="fas fa-times"></i> Clear All
+                    </button>
                 </div>
+                </div>
+            @*</form>*@
+            <div class="search-header">
+                <div class="search-header-content">
+                    <h2>@(string.IsNullOrEmpty(categoryTitle) ? "Search Results" : $"Results for: {categoryTitle}")</h2>
+                    <p>Displaying @Model.StartIndex - @Model.EndIndex out of @Model.TotalCount results</p>
+                    @if(descriptionParts.Any())
+                    {
+                        <div class="active-filters">
+                            <div class="filter-tags">
+                                @foreach(var part in descriptionParts)
+                                {
+                                    <span class="filter-tag">@part</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>               
             </div>
         </div>
 
         <div class="search-results-grid">
             @if(Model == null || !Model.Any())
             {
-                <p class="no-results">No books match your search criteria.</p>
+                <div class="no-results">
+                    <i class="fas fa-search fa-3x mb-3" style="color: #ddd;"></i>
+                    <p>No books match your search criteria.</p>
+                    <p>Try adjusting your filters or search terms.</p>
+                </div>
             }
             else
             {
@@ -208,7 +156,8 @@
                         </a>
                         <div class="book-info">
                             <h3>@book.Title</h3>
-                            <p class="author">@book.Author, @(book.UploadDate?.Year ?? 0)</p>
+                            <p class="author">@book.Author</p>
+                            
                             <div class="star-rating">
                                 <div class="stars">
                                     @{
@@ -243,48 +192,445 @@
                                         }
                                     }
                                 </div>
-                                <span class="rating-text">@book.AverageRating/5</span>
+                                <span class="rating-value">@((book.AverageRating ?? 0).ToString("0.0"))  (@book.ReviewCount reviews)</span>
+
+                            </div>
+                            
+                            <div class="book-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar-alt meta-icon"></i>
+                                    <span class="meta-text">Published: @(book.PublicationDate?.ToString("MMM dd, yyyy") ?? "N/A")</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-upload meta-icon"></i>
+                                    <span class="meta-text">Added: @(book.UploadDate?.ToString("MMM dd, yyyy") ?? "N/A")</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 }
             }
         </div>
-
-        <div class="pagination-container">
-            <nav aria-label="Search results pages">
-                <ul class="pagination">
-                    <li class="page-nav @(Model.HasPreviousPage ? "" : "disabled")">
-                        <a class="page-link"
-                           asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
-                                ["page"] = (Model.PageIndex - 1).ToString()
-                           })">
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
-                    </li>
-
-                    @for (int i = 1; i <= Model.TotalPages; i++)
-                    {
-                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                            <a class="page-link"
-                               asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
-                                    ["page"] = i.ToString()
-                               })">
-                                @i
-                            </a>
-                        </li>
-                    }
-
-                    <li class="page-nav @(Model.HasNextPage ? "" : "disabled")">
-                        <a class="page-link"
-                           asp-all-route-data="@(new Dictionary<string,string>(routeValues) {
-                                ["page"] = (Model.PageIndex + 1).ToString()
-                           })">
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+        <partial name="_PaginationPartial" view-data="ViewData" />        
     </div>
 </div>
+
+<div class="filter-backdrop"></div>
+<div id="filterPanel" class="filter-panel">
+    <div class="filter-panel-header">
+        <h3 class="filter-panel-title">Sort & Filter</h3>
+        <button class="close-filter-btn" id="closeFilterPanel">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <form asp-controller="Book" asp-action="SearchResults" method="get" id="filterForm">
+        <input type="hidden" name="searchTerm" value="@currentSearch" id = "hiddenSearchTerm"/>
+        <div class="filter-container">
+            
+            <!-- Search and Sort Section -->
+            <div class="filter-section">
+                <h4 class="filter-section-title">
+                    <i class="fas fa-search"></i> Search & Sort
+                </h4>
+                <div class="filter-section-content">
+                    <div class="row g-3 mb-3">                       
+                        <div class="col-md-12">
+                            <label class="form-label">Author</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user-edit"></i></span>
+                                <input type="text"
+                                       name="author"
+                                       value="@currentAuthor"
+                                       placeholder="Author name"
+                                       class="form-control" />
+                            </div>
+                        </div>
+                    </div>                    
+                
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Sort by</label>
+                            <select name="sortOrder" class="form-select">
+                                <option value="title" selected="@(currentSort == "title")">Title</option>
+                                <option value="publicationdate" selected="@(currentSort == "publicationdate")">Publication Date</option>
+                                <option value="rating" selected="@(currentSort == "rating")">Rating</option>
+                                <option value="uploaddate" selected="@(currentSort == "uploaddate")">Upload Date</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Direction</label>
+                            <select name="sortDescending" class="form-select">
+                                <option value="false" selected="@(!currentSortDescending)">Ascending</option>
+                                <option value="true" selected="@(currentSortDescending)">Descending</option>
+                            </select>
+                        </div>                       
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Rating</label>
+                            <select name="rating" class="form-select">
+                                <option value="">Any</option>
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (currentRating == i)
+                                    {
+                                        <option value="@i" selected>@i ★ & up</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@i">@i ★ & up</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Date Range Section -->
+            <div class="filter-section">
+                <h4 class="filter-section-title">
+                    <i class="fas fa-calendar-alt"></i> Publication Date
+                </h4>
+                <div class="filter-section-content">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">From</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                <input type="date"
+                                    name="publishedFrom"
+                                    value="@currentFromDate"
+                                    class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">To</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                <input type="date"
+                                    name="publishedTo"
+                                    value="@currentToDate"
+                                    class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                   <div class="toggle-container" style="margin-top: 15px; margin-bottom: 0">
+                        <div class="toggle-wrapper" style="padding: 0">
+                            <input type="checkbox" 
+                                   id="isFeatured" 
+                                   name="isFeatured" 
+                                   class="toggle-input" 
+                                   value="true"
+                                   @(currentIsFeatured == true ? "checked" : "") />
+                            <label for="isFeatured" class="toggle-label">
+                                <span class="toggle-button"></span>
+                            </label>
+                            <span class="toggle-text">Featured books only</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Genres Section -->
+            <div class="filter-section">
+                <h4 class="filter-section-title">
+                    <i class="fas fa-book-open"></i> Genres
+                </h4>
+                <div class="filter-section-content">
+                    <div class="chip-container">
+                        @foreach (var genre in allGenres)
+                        {
+                            <div>
+                                <input class="chip-checkbox"
+                                    type="checkbox"
+                                    name="genreFilter"
+                                    value="@genre.BookGenreId"
+                                    id="g_@genre.BookGenreId"
+                                    @(currentGenres.Contains(genre.BookGenreId) ? "checked" : "") />
+                                <label class="chip-label" for="g_@genre.BookGenreId">
+                                    @genre.GenreName
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>          
+
+            <!-- Languages Section -->
+            <div class="filter-section">
+                <h4 class="filter-section-title">
+                    <i class="fas fa-language"></i> Language
+                </h4>
+                <div class="filter-section-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <select name="languageFilter" class="form-select language-dropdown">
+                                <option value="">All Languages</option>
+                                @foreach (var language in allLanguages)
+                                {
+                                    <option value="@language.LanguageId" selected="@(currentLanguage == language.LanguageId)">
+                                        @language.LanguageName
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button type="button" class="btn btn-outline-secondary">
+                    <i class="fas fa-times"></i> Clear All
+                </button>
+                <button type="submit" class="btn btn-primary" id="applyFiltersButton">
+                    <i class="fas fa-check"></i> Apply Filters
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleFiltersButton = document.getElementById('toggleFilters');
+            const closeFilterButton = document.getElementById('closeFilterPanel');
+            const filterPanel = document.getElementById('filterPanel');
+            const filterBackdrop = document.querySelector('.filter-backdrop');
+            const mainSearchTermInput = document.getElementById('mainSearchTerm');
+            const hiddenSearchTermInput = document.getElementById('hiddenSearchTerm');
+
+            // Initialize filter panel (hidden by default)
+            if (filterPanel) {
+                filterPanel.classList.remove('active');
+            }
+
+            if (filterBackdrop) {
+                filterBackdrop.classList.remove('active');
+            }
+
+            if (mainSearchTermInput && hiddenSearchTermInput) {
+                mainSearchTermInput.addEventListener('keyup', function () {
+                    hiddenSearchTermInput.value = this.value;
+                });
+            }
+
+            // Toggle filter panel
+            if (toggleFiltersButton) {
+                toggleFiltersButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    console.log('Toggle filters clicked');
+
+                    if (filterPanel) {
+                        filterPanel.classList.toggle('active');
+                    }
+
+                    if (filterBackdrop) {
+                        filterBackdrop.classList.toggle('active');
+                    }
+
+                    toggleFiltersButton.classList.toggle('active');
+
+                    if (toggleFiltersButton.classList.contains('active')) {
+                        toggleFiltersButton.innerHTML = '<i class="fas fa-times"></i> Close';
+                    } else {
+                        toggleFiltersButton.innerHTML = '<i class="fas fa-sliders-h"></i> Filters & Sort';
+                    }
+
+                    // Reset scroll position when opening
+                    if (filterPanel && filterPanel.classList.contains('active')) {
+                        setTimeout(() => {
+                            filterPanel.scrollTop = 0;
+                        }, 100);
+                    }
+                });
+            }
+
+            // Close filter panel with the X button
+            if (closeFilterButton) {
+                closeFilterButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    if (filterPanel) {
+                        filterPanel.classList.remove('active');
+                    }
+
+                    if (filterBackdrop) {
+                        filterBackdrop.classList.remove('active');
+                    }
+
+                    if (toggleFiltersButton) {
+                        toggleFiltersButton.classList.remove('active');
+                        toggleFiltersButton.innerHTML = '<i class="fas fa-sliders-h"></i> Filters & Sort';
+                    }
+                });
+            }
+
+            // Close filter panel when clicking on backdrop
+            if (filterBackdrop) {
+                filterBackdrop.addEventListener('click', function() {
+                    if (filterPanel) {
+                        filterPanel.classList.remove('active');
+                    }
+
+                    filterBackdrop.classList.remove('active');
+
+                    if (toggleFiltersButton) {
+                        toggleFiltersButton.classList.remove('active');
+                        toggleFiltersButton.innerHTML = '<i class="fas fa-sliders-h"></i> Filters & Sort';
+                    }
+                });
+            }
+
+            // Add animation to filter sections
+            const filterSections = document.querySelectorAll('.filter-section');
+            filterSections.forEach((section, index) => {
+                section.style.animationDelay = (index * 0.1) + 's';
+            });
+
+            // Enhance the chip selection experience
+            const chipLabels = document.querySelectorAll('.chip-label, .radio-chip-label');
+            chipLabels.forEach(label => {
+                label.addEventListener('click', function() {
+                    // Create a ripple effect
+                    const ripple = document.createElement('span');
+                    ripple.classList.add('ripple');
+                    this.appendChild(ripple);
+
+                    // Remove it after animation completes
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 500);
+                });
+            });
+
+            const radioLabels = document.querySelectorAll('.radio-chip-label');
+
+            radioLabels.forEach(label => {
+                // Add deselectable class
+                label.classList.add('deselectable');
+
+                // Create clear button
+                const clearBtn = document.createElement('span');
+                clearBtn.className = 'radio-chip-clear';
+                clearBtn.innerHTML = '×';
+                label.appendChild(clearBtn);
+
+                // Add click handler for the clear button
+                clearBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Get the associated radio button
+                    const radioId = label.getAttribute('for');
+                    const radioBtn = document.getElementById(radioId);
+
+                    // Uncheck the radio button
+                    if (radioBtn) {
+                        radioBtn.checked = false;
+                    }
+                });
+            });
+
+            // Handle Clear All button in the filter panel
+            const clearFiltersButton = document.querySelector('.filter-actions .btn-outline-secondary');
+
+            if (clearFiltersButton) {
+                clearFiltersButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Clear all form inputs in the filter panel
+                    const filterForm = document.getElementById('filterForm');
+
+                    // Clear text inputs
+                    filterForm.querySelectorAll('input[type="text"], input[type="date"]').forEach(input => {
+                        input.value = '';
+                    });
+
+                    // Reset dropdowns to default options
+                    filterForm.querySelectorAll('select').forEach(select => {
+                        select.selectedIndex = 0;
+                    });
+
+                    // Uncheck all checkboxes
+                    filterForm.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+
+                    // Keep the search term from main search if it exists
+                    const mainSearchTerm = document.getElementById('mainSearchTerm');
+
+                    if (mainSearchTerm && mainSearchTerm.value) {
+                        hiddenSearchTermInput.value = mainSearchTerm.value;
+                    }
+
+                    // Show feedback to user
+                    const clearConfirmation = document.createElement('div');
+                    clearConfirmation.className = 'clear-confirmation';
+                    clearConfirmation.textContent = 'Filters cleared';
+                    clearConfirmation.style.position = 'absolute';
+                    clearConfirmation.style.top = '90px';
+                    clearConfirmation.style.right = '30px';
+                    clearConfirmation.style.padding = '8px 16px';
+                    clearConfirmation.style.backgroundColor = 'rgba(210, 196, 158, 0.6)';
+                    clearConfirmation.style.color = 'black';
+                    clearConfirmation.style.borderRadius = '4px';
+                    clearConfirmation.style.opacity = '0';
+                    clearConfirmation.style.transition = 'opacity 0.3s ease';
+                     clearConfirmation.style.fontSize = '12px';
+
+                    filterPanel.appendChild(clearConfirmation);
+
+                    // Show and then hide the confirmation
+                    setTimeout(() => {
+                        clearConfirmation.style.opacity = '1';
+
+                        setTimeout(() => {
+                            clearConfirmation.style.opacity = '0';
+                            setTimeout(() => {
+                                clearConfirmation.remove();
+                            }, 300);
+                        }, 1500);
+                    }, 10);
+                });
+            }
+
+            document.querySelectorAll('input[type="date"]').forEach(input => {
+                // Find the closest calendar icon in its parent input-group
+                const parentGroup = input.closest('.input-group');
+                if (parentGroup) {
+                    const calendarIcon = parentGroup.querySelector('.input-group-text');
+                    if (calendarIcon) {
+                        calendarIcon.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            input.showPicker();
+                        });
+                    }
+                }
+
+                // Also allow the input field itself to trigger the datepicker
+                input.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    input.showPicker();
+                });
+            });
+
+            const form = document.getElementById('mainSearchTerm');
+            const applyButton = document.getElementById('applyFiltersButton');
+
+            form.addEventListener('keypress', function (event) {
+                // Check if the pressed key is Enter
+                if (event.key === 'Enter') {
+                    // Prevent the default form submission behavior
+                    event.preventDefault();
+                    // Programmatically click the "Apply Filters" button
+                    applyButton.click();
+                }
+            });
+        });
+    </script>
+}

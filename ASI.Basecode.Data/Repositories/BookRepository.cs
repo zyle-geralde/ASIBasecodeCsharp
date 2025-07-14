@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Runtime.Intrinsics.X86;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -44,7 +45,7 @@ namespace ASI.Basecode.Data.Repositories
                 var term = queryParams.SearchTerm.Trim();
                 var authorTerm = queryParams.SearchAuhtor?.Trim() ?? "";
                 query = query.Where(b =>
-                (b.Title != null && b.Title.Contains(term) || (b.Subtitle != null && b.Subtitle.Contains(term)) || (b.Author != null && authorTerm.Trim().Contains(b.Author))));
+                (b.Title != null && b.Title.Contains(term)  || (b.Author != null && authorTerm.Trim().Contains(b.Author))));
 
             }
 
@@ -57,7 +58,8 @@ namespace ASI.Basecode.Data.Repositories
 
             if (queryParams.PublishedFrom.HasValue && queryParams.PublishedTo.HasValue)
                 query = query.Where(b => b.PublicationDate >= queryParams.PublishedFrom.Value && b.PublicationDate <= queryParams.PublishedTo.Value);
-
+            if (queryParams.IsFeatured.HasValue)
+                query = query.Where(b => b.IsFeatured == queryParams.IsFeatured);
             if (queryParams.GenreNames != null && queryParams.GenreNames.Any())
             {
                 foreach (var gn in queryParams.GenreNames)
@@ -68,8 +70,13 @@ namespace ASI.Basecode.Data.Repositories
                         && b.GenreList.Contains(gn));
                 }
             }
+            if (!string.IsNullOrEmpty(queryParams.Language))
+            {
+                query=query.Where(b=>b.Language == queryParams.Language);
+            }
 
-            if (!string.IsNullOrEmpty(queryParams.SortOrder))
+
+                if (!string.IsNullOrEmpty(queryParams.SortOrder))
             {
                 bool desc = queryParams.SortDescending;
                 switch (queryParams.SortOrder.Trim().ToLower())
@@ -92,13 +99,27 @@ namespace ASI.Basecode.Data.Repositories
                             : query.OrderBy(b => b.AverageRating);
                         break;
                     case "uploaddate":
-                        query = desc ? query.OrderByDescending(b => b.UploadDate) : query.OrderBy(b => b.UploadDate);
+                        query = desc 
+                            ? query.OrderByDescending(b => b.UploadDate) 
+                            : query.OrderBy(b => b.UploadDate);
+                        break;
+
+                    case "updateddate":
+                        query = desc
+                            ? query.OrderByDescending(b => b.UpdatedDate)
+                            : query.OrderBy(b => b.UpdatedDate);
+                        break;
+                    case "reviewcount":
+                        query = desc
+                            ? query.OrderByDescending(b=> b.ReviewCount)
+                            : query.OrderBy(b => b.ReviewCount);
                         break;
                     default:
                         query = query.OrderBy(b => b.Title);
                         break;
                 }
             }
+            
             return await GetPaged(query, queryParams.PageIndex, queryParams.PageSize);
         }
 
@@ -111,31 +132,54 @@ namespace ASI.Basecode.Data.Repositories
         {
             Book existingBook = await GetBookById(book.BookId);
 
-            //Transfer to Service
-            existingBook.Title = book.Title;
-            existingBook.Subtitle = book.Subtitle;
-            existingBook.Author = book.Author;
-            existingBook.Publisher = book.Publisher;
-            existingBook.PublicationDate = book.PublicationDate;
-            existingBook.PublicationLocation = book.PublicationLocation;
-            existingBook.Language = book.Language;
-            existingBook.NumberOfPages = book.NumberOfPages;
-            existingBook.UpdatedDate = book.UpdatedDate;
-            existingBook.SeriesName = book.SeriesName;
-            existingBook.SeriesOrder = book.SeriesOrder;
-            existingBook.SeriesDescription = book.SeriesDescription;
-            existingBook.Description = book.Description;
-            existingBook.ISBN10 = book.ISBN10;
-            existingBook.ISBN13 = book.ISBN13;
-            existingBook.Edition = book.Edition;
-            existingBook.CoverImage = book.CoverImage;
-            existingBook.BookFile = book.BookFile;
-            existingBook.GenreList = book.GenreList;
-            existingBook.UpdatedBy = book.UpdatedBy;//change to Updated
-            existingBook.IsFeatured = book.IsFeatured;
+
+            try
+            {
+                
+
+                bool isBookNameAndAuthorExist = await CheckBookNameAndAuthorExist(book.Author.Trim(), book.Title.Trim().ToLower());
+
+                if (isBookNameAndAuthorExist && (book.Author.Trim() != existingBook.Author.Trim() || book.Title.Trim().ToLower() != existingBook.Title.Trim().ToLower()))
+                {
+                    throw new ApplicationException("Book Title and/or Author Exist.");
+                }
+
+                //Transfer to Service
+                existingBook.Title = book.Title;
+                existingBook.Subtitle = book.Subtitle;
+                existingBook.Author = book.Author;
+                existingBook.Publisher = book.Publisher;
+                existingBook.PublicationDate = book.PublicationDate;
+                existingBook.PublicationLocation = book.PublicationLocation;
+                existingBook.Language = book.Language;
+                existingBook.NumberOfPages = book.NumberOfPages;
+                existingBook.UpdatedDate = book.UpdatedDate;
+                existingBook.SeriesName = book.SeriesName;
+                existingBook.SeriesOrder = book.SeriesOrder;
+                existingBook.SeriesDescription = book.SeriesDescription;
+                existingBook.Description = book.Description;
+                existingBook.ISBN10 = book.ISBN10;
+                existingBook.ISBN13 = book.ISBN13;
+                existingBook.Edition = book.Edition;
+                existingBook.CoverImage = book.CoverImage;
+                existingBook.BookFile = book.BookFile;
+                existingBook.GenreList = book.GenreList;
+                existingBook.UpdatedBy = book.UpdatedBy;//change to Updated
+                existingBook.IsFeatured = book.IsFeatured;
+
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (ApplicationException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
 
 
-            await _dbContext.SaveChangesAsync();
+           
         }
         public async Task DeleteBook(string bookId)
         {
@@ -170,6 +214,15 @@ namespace ASI.Basecode.Data.Repositories
             }
         }
 
+        public async Task GetReviewCount(string bookId)
+        {
+            var book = await _dbContext.Books.FindAsync(bookId);
+            if (book != null)
+            {
+                book.ReviewCount = await _dbContext.Reviews.CountAsync(r => r.BookId == bookId);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
         public async Task calculateAverageRating(string bookId)
         {
             var reviews = _dbContext.Reviews
@@ -180,11 +233,12 @@ namespace ASI.Basecode.Data.Repositories
                 avg = await reviews.AverageAsync(r => r.Rating);
             else
                 avg = 0;
+            var roundedAvg = Math.Round(avg, 2);
 
             var book = await _dbContext.Books.FindAsync(bookId);
             if (book != null)
             {
-                book.AverageRating = (float)avg;
+                book.AverageRating = (float)roundedAvg;
                 await _dbContext.SaveChangesAsync();
             }
         }
@@ -211,6 +265,12 @@ namespace ASI.Basecode.Data.Repositories
             {
                 throw;
             }
+        }
+
+        public async Task<bool> CheckBookNameAndAuthorExist(string author,string bookName)
+        {
+            // Use AsNoTracking for read-only queries
+            return await _dbContext.Books.AsNoTracking().AnyAsync(b => b.Author != null && b.Title != null && b.Author.ToLower() == author && b.Title.ToLower() == bookName);
         }
 
 

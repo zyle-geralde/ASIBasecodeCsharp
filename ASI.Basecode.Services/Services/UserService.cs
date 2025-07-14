@@ -19,6 +19,7 @@ using ASI.Basecode.Data.Repositories;
 using static System.Net.WebRequestMethods;
 using System.Security.Policy;
 using System.Data.Entity;
+using Microsoft.AspNetCore.Http;
 
 namespace ASI.Basecode.Services.Services
 {
@@ -29,14 +30,126 @@ namespace ASI.Basecode.Services.Services
         private readonly IPersonProfileService _personProfileService;
         private readonly IPersonProfileRepository _personProfileRepository;
         private readonly IEmailSender _emailSenderService;
+        private readonly IReviewRepository _reviewRepository;
+        private readonly IBookRepository _bookRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly SessionManager _sessionManager;
 
-        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService)
+        public UserService(IUserRepository repository, IMapper mapper, IPersonProfileService personProfileService, IPersonProfileRepository personProfileRepository, IEmailSender emailSenderService, IReviewRepository reviewRepository, IBookRepository bookRepository, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _repository = repository;
             _personProfileService = personProfileService;
             _personProfileRepository = personProfileRepository;
             _emailSenderService = emailSenderService;
+            _reviewRepository = reviewRepository;
+            _bookRepository = bookRepository;
+            _httpContextAccessor = httpContextAccessor;
+            this._sessionManager = new SessionManager(httpContextAccessor.HttpContext.Session);
+        }
+
+
+        private string GenerateOtpCode()
+        {
+            //Generate 6-digit numeric OTP
+            var otpBytes = new byte[4]; // Enough to get a number up to 2^32 - 1
+            RandomNumberGenerator.Fill(otpBytes);
+            var otp = BitConverter.ToUInt32(otpBytes, 0) % 1_000_000; //Get a number between 0 and 999,999
+            return otp.ToString("D6"); //Format as a 6-digit string, padding with leading zeros if necessary
+        }
+        public async Task<string> SendOtpCodeEmail(string email)
+        {
+            string otp = GenerateOtpCode();
+            var subject = "BasaBuzz 6 digit code";
+            var message = "This is your code " + otp;
+
+            try
+            {
+                await _emailSenderService.SendEmailAsync(email, subject, message);
+                return otp;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> IsEmailVerifiedAndExists(string email)
+        {
+            var user = await _repository.FindUserByEmail(email);
+            return user != null && user.IsEmailVerified;
+        }
+
+        public async Task<bool> IsUsernameVerifiedAndExists(string username)
+        {
+            return _repository.GetUsers().Any(u => u.UserName == username && u.IsEmailVerified);
+        }
+
+        public async Task<User> CreateVerifiedUser(UserViewModel model, string role = "User")
+        {
+            // Check if email or username exists among verified users
+            if (await IsEmailVerifiedAndExists(model.Email))
+            {
+                throw new InvalidDataException("Email already exists!");
+            }
+
+            if (await IsUsernameVerifiedAndExists(model.UserName))
+            {
+                throw new InvalidDataException("Username already exists!");
+            }
+
+            // Delete any existing unverified account with same email or username
+            var existingUnverifiedUser = await _repository.FindUserByEmail(model.Email);
+            if (existingUnverifiedUser != null)
+            {
+                await _repository.DeleteUser(existingUnverifiedUser.Email);
+
+                try
+                {
+                    await _personProfileService.DeletePersonProfile(existingUnverifiedUser.Email);
+                }
+                catch
+                {
+                    // Profile might not exist
+                }
+            }
+
+
+            var user = new User
+            {
+                Email = model.Email,
+                UserName = model.UserName,
+                Password = PasswordManager.EncryptPassword(model.Password),
+                CreatedTime = DateTime.Now,
+                UpdatedTime = DateTime.Now,
+                CreatedBy = model.UserName,
+                UpdatedBy = model.UserName,
+                IsEmailVerified = true,
+                OtpCode = null,
+                Role = role,
+                OtpExpirationDate = null
+            };
+
+            await _repository.AddUser(user);
+
+            // Create profile
+            var profile = new PersonProfile
+            {
+                ProfileID = user.Email,
+                FirstName = role == "Admin" ? model.UserName : null,
+                LastName = null,
+                MiddleName = null,
+                Suffix = null,
+                Gender = null,
+                BirthDate = null,
+                Location = null,
+                Role = role,
+                AboutMe = string.Empty
+            };
+
+            await _personProfileService.AddPersonProfile(profile);
+
+            return user;
         }
 
         public LoginResult AuthenticateUser(string userId, string password, ref User user)
@@ -69,11 +182,11 @@ namespace ASI.Basecode.Services.Services
                 user.Password = PasswordManager.EncryptPassword(model.Password);
                 user.CreatedTime = DateTime.Now;
                 user.UpdatedTime = DateTime.Now;
-                user.CreatedBy = System.Environment.UserName;
-                user.UpdatedBy = System.Environment.UserName;
+                user.CreatedBy = model.UserName;
+                user.UpdatedBy = model.UserName;
                 user.IsEmailVerified = false;
                 user.OtpCode = await GenerateOtpCode(model.Email);
-                user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
+                user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                 await _repository.AddUser(user);
                 return user;
@@ -92,6 +205,8 @@ namespace ASI.Basecode.Services.Services
             if (_repository.UserNameExists(model.UserName))
                 throw new InvalidDataException("A user with this username already exists!");
 
+            await CheckValidPassWord(model.Password);
+
             var user = new User();
             if (!_repository.UserExists(model.Email))
             {
@@ -100,10 +215,11 @@ namespace ASI.Basecode.Services.Services
                 user.Password = PasswordManager.EncryptPassword(model.Password);
                 user.CreatedTime = DateTime.Now;
                 user.UpdatedTime = DateTime.Now;
-                user.CreatedBy = System.Environment.UserName;
-                user.UpdatedBy = System.Environment.UserName;
+                user.CreatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName");
+                user.UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName");
                 user.IsEmailVerified = true;
                 user.OtpCode = null;
+                user.Role = model.Role;
                 user.OtpExpirationDate = null;
 
                 await _repository.AddUser(user);
@@ -111,14 +227,14 @@ namespace ASI.Basecode.Services.Services
                 var profile = new PersonProfile
                 {
                     ProfileID = user.Email,
-                    FirstName = null, // Use username as first name or you could add FirstName to your model
+                    FirstName = null,
                     LastName = null,
                     MiddleName = null,
                     Suffix = null,
                     Gender = null,
                     BirthDate = null,
                     Location = null,
-                    Role = "User", // Default role is User
+                    Role = model.Role,
                     AboutMe = string.Empty
                 };
                 await _personProfileService.AddPersonProfile(profile);
@@ -147,15 +263,27 @@ namespace ASI.Basecode.Services.Services
                 }
 
                 if (_repository.GetUsers().Any(u => u.UserName == model.UserName && u.Id != model.Id))
-                    throw new InvalidDataException("A user with this username already exists.");
+                {
+                    throw new InvalidDataException("A user with this username already exists!");
+                }
+                    
+
+                if (!string.IsNullOrEmpty(model.Password))
+                {
+                    if (model.Password.Length < 8)
+                    {
+                        throw new InvalidDataException("Password must not be less than 8 characters");
+                    }
+                }
 
                 user.UserName = model.UserName;
                 user.UpdatedTime = DateTime.Now;
-                user.UpdatedBy = System.Environment.UserName;
+                user.UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName");
 
                 // Update password if provided
                 if (!string.IsNullOrEmpty(model.Password))
                 {
+                    
                     user.Password = PasswordManager.EncryptPassword(model.Password);
                 }
 
@@ -178,11 +306,11 @@ namespace ASI.Basecode.Services.Services
                 user.Password = PasswordManager.EncryptPassword(model.Password);
                 user.CreatedTime = DateTime.Now;
                 user.UpdatedTime = DateTime.Now;
-                user.CreatedBy = System.Environment.UserName;
-                user.UpdatedBy = System.Environment.UserName;
+                user.CreatedBy = model.UserName;
+                user.UpdatedBy = model.UserName;
                 user.IsEmailVerified = false;
                 user.OtpCode = await GenerateOtpCode(model.Email);
-                user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
+                user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                 await _repository.AddUser(user);
 
@@ -218,11 +346,11 @@ namespace ASI.Basecode.Services.Services
                         get_user.Password = PasswordManager.EncryptPassword(model.Password);
                         get_user.CreatedTime = DateTime.Now;
                         get_user.UpdatedTime = DateTime.Now;
-                        get_user.CreatedBy = System.Environment.UserName;
-                        get_user.UpdatedBy = System.Environment.UserName;
+                        get_user.CreatedBy = model.UserName;
+                        get_user.UpdatedBy = model.UserName;
                         get_user.IsEmailVerified = false;
                         get_user.OtpCode = await GenerateOtpCode(model.Email);
-                        get_user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(2);
+                        get_user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                         await _repository.UpdateUser(get_user);
 
@@ -274,11 +402,11 @@ namespace ASI.Basecode.Services.Services
                 user.Password = PasswordManager.EncryptPassword(model.Password);
                 user.CreatedTime = DateTime.Now;
                 user.UpdatedTime = DateTime.Now;
-                user.CreatedBy = System.Environment.UserName;
-                user.UpdatedBy = System.Environment.UserName;
+                user.CreatedBy = model.UserName;
+                user.UpdatedBy = model.UserName;
                 user.IsEmailVerified = false;
                 user.OtpCode = await GenerateOtpCode(model.Email);
-                user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
+                user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                 await _repository.AddUser(user);
 
@@ -314,11 +442,11 @@ namespace ASI.Basecode.Services.Services
                         get_user.Password = PasswordManager.EncryptPassword(model.Password);
                         get_user.CreatedTime = DateTime.Now;
                         get_user.UpdatedTime = DateTime.Now;
-                        get_user.CreatedBy = System.Environment.UserName;
-                        get_user.UpdatedBy = System.Environment.UserName;
+                        get_user.CreatedBy = model.UserName;
+                        get_user.UpdatedBy = model.UserName;
                         get_user.IsEmailVerified = false;
                         get_user.OtpCode = await GenerateOtpCode(model.Email);
-                        get_user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5);
+                        get_user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                         await _repository.UpdateUser(get_user);
 
@@ -382,7 +510,7 @@ namespace ASI.Basecode.Services.Services
                 }
 
                 // Validate OTP
-                if (user.OtpCode == model.OtpCode && user.OtpExpirationDate.HasValue && user.OtpExpirationDate.Value > DateTime.UtcNow)
+                if (user.OtpCode == model.OtpCode && user.OtpExpirationDate.HasValue && user.OtpExpirationDate.Value > DateTime.Now)
                 {
                     user.IsEmailVerified = true;
                     user.OtpCode = null;
@@ -437,19 +565,30 @@ namespace ASI.Basecode.Services.Services
             return vmList;
         }
 
-        public async Task<bool> DeleteUser(int id)
+        public async Task<bool> DeleteUser(string userId)
         {
-            var user = await _repository.GetUserById(id);
+            var user = await _repository.FindByEmailForEdit(userId);
+
 
             if (user == null)
             {
                 return false;
             }
+            var userReviews = await _reviewRepository.GetReviewByUser(userId);
+            var impactedBookIds = userReviews
+                .Select(r => r.BookId)
+                .Distinct()
+                .ToList();
 
-            await _repository.DeleteUser(id);
+            await _repository.DeleteUser(userId);
             if (!string.IsNullOrEmpty(user.Email))
             {
                 await _personProfileService.DeletePersonProfile(user.Email);
+            }
+            foreach(var bookId in impactedBookIds)
+            {
+                await _bookRepository.GetReviewCount(bookId);
+                await _bookRepository.calculateAverageRating(bookId);
             }
             return true;
         }
@@ -502,7 +641,7 @@ namespace ASI.Basecode.Services.Services
             }
 
             user.OtpCode = await GenerateOtpCode(email);
-            user.OtpExpirationDate = DateTime.UtcNow.AddMinutes(5); // New expiry
+            user.OtpExpirationDate = DateTime.Now.AddMinutes(5); // New expiry
             await _repository.UpdateUser(user);
 
             OtpViewModel user_otp = new OtpViewModel
@@ -542,6 +681,14 @@ namespace ASI.Basecode.Services.Services
 
         }
 
+        public async Task CheckValidPassWord(string password)
+        {
+            if(password == null || password.Trim() == "" || password.Length < 8)
+            {
+                throw new InvalidDataException("Password should not be less than 8 characters");
+            }
+        }
+
         public async Task UpdatePassword(UserViewModel user)
         {
             if(user == null)
@@ -577,6 +724,10 @@ namespace ASI.Basecode.Services.Services
             var currentHash = PasswordManager.EncryptPassword(currentPassword);
             if (user.Password != currentHash)
                 return false;
+            if(newPassword == null || newPassword.Trim() == "" ||newPassword.Trim().Length < 8)
+            {
+                return false;
+            }
 
             user.Password = PasswordManager.EncryptPassword(newPassword);
             await _repository.UpdateUser(user);

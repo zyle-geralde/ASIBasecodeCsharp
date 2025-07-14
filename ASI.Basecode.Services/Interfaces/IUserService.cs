@@ -19,7 +19,7 @@ namespace ASI.Basecode.Services.Interfaces
         Task<User> AddUserFromRegister(UserViewModel model);
         Task<User> AddAdminFromRegister(UserViewModel model);
         IEnumerable<User> GetAllUsers();
-        Task<bool> DeleteUser(int id);
+        Task<bool> DeleteUser(string userId);
         Task<PaginatedList<User>> GetUsersQueried(UserQueryParams queryParams);
         Task VerifyOtp(OtpViewModel model);
 
@@ -31,7 +31,15 @@ namespace ASI.Basecode.Services.Interfaces
         Task<string> SendOTPForResetPassword(string email);
 
         Task UpdatePassword(UserViewModel user);
-        
+
+        Task<bool> IsEmailVerifiedAndExists(string email);
+        Task<bool> IsUsernameVerifiedAndExists(string username);
+        Task<string> SendOtpCodeEmail(string email);
+        Task<User> CreateVerifiedUser(UserViewModel model, string role = "User");
+
+        Task CheckValidPassWord(string password);
+
+
 
     }
 }

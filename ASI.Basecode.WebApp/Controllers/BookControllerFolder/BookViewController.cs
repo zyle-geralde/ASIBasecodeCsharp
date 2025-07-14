@@ -1,12 +1,10 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
-using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.WebApp.AccessControl;
 using ASI.Basecode.WebApp.Payload.BooksPayload;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -26,8 +24,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         private readonly IAccessControlInterface _accessControlInterface;
         private readonly IAuthorRepository _authorRepository;
         private readonly IAuthorService _authorService;
-        //private readonly IBookRepository _bookRepository;
-        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface,IAuthorRepository authorRepository, IAuthorService authorService)
+        private readonly ILanguageService _languageService;
+        public BookViewController(IBookService bookService, IReviewService reviewService, IBookGenreService bookGenreService, IAccessControlInterface accessControlInterface,IAuthorRepository authorRepository, IAuthorService authorService, ILanguageService languageService)
         {
             _bookService = bookService;
             _reviewService = reviewService;
@@ -35,6 +33,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             _accessControlInterface = accessControlInterface;
             _authorRepository = authorRepository;
             _authorService = authorService;
+            _languageService = languageService;
         }
 
 
@@ -45,8 +44,9 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [Authorize]// Bypass authorization. No need to Log In 
         public async Task<IActionResult> AddBook()
         {
-            
 
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             // This will look for a view at /Views/Books/AddBook.cshtml
             return View("~/Views/Books/AddBook.cshtml");
         }
@@ -92,6 +92,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         [HttpGet]
         [Route("Book/ListBook")]
         [Authorize]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+
         public async Task<IActionResult> ListBook(
             string? searchTerm,
             string? author,
@@ -99,11 +101,16 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             DateTime? publishedFrom,
             DateTime? publishedTo,
             string[]? genreFilter,
+            string? languageFilter,
             string? sortOrder,
             bool sortDescending = false,
+            bool? isFeatured = null,
+
             int? page = 1
             )
         {
+            bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
+            if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             const int PageSize = 10;
             int pageIndex = page.GetValueOrDefault(1);
             string authorId = await _authorRepository.GetAuthorByName(author != null ? author : "");
@@ -120,11 +127,13 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 PublishedFrom = publishedFrom,
                 PublishedTo = publishedTo,
                 GenreNames = genreFilter?.ToList(),
+                Language = languageFilter,
                 SortDescending = sortDescending,
                 PageIndex = page.GetValueOrDefault(1),
+                IsFeatured = isFeatured,
                 SortOrder = sortOrder ?? "title",
                 PageSize = PageSize,
-
+                
 
             };
 
@@ -137,9 +146,14 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             ViewData["CurrentGenres"] = genreFilter ?? Array.Empty<string>();
             ViewData["CurrentSort"] = queryParams.SortOrder;
             ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+            ViewData["CurrentIsFeatured"] = isFeatured;
+            ViewData["CurrentLanguage"] = languageFilter;
+
 
             var allGenres = await _bookGenreService.GetAllGenreList();
+            var allLanguages = await _languageService.GetAllLanguage();
             ViewData["AllGenres"] = allGenres;
+            ViewData["AllLanguages"] = allLanguages;
 
 
             //var books = await _bookService.GetBooks(
@@ -149,23 +163,10 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             return View("~/Views/Books/ListBook.cshtml", books);
         }
 
-        //[HttpGet]
-        //[Route("Book/ListBook")]
-        //[Authorize]
-        //public async Task<IActionResult> ListBook()
-        //{
-        //    //For Routing
-        //    bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
-        //    if (!checkAdminAccess) return RedirectToAction("Index", "Home");
-
-        //    List<BookViewModel> books = await _bookService.GetAllBooks();
-
-        //    return View("~/Views/Books/ListBook.cshtml", books);
-        //}
-
         [HttpGet]
         [Route("Book/SearchResults")]
         [Authorize]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> SearchResults(
         string? searchTerm,
         string? author,
@@ -173,24 +174,33 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
         DateTime? publishedFrom,
         DateTime? publishedTo,
         string[]? genreFilter,
+        string? languageFilter,
         string? sortOrder,
         bool sortDescending = false,
+        bool? isFeatured = null,
         int? page = 1,
         string? category = null
         )
         {
-                const int PageSize = 18;
+                bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
+                if (!checkUserAccess) return RedirectToAction("Index", "AdminDashboard");
+
+                string authorId = await _authorRepository.GetAuthorByName(author != null ? author : "");
+                string authorIdFromSearch = await _authorRepository.GetAuthorByName(searchTerm != null ? searchTerm : "");
+                const int PageSize = 12;
                 int pageIndex = page.GetValueOrDefault(1);
 
                 var queryParams = new BookQueryParams
                 {
-                    SearchAuhtor = searchTerm ?? "",
+                    SearchAuhtor = !string.IsNullOrEmpty(authorIdFromSearch) ? authorIdFromSearch : "",
                     SearchTerm = searchTerm,
-                    Author = author,
+                    Author = !string.IsNullOrEmpty(authorId) ? authorId : "",
                     Rating = rating,
                     PublishedFrom = publishedFrom,
                     PublishedTo = publishedTo,
                     GenreNames = genreFilter?.ToList(),
+                    Language = languageFilter,
+                    IsFeatured = isFeatured,
                     SortDescending = sortDescending,
                     PageIndex = page.GetValueOrDefault(1),
                     SortOrder = sortOrder ?? "title",
@@ -206,12 +216,15 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 ViewData["CurrentFromDate"] = publishedFrom?.ToString("yyyy-MM-dd");
                 ViewData["CurrentToDate"] = publishedTo?.ToString("yyyy-MM-dd");
                 ViewData["CurrentGenres"] = genreFilter ?? Array.Empty<string>();
+                ViewData["CurrentIsFeatured"] = isFeatured;
                 ViewData["CurrentSort"] = queryParams.SortOrder;
                 ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+                ViewData["CurrentLanguage"] = languageFilter;
 
-                var allGenres = await _bookGenreService.GetAllGenreList();
+            var allGenres = await _bookGenreService.GetAllGenreList();
                 ViewData["AllGenres"] = allGenres;
-
+            var allLanguages = await _languageService.GetAllLanguage();
+            ViewData["AllLanguages"] = allLanguages;
             if (!string.IsNullOrEmpty(category))
             {
                 ViewData["CategoryTitle"] = category;
@@ -226,10 +239,12 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
             }
             else
             {
-                ViewData["CategoryTitle"] = "Search Results";
+                ViewData["CategoryTitle"] = "";
             }
+
+
+
             PaginatedList<BookViewModel> books = await _bookService.GetBooks(queryParams);
-            //List<Book> books = await _bookService.GetAllBooks();
             return View("~/Views/Books/BookSearchResults.cshtml", books);
             }
 
@@ -248,6 +263,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
         [HttpGet]
         [Route("Book/BookDetails/{bookId}", Name="BookDetails")]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+
         [Authorize]
         public async Task<IActionResult> GetBook(string bookId)
         {
@@ -284,6 +301,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 SeriesOrder = book.SeriesOrder,
                 SeriesDescription = book.SeriesDescription,
                 AverageRating = book.AverageRating,
+                ReviewCount = book.ReviewCount,
                 CreatedBy = book.CreatedBy,
                 UpdatedBy = book.UpdatedBy,
                 Author = authorName != null ? authorName.AuthorName : "",
@@ -326,15 +344,19 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                     await _bookService.AddBook(book);
 
                     //TempData["message"] = "Book added successfully!";
-                    return RedirectToAction("ListBook"); 
+                    //return RedirectToAction("ListBook"); 
+                    return Ok(new { Message = "Book Edited successfully!" });
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "An unexpected error occurred: " + ex.Message);
+                    //ModelState.AddModelError("", "An unexpected error occurred: " + ex.Message);
+                    return BadRequest(new { ex.Message });
                 }
             }
 
-            return View("~/Views/Books/AddBook.cshtml", book);
+            //return View("~/Views/Books/AddBook.cshtml", book);
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            return BadRequest(new { errors = errors, Message = "Validation failed." });
         }
 
         [HttpPost]
@@ -347,6 +369,8 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
 
             if (ModelState.IsValid)
             {
+                book.UpdatedDate = DateTime.Now;
+                book.UpdatedBy = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 try
                 {
                     await _bookService.EditBook(book);
@@ -355,7 +379,7 @@ namespace ASI.Basecode.WebApp.Controllers.BookControllerFolder
                 catch (Exception ex)
                 {
                     Console.Error.WriteLine($"Error updating book: {ex.Message}");
-                    return StatusCode(500, $"Error updating book: {ex.Message}");
+                    return StatusCode(500, new {Message = ex.Message });
                 }
             }
 

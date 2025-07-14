@@ -1,10 +1,18 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model ASI.Basecode.Services.ServiceModels.AuthorViewModel
+﻿@model ASI.Basecode.Services.ServiceModels.AuthorViewModel
 @{
     ViewData["Title"] = "Add New Author";
     Layout = "_AdminSidebarLayout";
+
+    var addAuthorConfirmationModal = new ConfirmationModalModel
+            {
+                Id = "addAuthorConfirmationModal",
+                Title = "Add Author Confirmation",
+                Message = "Are you sure you want to add this author?",
+                CancelButtonText = "Cancel",
+                ConfirmButtonText = "Add Author",
+                ConfirmButtonId = "confirmAddAuthorAction",
+                ConfirmButtonClass = "btn book-master-submit-button px-4"
+            };
 }
 
 @section styles {
@@ -14,25 +22,40 @@
     <link rel="stylesheet" href="~/css/admin/books/bookmaster.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
 
+    <style>
+        .book-master-file-input-text {
+            width: 100%;
+            padding: 8px 12px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .master-browse-button {
+            margin: 10px auto;
+            display: block;
+        }
+
+        .master-upload-status {
+            text-align: center;
+        }
+    </style>
 }
 
-<div class="admin-common-container">
-    <div class="admin-common-content-wrapper">
+<div class="admin-common-container-add">
+    <div class="admin-common-content-wrapper-add">
         <div class="header-section">
             <h1>Add New Author</h1>
             <p>Enter details of the new author here</p>
         </div>
 
-        <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
-
         <form asp-action="AddAuthor" asp-controller="Author" method="post" id="addAuthorForm">
             <input type="hidden" id="authorImageUrl" name="AuthorImageUrl">
 
-            <div class="content-master-grid">
+            <div class="content-master-grid-add">
                 <div class="image-upload-section">
                     <div class="author-image-preview-container">
                         <img id="authorImagePreview" src="" alt="Author Image Preview" style="display:none;">
-                        <span id="imagePlaceholder" class="placeholder-text">No Image</span>
+                        <span id="imagePlaceholder" class="placeholder-text ">No Image</span>
                     </div>
 
                     <input type="text" class="book-master-file-input-text" readonly id="authorImageFileNameDisplay">
@@ -40,60 +63,39 @@
                     <input type="file" id="authorImageFile" accept="image/*" name="AuthorImageFile" style="display: none;">
 
                     <p id="authorImageUploadStatus" class="master-upload-status">
-                        <span class="file-size-info">Max file size: 10MB</span>
+                        <span class="file-size-info  required-label">Max file size: 10MB</span>
                         <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                     </p>
                 </div>
 
-                <div>
-                    <div class="book-master-form-grid">
+                    <div class="form-column">
                         <div class="book-master-form-group">
                             <label for="authorName" class="required-label">Author Name</label>
-                            <input type="text" id="authorName" name="AuthorName" class="book-master-form-input" value="@Model?.AuthorName" required>
-                            <span asp-validation-for="AuthorName" class="text-danger"></span>
-                        </div>
+                            <input maxlength="450" type="text" id="authorName" name="AuthorName" class="book-master-form-input" value="@Model?.AuthorName" required>
+							<span asp-validation-for="AuthorName" class="text-danger"></span>
+						</div>
                         <div class="book-master-form-group">
                             <label for="authorDescription">Description</label>
-                            <input type="text" id="authorDescription" name="AuthorDescription" class="book-master-form-input" value="@Model?.AuthorDescription">
+<textarea rows="5" maxlength="5000" id="authorDescription" name="AuthorDescription" class="book-master-form-input">@Model?.AuthorDescription</textarea>
 
-                            <span asp-validation-for="AuthorDescription" class="text-danger"></span>
-                        </div>
+								<span asp-validation-for="AuthorDescription" class="text-danger"></span>
+						</div>
                     </div>
-                </div>
             </div>
 
             <div class="button-container">
                 <button type="button" class="cancel-button" onclick="window.location.href='/Author/Index';">CANCEL</button>
-                <button type="submit" class="book-master-submit-button" id="addAuthorSubmitButton">ADD AUTHOR</button>
+                <button type="submit" class="btn book-master-submit-button" id="addAuthorSubmitButton">ADD AUTHOR</button>
             </div>
         </form>
     </div>
 </div>
 
-<div class="modal fade confirmation-modal" id="addAuthorConfirmationModal" tabindex="-1" aria-labelledby="addAuthorConfirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title" id="addAuthorConfirmationModalLabel">Add Author Confirmation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <p class="mb-4" id="addConfirmationModalMessage">Are you sure you want to add this author?</p>
-                <div class="d-flex justify-content-center gap-2">
-                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger px-4" id="confirmAddAuthorAction">Add Author</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="_ConfirmationModal" model="addAuthorConfirmationModal" />
 
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
-
-        // Your Firebase configuration
-        //Transfer this secretes into AnalyserNode env or file, and include it in gitignore.
         const firebaseConfig = {
             apiKey: "AIzaSyA4CTMSbgGQN_yLn9lEZlswbZ_2A2Xhl0k",
             authDomain: "basabuzz-ca8fe.firebaseapp.com",
@@ -188,50 +190,6 @@
         }
 
 
-        //Setting up the file input
-        // document.getElementById('authorImageFile').addEventListener('change', function () {
-        //     const fileNameDisplay = document.getElementById('authorImageFileNameDisplay');
-        //     const authorImagePreview = document.getElementById('authorImagePreview');
-        //     const imagePlaceholder = document.getElementById('imagePlaceholder');
-        //     const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
-        //     // const fileName = this.files[0] ? this.files[0].name : '';
-        //     // document.getElementById('authorImageFileNameDisplay').value = fileName;
-        //     // const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
-
-        //     // if (authorImageUploadStatusElement) {
-        //     //     const fileSizeInfo = authorImageUploadStatusElement.querySelector('.file-size-info');
-        //     //     const supportedFormatsInfo = authorImageUploadStatusElement.querySelector('.supported-formats-info');
-        //     //     if (fileSizeInfo) fileSizeInfo.textContent = 'Max file size: 1GB';
-        //     //     if (supportedFormatsInfo) supportedFormatsInfo.textContent = 'Supported formats: JPG, PNG, JPEG';
-        //     //     authorImageUploadStatusElement.classList.remove('error-message');
-        //     // }
-        //     if (this.files && this.files[0]) {
-        //         const file = this.files[0];
-        //         fileNameDisplay.textContent = file.name;
-        //         const reader = new FileReader();
-
-        //         reader.onload = function (e) {
-        //             authorImagePreview.src = e.target.result;
-        //             authorImagePreview.style.display = 'block';
-        //             imagePlaceholder.style.display = 'none';
-        //         };
-        //         reader.readAsDataURL(file);
-        //     } else {
-        //         fileNameDisplay.textContent = '';
-        //         authorImagePreview.src = '';
-        //         authorImagePreview.style.display = 'none';
-        //         imagePlaceholder.style.display = 'block';
-        //     }
-
-        //     if (authorImageUploadStatusElement) {
-        //         const fileSizeInfo = authorImageUploadStatusElement.querySelector('.file-size-info');
-        //         const supportedFormatsInfo = authorImageUploadStatusElement.querySelector('.supported-formats-info');
-        //         if (fileSizeInfo) fileSizeInfo.textContent = 'Max file size: 1GB';
-        //         if (supportedFormatsInfo) supportedFormatsInfo.textContent = 'Supported formats: JPG, PNG, JPEG';
-        //         authorImageUploadStatusElement.classList.remove('error-message');
-        //     }
-        // });
-
         document.addEventListener('DOMContentLoaded', function () {
             // image preview
             const authorImageFile = document.getElementById('authorImageFile');
@@ -278,112 +236,6 @@
                 });
             }
 
-
-
-            //  document.getElementById('addAuthorForm').addEventListener('submit', async (event) => {
-            //     event.preventDefault();
-
-            //     const form = document.getElementById('addAuthorForm');
-            //     const submitButton = document.getElementById('addAuthorSubmitButton');
-            //     const authorNameInput = document.getElementById('authorName');
-            //     const authorImageFile = document.getElementById('authorImageFile').files[0];
-            //     const authorImageUploadStatus = document.getElementById('authorImageUploadStatus');
-            //     const authorImageUrlInput = document.getElementById('authorImageUrl');
-
-
-            //     //const originalAuthorImageUrl = authorImageUrlInput.value;
-            //     if (authorNameInput.value.trim() === '') {
-            //         showStatusModal('Author Name is required.', 'Validation Error', 'Warning');
-            //         return;
-            //     }
-
-            //     if (!authorImageFile) {
-            //         showStatusModal('Author image is required.', 'Validation Error', 'Warning');
-            //         return;
-            //     }
-
-            //     const fileSizeInfoSpan = authorImageUploadStatus.querySelector('.file-size-info');
-            //     const supportedFormatsInfoSpan = authorImageUploadStatus.querySelector('.supported-formats-info');
-
-            //     if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 1GB';
-            //     if (supportedFormatsInfoSpan) supportedFormatsInfoSpan.textContent = 'Supported formats: JPG, PNG, JPEG';
-            //     authorImageUploadStatus.classList.remove('error-message');
-
-            //     submitButton.disabled = true;
-            //     submitButton.textContent = 'Processing...';
-
-            //     let uploadedAuthorImageUrl = null;
-
-            //     try {
-            //         if (authorImageFile) {
-            //             // max file size checking
-            //             const MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024 * 1024; // 1GB
-            //             if (authorImageFile.size > MAX_FILE_SIZE_BYTES) {
-            //                 showStatusModal('File size exceeds the 1GB limit.', 'Upload Error', 'Error');
-            //                 if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'File too large!';
-            //                 authorImageUploadStatus.classList.add('error-message');
-            //                 submitButton.disabled = false;
-            //                 submitButton.textContent = 'ADD AUTHOR';
-            //                 return;
-            //             }
-
-            //             uploadedAuthorImageUrl = await uploadFileToFirebase(authorImageFile, 'author_covers/', authorImageUploadStatus);
-            //             if (uploadedAuthorImageUrl) {
-            //                 authorImageUrlInput.value = uploadedAuthorImageUrl;
-            //             } else {
-            //                 throw new Error('Author image upload failed.');
-            //             }
-            //         }
-
-
-            //         const formData = new FormData(form);
-
-            //         // Fetch form data to the Controller
-            //         const response = await fetch(form.action, {
-            //             method: form.method,
-            //             body: formData
-            //         });
-
-            //         if (response.ok) {
-            //             const successData = await response.json();
-            //             // alert(successData.message)
-            //             showStatusModal(successData.message, 'Success', 'Success');
-            //             form.reset();
-            //             document.getElementById('authorImageFileNameDisplay').textContent = 'No file chosen';
-            //             document.getElementById('authorImagePreview').src = '';
-            //             document.getElementById('authorImagePreview').style.display = 'none';
-            //             document.getElementById('imagePlaceholder').style.display = 'block';
-            //         } else {
-            //             const errorData = await response.json();
-            //             const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
-            //             // alert(errorMessage)
-            //             showStatusModal(errorMessage, 'Error', 'Error');
-
-            //             // rollback uploaded file if backend submission fails and it was a new upload
-            //             if (uploadedAuthorImageUrl) {
-            //                 await deleteFileFromFirebase(uploadedAuthorImageUrl);
-            //             }
-            //         }
-
-            //     } catch (error) {
-            //         console.error('Submission error:', error);
-            //         // alert('Submission error:', error)
-            //         showStatusModal(`Submission error: ${error.message}`, 'Error', 'Error');
-
-            //         // rollback: delete uploaded file from Firebase
-            //         if (uploadedAuthorImageUrl) {
-            //             await deleteFileFromFirebase(uploadedAuthorImageUrl);
-            //         }
-
-            //     } finally {
-            //         submitButton.disabled = false;
-            //         submitButton.textContent = 'ADD AUTHOR';
-            //     }
-
-            // });
-
-
-            // confirmation modal for submission
             document.getElementById('addAuthorSubmitButton').addEventListener('click', (event) => {
                 event.preventDefault();
                 if (authorNameInput.value.trim() === '') {

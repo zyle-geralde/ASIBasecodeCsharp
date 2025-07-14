@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ASI.Basecode.Services.ServiceModels
 {
@@ -12,11 +8,13 @@ namespace ASI.Basecode.Services.ServiceModels
         [StringLength(450)]
         public string AuthorId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Author name is required.")]
         [StringLength(450)]
         public string AuthorName { get; set; }
         [StringLength(5000)]
         public string AuthorDescription { get; set; }
+        [Required(ErrorMessage = "Author image is required.")]
+
         [StringLength(500)]
         public string AuthorImageUrl { get; set; }
         public string CreatedBy { get; set; }

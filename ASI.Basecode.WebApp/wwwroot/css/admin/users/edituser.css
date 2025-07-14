@@ -18,6 +18,16 @@ edit-user-container,
     transition: margin-left 0.3s ease-in-out;
 }
 
+.admin-common-container {
+    max-width: 1250px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    padding: 0 24px;
+    box-sizing: border-box;
+    display: block;
+    margin-top: 24px;
+}
 
 .admin-common-content-wrapper {
     padding: 3rem;
@@ -101,13 +111,28 @@ edit-user-container,
 }
 
 input[type="text"],
-input[type="email"] {
+input[type="email"],
+input[type="password"] {
     width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 12px 16px;
+    margin-top: 8px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
     font-size: 14px;
+    color: #374151;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    font-weight: 500;
 }
+
+    input[type="text"]:hover,
+    input[type="email"]:hover,
+    input[type="password"]:hover {
+        border-color: #a0b4b7;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+    }
 
     input[type="text"]::placeholder,
     input[type="email"]::placeholder,
@@ -132,43 +157,42 @@ input[type="email"] {
 }
 
 .cancel-btn, .submit-btn {
-    /* Common button styles */
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-    height: 42px; /* Set a fixed height for both buttons */
-    display: flex;
-    align-items: center;
+    height: 44px;
+    min-height: 44px;
+    display: inline-flex;
     justify-content: center;
-    text-transform: uppercase;
-    line-height: 1;
-    box-sizing: border-box;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .cancel-btn {
-    background: #fff;
-    border: 1px solid #ddd;
-    color: #333;
-    width: 120px; /* Fixed width */
+    background-color: #e0e0e0;
+    color: #555555;
+    border: 1px solid #c0c0c0;
 }
 
 .submit-btn {
-    background: #647D7F;
-    border: none;
-    color: white;
-    width: 160px; /* Fixed width - wider than cancel button */
+    background-color: #5f7c78;
+    color: #fff;
+    border: 1px solid #5f7c78;
 }
 
 .cancel-btn:hover {
-    background: #f5f5f5;
+    background-color: #d0d0d0;
+    border-color: #b0b0b0;
 }
 
 .submit-btn:hover {
-    background: #556a6c;
+    background-color: #516a67;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
-/* Center the switch and label horizontally in the row */
+
 .form-row.justify-center {
     display: flex;
     justify-content: center;
@@ -261,6 +285,7 @@ input[type="email"] {
     margin-top: 100px !important;
     z-index: 1200 !important;
 }
+
 
 @media (max-width: 785px) {
     .form-row {

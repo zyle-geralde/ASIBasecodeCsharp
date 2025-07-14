@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Serilog.Core;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using static ASI.Basecode.Resources.Constants.Enums;
@@ -33,6 +34,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IPersonProfileService _personProfileService;
         private readonly IMapper _mapper;
         private readonly IAccessControlInterface _accessControlInterface;
+        private static readonly Dictionary<string, UserViewModel> _pendingRegistrations = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -110,17 +112,18 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 // 認証OK
                 await this._signInManager.SignInAsync(user);
-                this._session.SetString("UserName", user.UserName);
+                this._session.SetString("UserName", user.UserName ?? "");
                 this._session.SetString("UserEmail", user.Email);
                 PersonProfile userProfile = await _personProfileService.GetPersonProfile(model.UserId);
 
                 this._session.SetString("UserRole", userProfile.Role);
+                this._session.SetString("ProfilePicture", userProfile.ProfilePicture ?? "");
                 return RedirectToAction("Index", "Home");
             }
             else
             {
                 // 認証NG
-                TempData["ErrorMessage"] = "Incorrect UserId or Password";
+                TempData["ErrorMessage"] = "Incorrect Email or Password";
                 return View();
             }
             return View();
@@ -134,6 +137,28 @@ namespace ASI.Basecode.WebApp.Controllers
             return View();
         }
 
+        /*  [HttpPost]
+          [AllowAnonymous]
+          public async Task<IActionResult> Register(UserViewModel model)
+          {
+              ViewBag.LoginView = true;
+              try
+              {
+                  var user = await _userService.AddUserFromRegister(model);
+
+                  return RedirectToAction("VerifyOtpPage", "Account", new { email = user.Email });
+              }
+              catch(InvalidDataException ex)
+              {
+                  TempData["ErrorMessage"] = ex.Message;
+              }
+              catch(Exception ex)
+              {
+                  TempData["ErrorMessage"] = ex.Message;
+                  //TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
+              }
+              return View();
+          }*/
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register(UserViewModel model)
@@ -141,22 +166,53 @@ namespace ASI.Basecode.WebApp.Controllers
             ViewBag.LoginView = true;
             try
             {
-                var user = await _userService.AddUserFromRegister(model);
+                // Validate username and email don't exist in verified users
+                if (await _userService.IsEmailVerifiedAndExists(model.Email))
+                {
+                    throw new InvalidDataException(Resources.Messages.Errors.UserExists);
+                }
 
-                return RedirectToAction("VerifyOtpPage", "Account", new { email = user.Email });
+                if (await _userService.IsUsernameVerifiedAndExists(model.UserName))
+                {
+                    throw new InvalidDataException("Username already exists.");
+                }
+
+                await _userService.CheckValidPassWord(model.Password);
+
+                // Generate OTP without creating user in database
+                string otpCode = await _userService.SendOtpCodeEmail(model.Email);
+                model.OtpCode = otpCode;
+                model.OtpExpirationDate = DateTime.Now.AddMinutes(5);
+
+                model.Role = "User";
+                // Store model in memory with email as key
+                _pendingRegistrations[model.Email] = model;
+
+                return RedirectToAction("VerifyOtpPage", "Account", new { email = model.Email });
             }
-            catch(InvalidDataException ex)
+            catch (InvalidDataException ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                //TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
             }
             return View();
         }
 
+        // Helper method to validate OTP
+        private bool IsOtpValid(string email, string otpCode)
+        {
+            if (!_pendingRegistrations.TryGetValue(email, out UserViewModel userModel))
+            {
+                return false;
+            }
+
+            return userModel.OtpCode == otpCode &&
+                   userModel.OtpExpirationDate.HasValue &&
+                   userModel.OtpExpirationDate.Value > DateTime.Now;
+        }
 
         /// <summary>
         /// Sign Out current account and return login view.
@@ -167,9 +223,7 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             await this._signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
-        }
-
-
+        }        
 
         //Admin Register
         [HttpGet]
@@ -197,10 +251,29 @@ namespace ASI.Basecode.WebApp.Controllers
             ViewBag.LoginView = true;
             try
             {
-                var user = await _userService.AddAdminFromRegister(model);
+                // Validate username and email don't exist in verified users
+                if (await _userService.IsEmailVerifiedAndExists(model.Email))
+                {
+                    throw new InvalidDataException(Resources.Messages.Errors.UserExists);
+                }
 
+                if (await _userService.IsUsernameVerifiedAndExists(model.UserName))
+                {
+                    throw new InvalidDataException("Username already exists.");
+                }
 
-                return RedirectToAction("VerifyOtpPage", "Account", new { email = user.Email });
+                await _userService.CheckValidPassWord(model.Password);
+
+                // Generate OTP without creating user in database
+                string otpCode = await _userService.SendOtpCodeEmail(model.Email);
+                model.OtpCode = otpCode;
+                model.OtpExpirationDate = DateTime.Now.AddMinutes(5);
+
+                model.Role = "Admin";
+                // Store model in memory with email as key
+                _pendingRegistrations[model.Email] = model;
+
+                return RedirectToAction("VerifyOtpPage", "Account", new { email = model.Email });
             }
             catch (InvalidDataException ex)
             {
@@ -209,9 +282,8 @@ namespace ASI.Basecode.WebApp.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                //TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
             }
-          
+
             return View();
         }
 
@@ -220,25 +292,27 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpGet]
         [Route("Account/VerifyOtpPage/{email}")]
         [AllowAnonymous]
-        public async Task<IActionResult> VerifyOtpPage(string email)
+        public IActionResult VerifyOtpPage(string email)
         {
             if (string.IsNullOrEmpty(email))
             {
                 TempData["ErrorMessage"] = "Invalid verification request.";
                 return RedirectToAction("Login", "Account");
             }
-            try
+
+            if (!_pendingRegistrations.TryGetValue(email, out UserViewModel model))
             {
-                OtpViewModel user_otp = await _userService.GetUserbyEmail(email);
-                ViewBag.Email = email;
-                return View("~/Views/Account/OTPView.cshtml", user_otp);
+                TempData["ErrorMessage"] = "Registration session expired. Please register again.";
+                return RedirectToAction("Register", "Account");
             }
-            catch(Exception ex)
+
+            OtpViewModel otpModel = new OtpViewModel
             {
-                TempData["ErrorMessage"] = "Email not found";
-                return RedirectToAction("Login", "Account");
-            }
-           
+                Email = email,
+                OtpCode = string.Empty // Don't send the OTP to the view for security reasons
+            };
+
+            return View("~/Views/Account/OTPView.cshtml", otpModel);
         }
 
 
@@ -249,15 +323,37 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             try
             {
-                
-                await _userService.VerifyOtp(model);
-                TempData["SuccessMessage"] = "Your account has been verified successfully! You can now login!";
+                // Check if the OTP is valid without modifying the database
+                bool isOtpValid = IsOtpValid(model.Email, model.OtpCode);
 
+                if (!isOtpValid)
+                {
+                    throw new Exception("Invalid or expired OTP code");
+                }
+
+                // Get the stored registration data
+                if (!_pendingRegistrations.TryGetValue(model.Email, out UserViewModel userModel))
+                {
+                    throw new Exception("Registration session expired. Please register again.");
+                }
+
+                // Get role based on registration path (could be stored in the UserViewModel during registration)
+                //string role = userModel.Email.EndsWith("admin") ? "Admin" : "User";
+                string role = userModel.Role;
+
+                // Create verified user directly
+                await _userService.CreateVerifiedUser(userModel, role);
+
+                // Remove from pending registrations
+                _pendingRegistrations.Remove(model.Email);
+
+                TempData["SuccessMessage"] = "Your account has been verified successfully! You can now login!";
                 return RedirectToAction("Login", "Account");
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 ModelState.AddModelError("", ex.Message);
-                return View("~/Views/Account/OTPView.cshtml",model);
+                return View("~/Views/Account/OTPView.cshtml", model);
             }
         }
 
@@ -265,41 +361,31 @@ namespace ASI.Basecode.WebApp.Controllers
         [Route("Account/ResendOtp")]
         [AllowAnonymous]
         public async Task<IActionResult> ResendOtp(string email)
-
         {
-            if (string.IsNullOrEmpty(email))
-            {
-                ModelState.AddModelError("", "Email is required to resend OTP.");
-                return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
-            }
-
             try
             {
-                OtpViewModel otpSent = await _userService.RegenerateOtpAsync(email);
-
-                if (otpSent != null)
+                if (!_pendingRegistrations.TryGetValue(email, out UserViewModel userModel))
                 {
-                    TempData["SuccessMessage"] = "A new OTP has been sent to your email. Please check your inbox.";
-                    return RedirectToAction("VerifyOtpPage", "Account", new { Email = email });
+                    TempData["ErrorMessage"] = "Registration session expired. Please register again.";
+                    return RedirectToAction("Register", "Account");
                 }
-                else
-                {
-                   
-                    ModelState.AddModelError("", "Failed to send new OTP. Please try again.");
-                    return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
-                }
-            }
-            catch (ArgumentException ex)
-            {
-                ModelState.AddModelError("", "Email already verified");
-                return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
-            }
-            catch (Exception ex) 
-            {
-                ModelState.AddModelError("", "An unexpected error occurred while trying to resend OTP. Please try again later.");
-                return View("~/Views/Account/OTPView.cshtml", new OtpViewModel { Email = email });
-            }
 
+                // Generate new OTP and send email
+                string otpCode = await _userService.SendOtpCodeEmail(email);
+                userModel.OtpCode = otpCode;
+                userModel.OtpExpirationDate = DateTime.Now.AddMinutes(5);
+
+                // Update in pending registrations
+                _pendingRegistrations[email] = userModel;
+
+                TempData["SuccessMessage"] = "A new verification code has been sent to your email.";
+                return RedirectToAction("VerifyOtpPage", "Account", new { email = email });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("VerifyOtpPage", "Account", new { email = email });
+            }
         }
 
 
@@ -310,20 +396,20 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             if(emailObject == null)
             {
-                return BadRequest(new { Message = "No data has been passed" });
+                return BadRequest(new { success = false, message = "No data has been passed", toastrType = "error" });
             }
             try
             {
                 string generatedOTP = await _userService.SendOTPForResetPassword(emailObject.Email);
-                return Ok(new { Message = generatedOTP });
+                return Ok(new { success = true, message = generatedOTP, toastrType = "success" });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { success = false, message = ex.Message, toastrType = "error" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Message = ex.Message});
+                return BadRequest(new { success = false, message = ex.Message, toastrType = "error" });
             }
         }
 
@@ -334,20 +420,21 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             if (userObject == null)
             {
-                return BadRequest(new { Message = "No data has been passed" });
+                return BadRequest(new { success = false, message = "No data has been passed", toastrType = "error" });
             }
             try
             {
+                await _userService.CheckValidPassWord(userObject.Password);
                 await _userService.UpdatePassword(userObject);
-                return Ok(new { Message = "Successfully Updated Password" });
+                return Ok(new { success = true, message = "Successfully Updated Password", toastrType = "success" });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { success = false, message = ex.Message, toastrType = "error" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { success = false, message = ex.Message, toastrType = "error" });
             }
         }
     }

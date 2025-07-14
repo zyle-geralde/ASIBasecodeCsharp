@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ASI.Basecode.Data.Repositories
@@ -26,13 +25,15 @@ namespace ASI.Basecode.Data.Repositories
 
         public async Task<List<Review>> GetAllReviews()
         {
-            return await _dbContext.Reviews.ToListAsync();
+            return await _dbContext.Reviews.OrderByDescending(r => r.UploadDate).ToListAsync();
 
         }
 
         public async Task<Review> GetReviewById(string reviewId)
         {
-            return await _dbContext.Reviews.SingleAsync(r => r.ReviewId == reviewId);
+            return await _dbContext.Reviews
+                         .Include(r => r.Book)
+                         .FirstOrDefaultAsync(r => r.ReviewId == reviewId);
         }
 
         public async Task DeleteReview(string reviewId)
@@ -60,20 +61,19 @@ namespace ASI.Basecode.Data.Repositories
             existingReview.BookId = review.BookId;
             existingReview.Rating = review.Rating;
             existingReview.Comment = review.Comment;
-            existingReview.Likes = review.Likes;
-            existingReview.UpdatedDate = DateTime.UtcNow;
+            existingReview.UpdatedDate = DateTime.Now;
 
             await _dbContext.SaveChangesAsync();
         }
 
         public async Task<List<Review>> GetReviewsByBookId(string bookId)
         {
-            return await _dbContext.Reviews.Where(r => r.BookId == bookId).ToListAsync();
+            return await _dbContext.Reviews.Where(r => r.BookId == bookId).Include(r => r.Book).OrderByDescending(r => r.UploadDate).ToListAsync();
         }
 
         public async Task<List<Review>> GetReviewByUser(string userId)
         {
-            return await _dbContext.Reviews.Where(r => r.UserId == userId).ToListAsync();
+            return await _dbContext.Reviews.Where(r => r.UserId == userId).Include(r => r.Book).OrderByDescending(r=>r.UploadDate).ToListAsync();
         }
     }
 }

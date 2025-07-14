@@ -1,10 +1,34 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model ASI.Basecode.Services.ServiceModels.AuthorViewModel
+﻿@model ASI.Basecode.Services.ServiceModels.AuthorViewModel
+@using ASI.Basecode.WebApp.Models
 @{
-    ViewData["Title"] = "Edit Author"; 
+    ViewData["Title"] = "Edit Author";
     Layout = "_AdminSidebarLayout";
+
+    var originalAuthorName = Model?.AuthorName;
+    var originalAuthorDescription = Model?.AuthorDescription;
+    var originalAuthorImageUrl = Model?.AuthorImageUrl;
+
+    var saveConfirmationModal = new ConfirmationModalModel
+    {
+        Id = "saveModal",
+        Title = "Save Changes",
+        Message = "Are you sure you want to save your changes?",
+        CancelButtonText = "Discard",
+        ConfirmButtonText = "Save",
+        ConfirmButtonId = "saveConfirmBtn",
+        ConfirmButtonClass = "btn-danger-2"
+    };
+
+    var cancelConfirmationModal = new ConfirmationModalModel
+    {
+        Id = "editAuthorConfirmationModal",
+        Title = "Discard Changes?",
+        Message = "You have unsaved changes! Are you sure you want to discard them?",
+        CancelButtonText = "Keep Editing",
+        ConfirmButtonText = "Discard",
+        ConfirmButtonId = "confirmCancelBtn",
+        ConfirmButtonClass = "btn-discard"
+    };
 }
 
 @section styles {
@@ -12,25 +36,54 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="~/css/admin/books/bookmaster.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin/common.css" asp-append-version="true" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+    <style>
+        /* Custom style for the discard button in the confirmation modal */
+        .btn-discard {
+            background-color: #ff5252;
+            border: none;
+            color: white;
+            font-weight: 500;
+        }
+
+            .btn-discard:hover {
+                background-color: #ff3939;
+            }
+
+        /* Disabled button style */
+        .disabled-btn {
+            opacity: 0.65;
+            cursor: not-allowed;
+            background-color: #a0b4b0 !important;
+            border-color: #a0b4b0 !important;
+            box-shadow: none !important;
+        }
+
+            .disabled-btn:hover {
+                background-color: #a0b4b0 !important;
+                box-shadow: none !important;
+                transform: none !important;
+            }
+    </style>
 }
 
-<div class="admin-common-container">
-    <div class="admin-common-content-wrapper">
+<div class="admin-common-container-add">
+    <div class="admin-common-content-wrapper-add">
         <div class="header-section">
-            <h1>Edit Author</h1> 
-            <p>Edit author details here</p> 
+            <h1>Edit Author</h1>
+            <p>Edit author details here</p>
         </div>
-
 
         <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
 
         <form asp-action="EditAuthor" asp-controller="Author" method="post" id="editAuthorForm">
-           
-            @*<input type="hidden" id="authorImageUrl" name="AuthorImageUrl">*@
-            <input type = "hidden" name="AuthorId" value = "@Model.AuthorId"/>
+            <input type="hidden" name="AuthorId" value="@Model.AuthorId" />
+            <input type="hidden" id="originalAuthorName" value="@originalAuthorName" />
+            <input type="hidden" id="originalAuthorDescription" value="@originalAuthorDescription" />
+            <input type="hidden" id="originalAuthorImageUrl" value="@originalAuthorImageUrl" />
 
-            <div class="content-master-grid">
+            <div class="content-master-grid-add">
                 <div class="image-upload-section">
                     <div class="author-image-preview-container">
                         <img id="authorImagePreview" src="@Model?.AuthorImageUrl" style="@(string.IsNullOrEmpty(Model?.AuthorImageUrl) ? "display:none;" : "")">
@@ -42,58 +95,46 @@
                     <input type="file" id="authorImageFile" accept="image/*" style="display: none;">
 
                     <p id="authorImageUploadStatus" class="master-upload-status">
-                        <span class="file-size-info">Max file size: 10MB</span>
+                        <span class="file-size-info required-label">Max file size: 10MB</span>
                         <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                     </p>
                     <input type="text" id="authorImageUrl" name="AuthorImageUrl" value="@Model?.AuthorImageUrl">
                 </div>
 
-                <div>
-                    <div class="book-master-form-grid">
+                    <div class="form-column">
                         <div class="book-master-form-group">
                             <label for="authorName" class="required-label">Author Name</label>
-                            <input type="text" id="authorName" name="AuthorName" class="book-master-form-input" value="@Model?.AuthorName" required>
+                            <input maxlength="450" type="text" id="authorName" name="AuthorName" class="book-master-form-input tracked-field" value="@Model?.AuthorName" required>
                             <span asp-validation-for="AuthorName" class="text-danger"></span>
                         </div>
                         <div class="book-master-form-group">
                             <label for="authorDescription">Description</label>
-                            <input type="text" id="authorDescription" name="AuthorDescription" class="book-master-form-input" value="@Model?.AuthorDescription">
+						<textarea maxlength="5000" id="authorDescription" name="AuthorDescription" class="book-master-form-input tracked-field">@Model?.AuthorDescription</textarea>
 
-                            <span asp-validation-for="AuthorDescription" class="text-danger"></span>
+								<span asp-validation-for="AuthorDescription" class="text-danger"></span>
                         </div>
                     </div>
-                </div>
             </div>
 
             <div class="button-container">
-                <button type="button" class="cancel-button" onclick="window.location.href='/Author/Index';">CANCEL</button>
-                <button type="submit" class="book-master-submit-button" id="editAuthorSubmitButton">SAVE CHANGES</button>
+                <button type="button" class="cancel-button" id="cancelButton">CANCEL</button>
+                <button type="button" class="book-master-submit-button" id="editAuthorSubmitButton">SAVE CHANGES</button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- Save confirmation modal -->
+<partial name="_ConfirmationModal" model="saveConfirmationModal" />
 
-@* <div class="modal fade confirmation-modal" id="addAuthorConfirmationModal" tabindex="-1" aria-labelledby="addAuthorConfirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title" id="addAuthorConfirmationModalLabel">Edit Author Confirmation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <p class="mb-4" id="addConfirmationModalMessage">Are you sure you want to save changes for this author?</p> 
-                <div class="d-flex justify-content-center gap-2">
-                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary px-4" id="confirmAddAuthorAction">Save Changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> *@
+<!-- Cancel confirmation modal -->
+<partial name="_ConfirmationModal" model="cancelConfirmationModal" />
 
 @section scripts {
-    <script type = "module">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script type="module">
         // Your Firebase configuration
         //Transfer this secretes into AnalyserNode env or file, and include it in gitignore.
         const firebaseConfig = {
@@ -191,12 +232,52 @@
 
 
         document.addEventListener('DOMContentLoaded', function () {
+            // Store original values
+            const originalAuthorName = document.getElementById('originalAuthorName').value;
+            const originalAuthorDescription = document.getElementById('originalAuthorDescription').value;
+            const originalAuthorImageUrl = document.getElementById('originalAuthorImageUrl').value;
+            let hasFormChanges = false;
+            let hasImageChanges = false;
+
+            // Get the submit button
+            const submitBtn = document.getElementById('editAuthorSubmitButton');
+
+            // Initially disable the Save Changes button
+            submitBtn.disabled = true;
+            submitBtn.classList.add('disabled-btn');
+
+            // Track changes in the author fields
+            document.getElementById('authorName').addEventListener('input', checkForChanges);
+            document.getElementById('authorDescription').addEventListener('input', checkForChanges);
+
+            // Function to check if any changes were made
+            function checkForChanges() {
+                const currentAuthorName = document.getElementById('authorName').value;
+                const currentAuthorDescription = document.getElementById('authorDescription').value;
+                const currentAuthorImageUrl = document.getElementById('authorImageUrl').value;
+
+                // Check if any fields changed
+                const nameChanged = currentAuthorName !== originalAuthorName;
+                const descriptionChanged = currentAuthorDescription !== originalAuthorDescription;
+                const imageChanged = currentAuthorImageUrl !== originalAuthorImageUrl || hasImageChanges;
+
+                // Update overall change status
+                hasFormChanges = nameChanged || descriptionChanged || imageChanged;
+
+                // Enable/disable the Save Changes button based on changes
+                if (hasFormChanges) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('disabled-btn');
+                } else {
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('disabled-btn');
+                }
+            }
+
             // Image Preview Logic
             const authorImageFile = document.getElementById('authorImageFile');
             const authorImagePreview = document.getElementById('authorImagePreview');
             const imagePlaceholder = document.getElementById('imagePlaceholder');
-
-
             const editAuthorForm = document.getElementById("editAuthorForm");
             const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
             const authorImageUrlInput = document.getElementById('authorImageUrl');
@@ -215,6 +296,10 @@
                             authorImagePreview.src = e.target.result;
                             authorImagePreview.style.display = 'block';
                             imagePlaceholder.style.display = 'none';
+
+                            // Mark that we have an image change
+                            hasImageChanges = true;
+                            checkForChanges();
                         };
                         reader.readAsDataURL(file);
                     } else {
@@ -231,36 +316,43 @@
                 });
             }
 
+            // Setup save confirmation modal
+            document.getElementById('editAuthorSubmitButton').addEventListener('click', function(e) {
+                e.preventDefault();
 
-            // document.getElementById('confirmAddAuthorAction').addEventListener('click', function () {
-            //     const modal = bootstrap.Modal.getInstance(document.getElementById('addAuthorConfirmationModal'));
-            //     modal.hide();
-            //     document.getElementById('editAuthorForm').dispatchEvent(new Event('submit'));
-            // });
+                // Only proceed if there are actual changes
+                if (hasFormChanges) {
+                    var saveModal = new bootstrap.Modal(document.getElementById('saveModal'));
+                    saveModal.show();
+                }
+            });
 
+            // Handle save confirmation
+            document.getElementById('saveConfirmBtn').addEventListener('click', async function() {
+                // Hide the modal
+                bootstrap.Modal.getInstance(document.getElementById('saveModal')).hide();
 
-
-            //Edit function
-            document.getElementById('editAuthorForm').addEventListener('submit', async (event) => {
-                event.preventDefault()
+                // Disable button to prevent multiple submissions
+                const submitButton = document.getElementById('editAuthorSubmitButton');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Processing...';
+                submitButton.classList.add('disabled-btn');
 
                 const form = document.getElementById("editAuthorForm");
                 const authorNameInput = document.getElementById('authorName');
                 const authorImageFileInstance = document.getElementById('authorImageFile');
                 const authorImageFile = authorImageFileInstance.files[0];
                 const authorImageUrlHiddenInput = document.getElementById('authorImageUrl');
-                const submitButton = document.getElementById('editAuthorSubmitButton');
                 const authorImageUploadStatusElement = document.getElementById('authorImageUploadStatus');
 
-                const originalAuthorImageUrl = authorImageUrlInput.value;
+                const originalAuthorImageUrl = document.getElementById('originalAuthorImageUrl').value;
 
                 if (authorNameInput.value.trim() === '') {
                     toastr.warning('Author Name is required.');
-                    return;
-                }
-
-                if (!authorImageFile && !originalAuthorImageUrl) {
-                    toastr.warning('Author Image is required.');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'SAVE CHANGES';
+                    submitButton.classList.remove('disabled-btn');
+                    removeModalBackdrops();
                     return;
                 }
 
@@ -269,10 +361,6 @@
                 if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 10MB';
                 if (supportedFormatsInfoSpan) supportedFormatsInfoSpan.textContent = 'Supported formats: JPG, PNG, JPEG';
                 authorImageUploadStatusElement.classList.remove('error-message');
-
-
-                submitButton.disabled = true;
-                submitButton.textContent = 'Processing...';
 
                 let uploadedAuthorImageUrl = null;
 
@@ -285,6 +373,8 @@
                             authorImageUploadStatusElement.classList.add('error-message');
                             submitButton.disabled = false;
                             submitButton.textContent = 'SAVE CHANGES';
+                            submitButton.classList.remove('disabled-btn');
+                            removeModalBackdrops();
                             return;
                         }
                         uploadedAuthorImageUrl = await uploadFileToFirebase(authorImageFile, 'author_covers/', authorImageUploadStatusElement);
@@ -296,7 +386,6 @@
                     }
 
                     const formData = new FormData(form);
-                    console.log(form.action)
 
                     const response = await fetch('/Author/EditAuthor', {
                         method: form.method,
@@ -305,64 +394,88 @@
 
                     if (response.ok) {
                         const messageData = await response.json();
-                        // alert(messageData.message)
                         toastr.success(messageData.message || 'Author updated successfully!');
 
                         if (uploadedAuthorImageUrl && originalAuthorImageUrl && uploadedAuthorImageUrl !== originalAuthorImageUrl) {
                             await deleteFileFromFirebase(originalAuthorImageUrl);
                         }
-                        // location.reload()
+
+                        // Redirect back to Author/Index
+                        setTimeout(function() {
+                            window.location.href = '/Author/Index';
+                        }, 1500);
                     } else {
                         const errorData = await response.json();
-                        
+
                         const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
-                        // alert(errorMessage)
                         toastr.error(errorMessage);
 
-                        
                         if (uploadedAuthorImageUrl && uploadedAuthorImageUrl !== originalAuthorImageUrl) {
                             await deleteFileFromFirebase(uploadedAuthorImageUrl);
                             toastr.warning("New image upload rolled back due to backend error.");
                             // revert if new upload failed and backend failed
                             authorImageUrlHiddenInput.value = originalAuthorImageUrl;
-
-                            /*if (uploadedAuthorImageUrl) {
-                                genreImagePreview.src = originalGenreImageUrl;
-                                genreImagePreview.style.display = 'block';
-                                imagePlaceholder.style.display = 'none';
-                            } else {
-                                genreImagePreview.src = '';
-                                genreImagePreview.style.display = 'none';
-                                imagePlaceholder.style.display = 'block';
-                            }*/
                         }
                     }
-
                 } catch (error) {
                     console.error('Submission error:', error);
-                    // alert('Submission error:' + error
                     toastr.error(`Submission error: ${error.message}`);
 
                     if (uploadedAuthorImageUrl && uploadedAuthorImageUrl !== originalAuthorImageUrl) {
                         await deleteFileFromFirebase(uploadedAuthorImageUrl);
                         toastr.warning("New image upload rolled back due to submission error.");
                         authorImageUrlHiddenInput.value = originalAuthorImageUrl;
-                        /*updateImagePreview(null);
-                        if (originalGenreImageUrl) {
-                            genreImagePreview.src = originalGenreImageUrl;
-                            genreImagePreview.style.display = 'block';
-                            imagePlaceholder.style.display = 'none';
-                        } else {
-                            genreImagePreview.src = '';
-                            genreImagePreview.style.display = 'none';
-                            imagePlaceholder.style.display = 'block';
-                        }*/
                     }
                 } finally {
                     submitButton.disabled = false;
                     submitButton.textContent = 'SAVE CHANGES';
+                    submitButton.classList.remove('disabled-btn');
+                    removeModalBackdrops();
                 }
             });
+
+            // Handle cancel button click
+            document.getElementById('cancelButton').addEventListener('click', function() {
+                // Only show confirmation if there are changes, otherwise redirect immediately
+                if (hasFormChanges) {
+                    var cancelModal = new bootstrap.Modal(document.getElementById('editAuthorConfirmationModal'));
+                    cancelModal.show();
+                } else {
+                    // No changes, redirect immediately
+                    window.location.href = '/Author/Index';
+                }
+            });
+
+            // Handle cancel confirmation
+            document.getElementById('confirmCancelBtn').addEventListener('click', function() {
+                window.location.href = '/Author/Index';
+                bootstrap.Modal.getInstance(document.getElementById('editAuthorConfirmationModal')).hide();
+                // Remove modal backdrop manually to prevent overlay issues
+                removeModalBackdrops();
+            });
+
+            // Function to clean up modal backdrops
+            function removeModalBackdrops() {
+                var modals = document.querySelectorAll('.modal-backdrop');
+                modals.forEach(function(modal) {
+                    modal.remove();
+                });
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }
+
+            // Handle modal close events
+            document.getElementById('saveModal').addEventListener('hidden.bs.modal', function() {
+                removeModalBackdrops();
+            });
+
+            document.getElementById('editAuthorConfirmationModal').addEventListener('hidden.bs.modal', function() {
+                removeModalBackdrops();
+            });
+
+            // Run initial check for changes
+            checkForChanges();
         });
     </script>
 }

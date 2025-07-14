@@ -1,9 +1,10 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
 using ASI.Basecode.Data.QueryParams;
-using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,19 +13,25 @@ using System.Threading.Tasks;
 
 namespace ASI.Basecode.Services.Services
 {
-    public class LanguageService:ILanguageService
+    public class LanguageService : ILanguageService
     {
         private readonly ILanguageRepository _languageRepository;
         private readonly IAuthorRepository _authorRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly SessionManager _sessionManager;
 
-        public LanguageService(ILanguageRepository languageRepository,IAuthorRepository authorRepository) { 
+        public LanguageService(ILanguageRepository languageRepository, IAuthorRepository authorRepository, IHttpContextAccessor httpContextAccessor)
+        {
             _languageRepository = languageRepository;
             _authorRepository = authorRepository;
+            _httpContextAccessor = httpContextAccessor;
+            this._sessionManager = new SessionManager(httpContextAccessor.HttpContext.Session);
         }
 
         public async Task AddLanguage(LanguageViewModel language)
         {
-            if (language == null) {
+            if (language == null)
+            {
                 throw new ArgumentException("Langugage should not be null");
             }
             if (string.IsNullOrEmpty(language.LanguageName))
@@ -46,8 +53,8 @@ namespace ASI.Basecode.Services.Services
                 {
                     LanguageId = Guid.NewGuid().ToString(),
                     LanguageName = language.LanguageName,
-                    CreatedBy = "admin1",
-                    UpdatedBy = "admin1",
+                    CreatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName"),
+                    UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName"),
                     UpdatedDate = DateTime.Now,
                     UploadDate = DateTime.Now,
                 };
@@ -56,7 +63,7 @@ namespace ASI.Basecode.Services.Services
                 {
                     await _languageRepository.AddLanguage(mapped_language);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw new ApplicationException("Failed in adding language to repository");
                 }
@@ -65,7 +72,7 @@ namespace ASI.Basecode.Services.Services
             {
                 throw new ApplicationException(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new ApplicationException("Failed in adding language");
             }
@@ -106,7 +113,7 @@ namespace ASI.Basecode.Services.Services
             {
                 await _languageRepository.DeleteLanguage(languageId);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new ApplicationException($"Failed to Delete Language");
             }
@@ -133,15 +140,16 @@ namespace ASI.Basecode.Services.Services
                 }
 
                 existing_language.LanguageName = language.LanguageName;
-                existing_language.UpdatedDate = DateTime.UtcNow;
+                existing_language.UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName");
+                existing_language.UpdatedDate = DateTime.Now;
 
                 await _languageRepository.EditLanguage();
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 throw new ArgumentException(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new ApplicationException("Failed to edit book genre by id.");
             }
@@ -194,8 +202,8 @@ namespace ASI.Basecode.Services.Services
                         ISBN10 = bookEntity.ISBN10,
                         ISBN13 = bookEntity.ISBN13,
                         Edition = bookEntity.Edition,
-                        CreatedBy = "admin1",
-                        UpdatedBy = "Logged Admin"
+                        CreatedBy = bookEntity.CreatedBy,
+                        UpdatedBy = bookEntity.UpdatedBy
                     });
                 }
 
@@ -217,7 +225,7 @@ namespace ASI.Basecode.Services.Services
 
             try
             {
-                Language retreived_language= await _languageRepository.GetLanguageByName(languageId);
+                Language retreived_language = await _languageRepository.GetLanguageByName(languageId);
 
                 LanguageViewModel mapped_language = new LanguageViewModel
                 {
@@ -230,7 +238,7 @@ namespace ASI.Basecode.Services.Services
 
                 return mapped_language;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new ApplicationException("Failed to retrieve language by name.");
             }
@@ -239,7 +247,6 @@ namespace ASI.Basecode.Services.Services
         public async Task<PaginatedList<Language>> GetLanguageQueried(LanguageQueryParams queryParams)
         {
             return await _languageRepository.GetLanguageQueried(queryParams);
-            //return users.ToList();
 
         }
     }

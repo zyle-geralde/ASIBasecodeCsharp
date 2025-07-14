@@ -1,9 +1,34 @@
 ﻿@using System.Security.Claims
 @model ASI.Basecode.Services.ServiceModels.PersonProfileViewModel;
+@inject ASI.Basecode.WebApp.AccessControl.IAccessControlInterface AccessControl
+
 @{
     ViewData["Title"] = "User Profile";
-    Layout = "_AdminSidebarLayout";
+	var isAdmin = await AccessControl.CheckAdminAccess();
+	var currentUserId = User.Identity.IsAuthenticated ? User.FindFirstValue(ClaimTypes.NameIdentifier) : null;
+	bool userHasReviewed = Model?.Reviews?.Any(r => r.UserId == currentUserId) ?? false;
+
+	@if (isAdmin)
+	{
+		Layout = "_AdminSidebarLayout";
+		<link rel="stylesheet" href="~/css/admin/adminsidebar.css" asp-append-version="true" />
+
+		<style>
+			.container {
+				margin-top: 70px;
+			}
+		</style>
+	}
+	else
+	{
+		<style>
+			.container {
+				margin-top: 70px;
+			}
+		</style>
+	}
 }
+
 
 @section styles {
     <link rel="stylesheet" href="~/css/admin/books/bookdetails.css" asp-append-version="true" />
@@ -30,9 +55,10 @@
         <div class="book-header-info user-header-info">
             <h1 class="book-header-title">
                 @(string.IsNullOrWhiteSpace(Model?.FirstName) && string.IsNullOrWhiteSpace(Model?.LastName)
-                                ? ""
+                                ? $"{Model.Username}"
                                 : $"{Model?.FirstName} {Model?.LastName}".Trim())
             </h1>
+
             <div class="user-header-tags">
                 <span class="book-tag">@Model?.Email</span>
             </div>
@@ -141,7 +167,7 @@
                         </span>
                     }
                 </div>
-                <h2 class="mb-0">User's Reviews</h2>
+                <h2 class="mb-0" style="color: #fff">User's Reviews</h2>
             </div>
             <div class="section-content">
                 @if (Model.Reviews == null || !Model.Reviews.Any())
@@ -162,33 +188,55 @@
                                     <div class="book-info">
                                         <div class="book-title">
                                             <a asp-route="BookDetails" asp-route-bookId="@review.BookId" class="book-link">
-                                                Book ID: @review.BookId
+                                                 @review.BookTitle
                                             </a>
+											<div class="review-rating">
+												@for (var i = 1; i <= 5; i++)
+												{
+													if (i <= review.Rating)
+													{
+														<i class="fas fa-star"></i>
+													}
+													else if (i - 0.5 <= review.Rating)
+													{
+														<i class="fas fa-star-half-alt"></i>
+													}
+													else
+													{
+														<i class="far fa-star"></i>
+													}
+												}
+												<span class="rating-value">@review.Rating / 5</span>
+
+											</div>
                                         </div>
                                     </div>
                                     <div class="review-rating">
-                                        <div class="stars">
-                                            @for (var i = 1; i <= 5; i++)
-                                            {
-                                                if (i <= review.Rating)
-                                                {
-                                                    <i class="fas fa-star"></i>
-                                                }
-                                                else if (i - 0.5 <= review.Rating)
-                                                {
-                                                    <i class="fas fa-star-half-alt"></i>
-                                                }
-                                                else
-                                                {
-                                                    <i class="far fa-star"></i>
-                                                }
-                                            }
-                                        </div>
-                                        <span class="rating-value">@review.Rating / 5</span>
+										<div class="review-actions">
+											@* @if (review.UserId == currentUserId)
+											{
+												<button class="btn btn-edit-review" onclick="editReview('@review.ReviewId', '@review.BookId', @(review.Rating), '@Html.Raw(Html.Encode(review.Comment))', '@review.UploadDate?.ToString("yyyy-MM-ddTHH:mm:ss")')">
+													<i class="fas fa-edit"></i> Edit
+												</button>
+											} *@
+											
+											@if (isAdmin || review.UserId == currentUserId)
+											{
+												<button class="btn btn-delete-review"
+														onclick="deleteBookReview('@review.ReviewId')">
+													<i class="fas fa-trash-alt"></i> Delete
+												</button>
+											}
+										</div>
+										
+										
                                     </div>
                                 </div>
-
+								
+										
                                 <div class="review-content">
+									
+
                                     <div class="review-comment">@review.Comment</div>
                                 </div>
 
@@ -205,6 +253,7 @@
                                                 Updated: @review.UpdatedDate?.ToString("MMMM dd, yyyy")
                                             </div>
                                         }
+										
                                     </div>
                                 </div>
                             </div>
@@ -215,6 +264,51 @@
         </section>
     </div>
 </div>
+
+<div class="modal fade confirmation-modal" id="deleteBookReviewModal" tabindex="-1" aria-labelledby="deleteBookReviewModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header border-0">
+				<h5 class="modal-title" id="deleteBookReviewModalLabel">Confirm Delete</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body text-center">
+				<h6>Are you sure you want to delete this review?</h6>
+				<p class="text-muted">This action cannot be undone.</p>
+			</div>
+			<div class="modal-footer border-0 justify-content-center">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" id="confirmDeleteBookReview" class="btn btn-danger">Delete Review</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade profile-edit-modal" id="userInfoEdit" tabindex="-1" aria-labelledby="userInfoEditLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="userInfoEditLabel">User Information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-0">
+
+                <form id="userInfoForm" asp-controller="PersonProfile" asp-action="UpdateUserInfo" method="post" asp-route-id="@Model.Id">
+                    <input asp-for="UserId" type="hidden" />
+                    <div class="mb-3">
+                        <label for="userName" class="form-label">Username</label>
+                        <input asp-for="Username" type="text" class="form-control" id="userName" placeholder="Text" maxlength="30">
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary px-4">SAVE CHANGES</button>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
@@ -236,4 +330,45 @@
             });
         });
     </script>
+
+	<script>
+		let reviewIdToDelete = null;
+
+		function deleteBookReview(reviewId) {
+			reviewIdToDelete = reviewId;
+			var deleteModal = new bootstrap.Modal(document.getElementById('deleteBookReviewModal'));
+			deleteModal.show();
+		}
+
+		$('#confirmDeleteBookReview').click(function () {
+			if (reviewIdToDelete) {
+				const token = $('input[name="__RequestVerificationToken"]').first().val();
+
+				$.ajax({
+					url: '@Url.Action("Delete", "Review")',
+					type: 'POST',
+					data: {
+						id: reviewIdToDelete,
+						__RequestVerificationToken: token
+					},
+					success: function (response) {
+						var deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteBookReviewModal'));
+						deleteModal.hide();
+
+						toastr.success("Review deleted successfully!");
+
+						// Optionally, reload the page or remove the review from DOM
+						setTimeout(function () {
+							location.reload();
+						}, 1200);
+
+						reviewIdToDelete = null;
+					},
+					error: function (xhr, status, error) {
+						toastr.error("Error deleting review: " + error);
+					}
+				});
+			}
+		});
+	</script>
 }

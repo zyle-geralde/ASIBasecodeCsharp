@@ -3,7 +3,9 @@ using ASI.Basecode.Data.Models;
 using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Data.Repositories;
 using ASI.Basecode.Services.Interfaces;
+using ASI.Basecode.Services.Manager;
 using ASI.Basecode.Services.ServiceModels;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -19,12 +21,16 @@ namespace ASI.Basecode.Services.Services
         private readonly IBookRepository _bookRepository;
         private readonly ILanguageRepository _languageRepository;
         private readonly IAuthorRepository _authorRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly SessionManager _sessionManager;
 
-        public BookService(IBookRepository bookRepository, ILanguageRepository languageRepository, IAuthorRepository authorRepository)
+        public BookService(IBookRepository bookRepository, ILanguageRepository languageRepository, IAuthorRepository authorRepository, IHttpContextAccessor httpContextAccessor)
         {
             _bookRepository = bookRepository;
             _languageRepository = languageRepository;
             _authorRepository = authorRepository;
+            _httpContextAccessor = httpContextAccessor;
+            this._sessionManager = new SessionManager(httpContextAccessor.HttpContext.Session);
         }
 
         public async Task AddBook(BookViewModel request)
@@ -32,8 +38,28 @@ namespace ASI.Basecode.Services.Services
             // Here you can add any business logic or validation before saving the book to the database.
             //example:if (string.IsNullOrWhiteSpace(book.Title)) throw new ArgumentException("Book title cannot be empty.");
 
+            
+            try
+            {
+                bool isBookNameAndAuthorExist = await _bookRepository.CheckBookNameAndAuthorExist(request.Author.Trim(),request.Title.Trim().ToLower());
+
+                if (isBookNameAndAuthorExist)
+                {
+                    throw new ApplicationException("Book Title and/or Author Exist.");
+                }
+            }
+            catch(ApplicationException ex)
+            {
+                throw;
+            }
+            catch(Exception ex)
+            {
+                throw new ApplicationException($"Failed to add book: {ex.Message}", ex);
+            }
+
             // Map DTO to actual Book model
             //Change to mapper
+
             var book = new Book
             {
                 BookId = Guid.NewGuid().ToString(),
@@ -55,8 +81,8 @@ namespace ASI.Basecode.Services.Services
                 BookFile = request.BookFileUrl,
 
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
-                UploadDate = DateTime.UtcNow,
-                UpdatedDate = DateTime.UtcNow,
+                UploadDate = DateTime.Now,
+                UpdatedDate = DateTime.Now,
                 PublicationDate = request.PublicationDate,
 
                 // Handle comma-separated strings
@@ -66,7 +92,8 @@ namespace ASI.Basecode.Services.Services
                 ISBN10 = request.ISBN10,
                 ISBN13 = request.ISBN13,
                 Edition = request.Edition,
-                CreatedBy = "admin1"
+                CreatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName"),
+                UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName")
             };
 
             try
@@ -108,17 +135,18 @@ namespace ASI.Basecode.Services.Services
                     UploadDate = b.UploadDate,
                     GenreList = b.GenreList,
                     PublicationDate = b.PublicationDate,
-                    Author = authorName != null ? authorName.AuthorName : b.Author,
+                    Author = authorName != null ? authorName.AuthorName : "",
                     AverageRating = b.AverageRating,
                     CoverImage = b.CoverImage,
                     BookFile = b.BookFile,
                     Description = b.Description,
                     IsFeatured = b.IsFeatured,
-                    Language = languageName != null ? languageName.LanguageName : b.Language,
+                    Language = languageName != null ? languageName.LanguageName : "",
                     NumberOfPages = b.NumberOfPages,
                     Publisher = b.Publisher,
                     PublicationLocation = b.PublicationLocation,
-                    SeriesName = b.SeriesName
+                    SeriesName = b.SeriesName,
+                    ReviewCount = b.ReviewCount
                 });
             }
 
@@ -176,8 +204,8 @@ namespace ASI.Basecode.Services.Services
                     ISBN10 = book.ISBN10,
                     ISBN13 = book.ISBN13,
                     Edition = book.Edition,
-                    CreatedBy = "admin1",
-                    UpdatedBy = "Logged Admin",
+                    CreatedBy = book.CreatedBy,
+                    UpdatedBy = book.UpdatedBy,
 
                 };
                 bookViewModel_list.Add(viewModel);
@@ -205,6 +233,7 @@ namespace ASI.Basecode.Services.Services
                 GenreList= requestBook.GenreList,
                 AverageRating =requestBook.AverageRating,
                 IsFeatured = requestBook.IsFeatured,
+                ReviewCount = requestBook.ReviewCount,
 
                 // Firebase Storage URLs are directly mapped
                 CoverImageUrl = requestBook.CoverImage,
@@ -223,8 +252,8 @@ namespace ASI.Basecode.Services.Services
                 ISBN10 = requestBook.ISBN10,
                 ISBN13 = requestBook.ISBN13,
                 Edition = requestBook.Edition,
-                CreatedBy = "admin1",
-                UpdatedBy = "Logged Admin",
+                CreatedBy = requestBook.CreatedBy,
+                UpdatedBy = requestBook.UpdatedBy,
             };
             //return await _bookRepository.GetBookById(bookId);
             return book;
@@ -232,6 +261,7 @@ namespace ASI.Basecode.Services.Services
 
         public async Task EditBook(BookViewModel request)
         {
+
             //Change to mapper
             var book = new Book
             {
@@ -252,7 +282,7 @@ namespace ASI.Basecode.Services.Services
                 BookFile = request.BookFileUrl,
 
                 // Parse dates from string (assuming "yyyy-MM-dd" or similar from frontend)
-                UpdatedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.Now,
                 PublicationDate = request.PublicationDate,
 
                 // Handle comma-separated strings
@@ -262,8 +292,7 @@ namespace ASI.Basecode.Services.Services
                 ISBN10 = request.ISBN10,
                 ISBN13 = request.ISBN13,
                 Edition = request.Edition,
-                CreatedBy = "admin1",
-                UpdatedBy = "Logged Admin"
+                UpdatedBy = _httpContextAccessor.HttpContext.Session.GetString("UserName"),
             };
 
 
@@ -273,7 +302,7 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Failed to Edit book: {ex.Message}", ex);
+                throw new ApplicationException(ex.Message);
             }
         }
 

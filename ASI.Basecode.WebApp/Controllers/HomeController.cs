@@ -1,4 +1,5 @@
 ﻿using ASI.Basecode.Data.Interfaces;
+using ASI.Basecode.Data.Models;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
 using ASI.Basecode.Services.Services;
@@ -26,6 +27,8 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IBookService _bookService;
         private readonly IBookGenreService _bookGenreService;
         private readonly IAccessControlInterface _accessControlInterface;
+        private readonly IAuthorService _authorService;
+        private readonly ILanguageService _languageService;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -40,10 +43,14 @@ namespace ASI.Basecode.WebApp.Controllers
                               IBookGenreService bookGenreService,
                               IBookService bookService,
                               IAccessControlInterface accessControlInterface,
+                              IAuthorService authorService,
+                              ILanguageService languageService,
                               IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
             _bookService = bookService;
             _bookGenreService = bookGenreService;
+            _authorService = authorService;
+            _languageService = languageService;
             this._accessControlInterface = accessControlInterface;
         }
 
@@ -54,17 +61,21 @@ namespace ASI.Basecode.WebApp.Controllers
         //[AllowAnonymous] //This is to bypass authentication. Ex. if you want to access this route without loging in
         [HttpGet]
         [Authorize]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> Index()
         {
             bool checkUserAccess = await _accessControlInterface.CheckUserAccess();
             if (!checkUserAccess) return RedirectToAction("Index", "AdminDashboard");
 
             var allGenres = await _bookGenreService.GetAllGenreList();
+            var allAuthor = await _authorService.GetAllAuthorList();
+            var allLanguage = await _languageService.GetAllLanguage();
+
             var topRatedParams = new BookQueryParams
             {
                 SortOrder = "rating",
                 SortDescending = true,
-                PageSize = 3
+                PageSize = 5
             };
             var topRatedBooks = await _bookService.GetBooks(topRatedParams);
 
@@ -72,14 +83,15 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 SortOrder = "uploaddate",
                 SortDescending = true,
-                PageSize = 3
+                PageSize = 5
             };
             var newlyAddedBooks = await _bookService.GetBooks(newlyAddedParams);
 
             var featuredBooksParams = new BookQueryParams
             {
-                IsFeatured = true,
-                PageSize = 5
+                SortOrder = "reviewcount",
+                SortDescending = true,
+                PageSize = 10
             };
             var featuredBooks = await _bookService.GetBooks(featuredBooksParams);
 
@@ -88,7 +100,9 @@ namespace ASI.Basecode.WebApp.Controllers
                 Genres = allGenres,
                 TopRatedBooks = topRatedBooks,
                 NewBooks = newlyAddedBooks,
-                FeaturedBooks = featuredBooks
+                FeaturedBooks = featuredBooks,
+                Authors = allAuthor,
+                Languages = allLanguage
             };
             return View(vm);
         }

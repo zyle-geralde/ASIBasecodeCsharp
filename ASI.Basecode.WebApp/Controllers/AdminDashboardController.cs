@@ -40,12 +40,14 @@ namespace ASI.Basecode.WebApp.Controllers
 
         [HttpGet]
         [Authorize]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+
         public async Task<IActionResult> Index()
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
 
-            var books = await _bookRepository.GetBooks() ?? new List<Book>();
+            var books = await _bookRepository.GetAllBooks() ?? new List<Book>();
             var genres = await _bookGenreRepository.GetAllGenreList() ?? new List<BookGenre>();
             var users = _userRepository.GetUsers()?.ToList()?? new List<User>();
             var reviews = await _reviewRepository.GetAllReviews() ?? new List<Review>();
@@ -54,7 +56,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 SortOrder = "rating",
                 SortDescending = true,
-                PageSize = 10
+                PageSize = 5
             };
             var topRatedBooks = await _bookService.GetBooks(topRatedParams);
 
@@ -62,7 +64,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 SortOrder = "uploaddate",
                 SortDescending = true,
-                PageSize = 10
+                PageSize = 5
             };
             var newlyAddedBooks = await _bookService.GetBooks(newlyAddedParams);
 

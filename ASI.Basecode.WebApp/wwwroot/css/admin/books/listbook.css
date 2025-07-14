@@ -1,4 +1,5 @@
-﻿.content-card {
+﻿.content-card
+{
     background-color: #f5f5f5;
     padding: 25px;
     margin: 0;
@@ -6,7 +7,8 @@
     flex-direction: column;
 }
 
-.card-header-books {
+.card-header-books 
+{
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -15,13 +17,15 @@
 }
 
 
-.card-header-text-group { 
+.card-header-text-group 
+{ 
     display: flex;
-    flex-direction: column; /
+    flex-direction: column; 
     gap: 4px; 
 }
 
-.card-title {
+.card-title 
+{
     font-size: 30px;
     font-weight: 700;
     color: #374151;
@@ -29,13 +33,15 @@
 }
 
 
-.card-subtitle { 
+.card-subtitle 
+{ 
     font-size: 16px; 
     color: #6B7280;
     margin-bottom: 0; 
 }
 
-.primary-button-add {
+.primary-button-add 
+{
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -52,13 +58,15 @@
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-    .primary-button-add:hover {
+    .primary-button-add:hover 
+    {
         background-color: #4f6466; 
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
 
-.outline-button {
+.outline-button 
+{
     width: 120px; 
     color: #647d7f; 
     border: 1px solid #d0d0d1; 
@@ -75,14 +83,16 @@
     gap: 8px;
 }
 
-    .outline-button:hover {
+    .outline-button:hover
+    {
         background-color: #a7b8b9; 
         border-color: #a7b8b9; 
         color: #fff; 
     }
 
 
-.data-table {
+.data-table 
+{
     width: 100%;
     border-collapse: collapse;
     margin-top: 0;
@@ -93,43 +103,52 @@
 }
 
    
-    .data-table thead {
+    .data-table thead 
+    {
         background-color: #F9FAFB;
         border-bottom: 1px solid #E5E7EB;
     }
 
-    .data-table th {
+    .data-table th 
+    {
         padding: 12px 16px;
         text-align: left;
         font-weight: 600;
         color: #4B5563;
         font-size: 14px;
         text-transform: uppercase;
+        background: rgb(210, 196, 158, 0.75);
+        align-content: center;
     }
 
 
-    .data-table tbody tr {
+    .data-table tbody tr 
+    {
         border-bottom: 1px solid #e0e0e0;
     }
 
-        .data-table tbody tr:last-child {
+        .data-table tbody tr:last-child
+        {
             border-bottom: 1px solid #e0e0e0;
         }
 
        
-        .data-table tbody tr:hover {
+        .data-table tbody tr:hover 
+        {
             background-color: #F3F4F6;
         }
 
     
-    .data-table td {
+    .data-table td
+    {
         padding: 12px 16px;
         color: #374151;
         font-size: 14px;
         vertical-align: middle;
     }
 
-        .data-table td .cover-image {
+        .data-table td .cover-image 
+        {
             max-width: 80px;
             height: 120px; 
             object-fit: cover; 
@@ -139,7 +158,8 @@
         }
 
 
-.action-icon-button { 
+.action-icon-button 
+{ 
     padding: 0.375rem; 
     border: none;
     background: none; 
@@ -151,24 +171,29 @@
     justify-content: center; 
 }
 
-    .action-icon-button.text-danger { 
+    .action-icon-button.text-danger 
+    { 
         color: #dc3545;
     }
 
-        .action-icon-button.text-danger:hover {
+        .action-icon-button.text-danger:hover 
+        {
             color: #c82333; 
         }
 
-    .action-icon-button.text-primary {
+    .action-icon-button.text-primary 
+    {
         color: #007bff;
     }
 
-        .action-icon-button.text-primary:hover {
+        .action-icon-button.text-primary:hover 
+        {
             color: #0056b3; 
         }
 
 
-.empty-message {
+.empty-message 
+{
     padding: 24px;
     text-align: center;
     color: #6B7280;
@@ -180,85 +205,101 @@
 }
 
 
-.confirmation-modal .modal-content, .success-modal .modal-content {
+.confirmation-modal .modal-content, .success-modal .modal-content 
+{
     border-radius: 12px;
     background-color: #ffffff;
     border: none;
 }
 
-.confirmation-modal .modal-content {
+.confirmation-modal .modal-content 
+{
     width: 400px;
 }
 
-.success-modal .modal-content {
+.success-modal .modal-content 
+{
     max-width: 320px;
     margin: 0 auto;
     background-color: #f5f2ef;
 }
 
 
-.confirmation-modal .modal-header {
+.confirmation-modal .modal-header 
+{
     padding: 1rem 1.2rem 0.8rem;
     background-color: #F2EDE5; 
 
 }
 
-.confirmation-modal .modal-title, .success-modal .modal-title {
+.confirmation-modal .modal-title, .success-modal .modal-title 
+{
     font-weight: 600;
     color: #333;
 }
 
-.confirmation-modal .modal-body, .success-modal .modal-body {
+.confirmation-modal .modal-body, .success-modal .modal-body 
+{
     padding: 1.5rem 2rem;
 }
 
-.success-modal .modal-body {
+.success-modal .modal-body 
+{
     padding: 2rem;
 }
 
 
-.confirmation-modal .btn-secondary {
+.confirmation-modal .btn-secondary
+{
     background-color: #e4e6e7; 
     border: none;
     color: #333;
     min-width: 100px;
 }
 
-    .confirmation-modal .btn-secondary:hover {
+    .confirmation-modal .btn-secondary:hover 
+    {
         background-color: #d4d6d7; 
     }
 
-.confirmation-modal .btn-danger {
+.confirmation-modal .btn-danger
+{
     background-color: #FF4747; 
     border: none;
     min-width: 100px;
     height: 35px;
 }
 
-    .confirmation-modal .btn-danger:hover {
+    .confirmation-modal .btn-danger:hover 
+    {
         background-color: #ff3333; 
     }
 
-.confirmation-modal .modal-body p, .success-modal p {
+.confirmation-modal .modal-body p, .success-modal p 
+{
     color: #333;
     font-size: 1.1rem;
     font-weight: 500;
 }
 
-.success-modal p {
+.success-modal p
+{
     color: #666;
     font-size: 1rem;
 }
 
-.btn-close {
+.btn-close 
+{
     opacity: 0.5;
 }
 
-    .btn-close:hover {
+    .btn-close:hover 
+    {
         opacity: 0.75;
     }
 
-.success-icon {
+.success-icon 
+{
     width: 60px;
     height: 60px;
     background-color: #647D7F; 
@@ -275,25 +316,57 @@
         font-size: 24px;
     }
 
-.success-modal .modal-title { 
+.success-modal .modal-title 
+{ 
     color: #333;
     font-weight: 600;
 }
 
-.success-modal .btn-secondary { 
+.success-modal .btn-secondary 
+{ 
     background-color: #647D7F;
     border: none;
     color: white;
     min-width: 100px;
 }
 
-    .success-modal .btn-secondary:hover {
+    .success-modal .btn-secondary:hover
+    {
         background-color: #4f6466;
     }
 
 
-@media (max-width: 768px) {
+@media (max-width: 768px) 
+{
     .main-content {
         padding: 16px; 
     }
 }
+
+
+
+/* Active Filters */
+.active-filters {
+    margin-top: 10px;
+}
+
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filter-tag {
+    background-color: rgba(134, 168, 170, 0.7);
+    border-color: rgba(134, 168, 170, 1);
+    color: black;
+    padding: 6px 14px; /* Increased from 4px 10px */
+    border-radius: 20px;
+    font-size: 0.9rem; /* Increased from 0.85rem */
+    font-weight: 400;
+}
+
+.form-container {
+    display: flex;
+}
+

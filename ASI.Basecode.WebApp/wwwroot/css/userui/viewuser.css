@@ -399,6 +399,8 @@
     color: #495057;
     line-height: 1.6;
     font-size: 15px;
+    word-break: break-word;
+    white-space: pre-wrap;
 }
 
 .review-footer {
@@ -1218,7 +1220,7 @@
 
 .confirmation-modal .modal-header {
     border-bottom: none;
-    padding-bottom: 0;
+    padding-bottom: 15px;
 }
 
 .confirmation-modal .btn-danger {

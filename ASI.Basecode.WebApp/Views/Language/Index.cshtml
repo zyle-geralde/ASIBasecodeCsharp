@@ -49,6 +49,17 @@
         ConfirmButtonId = "edit-button-submit",
         ConfirmButtonClass = "add-language-btn"
     };
+
+    var editCancelConfirmationModal = new ConfirmationModalModel
+    {
+        Id = "editLanguageCancelModal",
+        Title = "Discard Changes?",
+        Message = "You have unsaved changes! Are you sure you want to discard them?",
+        CancelButtonText = "Keep Editing",
+        ConfirmButtonText = "Discard",
+        ConfirmButtonId = "confirmCancelEditBtn",
+        ConfirmButtonClass = "btn-discard"
+    };
 }
 
 
@@ -62,7 +73,7 @@
     <link rel="stylesheet" href="~/css/pagination.css" asp-append-version="true" />
 }
 
-<div class="users-container p-4">
+<div class="users-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="header-section">
             <h1>Languages</h1>
@@ -75,90 +86,91 @@
         </a>
     </div>
 
-    @*--------------------------------------For Searching sort and filter---------------------------------------------*@
-    <form asp-action="Index" asp-controller="Language" method="get" class="d-flex align-items-center mb-3" id="searchFilterForm">
-        <input type="text"
-               name="searchTerm"
-               value="@currentSearch"
-               class="form-control me-2"
-               placeholder="Search users…" />
-
-        <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
-        <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
-
-        <button type="submit" class="btn btn-primary">Apply</button>
-
-        <button type="button" id="sortButton" class="sort-btn">Sort By <i class="fas fa-caret-down"></i></button>
-
-    </form>
-    <div class="sort-popup card shadow" id="sortPopup" style="display: none;">
-        <div class="card-header bg-secondary text-white justify-center">
-            <h6 class="mb-0" style="margin-top: 6px;">Sort By:</h6>
-        </div>
-        <div class="card-body">
-            <div class="mb-3">
-                <label class="form-label fw-bold">Sort By:</label>
-                <div class="ms-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="popupSortOrder" id="sortName" value="Name" @(currentSort == "Name" ? "checked" : "")>
-                        <label class="form-check-label" for="sortId">Name</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="popupSortOrder" id="sortDate" value="CreatedTime" @(currentSort == "CreatedTime" ? "checked" : "")>
-                        <label class="form-check-label" for="sortDate">Created Date</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-bold">Direction:</label>
-                <div class="ms-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="popupSortDirection" id="sortAsc" value="false" @(!currentSortDescending ? "checked" : "")>
-                        <label class="form-check-label" for="sortAsc">Ascending <i class="fas fa-arrow-up"></i></label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="popupSortDirection" id="sortDesc" value="true" @(currentSortDescending ? "checked" : "")>
-                        <label class="form-check-label" for="sortDesc">Descending <i class="fas fa-arrow-down"></i></label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-outline-secondary" style="margin-right: 10px" id="closeSortButton">Cancel</button>
-                <button type="button" class="btn btn-secondary me-2" id="applySortButton">Apply</button>
-            </div>
-        </div>
-    </div>
-    @*------------------------------------------------------------For searching sort and filter-----------------------------------------------*@
-
     <div class="card">
         <div class="card-body">
-            @*<div class="search-filter-container">
-                <div style="position: relative; flex-grow: 1;">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="searchInput" class="form-control search-field" placeholder="Search" style="padding-left: 33px;" />
+            <div class="search-filter-container" style="height: 50px; align-items: stretch; margin-top: 10px; margin-bottom: 15px">
+                <form asp-action="Index" asp-controller="Language" method="get" class="d-flex align-items-center mb-3" id="searchFilterForm">
+                    <div class="search-container" style="margin-right: 10px">
+                        <i class="fas fa-search"></i>
+                        <input type="text"
+                               name="searchTerm"
+                               value="@currentSearch"
+                               class="book-master-form-input align-self-center" style="font-weight: 300; margin-right: 10px"
+                               placeholder="Search languages…" />
+                    </div>
+                    <div class="action-buttons">
+                        <button type="button" id="sortButton" class="btn btn-outline-secondary sort-btn"> <i class="fas fa-sort"></i> Sort & Filter</button>
+                                             <a asp-action="Index" class="btn btn-outline-secondary">Clear All</a>
+
+                    </div>
+                    <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
+                    <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
+                </form>
+            </div>
+            <div class="sort-popup card shadow" id="sortPopup" style="display: none;">
+                <div class="card-header bg-secondary text-white justify-center">
+                    <h6 class="mb-0" style="margin-top: 6px;">Sort By:</h6>
                 </div>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-outline-secondary">
-                        <i class="fas fa-sort"></i> Sort
-                    </button>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Sort By:</label>
+                        <div class="ms-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortName" value="Name" @(currentSort == "Name" ? "checked" : "")>
+                                <label class="form-check-label" for="sortId">Name</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortOrder" id="sortDate" value="CreatedTime" @(currentSort == "CreatedTime" ? "checked" : "")>
+                                <label class="form-check-label" for="sortDate">Created Date</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Direction:</label>
+                        <div class="ms-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortDirection" id="sortAsc" value="false" @(!currentSortDescending ? "checked" : "")>
+                                <label class="form-check-label" for="sortAsc">Ascending <i class="fas fa-arrow-up"></i></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="popupSortDirection" id="sortDesc" value="true" @(currentSortDescending ? "checked" : "")>
+                                <label class="form-check-label" for="sortDesc">Descending <i class="fas fa-arrow-down"></i></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-outline-secondary" style="margin-right: 10px" id="closeSortButton">Cancel</button>
+                        <button type="button" class="btn btn-secondary me-2" id="applySortButton">Apply</button>
+                    </div>
                 </div>
-            </div>*@
-              
-                <div class="table-scroll-container">
-                <table class="table table-hover">
-                    
+            </div>
+                            <p style="font-size: 12px; color:"gray">Showing  @Model.StartIndex - @Model.EndIndex out of @Model.TotalCount languages</p>
+
+            @*------------------------------------------------------------For searching sort and filter-----------------------------------------------*@
+
+            <div class="table-container">
+                @if(Model!=null && Model.Any())
+                {
+                     <div class="table-scroll-container">
+                    <table class="table table-hover">
+
                         <colgroup>
-                            <col style="width: 5%;">
-                            <col style="width: 70%;">
-                            <col style="width: 25%;">
+                            <col style="width: 30%;">
+                            <col style="width: 20%;">
+                            <col style="width: 20%;">
+								<col style="width: 10%;">
+
                         </colgroup>
                         <thead>
                             <tr>
-                                <th></th>
                                 <th style="padding-left: 10px">Language</th>
-                                <th class="text-md-center" style="width: 25%;">Actions</th>
+									<th>Created At</th>
+
+                                <th>Books</th>
+
+                                <th class="text-md-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -168,23 +180,41 @@
                                 @foreach (var language in Model)
                                 {
                                     <tr>
-                                        <td></td>
                                         <td class="align-middle" style="padding-left: 10px">@language.LanguageName</td>
-                                        <td class="align-middle" style="white-space:nowrap;">
-                                            <div class="action-buttons justify-content-center">
-                                                <a href="/Language/LanguageView/@language.LanguageId" class="action-icon-button text-secondary">
-                                                    <i class="fas fa-info-circle"></i>
+											<td class="align-middle">@language.UploadDate?.ToString("yyyy-MM-dd")
+
+										<td >
+                                            <a asp-controller="Book"
+                                                   asp-action="ListBook"
+                                                   asp-route-languageFilter="@language.LanguageId"
+                                                   asp-route-category="@language.LanguageName"
+                                                   class="action-icon-button text-secondary">
+                                                   View books
                                                 </a>
-                                                <button type="button" class="btn btn-icon text-danger delete-language-btn"
+                                        </td>
+
+                                        <td class="align-middle" style="white-space:nowrap;">
+                                                <div class="d-flex gap-2 justify-content-center">
+                                                <a asp-controller="Book"
+                                                   asp-action="ListBook"
+                                                   asp-route-languageFilter="@language.LanguageId"
+                                                   asp-route-category="@language.LanguageName"
+                                                   class="action-icon-button text-secondary">
+                                                </a>
+                                                @*<a href="/Language/LanguageView/@language.LanguageId" class="action-icon-button text-secondary">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </a>*@
+                                                    <button type="button" class="action-icon-button text-primary edit-language-btn"
+                                                            data-bs-toggle="modal" data-bs-target="#editLanguageModal"
+                                                            data-id="@language.LanguageId" data-name="@language.LanguageName" id="edit_language_button">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                <button type="button" class="action-icon-button text-danger delete-language-btn"
                                                         data-bs-toggle="modal" data-bs-target="#deleteLanguageModal"
                                                         data-id="@language.LanguageId" data-name="@language.LanguageName" id="delete_language_button">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-icon text-primary edit-language-btn"
-                                                        data-bs-toggle="modal" data-bs-target="#editLanguageModal"
-                                                        data-id="@language.LanguageId" data-name="@language.LanguageName" id="edit_language_button">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
+                                                
                                             </div>
                                         </td>
                                     </tr>
@@ -199,13 +229,23 @@
                         </tbody>
                     </table>
                 </div>
-        </div>
-        
+                }
+                else
+                {
+                                        <p class="empty-message">No languages found. Why not add some?</p>
+
+                }
+               
+
+                <partial name="_PaginationPartial" view-data='@new ViewDataDictionary(ViewData) { { "RouteValues", routeValues } }' />
+
+            </div>
+          </div>
     </div>
-    <partial name="_PaginationPartial" view-data='@new ViewDataDictionary(ViewData) { { "RouteValues", routeValues } }' />
 </div>
 
 <partial name="_ConfirmationModal" model="deleteLanguageModal" />
+<partial name="_ConfirmationModal" model="editCancelConfirmationModal" />
 <partial name="_Notification" />
 
 <div class="modal fade" id="addLanguageModal" tabindex="-1" aria-labelledby="addLanguageLabel" aria-hidden="true">
@@ -221,7 +261,7 @@
                 <div id="addLanguageForm">
                     <div class="mb-3">
                         <label for="newLanguage" class="form-label">Language</label>
-                        <input type="text" class="form-control" id="newLanguage" name="LanguageName" placeholder="Text">
+                        <input type="text" class="form-control" id="newLanguage" name="LanguageName" maxlength="300">
                         <span id="languageNameError" class="text-danger"></span>
                     </div>
                     <div class="d-flex justify-content-end">
@@ -238,16 +278,17 @@
         <div class="modal-content add-language-modal-content p-4">
             <div class="modal-header border-0 pb-0 mb-3">
                 <h5 class="modal-title add-language-title" id="editLanguageLabel">Edit Language</h5>
-                <button type="button" class="btn-close add-language-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close add-language-close" id="editCloseBtn" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-2">
                 <div id="editLanguageForm">
+                    <input type="hidden" id="originalLanguageName" />
                     <div class="mb-3">
                         <label for="editLanguage" class="form-label">Language</label>
-                        <input type="text" class="form-control" id="editLanguage" />
+						<input type="text" class="form-control" id="editLanguage" maxlength="300" />
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button type="button" class="btn add-language-btn" id="edit-button-submit">SAVE CHANGES</button>
+                        <button type="button" class="btn add-language-btn disabled-btn" id="edit-button-submit" disabled>SAVE CHANGES</button>
                     </div>
                 </div>
             </div>
@@ -260,7 +301,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
-        $(document).ready(function() {
+                $(document).ready(function() {
             toastr.options = {
                 "closeButton": true,
                 "debug": false,
@@ -313,7 +354,7 @@
             // Delete Language
             const deleteButtons = document.querySelectorAll(".delete-language-btn");
             let languageIdToDelete = null;
-            
+
             deleteButtons.forEach(button => {
                 button.addEventListener("click", function() {
                     languageIdToDelete = this.getAttribute("data-id");
@@ -322,7 +363,7 @@
 
             $("#delete-button-submit").on("click", function(e) {
                 e.preventDefault();
-                
+
                 $.ajax({
                     url: '/Language/Delete',
                     type: 'POST',
@@ -334,8 +375,6 @@
                         setTimeout(function() {
                             window.location.href = '/Language/Index';
                         }, 1500);
-                        
-                        
                     },
                     error: function(xhr) {
                         try {
@@ -348,28 +387,97 @@
                 });
             });
 
-            // Edit Language
+            // Edit Language - Updated with change tracking and confirmation
             const editButtons = document.querySelectorAll(".edit-language-btn");
             let languageIdToEdit = null;
-            
+            let hasLanguageChanges = false;
+            let originalLanguageName = "";
+
+            // Function to check for changes in edit form
+            function checkForLanguageChanges() {
+                const currentValue = $("#editLanguage").val();
+                hasLanguageChanges = currentValue !== originalLanguageName;
+
+                // Enable or disable save button based on changes
+                if (hasLanguageChanges) {
+                    $("#edit-button-submit").prop('disabled', false);
+                    $("#edit-button-submit").removeClass('disabled-btn');
+                } else {
+                    $("#edit-button-submit").prop('disabled', true);
+                    $("#edit-button-submit").addClass('disabled-btn');
+                }
+            }
+
+            // Initialize edit modal
             editButtons.forEach(button => {
                 button.addEventListener("click", function() {
                     languageIdToEdit = this.getAttribute("data-id");
-                    const languageName = this.getAttribute("data-name");
-                    $("#editLanguage").val(languageName);
+                    originalLanguageName = this.getAttribute("data-name");
+
+                    // Store original value and set current value
+                    $("#originalLanguageName").val(originalLanguageName);
+                    $("#editLanguage").val(originalLanguageName);
+
+                    // Initial check for changes (should be disabled at start)
+                    hasLanguageChanges = false;
+                    $("#edit-button-submit").prop('disabled', true);
+                    $("#edit-button-submit").addClass('disabled-btn');
                 });
             });
 
+            // Track changes in the edit language field
+            $("#editLanguage").on('input', function() {
+                checkForLanguageChanges();
+            });
+
+            // Handle close button with confirmation if there are changes
+            $("#editCloseBtn").on('click', function() {
+                if (hasLanguageChanges) {
+                    // First hide the edit modal
+                    $('#editLanguageModal').modal('hide');
+
+                    // Then show the confirmation modal after a brief delay
+                    setTimeout(function() {
+                        $('#editLanguageCancelModal').modal('show');
+                    }, 300);
+                } else {
+                    // Close the edit modal directly if no changes
+                    $('#editLanguageModal').modal('hide');
+                }
+            });
+
+            // Handle "Discard" button in confirmation modal
+            $("#confirmCancelEditBtn").on('click', function() {
+                // Just hide the confirmation modal
+                $('#editLanguageCancelModal').modal('hide');
+            });
+
+            // Handle "Keep Editing" button in confirmation modal
+            $(document).on('click', '#editLanguageCancelModal .btn-secondary', function() {
+                // Hide the confirmation modal first
+                $('#editLanguageCancelModal').modal('hide');
+
+                // Show edit modal again with a brief delay
+                setTimeout(function() {
+                    $('#editLanguageModal').modal('show');
+                }, 300);
+            });
+
+            // Submit edit changes
             $("#edit-button-submit").on("click", function(e) {
                 e.preventDefault();
-                
+
+                if (!hasLanguageChanges) {
+                    return; // Do nothing if no changes
+                }
+
                 $.ajax({
                     url: '/Language/Edit',
                     type: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({ 
-                        LanguageId: languageIdToEdit, 
-                        LanguageName: $("#editLanguage").val() 
+                    data: JSON.stringify({
+                        LanguageId: languageIdToEdit,
+                        LanguageName: $("#editLanguage").val()
                     }),
                     success: function() {
                         $('#editLanguageModal').modal('hide');
@@ -389,10 +497,6 @@
                 });
             });
 
-
-
-
-            //--------------------------FOR SORTING-----------------------------
             // Sort popup functionality
             const sortButton = document.getElementById('sortButton');
             const sortPopup = document.getElementById('sortPopup');
@@ -424,7 +528,6 @@
             });
 
             // Apply button
-            // Apply button
             applySortButton.addEventListener('click', function () {
                 // Get selected values
                 const sortOrderValue = document.querySelector('input[name="popupSortOrder"]:checked').value;
@@ -432,9 +535,7 @@
 
                 // Update hidden form fields
                 document.getElementById('sortOrderField').value = sortOrderValue;
-
                 document.getElementById('sortDescendingField').value = sortDirectionValue;
-
 
                 // Find the main form and submit it
                 document.querySelector('#searchFilterForm').submit();

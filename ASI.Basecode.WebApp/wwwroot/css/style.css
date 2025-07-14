@@ -96,7 +96,7 @@ header .logosec
     }
 
 /* Search Bar */
-.search-container 
+/*.search-container 
 {
     position: relative;
     display: flex;
@@ -129,7 +129,7 @@ header .logosec
     .search-input::placeholder {
         color: var(--text-color-light);
         font-size: 15px;
-    }
+    }*/
 
 /* Profile Dropdown Trigger  */
 .profile-dropdown-trigger 
@@ -478,10 +478,10 @@ header .logosec
         width: 100%;
     }
 
-    .search-container 
+    /*.search-container 
     {
         width: 100%;
-    }
+    }*/
 }
 
 @media (min-width: 319px) and (max-width: 514px) 
@@ -509,12 +509,12 @@ header .logosec
         border-right: 2px solid #e0e0e0;
     }
 
-    .search-container 
+  /*  .search-container 
     {
         max-width: 160px; 
         padding: 2px 1px;
         width: 100%;
-    }
+    }*/
 
     .main-search-icon 
     {

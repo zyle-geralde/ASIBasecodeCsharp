@@ -27,5 +27,9 @@ namespace ASI.Basecode.Data.Interfaces
 
         Task<List<Author>> GetAllAuthor();
 
+        Task<bool> CheckBookNameAndAuthorExist(string author, string bookName);
+
+        Task GetReviewCount(string bookId);
+
     }
 }
