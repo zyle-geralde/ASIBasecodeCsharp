@@ -79,12 +79,12 @@
                 @*<input type="hidden" id="concatenatedGenre" name="GenreList" value="@Model?.GenreList" />*@
 
                 <div class="book-header-rating" id="bookHeaderRating">
-                    <div class="stars header-stars">
-                        <i class="far fa-star" data-rating="1"></i>
-                        <i class="far fa-star" data-rating="2"></i>
-                        <i class="far fa-star" data-rating="3"></i>
-                        <i class="far fa-star" data-rating="4"></i>
-                        <i class="far fa-star" data-rating="5"></i>
+                    <div class="stars header-stars" style="cursor: default">
+                        <i class="far fa-star" data-rating="1" style="cursor: default"></i>
+                        <i class="far fa-star" data-rating="2" style="cursor: default"></i>
+                        <i class="far fa-star" data-rating="3" style="cursor: default"></i>
+                        <i class="far fa-star" data-rating="4" style="cursor: default"></i>
+                        <i class="far fa-star" data-rating="5" style="cursor: default"></i>
                     </div>
 
                                         <span class="rating-text">@Model.AverageRating?.ToString("0.00") / 5.0 (@Model.ReviewCount reviews)</span>
@@ -1026,45 +1026,12 @@ $('#addReview').on('shown.bs.modal', function () {
 $('#editReview').on('shown.bs.modal', function () {
     const currentLength = $('#edit-comment').val().length;
     $('#edit-comment-count').text(`${currentLength} / 1000`);
-});
-            // Back to top button functionality
-            $('.back-to-top').on('click', function(e) {
-                e.preventDefault();
-                $('html, body').animate({
-                    scrollTop: 0
-                }, 600);
-            });
+});          
 
-            // Show/hide back to top button based on scroll position
-            $(window).scroll(function() {
-                if ($(this).scrollTop() > 300) {
-                    $('.back-to-top').addClass('show');
-                } else {
-                    $('.back-to-top').removeClass('show');
-                }
-                
-                // Highlight TOC link based on scroll position
-                const scrollPosition = $(window).scrollTop();
-                
-                // Find which section is currently in view
-                $('.book-detail-section').each(function() {
-                    const sectionTop = $(this).offset().top - 100;
-                    const sectionHeight = $(this).height();
-                    const sectionId = $(this).attr('id');
-                    
-                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                        $('.toc-link').removeClass('active');
-                        $(`.toc-link[href="#${sectionId}"]`).addClass('active');
-                    }
-                });
-            });
-
-            // Modal handling
             $('#addReview, #editReview').on('hidden.bs.modal', function () {
                 $('body').removeClass('modal-open');
                 $('.modal-backdrop').remove();
 
-                // Reset appropriate form when modal is closed
                 if ($(this).attr('id') === 'addReview') {
                     $('#addReviewForm')[0].reset();
                     resetStars(stars, '#starsRating');
@@ -1076,35 +1043,31 @@ $('#editReview').on('shown.bs.modal', function () {
                 }
             });
 
-            // Handle star hover effect for add review
             stars.hover(
-                function() { // mouseenter
+                function() {
                     if (!$('#starsRating').hasClass('selection-locked')) {
                         const star = $(this);
                         const hoverRating = parseInt(star.data('rating'));
                         highlightStars(hoverRating, stars);
                     }
                 },
-                function() { // mouseleave
+                function() {
                     if (!$('#starsRating').hasClass('selection-locked')) {
                         highlightStars(selectedRating, stars);
                     }
                 }
             );
 
-            // Handle star hover effect for edit review - MODIFIED
             editStars.hover(
-                function() { // mouseenter
+                function() { 
                     if (!$('#editStarsRating').hasClass('selection-locked')) {
                         const star = $(this);
                         const hoverRating = parseInt(star.data('rating'));
-                        
-                        // Only change visual appearance without changing the actual value
+
                         editStars.each(function() {
                             const s = $(this);
                             const r = parseInt(s.data('rating'));
                             
-                            // Visual change only - no value change
                             if (r <= hoverRating) {
                                 s.removeClass('far').addClass('fas');
                             } else {
@@ -1113,9 +1076,8 @@ $('#editReview').on('shown.bs.modal', function () {
                         });
                     }
                 },
-                function() { // mouseleave
+                function() { 
                     if (!$('#editStarsRating').hasClass('selection-locked')) {
-                        // Reset visual appearance to match the stored value
                         editStars.each(function() {
                             const s = $(this);
                             const r = parseInt(s.data('rating'));
@@ -1130,12 +1092,10 @@ $('#editReview').on('shown.bs.modal', function () {
                 }
             );
 
-            // Handle star click for add review
             stars.click(function() {
                 const star = $(this);
                 const clickedRating = parseInt(star.data('rating'));
 
-                // If clicking the same star that's already selected, deselect all
                 if (selectedRating === clickedRating) {
                     selectedRating = 0;
                     $('#rating-value').val(selectedRating);
@@ -1148,27 +1108,21 @@ $('#editReview').on('shown.bs.modal', function () {
                 }
             });
 
-            // Handle star click for edit review - Updated version
 editStars.click(function() {
     const star = $(this);
     const clickedRating = parseInt(star.data('rating'));
     console.log("Star clicked with rating:", clickedRating);
 
-    // Always set the clicked rating
     editSelectedRating = clickedRating;
     $('#edit-rating-value').val(editSelectedRating);
     
-    // Reset all stars first
     resetStars(editStars, '#editStarsRating');
     
-    // Then highlight up to the clicked rating
     highlightStars(editSelectedRating, editStars);
     $('#editStarsRating').addClass('selection-locked');
 });
 
-            // Handle clicking outside the stars - MODIFIED
             $(document).on('click', function(event) {
-                // For add review stars
                 if (!$(event.target).closest('#starsRating').length &&
                     !$(event.target).is('#starsRating') &&
                     selectedRating !== 0) {
@@ -1176,25 +1130,17 @@ editStars.click(function() {
                     $('#rating-value').val(selectedRating);
                     resetStars(stars, '#starsRating');
                 }
-
-                // For edit review stars - REMOVED this behavior for edit stars
-                // This was causing the rating to be reset when clicking elsewhere
-                // We want to keep the original rating value
             });
 
-            // Prevent clicks inside the modal from triggering the document click handler
             $('.modal-content').on('click', function(event) {
                 event.stopPropagation();
             });
 
-            // Submit review button - UPDATED
             $('#submitReviewBtn').click(function() {
-                // Validate the form
                 const rating = $('#rating-value').val();
                 const comment = $('textarea[name="Comment"]').val().trim();
                 const bookId = $('#bookId').val();
 
-                // Debug log
                 console.log("Submitting new review:", {
                     bookId: bookId,
                     rating: rating,
@@ -1207,15 +1153,7 @@ editStars.click(function() {
                     return;
                 }
 
-                // if (!comment) {
-                //     toastr.warning("Please provide a comment about the book.");
-                //     return;
-                // }
-
-                // Get the token
                 const token = $('#addReviewForm input[name="__RequestVerificationToken"]').val();
-
-                // Submit the form via AJAX
                 $.ajax({
                     url: '@Url.Action("Add", "Review")',
                     type: 'POST',
@@ -1225,13 +1163,11 @@ editStars.click(function() {
                     },
                     success: function(response) {
                         if (response && response.success) {
-                            // Close the modal
                             var addReviewModal = bootstrap.Modal.getInstance(document.getElementById('addReview'));
                             addReviewModal.hide();
 
                             showSuccessNotification("Review submitted successfully!");
-
-                            // Refresh the page after a short delay to show the new review
+                       
                             setTimeout(function() {
                                 location.reload();
                             }, 1500);
@@ -1246,33 +1182,22 @@ editStars.click(function() {
                 });
             });
 
-            // Update review button click handler
+
 $('#updateReviewBtn').click(function() {
-    // Get form values
+
     let rating = $('#edit-rating-value').val();
     const comment = $('#edit-comment').val().trim();
     const reviewId = $('#edit-reviewId').val();
     const bookId = $('#edit-bookId').val();
     const uploadDate = $('#edit-uploadDate').val();
     
-    // If rating is empty/zero, use the stored editSelectedRating value instead
-    // This ensures we retain the original rating if the user didn't select a new one
     if (!rating || rating == 0) {
         rating = editSelectedRating;
-        // Also update the hidden field with this value
         $('#edit-rating-value').val(editSelectedRating);
     }
 
-    // Only validate comment
-    // if (!comment) {
-    //     toastr.warning("Please provide a comment about the book.");
-    //     return;
-    // }
-
-    // Get the token
     const token = $('#editReviewForm input[name="__RequestVerificationToken"]').val();
 
-    // Submit the form via AJAX
     $.ajax({
         url: '@Url.Action("Edit", "Review")',
         type: 'POST',
@@ -1347,7 +1272,6 @@ $('#updateReviewBtn').click(function() {
 
                     toastr.success("Review deleted successfully!");
 
-                    // Optionally, reload the page or remove the review from DOM
                     setTimeout(function () {
                         location.reload();
                     }, 1200);
@@ -1361,4 +1285,130 @@ $('#updateReviewBtn').click(function() {
         }
     });
 </script>
+    <script>
+        $(document).ready(function() {
+            // Initialize variables
+            const $tocLinks = $('.toc-link');
+            const $sections = $('.book-detail-section');
+            let isScrolling = false;
+            let scrollTimeout;
+            
+            // Create loader for smooth scrolling
+            const $loader = $('<div class="scroll-loader"><div class="loader-spinner"></div></div>');
+            $('body').append($loader);
+            
+            // Function to highlight the correct TOC link based on scroll position
+            function updateActiveTocLink() {
+                const scrollPosition = $(window).scrollTop();
+                const windowHeight = $(window).height();
+                const documentHeight = $(document).height();
+                
+                // Special case: if near bottom of page, highlight reviews tab
+                if (scrollPosition + windowHeight >= documentHeight - 150) {
+                    $tocLinks.removeClass('active');
+                    $tocLinks.filter('[href="#reviews"]').addClass('active');
+                    return;
+                }
+                
+                // Check each section
+                let currentSection = null;
+                
+                $sections.each(function() {
+                    const $section = $(this);
+                    // Adjust offset to account for sticky header
+                    const sectionTop = $section.offset().top - 120;
+                    const sectionBottom = sectionTop + $section.outerHeight();
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                        currentSection = $section.attr('id');
+                        return false; // Break the loop
+                    }
+                });
+                
+                // If no section is found and we're at the top, default to description
+                if (!currentSection && scrollPosition < 300) {
+                    currentSection = 'description';
+                }
+                
+                // Update active state
+                if (currentSection) {
+                    $tocLinks.removeClass('active');
+                    $(`.toc-link[href="#${currentSection}"]`).addClass('active');
+                }
+            }
+            
+            // Set description as active by default when the page loads
+            function setDefaultActive() {
+                $tocLinks.removeClass('active');
+                $tocLinks.filter('[href="#description"]').addClass('active');
+            }
+            
+            // Initialize TOC state
+            setDefaultActive();
+            
+            // Update on scroll
+            $(window).on('scroll', function() {
+                if (!isScrolling) {
+                    updateActiveTocLink();
+                }
+                
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(function() {
+                    updateActiveTocLink();
+                }, 100);
+            });
+            
+            // Enhanced smooth scroll for anchor links
+            $('a.toc-link').on('click', function(event) {
+                if (this.hash !== "") {
+                    event.preventDefault();
+                    const hash = this.hash;
+                    
+                    // Show loader
+                    $loader.addClass('active');
+                    isScrolling = true;
+                    
+                    // Add active class to clicked link and remove from others
+                    $tocLinks.removeClass('active');
+                    $(this).addClass('active');
+                    
+                    // Calculate the target position with offset
+                    const $target = $(hash);
+                    const targetPosition = $target.offset().top - 90;
+                    
+                    // Use improved easing for smoother scrolling
+                    $('html, body').animate({
+                        scrollTop: targetPosition
+                    }, {
+                        duration: 600,
+                        easing: 'easeInOutCubic',
+                        complete: function() {
+                            // Hide loader and reset scrolling state
+                            $loader.removeClass('active');
+                            isScrolling = false;
+                            
+                            // Force the active state again, in case scroll events have fired
+                            $tocLinks.removeClass('active');
+                            $(`.toc-link[href="${hash}"]`).addClass('active');
+                        }
+                    });
+                }
+            });
+            
+            // Add custom easing function
+            $.extend($.easing, {
+                easeInOutCubic: function(x, t, b, c, d) {
+                    if ((t /= d / 2) < 1) return c / 2 * t * t * t + b;
+                    return c / 2 * ((t -= 2) * t * t + 2) + b;
+                }
+            });
+            
+            // Make the TOC stay in view
+            $('.book-toc').css({
+                'position': 'sticky',
+                'top': '70px',
+                'z-index': '10'
+            });
+        });
+    </script>
 }
