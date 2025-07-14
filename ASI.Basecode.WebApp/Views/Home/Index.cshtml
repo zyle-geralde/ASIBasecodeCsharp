@@ -9,6 +9,7 @@
 
 @section styles {
     <link rel="stylesheet" href="~/css/Index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 }
 
 
@@ -214,11 +215,15 @@
             <div class="category-scroll-container">
                 @foreach (var language in Model.Languages)
                 {
+                    var colorIndex = Math.Abs(language.LanguageName.GetHashCode()) % 10 + 1;
                     <a asp-controller="Book"
                        asp-action="SearchResults"
                        asp-route-languageFilter="@language.LanguageId"
                        asp-route-category="@language.LanguageName"
-                       class="category-card">
+                       class="category-card language-card language-bg-@colorIndex">
+                        <div class="language-icon">
+                            <i class="fa fa-globe"></i>
+                        </div>
                         <div class="category-card-overlay">
                             <span>@language.LanguageName</span>
                         </div>
