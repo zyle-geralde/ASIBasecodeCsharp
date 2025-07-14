@@ -1108,3 +1108,65 @@ body
         margin-bottom: 30px;
     }
 }
+
+/* Language Card Styles */
+.language-card {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+    .language-card:hover {
+        transform: translateY(-5px);
+    }
+
+.language-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 64px;
+    color: rgba(255, 255, 255, 0.3);
+    z-index: 1;
+}
+
+/* Color backgrounds for language cards */
+.language-bg-1 {
+    background: linear-gradient(135deg, #697565, #4A5247);
+}
+
+.language-bg-2 {
+    background: linear-gradient(135deg, #5BA8A0, #3D7670);
+}
+
+.language-bg-3 {
+    background: linear-gradient(135deg, #B67352, #8C5640);
+}
+
+.language-bg-4 {
+    background: linear-gradient(135deg, #AA647D, #7D4A5C);
+}
+
+.language-bg-5 {
+    background: linear-gradient(135deg, #6C8EBF, #4C648B);
+}
+
+.language-bg-6 {
+    background: linear-gradient(135deg, #E9B384, #C29163);
+}
+
+.language-bg-7 {
+    background: linear-gradient(135deg, #2DAA9E, #1F7570);
+}
+
+.language-bg-8 {
+    background: linear-gradient(135deg, #7A3E3E, #5A2E2E);
+}
+
+.language-bg-9 {
+    background: linear-gradient(135deg, #496989, #324A5F);
+}
+
+.language-bg-10 {
+    background: linear-gradient(135deg, #10A19D, #0B7471);
+}
