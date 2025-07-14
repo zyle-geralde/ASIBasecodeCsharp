@@ -30,7 +30,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Index(string? searchTerm, string? role, string? sortOrder, bool sortDescending = true, int? page = 1)
+        public async Task<IActionResult> Index(string? searchTerm, string? role, string? sortOrder, bool sortDescending = false, int? page = 1)
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
@@ -45,7 +45,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 SearchTerm = searchTerm,
                 Role = role,
-                SortOrder = sortOrder ?? "updateddate",
+                SortOrder = sortOrder ?? "email",
                 SortDescending = sortDescending,
                 PageIndex = pageIndex,
                 PageSize = PageSize

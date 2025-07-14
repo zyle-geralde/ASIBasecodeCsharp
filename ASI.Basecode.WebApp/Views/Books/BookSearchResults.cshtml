@@ -52,11 +52,11 @@
 
     if (!string.IsNullOrWhiteSpace(currentFromDate)) {
         routeValues["publishedFrom"] = currentFromDate;
-        descriptionParts.Add($"Published from: {DateTime.Parse(currentFromDate).ToString("yyyy-MM-dd")} ");
+        descriptionParts.Add($"Published from: {DateTime.Parse(currentFromDate).ToString("dd MMM yyyy")} ");
     }
     if (!string.IsNullOrWhiteSpace(currentToDate)) {
         routeValues["publishedTo"] = currentToDate;
-        descriptionParts.Add($"Published to: {DateTime.Parse(currentToDate).ToString("yyyy-MM-dd")} ");
+		descriptionParts.Add($"Published to: {DateTime.Parse(currentToDate).ToString("dd MMM yyyy")} ");
     }
     if (currentGenres.Any()) {
         routeValues["genreFilter"] = string.Join(",", currentGenres);
@@ -199,11 +199,11 @@
                             <div class="book-meta">
                                 <div class="meta-item">
                                     <i class="fas fa-calendar-alt meta-icon"></i>
-                                    <span class="meta-text">Published: @(book.PublicationDate?.ToString("MMM dd, yyyy") ?? "N/A")</span>
+									<span class="meta-text">Published: @(book.PublicationDate?.ToString("dd MMMM yyyy") ?? "N/A")</span>
                                 </div>
                                 <div class="meta-item">
                                     <i class="fas fa-upload meta-icon"></i>
-                                    <span class="meta-text">Added: @(book.UploadDate?.ToString("MMM dd, yyyy") ?? "N/A")</span>
+									<span class="meta-text">Added: @(book.UploadDate?.ToString("dd MMMM yyyy") ?? "N/A")</span>
                                 </div>
                             </div>
                         </div>
@@ -255,7 +255,9 @@
                                 <option value="publicationdate" selected="@(currentSort == "publicationdate")">Publication Date</option>
                                 <option value="rating" selected="@(currentSort == "rating")">Rating</option>
                                 <option value="uploaddate" selected="@(currentSort == "uploaddate")">Upload Date</option>
-                            </select>
+								<option value="reviewcount" selected="@(currentSort == "reviewcount")">Review Count</option>
+
+								</select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Direction</label>
@@ -302,6 +304,7 @@
                                 <input type="date"
                                     name="publishedFrom"
                                     value="@currentFromDate"
+									   asp-format="{0:yyyy-MM-dd}"
                                     class="form-control" />
                             </div>
                         </div>
@@ -311,25 +314,13 @@
                                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                                 <input type="date"
                                     name="publishedTo"
+									   asp-format="{0:yyyy-MM-dd}"
                                     value="@currentToDate"
                                     class="form-control" />
                             </div>
                         </div>
                     </div>
-                   <div class="toggle-container" style="margin-top: 15px; margin-bottom: 0">
-                        <div class="toggle-wrapper" style="padding: 0">
-                            <input type="checkbox" 
-                                   id="isFeatured" 
-                                   name="isFeatured" 
-                                   class="toggle-input" 
-                                   value="true"
-                                   @(currentIsFeatured == true ? "checked" : "") />
-                            <label for="isFeatured" class="toggle-label">
-                                <span class="toggle-button"></span>
-                            </label>
-                            <span class="toggle-text">Featured books only</span>
-                        </div>
-                    </div>
+
                 </div>
             </div>
             

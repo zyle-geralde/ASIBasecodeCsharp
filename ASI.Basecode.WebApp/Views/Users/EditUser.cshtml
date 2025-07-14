@@ -8,34 +8,34 @@
     var isPasswordError = errorMessage != null && errorMessage.ToLower().Contains("password");
 
     var successModal = new SuccessModalModel
-    {
-        Id = "successModal",
-        Title = "Success!",
-        Message = "User information saved successfully!",
-        OkButtonText = "OK"
-    };
+            {
+                Id = "successModal",
+                Title = "Success!",
+                Message = "User information saved successfully!",
+                OkButtonText = "OK"
+            };
 
     var saveConfirmationModal = new ConfirmationModalModel
-    {
-        Id = "saveModal",
-        Title = "Save Changes",
-        Message = "Are you sure you want to save your changes?",
-        CancelButtonText = "Discard",
-        ConfirmButtonText = "Save",
-        ConfirmButtonId = "saveConfirmBtn",
-        ConfirmButtonClass = "btn-danger-2"
-    };
+            {
+                Id = "saveModal",
+                Title = "Save Changes",
+                Message = "Are you sure you want to save your changes?",
+                CancelButtonText = "Discard",
+                ConfirmButtonText = "Save",
+                ConfirmButtonId = "saveConfirmBtn",
+                ConfirmButtonClass = "btn-danger-2"
+            };
 
     var cancelConfirmationModal = new ConfirmationModalModel
-    {
-        Id = "editUserConfirmationModal",
-        Title = "Discard Changes?",
-        Message = "You have unsaved changes! Are you sure you want to discard them?",
-        CancelButtonText = "Keep Editing",
-        ConfirmButtonText = "Discard",
-        ConfirmButtonId = "confirmCancelBtn",
-        ConfirmButtonClass = "btn-discard"
-    };
+            {
+                Id = "editUserConfirmationModal",
+                Title = "Discard Changes?",
+                Message = "You have unsaved changes! Are you sure you want to discard them?",
+                CancelButtonText = "Keep Editing",
+                ConfirmButtonText = "Discard",
+                ConfirmButtonId = "confirmCancelBtn",
+                ConfirmButtonClass = "btn-discard"
+            };
 }
 
 @section styles {
@@ -134,21 +134,28 @@
             submitBtn.classList.add('disabled-btn');
 
             // Track changes in the username field
-            document.getElementById('name').addEventListener('input', function() {
+            document.getElementById('name').addEventListener('input', function () {
                 checkForChanges();
+
+                var username = this.value;
+                if (username.length > 0 && (username.length < 3 || username.length > 30)) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
             });
 
             // Track password toggle and changes
-            document.getElementById('switchToggle').addEventListener('change', function() {
+            document.getElementById('switchToggle').addEventListener('change', function () {
                 togglePasswordFields();
                 checkForChanges();
             });
 
-            document.getElementById('password').addEventListener('input', function() {
+            document.getElementById('password').addEventListener('input', function () {
                 checkForChanges();
             });
 
-            document.getElementById('confirmpassword').addEventListener('input', function() {
+            document.getElementById('confirmpassword').addEventListener('input', function () {
                 checkForChanges();
             });
 
@@ -162,11 +169,14 @@
                 // Check if username changed
                 var usernameChanged = currentUsername !== originalUsername;
 
+                // Check username length validity
+                var usernameValid = currentUsername.length >= 3 && currentUsername.length <= 30;
+
                 // Check if passwords changed
                 hasPasswordChanges = passwordToggle && (passwordValue !== '' || confirmPasswordValue !== '');
 
-                // Update overall change status
-                hasFormChanges = usernameChanged || hasPasswordChanges;
+                // Update overall change status - only enable if changes AND valid username
+                hasFormChanges = (usernameChanged || hasPasswordChanges) && usernameValid;
 
                 // Enable/disable the Save Changes button based on changes
                 if (hasFormChanges) {
@@ -175,6 +185,10 @@
                 } else {
                     submitBtn.disabled = true;
                     submitBtn.classList.add('disabled-btn');
+                }
+
+                if (currentUsername.length > 0 && (currentUsername.length < 3 || currentUsername.length > 30)) {
+                    toastr.warning("Username must be between 3 and 30 characters.");
                 }
             }
 
@@ -185,7 +199,7 @@
             togglePasswordFields();
 
             // Setup save confirmation modal
-            document.querySelector('.submit-btn').addEventListener('click', function(e) {
+            document.querySelector('.submit-btn').addEventListener('click', function (e) {
                 e.preventDefault();
 
                 // Only proceed if there are actual changes
@@ -196,7 +210,17 @@
             });
 
             // Handle save confirmation
-            document.getElementById('saveConfirmBtn').addEventListener('click', function() {
+            document.getElementById('saveConfirmBtn').addEventListener('click', function () {
+
+                var username = document.getElementById('name').value;
+
+                if (username.length < 3 || username.length > 30) {
+                    // toastr.error("Username must be between 3 and 30 characters.");
+                    bootstrap.Modal.getInstance(document.getElementById('saveModal')).hide();
+                    removeModalBackdrops();
+                    return;
+                }
+
                 document.getElementById('editUserForm').submit();
                 bootstrap.Modal.getInstance(document.getElementById('saveModal')).hide();
                 // Remove modal backdrop manually to prevent overlay issues
@@ -204,7 +228,7 @@
             });
 
             // Handle cancel button click
-            document.getElementById('cancelButton').addEventListener('click', function() {
+            document.getElementById('cancelButton').addEventListener('click', function () {
                 // Only show confirmation if there are changes, otherwise redirect immediately
                 if (hasFormChanges) {
                     var cancelModal = new bootstrap.Modal(document.getElementById('editUserConfirmationModal'));
@@ -216,7 +240,7 @@
             });
 
             // Handle cancel confirmation
-            document.getElementById('confirmCancelBtn').addEventListener('click', function() {
+            document.getElementById('confirmCancelBtn').addEventListener('click', function () {
                 window.location.href = '/User/Index';
                 bootstrap.Modal.getInstance(document.getElementById('editUserConfirmationModal')).hide();
                 // Remove modal backdrop manually to prevent overlay issues
@@ -226,7 +250,7 @@
             // Function to clean up modal backdrops
             function removeModalBackdrops() {
                 var modals = document.querySelectorAll('.modal-backdrop');
-                modals.forEach(function(modal) {
+                modals.forEach(function (modal) {
                     modal.remove();
                 });
                 document.body.classList.remove('modal-open');
@@ -235,11 +259,11 @@
             }
 
             // Handle modal close events
-            document.getElementById('saveModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('saveModal').addEventListener('hidden.bs.modal', function () {
                 removeModalBackdrops();
             });
 
-            document.getElementById('editUserConfirmationModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('editUserConfirmationModal').addEventListener('hidden.bs.modal', function () {
                 removeModalBackdrops();
             });
 
@@ -251,19 +275,19 @@
             };
 
             // Show toastr for success messages
-            @if (TempData["SuccessMessage"] != null)
+        @if (TempData["SuccessMessage"] != null)
+        {
+            var msg = TempData["SuccessMessage"] as string;
+            if (!string.IsNullOrEmpty(msg))
             {
-                        var msg = TempData["SuccessMessage"] as string;
-                        if (!string.IsNullOrEmpty(msg))
-                        {
-                                    <text>toastr.success("@msg");</text>
-                        }
+                <text>toastr.success("@msg"); </text>
             }
-            @if (ViewData["SaveSuccess"] != null && (bool)ViewData["SaveSuccess"])
-            {
-                        <text>toastr.success("User info updated successfully!");</text>
-            }
-        });
+        }
+        @if (ViewData["SaveSuccess"] != null && (bool)ViewData["SaveSuccess"])
+        {
+            <text>toastr.success("User info updated successfully!"); </text>
+        }
+                });
     </script>
     <script>
         // On page load and when the switch changes, toggle password fields
@@ -306,7 +330,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             var errorMessage = '@(errorMessage ?? "")';
             var isUsernameError = @isUsernameError.ToString().ToLower();
-             var isPasswordError = @isPasswordError.ToString().ToLower();
+            var isPasswordError = @isPasswordError.ToString().ToLower();
             if (errorMessage && isUsernameError) {
                 toastr.warning(errorMessage);
             }

@@ -91,7 +91,7 @@
                             <div class="info-label">Birthdate</div>
                             <div class="info-value">
                                 @(Model.Birthdate
-                                                                ?.ToString("MM/dd/yyyy")
+																?.ToString("dd MMMM yyyy")
                                                                 ?? "" )
                             </div>
                         </div>
@@ -212,13 +212,13 @@
                                 <div class="review-meta">
                                     <div class="review-date">
                                         <i class="fas fa-calendar-alt"></i>
-                                        Posted: @review.UploadDate?.ToString("MMMM dd, yyyy")
+										Posted: @review.UploadDate?.ToString("dd MMMM yyyy")
                                     </div>
                                     @if (review.UpdatedDate.HasValue && review.UpdatedDate != review.UploadDate)
                                     {
                                         <div class="review-updated">
                                             <i class="fas fa-edit"></i>
-                                            Updated: @review.UpdatedDate?.ToString("MMMM dd, yyyy")
+											Updated: @review.UpdatedDate?.ToString("dd MMMM yyyy")
                                         </div>
                                     }
                                     
@@ -296,16 +296,15 @@
                         <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
                     <div class="row mb-3">
-                        <div class="col">
-                            <label for="birthdate" class="form-label">Birthdate</label>
-                            <div class="input-group date">
-                                <input asp-for="Birthdate" type="text" class="form-control" id="birthdate" placeholder="MM/DD/YYYY">
-                                <button type="button" class="input-group-text" id="calendarButton">
-                                    <i class="fas fa-calendar"></i>
-                                </button>
-                            </div>
-                            <span asp-validation-for="Birthdate" class="text-danger"></span>
-                        </div>
+						<div class="col">
+							<label asp-for="Birthdate" class="form-label">Birthdate</label>
+							<input asp-for="Birthdate"
+								   type="date"
+								   class="form-control"
+								   asp-format="{0:yyyy-MM-dd}" />
+							<span asp-validation-for="Birthdate" class="text-danger"></span>
+						</div>
+
                         <div class="col">
                             <label asp-for="Gender" class="form-label"></label>
                             <select asp-for="Gender" class="form-select">
@@ -427,7 +426,7 @@
 
                     <div class="mb-4">
                         <label class="form-label">What do you think of the book?</label>
-                        <textarea class="form-control" id="edit-user-comment" name="Comment" rows="5" placeholder="Share your thoughts about this book"></textarea>
+                        <textarea class="form-control" id="edit-user-comment" name="Comment" rows="5" placeholder="Share your thoughts about this book" maxlength="1000"></textarea>
                     </div>
                     <div class="mb-4">
                         <label class="form-label">How would you rate the book?</label>
@@ -586,9 +585,21 @@
 
             // Show datepicker only when calendar icon is clicked
             $('#calendarButton').click(function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                $('#birthdate').datepicker('show');
+					e.preventDefault();
+		e.stopPropagation();
+
+		var $bd = $('#birthdate');
+		var currentVal = $bd.val();  // e.g. "07/14/1985"
+
+		if (currentVal) {
+		  // parse+apply the existing value so the picker opens to that date
+		  $bd.datepicker('update', currentVal);
+		} else {
+		  // no value → reset to today
+		  $bd.datepicker('update', new Date());
+		}
+
+		$bd.datepicker('show');
             });
 
             // Prevent the datepicker from showing when clicking the input
@@ -776,7 +787,7 @@
             const fileName = this.files[0] ? this.files[0].name : '';
             document.getElementById('profilePictureNameDisplay').value = fileName;
             const profilePictureUploadStatus = document.getElementById('profilePictureUploadStatus');
-            profilePictureUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
+            profilePictureUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 10MB';
             profilePictureUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: JPG, PNG, JPEG';
             profilePictureUploadStatus.classList.remove('error-message');
         });
