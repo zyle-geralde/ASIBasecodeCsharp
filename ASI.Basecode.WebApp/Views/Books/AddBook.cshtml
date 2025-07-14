@@ -283,6 +283,13 @@
 
             // Date picker
             if (publicationDateInput) {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = (today.getMonth() + 1).toString().padStart(2, '0');
+                const day = today.getDate().toString().padStart(2, '0');
+
+                publicationDateInput.max = `${year}-${month}-${day}`;
+
                 publicationDateInput.addEventListener('click', () => {
                     publicationDateInput.showPicker();
                 });
@@ -371,16 +378,18 @@
                         missingFields.push('Publication Date');
                         isValid = false;
                     } else {
-                        
                         const today = new Date();
                         today.setHours(0, 0, 0, 0);
+
                         const pubDate = new Date(pubDateValue);
+                        pubDate.setHours(0, 0, 0, 0);
 
                         if (pubDate > today) {
                             missingFields.push('Publication Date (cannot be in the future)');
                             isValid = false;
-                        } 
+                        }
                     }
+
 
                     if (!languageInput.value.trim()) {
                         missingFields.push('Language');

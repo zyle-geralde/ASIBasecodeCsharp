@@ -311,11 +311,11 @@
                 form.querySelector('#isbn13').value !== initialFormState.isbn13 ||
                 form.querySelector('#edition').value !== initialFormState.edition
             ) {
-                return true; // Changes detected in text/select fields
+                return true; 
             }
 
             if (currentCoverFileSelected || currentBookFileSelected) {
-                return true; // New files are selected
+                return true;
             }
 
             if (currentCoverImageUrl !== initialFormState.coverImageUrl ||
@@ -371,6 +371,13 @@
 
             // date picker
             if (publicationDateInput) {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = (today.getMonth() + 1).toString().padStart(2, '0');
+                const day = today.getDate().toString().padStart(2, '0');
+
+                publicationDateInput.max = `${year}-${month}-${day}`;
+
                 publicationDateInput.addEventListener('click', () => {
                     publicationDateInput.showPicker();
                 });
@@ -396,9 +403,9 @@
 
             // Initialize all the modular functions 
             initializeFeaturedToggle();
-            await initializeSingleSelectAuthor(); // Await because it fetches data
-            await initializeSingleSelectLanguage(); // Await
-            await initializeMultiSelect({ // Await
+            await initializeSingleSelectAuthor(); 
+            await initializeSingleSelectLanguage(); 
+            await initializeMultiSelect({ 
                 containerId: 'genreContainer',
                 dropdownId: 'genreDropdown',
                 hiddenInputId: 'concatenatedGenre',
@@ -426,10 +433,9 @@
 
             const form = document.getElementById('editBookForm');
 
-            // Cancel Button (with Discard Confirmation) ---
+            // Cancel Button 
             document.getElementById('cancelButton').addEventListener('click', () => {
                 if (checkForChanges()) {
-                    // Show discard confirmation modal if changes exist
                     if (discardChangesConfirmationModal) {
                         discardChangesConfirmationModal.show();
                     }
@@ -448,7 +454,7 @@
             // Form Submission(with Save Confirmation) 
             if (form) {
                 form.addEventListener('submit', async (event) => {
-                    event.preventDefault(); // Prevent default form submission
+                    event.preventDefault(); 
 
                     //  client-side validation first
                     const titleInput = document.getElementById('title');
@@ -469,13 +475,31 @@
                     // Validation checks
                     if (!titleInput.value.trim()) { missingFields.push('Title'); isValid = false; }
                     if (!authorInput.value.trim()) { missingFields.push('Author'); isValid = false; }
-                    if (!publicationDateInput.value) { missingFields.push('Publication Date'); isValid = false; }
 
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    const pubDate = new Date(publicationDateInput.value);
+                    const pubDateValue = publicationDateInput.value;
+                    if (!pubDateValue || pubDateValue === "undefined" || pubDateValue === "NaN-NaN-NaN") {
+                        missingFields.push('Publication Date');
+                        isValid = false;
+                    } else {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
 
-                    if (pubDate > today) { missingFields.push('Publication Date (cannot be in the future)'); isValid = false; }
+                        const pubDate = new Date(pubDateValue);
+                        pubDate.setHours(0, 0, 0, 0);
+
+                        if (pubDate > today) {
+                            missingFields.push('Publication Date (cannot be in the future)');
+                            isValid = false;
+                        }
+                    }
+                    // if (!publicationDateInput.value) { missingFields.push('Publication Date'); isValid = false; }
+
+                    // const today = new Date();
+                    // today.setHours(0, 0, 0, 0);
+                    // const pubDate = new Date(publicationDateInput.value);
+
+                    // if (pubDate > today) { missingFields.push('Publication Date (cannot be in the future)'); isValid = false; }
+
                     if (!languageInput.value.trim()) { missingFields.push('Language'); isValid = false; }
                     if (!genreInput.value) { missingFields.push('Genre'); isValid = false; }
 
