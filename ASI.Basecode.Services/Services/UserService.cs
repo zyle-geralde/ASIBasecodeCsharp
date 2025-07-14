@@ -20,6 +20,7 @@ using static System.Net.WebRequestMethods;
 using System.Security.Policy;
 using System.Data.Entity;
 using Microsoft.AspNetCore.Http;
+using ASI.Basecode.Data.QueryParams;
 
 namespace ASI.Basecode.Services.Services
 {

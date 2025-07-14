@@ -1,5 +1,6 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using Basecode.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
