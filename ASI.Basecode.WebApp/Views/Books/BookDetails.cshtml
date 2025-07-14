@@ -1007,10 +1007,10 @@
                     }, 600);
                 }
             });
-            $('#add-comment').on('input', function () {
-    const length = $(this).val().length;
-    $('#add-comment-count').text(`${length} / 1000`);
-});
+			$('#add-comment').on('input', function () {
+				const length = $(this).val().length;
+				$('#add-comment-count').text(`${length} / 1000`);
+		});
 
 // Character counter for Edit Review
 $('#edit-comment').on('input', function () {

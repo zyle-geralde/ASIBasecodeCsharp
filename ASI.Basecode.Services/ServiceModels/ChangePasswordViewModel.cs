@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ASI.Basecode.Services.ServiceModels
 {
@@ -15,9 +10,11 @@ namespace ASI.Basecode.Services.ServiceModels
         public string CurrentPassword { get; set; }
 
         [Required, DataType(DataType.Password)]
+        [StringLength(100, ErrorMessage = "Password must be at least 8 characters.", MinimumLength = 8)]
+
         public string NewPassword { get; set; }
 
-        [Required, Compare("NewPassword", ErrorMessage = "Passwords don't match"), DataType(DataType.Password), ]
+        [Required, Compare("NewPassword", ErrorMessage = "Passwords don't match"), DataType(DataType.Password),]
         public string ConfirmPassword { get; set; }
     }
 }
