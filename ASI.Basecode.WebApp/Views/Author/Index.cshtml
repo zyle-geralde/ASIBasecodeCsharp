@@ -181,9 +181,9 @@
         @author.AuthorDescription
     </span>
 </td>
-                        
-                                       
-                                        <td class="align-middle">@author.UploadDate?.ToShortDateString()</td>
+
+
+										<td class="align-middle">@author.UploadDate?.ToString("dd MMMM yyyy")</td>
 										<td class="align-middle">
 											<a asp-controller="Book"
 											   asp-action="ListBook"
