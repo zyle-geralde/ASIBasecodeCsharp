@@ -45,12 +45,12 @@
     if (!string.IsNullOrWhiteSpace(currentFromDate))
     {
         routeValues["publishedFrom"] = currentFromDate;
-        descriptionParts.Add($"Published from: {DateTime.Parse(currentFromDate).ToString("yyyy-MM-dd")} ");
+        descriptionParts.Add($"Published from: {DateTime.Parse(currentFromDate).ToString("dd MMMM yyyy")} ");
     }
     if (!string.IsNullOrWhiteSpace(currentToDate))
     {
         routeValues["publishedTo"] = currentToDate;
-        descriptionParts.Add($"Published to: {DateTime.Parse(currentToDate).ToString("yyyy-MM-dd")} ");
+        descriptionParts.Add($"Published to: {DateTime.Parse(currentToDate).ToString("dd MMMM yyyy")} ");
     }
     if (currentIsFeatured == true)
     {
@@ -225,8 +225,8 @@
                             <td>@book.Language</td>
                             <td>@book.AverageRating ★</td>
 							<td>@book.ReviewCount</td>
-                            <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
-                            <td>@book.UploadDate?.ToString("yyyy-MM-dd")</td>
+                            <td>@book.PublicationDate?.ToString("dd MMMM yyyy")</td>
+                            <td>@book.UploadDate?.ToString("dd MMMM yyyy")</td>
                             <td>
                                 <div class="d-flex gap-2 justify-content-center">
 								 <a href="/Book/BookDetails/@book.BookId" class="action-icon-button text-secondary">

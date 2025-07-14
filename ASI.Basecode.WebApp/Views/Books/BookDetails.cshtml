@@ -200,21 +200,7 @@
                             <div class="info-value">@Model.AverageRating?.ToString("0.0") / 5.0</div>
                         </div>                       
 
-                        <div class="info-item">
-                            <div class="info-label">
-                                <i class="fas fa-star"></i> Featured Status
-                            </div>
-                            <div class="info-value">
-                                @if (Model.IsFeatured.HasValue && Model.IsFeatured.Value)
-                                {
-                                    <span class="status-badge featured"><i class="fas fa-check-circle"></i> Featured</span>
-                                }
-                                else
-                                {
-                                    <span class="status-badge not-featured"><i class="fas fa-times-circle"></i> Not Featured</span>
-                                }
-                            </div>
-                        </div>
+                       
                     </div>
                 </div>
             </section>
@@ -279,7 +265,7 @@
                             <div class="info-label">
                                 <i class="fas fa-calendar-day"></i> Publication Date
                             </div>
-                            <div class="info-value">@Model.PublicationDate?.ToString("MMMM dd, yyyy")</div>
+                            <div class="info-value">@Model.PublicationDate?.ToString("dd MMMM yyyy")</div>
                         </div>
 
                         <div class="info-item">
@@ -327,7 +313,7 @@
                             <div class="info-label">
                                 <i class="fas fa-calendar-plus"></i> Upload Date
                             </div>
-                            <div class="info-value">@Model.UploadDate?.ToString("MMMM dd, yyyy hh:mm tt")</div>
+                            <div class="info-value">@Model.UploadDate?.ToString("dd MMMM yyyy")</div>
                         </div>
 
                         <div class="info-item">
@@ -343,7 +329,7 @@
                                 <div class="info-label">
                                     <i class="fas fa-calendar-check"></i> Last Updated
                                 </div>
-                                <div class="info-value">@Model.UpdatedDate?.ToString("MMMM dd, yyyy hh:mm tt")</div>
+                                <div class="info-value">@Model.UpdatedDate?.ToString("dd MMMM yyyy")</div>
                             </div>
                         }
 
