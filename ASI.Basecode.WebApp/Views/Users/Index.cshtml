@@ -193,7 +193,7 @@
                         <tbody>
                             @foreach (var u in Model)
                             {
-                                                        <tr style="cursor:pointer" onclick="window.location.href='@Url.Action("ViewUserProfile", "PersonProfile", new { id = u.Id })'">
+                                                        <tr>
 
                                 @* <tr style="cursor:pointer" onclick="window.location='/> *@
                                     <td>@u.UserName</td>
