@@ -91,7 +91,7 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 SortOrder = "reviewcount",
                 SortDescending = true,
-                PageSize = 5
+                PageSize = 10
             };
             var featuredBooks = await _bookService.GetBooks(featuredBooksParams);
 
