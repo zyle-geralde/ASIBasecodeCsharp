@@ -67,6 +67,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: flex-start;
+    margin-top: 20px;
 }
 
 .search-header-content {
@@ -417,6 +418,22 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: rgba(0, 0, 0, 0.2);
     color: #333;
 }
+
+.language-dropdown {
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(134, 168, 170, 0.6);
+    background-color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgb(62, 79, 78, 0.7);
+}
+
+    .language-dropdown:focus {
+        border-color: rgba(134, 168, 170, 1);
+        box-shadow: 0 0 0 3px rgba(134, 168, 170, 0.25);
+    }
 
 /* Ripple effect for chips */
 .ripple {
