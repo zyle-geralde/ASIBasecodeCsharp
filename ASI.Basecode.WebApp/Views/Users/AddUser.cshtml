@@ -136,15 +136,47 @@
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
 		  const addBtn = document.getElementById('addUserBtn');
+            const emailInput = document.getElementById('userId');
 		  const pwd    = document.getElementById('password');
 		  const cpwd   = document.getElementById('confirmpassword');
 		  const modalEl = document.getElementById('addModal');
 		  const modal = new bootstrap.Modal(modalEl);
+            const usernameInput = document.getElementById('name');
+
+        @if (isEmailError)
+        {
+            <text>toastr.error("@errorMessage"); </text>
+        }
+        @if (isUsernameError)
+        {
+            <text>toastr.error("@errorMessage"); </text>
+        }
+        @if (showSuccessModal)
+        {
+            <text>toastr.success("@successMessage"); </text>
+        }
 
 		  addBtn.addEventListener('click', function (e) {
 			e.preventDefault();
 			pwd.classList.remove('is-invalid');
 			cpwd.classList.remove('is-invalid');
+
+            const email = emailInput.value.trim();
+                if (!email.includes('@') || !email.includes('.')) {
+                    toastr.error("Please enter a valid email address (e.g., user@gmail.com)");
+                    emailInput.classList.add('is-invalid');
+                    emailInput.focus();
+                    return;
+                }
+
+
+                const username = usernameInput.value.trim();
+                if (username.length < 3 || username.length > 30) {
+                    toastr.error("Username must be between 3 and 30 characters.");
+                    usernameInput.classList.add('is-invalid');
+                    usernameInput.focus();
+                    return; // Exit early if invalid
+                }
 
 			if (pwd.value.length < 8) {
 			  toastr.error("Password must be at least 8 characters long.");
