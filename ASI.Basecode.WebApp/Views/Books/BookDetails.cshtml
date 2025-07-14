@@ -462,9 +462,13 @@
                                                 Updated last: @userReview.UploadDate?.ToString("MMMM dd, yyyy")
                                             </div>
                                             <div class="review-actions">
-                                                <button class="btn btn-edit-review" onclick="editReview('@userReview.ReviewId', '@Model.BookId', @(userReview.Rating), '@Html.Raw(Html.Encode(userReview.Comment))', '@userReview.UploadDate?.ToString("yyyy-MM-ddTHH:mm:ss")')">
+												@if(userReview.UserId == currentUserId)
+												{
+													<button class="btn btn-edit-review" onclick="editReview('@userReview.ReviewId', '@Model.BookId', @(userReview.Rating), '@Html.Raw(Html.Encode(userReview.Comment))', '@userReview.UploadDate?.ToString("yyyy-MM-ddTHH:mm:ss")')">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </button>
+												}
+												
                                                  @if (isAdmin || userReview.UserId == currentUserId)
                                                     {
                                                         <button class="btn btn-delete-review"
@@ -930,10 +934,10 @@
             });
 
             // Only validate comment - the rating should already be valid
-            if (!comment) {
-                toastr.warning("Please provide a comment about the book.");
-                return;
-            }
+            // if (!comment) {
+            //     toastr.warning("Please provide a comment about the book.");
+            //     return;
+            // }
 
             // Get the token
             const token = $('#editReviewForm input[name="__RequestVerificationToken"]').val();

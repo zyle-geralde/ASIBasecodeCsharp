@@ -189,6 +189,7 @@
     {
         <div class="table-responsive">
             <table class="data-table table">
+
                 <thead>
                     <tr>
                         <th>Cover</th>
@@ -197,6 +198,8 @@
                         
                         <th>Language</th>
                         <th>Rating</th>
+						                        <th>Review Count</th>
+
                         <th>Publication Date</th>
                         <th>Upload Date</th>
                         <th class="text-md-center">Actions</th>
@@ -205,7 +208,7 @@
                 <tbody>
                     @foreach (var book in Model)
                     {
-                        <tr style="cursor:pointer" onclick="window.location='/Book/BookDetails/@book.BookId'" >
+                        <tr>
                             <td>
                                 @if (!string.IsNullOrWhiteSpace(book.CoverImage))
                                 {
@@ -220,11 +223,15 @@
                             <td>@book.Author</td>
                             
                             <td>@book.Language</td>
-                            <td>@book.AverageRating</td>
+                            <td>@book.AverageRating ★</td>
+							<td>@book.ReviewCount</td>
                             <td>@book.PublicationDate?.ToString("yyyy-MM-dd")</td>
-                            <td>@book.UploadDate</td>
+                            <td>@book.UploadDate?.ToString("yyyy-MM-dd")</td>
                             <td>
                                 <div class="d-flex gap-2 justify-content-center">
+								 <a href="/Book/BookDetails/@book.BookId" class="action-icon-button text-secondary">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
                                     <a href="/Book/EditBook/@book.BookId" class="action-icon-button text-primary">
                                         <i class="fas fa-edit"></i>
                                     </a>
@@ -373,6 +380,10 @@
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="sortOrder" id="sortUpdatedDate" value="updateddate" @(currentSort == "updateddate" ? "checked" : null)>
                             <label class="form-check-label" for="sortUpdatedDate">Updated Date</label>
+                        </div>
+						 <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortUpdatedDate" value="reviewcount" @(currentSort == "reviewcount" ? "checked" : null)>
+                            <label class="form-check-label" for="sortUpdatedDate">Review Count</label>
                         </div>
                     </div>
                 </div>
