@@ -119,7 +119,7 @@
 
                         <div class="book-master-form-group">
                             <label for="numberOfPages">Number of Pages</label>
-                            <input type="number" id="numberOfPages" name="NumberOfPages" class="book-master-form-input" value="@Model?.NumberOfPages">
+                            <input type="number" id="numberOfPages" name="NumberOfPages" class="book-master-form-input" value="@Model?.NumberOfPages" min="0">
                             <span asp-validation-for="NumberOfPages" class="text-danger"></span>
                         </div>
 
@@ -140,7 +140,7 @@
                         </div>
                         <div class="book-master-form-group">
                             <label for="seriesOrder">Series Order</label>
-                            <input type="number" id="seriesOrder" name="SeriesOrder" class="book-master-form-input" value="@Model?.SeriesOrder">
+                            <input type="number" id="seriesOrder" name="SeriesOrder" class="book-master-form-input" value="@Model?.SeriesOrder" min="0">
                             <span asp-validation-for="SeriesOrder" class="text-danger"></span>
                         </div>
                     </div>
