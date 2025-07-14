@@ -232,7 +232,8 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <script type="module">
         import { initializeFeaturedToggle } from "/js/common/_slider.js";
-        import { deleteFileFromFirebase, uploadFileToFirebase, updateImagePreview } from "/js/common/_firebase.js";
+        import { deleteFileFromFirebase, uploadFileToFirebase } from "/js/common/_firebase.js";
+        import { updateImagePreview } from "/js/common/_updateImagePreview.js";
         import { initializeSingleSelectAuthor, initializeSingleSelectLanguage, initializeMultiSelect } from "/js/common/_selectInitializer.js";
 
         document.addEventListener('DOMContentLoaded', async () => {
