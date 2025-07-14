@@ -396,20 +396,20 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             if(emailObject == null)
             {
-                return BadRequest(new { Message = "No data has been passed" });
+                return BadRequest(new { success = false, message = "No data has been passed", toastrType = "error" });
             }
             try
             {
                 string generatedOTP = await _userService.SendOTPForResetPassword(emailObject.Email);
-                return Ok(new { Message = generatedOTP });
+                return Ok(new { success = true, message = generatedOTP, toastrType = "success" });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { success = false, message = ex.Message, toastrType = "error" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Message = ex.Message});
+                return BadRequest(new { success = false, message = ex.Message, toastrType = "error" });
             }
         }
 
@@ -420,21 +420,21 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             if (userObject == null)
             {
-                return BadRequest(new { Message = "No data has been passed" });
+                return BadRequest(new { success = false, message = "No data has been passed", toastrType = "error" });
             }
             try
             {
                 await _userService.CheckValidPassWord(userObject.Password);
                 await _userService.UpdatePassword(userObject);
-                return Ok(new { Message = "Successfully Updated Password" });
+                return Ok(new { success = true, message = "Successfully Updated Password", toastrType = "success" });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { success = false, message = ex.Message, toastrType = "error" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { success = false, message = ex.Message, toastrType = "error" });
             }
         }
     }
