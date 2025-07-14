@@ -229,6 +229,9 @@
 </div>
 
 <partial name="_ConfirmationModal" model="deleteConfirmationModal" />
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+</div>
 
 <form id="deleteUserForm" method="post" action="/User/Delete" style="display:none;">
     @Html.AntiForgeryToken()
@@ -246,15 +249,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="~/js/modal-helper.js" asp-append-version="true"></script>
     <script>
-        // Setup the delete modal with user information
+        function showLoadingOverlay() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideLoadingOverlay() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
         function setupDeleteModal(button) {
             const userId = button.getAttribute('data-user-id');
             const userName = button.getAttribute('data-user-name');
 
-            // Set the user ID to the hidden form
             document.getElementById('deleteUserId').value = userId;
 
-            // Show confirmation modal with dynamic message
             showConfirmationModal(
                 'deleteModal',
                 'Delete Confirmation',
@@ -264,19 +272,61 @@
         }
 
         function submitDeleteForm() {
-             document.getElementById('deleteUserForm').submit();
+            const deleteModalElement = document.getElementById('deleteModal');
+            const deleteModalInstance = bootstrap.Modal.getInstance(deleteModalElement);
+            if (deleteModalInstance) {
+                deleteModalInstance.hide();
+            }
+
+            // Show loading overlay immediately
+            showLoadingOverlay();
+
+            const form = document.getElementById('deleteUserForm');
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'RequestVerificationToken': form.querySelector('[name="__RequestVerificationToken"]').value
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        toastr.success('User deleted successfully!');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 300);
+                        
+                    } else {
+                        return response.text().then(text => {
+                            try {
+                                const errorData = JSON.parse(text);
+                                throw new Error(errorData.message || 'Delete failed');
+                            } catch (e) {
+                                throw new Error(text || 'Delete failed');
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Delete error:', error);
+                    toastr.error(`Failed to delete user: ${error.message}`);
+                })
+                .finally(() => {
+                    hideLoadingOverlay();
+                });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-
+        document.addEventListener('DOMContentLoaded', function () {
             toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "timeOut": "3000"
-             };
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "3000"
+            };
 
-            // Show toastr for success messages
+            // Show toastr for success messages from TempData
             const successMessageInput = document.getElementById('tempDataSuccessMessage');
             if (successMessageInput && successMessageInput.value) {
                 toastr.success(successMessageInput.value);
@@ -289,7 +339,7 @@
             const applySortButton = document.getElementById('applySortButton');
 
             // Toggle the sort popup when the sort button is clicked
-            sortButton.addEventListener('click', function(e) {
+            sortButton.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (sortPopup.style.display === 'none') {
                     sortPopup.style.display = 'block';
@@ -299,7 +349,7 @@
             });
 
             // Close the sort popup when clicked outside
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 if (!sortButton.contains(e.target) &&
                     !sortPopup.contains(e.target) &&
                     sortPopup.style.display === 'block') {
@@ -308,13 +358,12 @@
             });
 
             // Close button
-            closeSortButton.addEventListener('click', function() {
+            closeSortButton.addEventListener('click', function () {
                 sortPopup.style.display = 'none';
             });
 
             // Apply button
-                    // Apply button
-            applySortButton.addEventListener('click', function() {
+            applySortButton.addEventListener('click', function () {
                 // Get selected values
                 const roleValue = document.querySelector('input[name="popupRole"]:checked').value;
                 const sortOrderValue = document.querySelector('input[name="popupSortOrder"]:checked').value;
