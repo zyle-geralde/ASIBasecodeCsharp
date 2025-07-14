@@ -137,14 +137,23 @@
                 {
                     <div class="table-responsive">
                         <table class="data-table table table-hover">
+							<colgroup>
+								<col style="width: 10%;">
+								<col style="width: 20%;">
+								<col style="width: 30%;">
+								<col style="width: 20%;">
+
+								<col style="width: 20%;">
+							</colgroup>
                             <thead>
                                 <tr>
                                     <th style="padding-left: 10px">Image</th>
                                     <th>Author Name</th>
                                     <th>Description</th>
-                                                                        <th>Books</th>
 
-                                    <th>Created Date</th>
+                                    <th>Created At</th>
+									<th>Books</th>
+
                                     <th class="text-md-center">Actions</th>
                                 </tr>
                             </thead>
@@ -173,16 +182,17 @@
     </span>
 </td>
                         
-                                        <td class="align-middle">
-                                                <a asp-controller="Book"
-                                                   asp-action="ListBook"
-                                                   asp-route-author="@author.AuthorName"
-                                                   asp-route-category="@author.AuthorName"
-                                                   class="action-icon-button text-secondary">
-                                                   View books
-                                                </a>
-                                        </td>
+                                       
                                         <td class="align-middle">@author.UploadDate?.ToShortDateString()</td>
+										<td class="align-middle">
+											<a asp-controller="Book"
+											   asp-action="ListBook"
+											   asp-route-author="@author.AuthorName"
+											   asp-route-category="@author.AuthorName"
+											   class="action-icon-button text-secondary">
+												View books
+											</a>
+										</td>
                                         <td class="align-middle" style="white-space:nowrap;">
                                             <div class="d-flex gap-2 justify-content-center">
                                             

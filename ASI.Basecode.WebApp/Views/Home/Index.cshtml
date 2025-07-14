@@ -51,48 +51,6 @@
             </div>
         </section>
 
-         <!-- Author Section -->
-        <section class="section-card-genre">
-            <h2>Discover Authors</h2>
-            <p>Explore the captivating works of your favorite authors.</p>
-            <div class="category-scroll-container">
-                @foreach (var author in Model.Authors)
-                {
-                    <a asp-controller="Book"
-                       asp-action="SearchResults"
-                       asp-route-author="@author.AuthorName"
-                       asp-route-category="@author.AuthorName"
-                       class="category-card">
-                        <img src="@author.AuthorImageUrl"
-                             alt="@author.AuthorName Books" />
-                        <div class="category-card-overlay">
-                            <span>@author.AuthorName</span>
-                        </div>
-                    </a>
-                }
-            </div>
-        </section>
-
-        <!-- Language Section -->
-        <section class="section-card-genre">
-            <h2>Explore Languages</h2>
-            <p>Discover a diverse collection of books in various languages.</p>
-            <div class="category-scroll-container">
-                @foreach (var language in Model.Languages)
-                {
-                    <a asp-controller="Book"
-                       asp-action="SearchResults"
-                       asp-route-languageFilter="@language.LanguageId"
-                       asp-route-category="@language.LanguageName"
-                       class="category-card">
-                        <div class="category-card-overlay">
-                            <span>@language.LanguageName</span>
-                        </div>
-                    </a>
-                }
-            </div>
-        </section>
-       
         <section class="section-card">
             <div class="book-list-header">
                 <h2>View Books Top Rated By Users?</h2>
@@ -225,6 +183,48 @@
                 <button class="carousel-button next-button">❯</button>
             </div>
 
+        </section>
+
+        <!-- Author Section -->
+        <section class="section-card-genre">
+            <h2>Discover Authors</h2>
+            <p>Explore the captivating works of your favorite authors.</p>
+            <div class="category-scroll-container">
+                @foreach (var author in Model.Authors)
+                {
+                    <a asp-controller="Book"
+                       asp-action="SearchResults"
+                       asp-route-author="@author.AuthorName"
+                       asp-route-category="@author.AuthorName"
+                       class="category-card">
+                        <img src="@author.AuthorImageUrl"
+                             alt="@author.AuthorName Books" />
+                        <div class="category-card-overlay">
+                            <span>@author.AuthorName</span>
+                        </div>
+                    </a>
+                }
+            </div>
+        </section>
+
+        <!-- Language Section -->
+        <section class="section-card-genre">
+            <h2>Explore Languages</h2>
+            <p>Discover a diverse collection of books in various languages.</p>
+            <div class="category-scroll-container">
+                @foreach (var language in Model.Languages)
+                {
+                    <a asp-controller="Book"
+                       asp-action="SearchResults"
+                       asp-route-languageFilter="@language.LanguageId"
+                       asp-route-category="@language.LanguageName"
+                       class="category-card">
+                        <div class="category-card-overlay">
+                            <span>@language.LanguageName</span>
+                        </div>
+                    </a>
+                }
+            </div>
         </section>
        
     </div>

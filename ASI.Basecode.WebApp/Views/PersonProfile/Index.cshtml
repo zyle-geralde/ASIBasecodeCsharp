@@ -224,7 +224,7 @@
                                     
                                 </div>
                                 <div class="review-actions">
-                                    <button class="btn btn-edit-review" onclick="editUserReview('@review.ReviewId', '@review.BookId', '@review.Rating', '@Html.Raw(Html.Encode(review.Comment))', '@review.UploadDate?.ToString("yyyy-MM-ddTHH:mm:ss")')">
+									<button class="btn btn-edit-review" onclick="editUserReview('@review.ReviewId', '@review.BookId','@review.BookTitle',  '@review.Rating', '@Html.Raw(Html.Encode(review.Comment))', '@review.UploadDate?.ToString("yyyy-MM-ddTHH:mm:ss")')">
                                         <i class="fas fa-edit"></i> Edit
                                     </button>
                                     <button class="btn btn-delete-review" onclick="deleteUserReview('@review.ReviewId')">
@@ -282,17 +282,17 @@
                     </div>
                     <div class="mb-3">
                         <label asp-for="FirstName" class="form-label">First Name</label>
-                        <input asp-for="FirstName" class="form-control" />
+						<input asp-for="FirstName" class="form-control" maxlength="100" />
                         <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label asp-for="MiddleName" class="form-label">Middle Name</label>
-                        <input asp-for="MiddleName" class="form-control" />
+						<input asp-for="MiddleName" class="form-control" maxlength="100" />
                         <span asp-validation-for="MiddleName" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label asp-for="LastName" class="form-label">Last Name</label>
-                        <input asp-for="LastName" class="form-control" />
+                        <input asp-for="LastName" class="form-control" maxlength="100"/>
                         <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
                     <div class="row mb-3">
@@ -318,12 +318,12 @@
                     </div>
                      <div class="mb-4">
                         <label asp-for="Location" class="form-label">Location</label>
-                        <input asp-for="Location" class="form-control" id="location" rows="4" placeholder="Where are you from?"/>
+                        <input asp-for="Location" class="form-control" id="location" rows="4" placeholder="Where are you from?" maxlength="250"/>
                         <span asp-validation-for="AboutMe" class="text-danger"></span>
                     </div>
                     <div class="mb-4">
                         <label asp-for="AboutMe" class="form-label">About Me</label>
-                        <textarea asp-for="AboutMe" class="form-control" id="aboutme" rows="4" placeholder="Tell us about yourself"></textarea>
+                        <textarea asp-for="AboutMe" class="form-control" id="aboutme" rows="4" placeholder="Tell us about yourself" maxlength="500"></textarea>
                         <span asp-validation-for="AboutMe" class="text-danger"></span>
                     </div>
                     <div class="text-center">
@@ -349,7 +349,7 @@
                     <input asp-for="UserId" type="hidden" />
                     <div class="mb-3">
                         <label for="userName" class="form-label">Username</label>
-                        <input asp-for="Username" type="text" class="form-control" id="userName" placeholder="Text">
+                        <input asp-for="Username" type="text" class="form-control" id="userName" placeholder="Text" maxlength="30">
                         <span asp-validation-for="Username" class="text-danger"></span>
                     </div>
                     <div class="text-center">
@@ -415,7 +415,7 @@
             <div class="modal-body pt-0">
                 <div class="book-details text-center mb-4">
                     <h2 class="edit-book-title">Edit Your Review</h2>
-                    <p class="edit-book-id">Book ID: <span id="editBookId"></span></p>
+                    <p class="edit-user-bookTitle"><span id="editBookTitle"></span></p>
                 </div>
 
                 <form id="editUserReviewForm">
@@ -513,14 +513,15 @@
         }
 
         // Edit user review function
-        function editUserReview(reviewId, bookId, rating, comment, uploadDate) {
+        function editUserReview(reviewId, bookId, bookTitle, rating, comment, uploadDate) {
             try {
-                console.log("Edit review data:", { reviewId, bookId, rating, comment, uploadDate });
+                console.log("Edit review data:", { reviewId,bookTitle,  bookId, rating, comment, uploadDate });
 
                 // Populate the edit form
                 $('#edit-user-reviewId').val(reviewId);
                 $('#edit-user-bookId').val(bookId);
-                $('#edit-user-comment').val(comment);
+		$('#editBookTitle').text(bookTitle);
+					  $('#edit-user-comment').val(comment);
                 $('#edit-user-rating-value').val(rating);
                 $('#edit-user-uploadDate').val(uploadDate);
 
