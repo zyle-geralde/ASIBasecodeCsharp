@@ -104,19 +104,19 @@
                                    id = "mainSearchTerm"
                                     />
                         </div>
-                    </div>
-                    <div>
-                        <button type="button"
-                                class="btn clear-toggle-btn"
-                                onclick="location.href='@Url.Action("SearchResults", "Book")'">
-                            <i class="fas fa-times"></i> Clear All
-                        </button>
-                    </div>
+                    </div>                   
                     <div>
                         <button id="toggleFilters" type="button" class="btn filter-toggle-btn">
                             <i class="fas fa-sliders-h"></i> Filters & Sort
                         </button>
                     </div>
+                <div>
+                    <button type="button"
+                            class="btn clear-toggle-btn"
+                            onclick="location.href='@Url.Action("SearchResults", "Book")'">
+                        <i class="fas fa-times"></i> Clear All
+                    </button>
+                </div>
                 </div>
             @*</form>*@
             <div class="search-header">
@@ -245,10 +245,10 @@
                                        class="form-control" />
                             </div>
                         </div>
-                    </div>
+                    </div>                    
                 
-                    <div class="row g-3">
-                        <div class="col-md-4">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
                             <label class="form-label">Sort by</label>
                             <select name="sortOrder" class="form-select">
                                 <option value="title" selected="@(currentSort == "title")">Title</option>
@@ -257,14 +257,17 @@
                                 <option value="uploaddate" selected="@(currentSort == "uploaddate")">Upload Date</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="form-label">Direction</label>
                             <select name="sortDescending" class="form-select">
                                 <option value="false" selected="@(!currentSortDescending)">Ascending</option>
                                 <option value="true" selected="@(currentSortDescending)">Descending</option>
                             </select>
-                        </div>
-                        <div class="col-md-4">
+                        </div>                       
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
                             <label class="form-label">Rating</label>
                             <select name="rating" class="form-select">
                                 <option value="">Any</option>
@@ -353,7 +356,7 @@
                         }
                     </div>
                 </div>
-            </div>
+            </div>          
 
             <!-- Languages Section -->
             <div class="filter-section">
@@ -361,32 +364,26 @@
                     <i class="fas fa-language"></i> Language
                 </h4>
                 <div class="filter-section-content">
-                    <div class="chip-container">
-                        @foreach (var language in allLanguages)
-                        {
-                            <div>
-                                <input class="radio-chip"
-                                    type="radio"
-                                    name="languageFilter"
-                                    value="@language.LanguageId"
-                                    id="lang_@language.LanguageId"
-                                    @(currentLanguage == language.LanguageId ? "checked" : "") />
-                                <label class="radio-chip-label" for="lang_@language.LanguageId">
-                                    @language.LanguageName
-                                </label>
-                            </div>
-                        }
+                    <div class="row">
+                        <div class="col-md-12">
+                            <select name="languageFilter" class="form-select language-dropdown">
+                                <option value="">All Languages</option>
+                                @foreach (var language in allLanguages)
+                                {
+                                    <option value="@language.LanguageId" selected="@(currentLanguage == language.LanguageId)">
+                                        @language.LanguageName
+                                    </option>
+                                }
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="filter-actions">
-                <a asp-controller="Book"
-                    asp-action="SearchResults"
-                    asp-all-route-data="@(new Dictionary<string,string>())"
-                    class="btn btn-outline-secondary">
+                <button type="button" class="btn btn-outline-secondary">
                     <i class="fas fa-times"></i> Clear All
-                </a>
+                </button>
                 <button type="submit" class="btn btn-primary" id="applyFiltersButton">
                     <i class="fas fa-check"></i> Apply Filters
                 </button>
@@ -404,14 +401,12 @@
             const filterBackdrop = document.querySelector('.filter-backdrop');
             const mainSearchTermInput = document.getElementById('mainSearchTerm');
             const hiddenSearchTermInput = document.getElementById('hiddenSearchTerm');
-            //const filterForm = document.getElementById('filterForm');
 
-            
             // Initialize filter panel (hidden by default)
             if (filterPanel) {
                 filterPanel.classList.remove('active');
             }
-            
+
             if (filterBackdrop) {
                 filterBackdrop.classList.remove('active');
             }
@@ -421,30 +416,30 @@
                     hiddenSearchTermInput.value = this.value;
                 });
             }
-            
+
             // Toggle filter panel
             if (toggleFiltersButton) {
                 toggleFiltersButton.addEventListener('click', function(e) {
                     e.preventDefault();
-                    
+
                     console.log('Toggle filters clicked');
-                    
+
                     if (filterPanel) {
                         filterPanel.classList.toggle('active');
                     }
-                    
+
                     if (filterBackdrop) {
                         filterBackdrop.classList.toggle('active');
                     }
-                    
+
                     toggleFiltersButton.classList.toggle('active');
-                    
+
                     if (toggleFiltersButton.classList.contains('active')) {
                         toggleFiltersButton.innerHTML = '<i class="fas fa-times"></i> Close';
                     } else {
                         toggleFiltersButton.innerHTML = '<i class="fas fa-sliders-h"></i> Filters & Sort';
                     }
-                    
+
                     // Reset scroll position when opening
                     if (filterPanel && filterPanel.classList.contains('active')) {
                         setTimeout(() => {
@@ -453,36 +448,36 @@
                     }
                 });
             }
-            
+
             // Close filter panel with the X button
             if (closeFilterButton) {
                 closeFilterButton.addEventListener('click', function(e) {
                     e.preventDefault();
-                    
+
                     if (filterPanel) {
                         filterPanel.classList.remove('active');
                     }
-                    
+
                     if (filterBackdrop) {
                         filterBackdrop.classList.remove('active');
                     }
-                    
+
                     if (toggleFiltersButton) {
                         toggleFiltersButton.classList.remove('active');
                         toggleFiltersButton.innerHTML = '<i class="fas fa-sliders-h"></i> Filters & Sort';
                     }
                 });
             }
-            
+
             // Close filter panel when clicking on backdrop
             if (filterBackdrop) {
                 filterBackdrop.addEventListener('click', function() {
                     if (filterPanel) {
                         filterPanel.classList.remove('active');
                     }
-                    
+
                     filterBackdrop.classList.remove('active');
-                    
+
                     if (toggleFiltersButton) {
                         toggleFiltersButton.classList.remove('active');
                         toggleFiltersButton.innerHTML = '<i class="fas fa-sliders-h"></i> Filters & Sort';
@@ -495,7 +490,7 @@
             filterSections.forEach((section, index) => {
                 section.style.animationDelay = (index * 0.1) + 's';
             });
-            
+
             // Enhance the chip selection experience
             const chipLabels = document.querySelectorAll('.chip-label, .radio-chip-label');
             chipLabels.forEach(label => {
@@ -504,7 +499,7 @@
                     const ripple = document.createElement('span');
                     ripple.classList.add('ripple');
                     this.appendChild(ripple);
-                    
+
                     // Remove it after animation completes
                     setTimeout(() => {
                         ripple.remove();
@@ -513,26 +508,26 @@
             });
 
             const radioLabels = document.querySelectorAll('.radio-chip-label');
-    
+
             radioLabels.forEach(label => {
                 // Add deselectable class
                 label.classList.add('deselectable');
-        
+
                 // Create clear button
                 const clearBtn = document.createElement('span');
                 clearBtn.className = 'radio-chip-clear';
                 clearBtn.innerHTML = '×';
                 label.appendChild(clearBtn);
-        
+
                 // Add click handler for the clear button
                 clearBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-            
+
                     // Get the associated radio button
                     const radioId = label.getAttribute('for');
                     const radioBtn = document.getElementById(radioId);
-            
+
                     // Uncheck the radio button
                     if (radioBtn) {
                         radioBtn.checked = false;
@@ -540,62 +535,102 @@
                 });
             });
 
-            /*if (filterForm) {
-                console.log("Enter pressed")
-                // Select all relevant input types within the filter form
-                const inputsInFilterForm = filterForm.querySelectorAll('input[type="text"], input[type="date"],input[type="hidden"], select');
-                console.log(inputsInFilterForm)
+            // Handle Clear All button in the filter panel
+            const clearFiltersButton = document.querySelector('.filter-actions .btn-outline-secondary');
 
-                inputsInFilterForm.forEach(input => {
-                    input.addEventListener('keypress', (event) =>{
-                        console.log("Successful input")
-                        if (event.key === 'Enter') {
-                            console.log("Enter pressed")
-                            event.preventDefault(); // Prevent adding a newline or other default behavior
-                            filterForm.submit(); // Explicitly submit the filter form
-                        }
+            if (clearFiltersButton) {
+                clearFiltersButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Clear all form inputs in the filter panel
+                    const filterForm = document.getElementById('filterForm');
+
+                    // Clear text inputs
+                    filterForm.querySelectorAll('input[type="text"], input[type="date"]').forEach(input => {
+                        input.value = '';
                     });
+
+                    // Reset dropdowns to default options
+                    filterForm.querySelectorAll('select').forEach(select => {
+                        select.selectedIndex = 0;
+                    });
+
+                    // Uncheck all checkboxes
+                    filterForm.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+
+                    // Keep the search term from main search if it exists
+                    const mainSearchTerm = document.getElementById('mainSearchTerm');
+
+                    if (mainSearchTerm && mainSearchTerm.value) {
+                        hiddenSearchTermInput.value = mainSearchTerm.value;
+                    }
+
+                    // Show feedback to user
+                    const clearConfirmation = document.createElement('div');
+                    clearConfirmation.className = 'clear-confirmation';
+                    clearConfirmation.textContent = 'Filters cleared';
+                    clearConfirmation.style.position = 'absolute';
+                    clearConfirmation.style.top = '90px';
+                    clearConfirmation.style.right = '30px';
+                    clearConfirmation.style.padding = '8px 16px';
+                    clearConfirmation.style.backgroundColor = 'rgba(210, 196, 158, 0.6)';
+                    clearConfirmation.style.color = 'black';
+                    clearConfirmation.style.borderRadius = '4px';
+                    clearConfirmation.style.opacity = '0';
+                    clearConfirmation.style.transition = 'opacity 0.3s ease';
+                     clearConfirmation.style.fontSize = '12px';
+
+                    filterPanel.appendChild(clearConfirmation);
+
+                    // Show and then hide the confirmation
+                    setTimeout(() => {
+                        clearConfirmation.style.opacity = '1';
+
+                        setTimeout(() => {
+                            clearConfirmation.style.opacity = '0';
+                            setTimeout(() => {
+                                clearConfirmation.remove();
+                            }, 300);
+                        }, 1500);
+                    }, 10);
                 });
-            }*/
-        });
-
-        document.querySelectorAll('input[type="date"]').forEach(input => {
-    // Find the closest calendar icon in its parent input-group
-            const parentGroup = input.closest('.input-group');
-            if (parentGroup) {
-                const calendarIcon = parentGroup.querySelector('.input-group-text');
-                if (calendarIcon) {
-                    calendarIcon.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        input.showPicker();
-                    });
-                }
             }
-    
-            // Also allow the input field itself to trigger the datepicker
-            input.addEventListener('click', (e) => {
-                e.stopPropagation();
-                input.showPicker();
+
+            document.querySelectorAll('input[type="date"]').forEach(input => {
+                // Find the closest calendar icon in its parent input-group
+                const parentGroup = input.closest('.input-group');
+                if (parentGroup) {
+                    const calendarIcon = parentGroup.querySelector('.input-group-text');
+                    if (calendarIcon) {
+                        calendarIcon.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            input.showPicker();
+                        });
+                    }
+                }
+
+                // Also allow the input field itself to trigger the datepicker
+                input.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    input.showPicker();
+                });
+            });
+
+            const form = document.getElementById('mainSearchTerm');
+            const applyButton = document.getElementById('applyFiltersButton');
+
+            form.addEventListener('keypress', function (event) {
+                // Check if the pressed key is Enter
+                if (event.key === 'Enter') {
+                    // Prevent the default form submission behavior
+                    event.preventDefault();
+                    // Programmatically click the "Apply Filters" button
+                    applyButton.click();
+                }
             });
         });
-
-
-        const form = document.getElementById('mainSearchTerm');
-        const applyButton = document.getElementById('applyFiltersButton');
-
-        form.addEventListener('keypress', function (event) {
-            console.log("Enter success")
-            // Check if the pressed key is Enter (key code 13)
-            if (event.key === 'Enter') {
-                // Prevent the default form submission behavior for a single input field,
-                // which often submits the form on Enter
-                event.preventDefault();
-
-                // Programmatically click the "Apply Filters" button
-                applyButton.click();
-            }
-        });
-
     </script>
 }
