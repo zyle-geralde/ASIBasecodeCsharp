@@ -454,10 +454,13 @@
                                                             }
                                                         }
                                                     </div>
-                                                    <span>@userReview.Rating / 5</span>
+                                                    <span style="font-size: 13px">@userReview.Rating / 5</span>
                                                 </div>
                                             </div>
-                                            <div class="review-comment">@userReview.Comment</div>
+                                            @if (!string.IsNullOrWhiteSpace(userReview.Comment))
+                                            {
+                                                <div class="review-comment">@userReview.Comment</div>
+                                            }
                                             <div class="review-date">
                                                 Updated last: @userReview.UploadDate?.ToString("MMMM dd, yyyy")
                                             </div>
@@ -507,10 +510,13 @@
                                                             }
                                                         }
                                                     </div>
-                                                    <span>@review.Rating / 5</span>
+                                                    <span style="font-size: 13px">@review.Rating / 5</span>
                                                 </div>
                                             </div>
-                                            <div class="review-comment">@review.Comment</div>
+                                            @if (!string.IsNullOrWhiteSpace(review.Comment))
+                                            {
+                                                <div class="review-comment">@review.Comment</div>
+                                            }
                                             <div class="review-date">
                                                 Updated last: @review.UploadDate?.ToString("MMMM dd, yyyy")
                                             </div>
@@ -927,13 +933,7 @@
                 rating: rating,
                 comment: comment,
                 uploadDate: uploadDate
-            });
-
-            // Only validate comment - the rating should already be valid
-            if (!comment) {
-                toastr.warning("Please provide a comment about the book.");
-                return;
-            }
+            });            
 
             // Get the token
             const token = $('#editReviewForm input[name="__RequestVerificationToken"]').val();
@@ -1291,123 +1291,134 @@ $('#updateReviewBtn').click(function() {
             const $tocLinks = $('.toc-link');
             const $sections = $('.book-detail-section');
             let isScrolling = false;
-            let scrollTimeout;
-            
-            // Create loader for smooth scrolling
-            const $loader = $('<div class="scroll-loader"><div class="loader-spinner"></div></div>');
-            $('body').append($loader);
-            
-            // Function to highlight the correct TOC link based on scroll position
+
+            // Immediately set description as active when page loads
+            $tocLinks.removeClass('active');
+            $tocLinks.filter('[href="#description"]').addClass('active');
+
+            // Function to highlight the correct TOC link based on current section
             function updateActiveTocLink() {
-                const scrollPosition = $(window).scrollTop();
+                // Get the current scroll position with some offset for better section detection
+                const scrollPosition = $(window).scrollTop() + 120;
                 const windowHeight = $(window).height();
                 const documentHeight = $(document).height();
-                
-                // Special case: if near bottom of page, highlight reviews tab
-                if (scrollPosition + windowHeight >= documentHeight - 150) {
+
+                // Special case: if we're very close to the bottom, highlight the reviews tab
+                if (scrollPosition + windowHeight >= documentHeight - 50) {
                     $tocLinks.removeClass('active');
                     $tocLinks.filter('[href="#reviews"]').addClass('active');
                     return;
                 }
-                
-                // Check each section
+
+                // Find the current section in view
                 let currentSection = null;
-                
+                let closestSectionTop = -Infinity;
+
                 $sections.each(function() {
                     const $section = $(this);
-                    // Adjust offset to account for sticky header
-                    const sectionTop = $section.offset().top - 120;
+                    const sectionId = $section.attr('id');
+                    const sectionTop = $section.offset().top - 100;
                     const sectionBottom = sectionTop + $section.outerHeight();
-                    
+
+                    // Check if we're inside this section
                     if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
-                        currentSection = $section.attr('id');
-                        return false; // Break the loop
+                        // If this section is closer to the top of our viewport than our previous match
+                        if (sectionTop > closestSectionTop) {
+                            closestSectionTop = sectionTop;
+                            currentSection = sectionId;
+                        }
                     }
                 });
-                
-                // If no section is found and we're at the top, default to description
-                if (!currentSection && scrollPosition < 300) {
-                    currentSection = 'description';
-                }
-                
-                // Update active state
+
+                // If we found a section, highlight its tab
                 if (currentSection) {
                     $tocLinks.removeClass('active');
-                    $(`.toc-link[href="#${currentSection}"]`).addClass('active');
+                    $tocLinks.filter(`[href="#${currentSection}"]`).addClass('active');
+                }
+                // If no section is found and we're at the top, default to description
+                else if (scrollPosition < 300) {
+                    $tocLinks.removeClass('active');
+                    $tocLinks.filter('[href="#description"]').addClass('active');
                 }
             }
-            
-            // Set description as active by default when the page loads
-            function setDefaultActive() {
-                $tocLinks.removeClass('active');
-                $tocLinks.filter('[href="#description"]').addClass('active');
-            }
-            
-            // Initialize TOC state
-            setDefaultActive();
-            
-            // Update on scroll
+
+            // More efficient scroll handling with requestAnimationFrame
+            let ticking = false;
+
             $(window).on('scroll', function() {
-                if (!isScrolling) {
-                    updateActiveTocLink();
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        updateActiveTocLink();
+                        ticking = false;
+                    });
+                    ticking = true;
                 }
-                
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(function() {
-                    updateActiveTocLink();
-                }, 100);
             });
-            
-            // Enhanced smooth scroll for anchor links
-            $('a.toc-link').on('click', function(event) {
-                if (this.hash !== "") {
+
+            // Handle clicks on TOC links - instant tab highlighting
+            $tocLinks.on('click', function(event) {
+                if (this.hash) {
                     event.preventDefault();
                     const hash = this.hash;
-                    
-                    // Show loader
-                    $loader.addClass('active');
-                    isScrolling = true;
-                    
-                    // Add active class to clicked link and remove from others
+
+                    // Immediately update active state
                     $tocLinks.removeClass('active');
                     $(this).addClass('active');
-                    
-                    // Calculate the target position with offset
+
+                    // Store target element and position
                     const $target = $(hash);
                     const targetPosition = $target.offset().top - 90;
-                    
-                    // Use improved easing for smoother scrolling
+
+                    // Set flag to prevent scroll handler from changing highlighting
+                    isScrolling = true;
+
+                    // Scroll without animation for instant feedback
                     $('html, body').animate({
                         scrollTop: targetPosition
                     }, {
-                        duration: 600,
-                        easing: 'easeInOutCubic',
+                        duration: 400,
                         complete: function() {
-                            // Hide loader and reset scrolling state
-                            $loader.removeClass('active');
-                            isScrolling = false;
-                            
-                            // Force the active state again, in case scroll events have fired
-                            $tocLinks.removeClass('active');
-                            $(`.toc-link[href="${hash}"]`).addClass('active');
+                            // After scrolling completes, reset flag
+                            setTimeout(function() {
+                                isScrolling = false;
+                            }, 10);
                         }
                     });
                 }
             });
-            
-            // Add custom easing function
-            $.extend($.easing, {
-                easeInOutCubic: function(x, t, b, c, d) {
-                    if ((t /= d / 2) < 1) return c / 2 * t * t * t + b;
-                    return c / 2 * ((t -= 2) * t * t + 2) + b;
+
+            // Initial call to highlight the correct tab based on scroll position
+            updateActiveTocLink();
+
+            // Also update tab highlighting when window is resized
+            $(window).on('resize', function() {
+                updateActiveTocLink();
+            });
+
+            // Back to top button functionality
+            const $backToTopButton = $('.back-to-top');
+
+            // Show/hide back to top button based on scroll position
+            $(window).on('scroll', function() {
+                if ($(this).scrollTop() > 300) {
+                    $backToTopButton.addClass('show');
+                } else {
+                    $backToTopButton.removeClass('show');
                 }
             });
-            
-            // Make the TOC stay in view
-            $('.book-toc').css({
-                'position': 'sticky',
-                'top': '70px',
-                'z-index': '10'
+
+            // Scroll to top when button is clicked
+            $backToTopButton.on('click', function(e) {
+                e.preventDefault();
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 600);
+                
+                // Update TOC highlighting when scrolling back to top
+                $('.toc-link').removeClass('active');
+                $('.toc-link').filter('[href="#description"]').addClass('active');
+                
+                return false;
             });
         });
     </script>
