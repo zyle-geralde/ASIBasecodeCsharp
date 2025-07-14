@@ -282,17 +282,17 @@
                     </div>
                     <div class="mb-3">
                         <label asp-for="FirstName" class="form-label">First Name</label>
-                        <input asp-for="FirstName" class="form-control" />
+						<input asp-for="FirstName" class="form-control" maxlength="100" />
                         <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label asp-for="MiddleName" class="form-label">Middle Name</label>
-                        <input asp-for="MiddleName" class="form-control" />
+						<input asp-for="MiddleName" class="form-control" maxlength="100" />
                         <span asp-validation-for="MiddleName" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label asp-for="LastName" class="form-label">Last Name</label>
-                        <input asp-for="LastName" class="form-control" />
+                        <input asp-for="LastName" class="form-control" maxlength="100"/>
                         <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
                     <div class="row mb-3">
@@ -318,12 +318,12 @@
                     </div>
                      <div class="mb-4">
                         <label asp-for="Location" class="form-label">Location</label>
-                        <input asp-for="Location" class="form-control" id="location" rows="4" placeholder="Where are you from?"/>
+                        <input asp-for="Location" class="form-control" id="location" rows="4" placeholder="Where are you from?" maxlength="250"/>
                         <span asp-validation-for="AboutMe" class="text-danger"></span>
                     </div>
                     <div class="mb-4">
                         <label asp-for="AboutMe" class="form-label">About Me</label>
-                        <textarea asp-for="AboutMe" class="form-control" id="aboutme" rows="4" placeholder="Tell us about yourself"></textarea>
+                        <textarea asp-for="AboutMe" class="form-control" id="aboutme" rows="4" placeholder="Tell us about yourself" maxlength="500"></textarea>
                         <span asp-validation-for="AboutMe" class="text-danger"></span>
                     </div>
                     <div class="text-center">
