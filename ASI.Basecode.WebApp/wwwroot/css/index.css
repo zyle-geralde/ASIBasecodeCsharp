@@ -481,63 +481,55 @@ body
         display: none !important;
     }
 
-    .genre-tag.dynamic-genre-1 
-    {
-        background-color: #8C78D8;
+    .genre-tag.dynamic-genre-1 {
+        background-color: #697565;
         color: #FFFFFF;
     }
 
     .genre-tag.dynamic-genre-2 
     {
-        background-color: #5BA8A0;
+        background-color: #5BA8A0; /*green green*/
         color: #FFFFFF;
     }
 
-    .genre-tag.dynamic-genre-3 
-    {
-        background-color: #D8A46B;
-        color: #3E4F4E;
+    .genre-tag.dynamic-genre-3 {
+        background-color: #B67352; /*brownish*/
+        color: #FFFFFF;
     }
 
-    .genre-tag.dynamic-genre-4 
-    {
+    .genre-tag.dynamic-genre-4 {
         background-color: #AA647D;
         color: #FFFFFF;
     }
 
     .genre-tag.dynamic-genre-5 
     {
-        background-color: #6C8EBF;
+        background-color: #6C8EBF; /*may pagka light blue*/
         color: #FFFFFF;
     }
 
-    .genre-tag.dynamic-genre-6 
-    {
-        background-color: #7BCC70;
+    .genre-tag.dynamic-genre-6 {
+        background-color: #E9B384;
         color: #FFFFFF;
     }
 
-    .genre-tag.dynamic-genre-7 
-    {
-        background-color: #FF7F50;
+    .genre-tag.dynamic-genre-7 {
+        background-color: #2DAA9E;
         color: #FFFFFF;
     }
 
-    .genre-tag.dynamic-genre-8 
-    {
-        background-color: #8A2BE2;
+    .genre-tag.dynamic-genre-8 {
+        background-color: #7A3E3E;
         color: #FFFFFF;
     }
 
-    .genre-tag.dynamic-genre-9 
-    {
-        background-color: #DDA0DD;
+    .genre-tag.dynamic-genre-9 {
+        background-color: #496989;
         color: #3E4F4E;
     }
 
-    .genre-tag.dynamic-genre-10 
-    {
-        background-color: #4682B4;
+    .genre-tag.dynamic-genre-10 {
+        background-color: #10A19D;
         color: #FFFFFF;
     }
 
@@ -670,7 +662,7 @@ body
 
 .featured-book-card .genre-tag 
 {
-    color: #E0E0E0;
+    color: white;
     padding: 4px 10px;
     font-size: 12px;
     font-weight: 600;
@@ -689,7 +681,7 @@ body
     .featured-book-card .genre-tag.dynamic-genre-3,
     .featured-book-card .genre-tag.dynamic-genre-9 
     {
-        color: #E0E0E0;
+        color: #FFFFFF;
     }
 
 /* overrides for featured book rating text */
