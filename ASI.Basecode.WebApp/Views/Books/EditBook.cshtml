@@ -131,7 +131,7 @@
                         </div>
                         <div class="book-master-form-group">
                             <label for="numberOfPages">Number of Pages</label>
-                            <input type="number" id="numberOfPages" name="NumberOfPages" class="book-master-form-input" value="@Model?.NumberOfPages">
+                            <input type="number" id="numberOfPages" name="NumberOfPages" class="book-master-form-input" value="@Model?.NumberOfPages" min="0">
                             <span asp-validation-for="NumberOfPages" class="text-danger"></span>
                         </div>
                     </div>
@@ -150,7 +150,7 @@
                         </div>
                         <div class="book-master-form-group">
                             <label for="seriesOrder">Series Order</label>
-                            <input type="number" id="seriesOrder" name="SeriesOrder" class="book-master-form-input" value="@Model?.SeriesOrder">
+                            <input type="number" id="seriesOrder" name="SeriesOrder" class="book-master-form-input" value="@Model?.SeriesOrder" min="0">
                             <span asp-validation-for="SeriesOrder" class="text-danger"></span>
                         </div>
                     </div>
@@ -161,7 +161,7 @@
                         <span asp-validation-for="SeriesDescription" class="text-danger"></span>
                     </div>
 
-                    @*<div class="book-master-form-group">
+                    @* <div class="book-master-form-group">
                         <label class="toggle-question-label">Is this a featured book?</label>
                         <div class="featured-toggle-container">
                             <label class="switch">
@@ -171,7 +171,7 @@
                             <span class="toggle-label" id="featuredStatus">@(Model?.IsFeatured == true ? "Yes" : "No")</span>
                         </div>
                         <span asp-validation-for="IsFeatured" class="text-danger"></span>
-                    </div>*@
+                    </div> *@
                 </div>
             </div>
 
@@ -270,17 +270,16 @@
                 seriesName: form.querySelector('#seriesName').value,
                 seriesOrder: form.querySelector('#seriesOrder').value,
                 seriesDescription: form.querySelector('#seriesDescription').value,
-                isFeatured: form.querySelector('#isFeatured').checked,
                 genreList: form.querySelector('#concatenatedGenre').value,
                 isbn10: form.querySelector('#isbn10').value,
                 isbn13: form.querySelector('#isbn13').value,
                 edition: form.querySelector('#edition').value,
-                coverImageUrl: form.querySelector('#coverImageUrl').value, // initial URL of the cover image
-                bookFileUrl: form.querySelector('#bookFileUrl').value      // initial URL of the book file
+                coverImageUrl: form.querySelector('#coverImageUrl').value, 
+                bookFileUrl: form.querySelector('#bookFileUrl').value      
             };
         }
 
-       
+
         function checkForChanges() {
             const form = document.getElementById('editBookForm');
             if (!form) return false;
@@ -305,13 +304,12 @@
                 form.querySelector('#seriesName').value !== initialFormState.seriesName ||
                 form.querySelector('#seriesOrder').value !== initialFormState.seriesOrder ||
                 form.querySelector('#seriesDescription').value !== initialFormState.seriesDescription ||
-                form.querySelector('#isFeatured').checked !== initialFormState.isFeatured ||
                 form.querySelector('#concatenatedGenre').value !== initialFormState.genreList ||
                 form.querySelector('#isbn10').value !== initialFormState.isbn10 ||
                 form.querySelector('#isbn13').value !== initialFormState.isbn13 ||
                 form.querySelector('#edition').value !== initialFormState.edition
             ) {
-                return true; 
+                return true;
             }
 
             if (currentCoverFileSelected || currentBookFileSelected) {
@@ -320,10 +318,10 @@
 
             if (currentCoverImageUrl !== initialFormState.coverImageUrl ||
                 currentBookFileUrl !== initialFormState.bookFileUrl) {
-                return true; 
+                return true;
             }
 
-            return false; 
+            return false;
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -383,7 +381,7 @@
                 });
             }
 
-            //  Pre-fill File Display and Image Preview with existing data 
+            //  Pre-fill File Display and Image Preview with existing data
             // Cover Image
             const coverImageUrl = '@Model?.CoverImageUrl';
             if (coverImageUrl && coverImagePreview && coverImagePlaceholder && coverFileNameDisplay) {
@@ -397,13 +395,13 @@
 
             // Book File
             const bookFileUrl = '@Model?.BookFileUrl';
-            if (bookFileUrl && bookFileNameDisplay && !bookFileUrl.includes("placeholder.pdf")) { 
+            if (bookFileUrl && bookFileNameDisplay && !bookFileUrl.includes("placeholder.pdf")) {
                 bookFileNameDisplay.value = bookFileUrl.substring(bookFileUrl.lastIndexOf('/') + 1);
             }
 
-            // Initialize all the modular functions 
+            // Initialize all the modular functions
             initializeFeaturedToggle();
-            await initializeSingleSelectAuthor(); 
+            await initializeSingleSelectAuthor();
             await initializeSingleSelectLanguage(); 
             await initializeMultiSelect({ 
                 containerId: 'genreContainer',
@@ -433,9 +431,10 @@
 
             const form = document.getElementById('editBookForm');
 
-            // Cancel Button 
+            // Cancel Button (with Discard Confirmation) ---
             document.getElementById('cancelButton').addEventListener('click', () => {
                 if (checkForChanges()) {
+                    // Show discard confirmation modal if changes exist
                     if (discardChangesConfirmationModal) {
                         discardChangesConfirmationModal.show();
                     }
@@ -444,17 +443,17 @@
                 }
             });
 
-            // Confirm Discard Action 
+            // Confirm Discard Action
             if (confirmDiscardButton) {
                 confirmDiscardButton.addEventListener('click', () => {
                     window.location.href = '/Book/ListBook';
                 });
             }
 
-            // Form Submission(with Save Confirmation) 
+            // Form Submission(with Save Confirmation)
             if (form) {
                 form.addEventListener('submit', async (event) => {
-                    event.preventDefault(); 
+                    event.preventDefault(); // Prevent default form submission
 
                     //  client-side validation first
                     const titleInput = document.getElementById('title');
@@ -492,13 +491,6 @@
                             isValid = false;
                         }
                     }
-                    // if (!publicationDateInput.value) { missingFields.push('Publication Date'); isValid = false; }
-
-                    // const today = new Date();
-                    // today.setHours(0, 0, 0, 0);
-                    // const pubDate = new Date(publicationDateInput.value);
-
-                    // if (pubDate > today) { missingFields.push('Publication Date (cannot be in the future)'); isValid = false; }
 
                     if (!languageInput.value.trim()) { missingFields.push('Language'); isValid = false; }
                     if (!genreInput.value) { missingFields.push('Genre'); isValid = false; }
@@ -511,7 +503,7 @@
                     if ((seriesDescriptionInput.value.trim() || (seriesOrderInput.value !== '' && parseInt(seriesOrderInput.value) > 0)) && !seriesNameInput.value.trim()) {
                         missingFields.push('Series Name (required if Series Description or Series Order is provided)');
                         isValid = false;
-                    } 
+                    }
 
                     const coverImageFileChanged = coverImageFileInput.files.length > 0;
                     if (!coverImageFileChanged && !coverImageUrlInput.value) {
@@ -538,7 +530,7 @@
                         }
                         isValid = false;
                     } else if (bookFileChanged && bookFileInput.files[0].size > MAX_BOOK_FILE_SIZE_BYTES) {
-                        toastr.error('Book file size exceeds the 100MB limit.');
+                        toastr.error('Book file size exceeds the 40MB limit.');
                         isValid = false;
                     }
                     else if (bookFileUploadStatus) {
@@ -664,8 +656,8 @@
                         if (window.toastr) window.toastr.success('Book updated successfully!');
                         // Re-capture initial state after successful save
                         captureInitialFormState();
-                        
-                         // If new cover different from original, delete the new one
+
+                        // If new cover different from original, delete the new one
                         if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
                             console.log(uploadedCoverUrl)
                             console.log(originalCoverImageUrl)
@@ -675,7 +667,7 @@
                         // If new book file different from original, delete the new one
                         if (uploadedBookUrl && uploadedBookUrl !== originalBookFileUrl) {
                             await deleteFileFromFirebase(originalBookFileUrl);
-                            bookFileUrlInput.value = uploadedBookUrl; 
+                            bookFileUrlInput.value = uploadedBookUrl;
                         }
 
                         setTimeout(() => {
@@ -694,7 +686,7 @@
                         // If new book file different from original, delete the new one
                         if (uploadedBookUrl && uploadedBookUrl !== originalBookFileUrl) {
                             await deleteFileFromFirebase(uploadedBookUrl);
-                            bookFileUrlInput.value = originalBookFileUrl; 
+                            bookFileUrlInput.value = originalBookFileUrl;
                         }
                     }
                 } catch (error) {
