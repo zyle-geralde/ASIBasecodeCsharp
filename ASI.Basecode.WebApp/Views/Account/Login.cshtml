@@ -647,8 +647,8 @@
                 </div>
 
 
-                <a href="#" class="forgot-back-link" onclick="showForgotPasswordModal()">
-                    &lt; Back to email
+                <a href="#" class="forgot-back-link" onclick="dismissModalCompletely('codeVerificationModal')">
+                    &lt; Back to Login
                 </a>
 
             </form>
@@ -686,10 +686,8 @@
                         Submit
                     </button>
                 </div>
-
-
-                <a href="#" class="forgot-back-link" data-bs-dismiss="modal">
-                    &lt; Back to email
+                <a href="#" class="forgot-back-link" onclick="dismissModalCompletely('newPasswordModal')">
+                    &lt; Back to Login
                 </a>
 
             </form>
@@ -730,19 +728,25 @@
         $('#newPasswordModal').modal('show');
     }
 
-  @*  var errorMessage = '@TempData["ErrorMessage"]';
-    if (errorMessage && errorMessage.trim() !== '') {
-        toastr.error(errorMessage);
-    }
-
-    var successMessage = '@TempData["SuccessMessage"]';
-    if (successMessage && successMessage.trim() !== '') {
-        toastr.success(successMessage);
-    }*@
+     
 </script>
 
 @section Scripts{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+        function dismissModalCompletely(modalId) {
+            const modalElement = document.getElementById(modalId);
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            modal.hide();
+
+            setTimeout(() => {
+                document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }, 100);
+        }
+    </script>
     <script>
         $(document).ready(function() {
              toastr.options = {
@@ -817,7 +821,6 @@
             }
 
             try {
-                console.log(forgotInput.value.trim())
                 const response = await fetch('/Account/ForgotPassword', {
                     method: 'POST',
                     headers: {
@@ -826,19 +829,19 @@
                     body: JSON.stringify({ Email: forgotInput.value.trim() })
                 });
 
+                const result = await response.json();
+                
                 if (response.ok) {
-                    const result = await response.json();
                     localStorage.setItem('otpMessage', result.message);
-                    showVerificationModal()
+                    toastr.success("Verification code sent to your email.");
+                    showVerificationModal();
                 } else {
-                    const result = await response.json();
-                    alert(result.message)
+                    toastr.error(result.message);
                 }
             } catch (backendError) {
-                alert("Unexpected Error Occured"+backendError)
+                toastr.error("An unexpected error occurred. Please try again later.");
             }
             finally {
-                
                 if (sendCodeForgotPassword) {
                     sendCodeForgotPassword.disabled = false;
                     sendCodeForgotPassword.textContent = 'Send Code';
@@ -856,17 +859,16 @@
             }
 
             if (localStorage.getItem('otpMessage') == verificationCodeInput.value.trim()){
-                showNewPasswordModal()
+                showNewPasswordModal();
             }
             else{
-                alert("Invalid OTP")
+                toastr.error("Invalid verification code");
             }
 
         })
 
         newPasswordForm.addEventListener("submit", async function (event) {
             event.preventDefault();
-            console.log("another"+forgotInput.value.trim())
 
             if (!newPasswordInput.checkValidity()) {
                 newPasswordInput.reportValidity();
@@ -879,8 +881,8 @@
             }
 
             if (newPasswordInput.value.trim() != confirmPasswordInput.value.trim()) {
-                alert("Password do not match")
-                return
+                toastr.warning("Passwords do not match");
+                return;
             }
 
             if (newPasswordButton) {
@@ -897,129 +899,27 @@
                     body: JSON.stringify({ Email: forgotInput.value.trim(), Password: newPasswordInput.value.trim() })
                 });
 
+                const result = await response.json();
+                
                 if (response.ok) {
-                    const result = await response.json();
-                    
-                    alert(result.message);
+                    toastr.success(result.message);
+                    setTimeout(() => {
+                        $('#newPasswordModal').modal('hide');
+                    }, 1500);
                 } else {
-                    const result = await response.json();
-                    alert(result.message)
+                    toastr.error(result.message);
                 }
             } catch (backendError) {
-                alert("Unexpected Error Occured" + backendError)
+                toastr.error("An unexpected error occurred. Please try again later.");
             }
             finally {
-
                 if (newPasswordButton) {
                     newPasswordButton.disabled = false;
                     newPasswordButton.textContent = 'Submit';
                 }
             }
 
-        })
-
-
-        
-        
+        })       
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 }
-
-
-
-@* <div class="container py-5" style="display:flex; align-content:center;height:calc(100vh - 64px)">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-xl-10">
-            <div class="card rounded-3 text-black">
-                <div class="row g-0 w-1000px">
-                    <div class="col-lg-6">
-                        <div class="card-body p-md-5 mx-md-4">
-                            <div class="text-center">
-                                <img src="~/img/asi-logo-invert.svg"
-                                     style="width: 185px;" alt="logo">
-                            </div>
-                            <form method="post" action="/Account/Login" id="loginForm">
-                                <div class="form-outline mb-4">
-                                    <label class="form-label" for="form2Example11">@UserId</label>
-                                    <input type="text" id="form2Example11" class="form-control"
-                                           asp-for="UserId" placeholder="Enter userid" />
-                                    <span asp-validation-for="UserId" class="text-danger"></span>
-                                </div>
-                                <div class="form-outline mb-4">
-                                    <label class="form-label" for="form2Example22">@Password</label>
-                                    <input type="password" id="form2Example22" class="form-control"
-                                           asp-for="Password" placeholder="Enter password" />
-                                    <span asp-validation-for="Password" class="text-danger"></span>
-                                </div>
-                                <div class="text-center pt-1 mb-5 pb-1 d-flex flex-column align-items-center">
-                                    <button class="btn btn-primary btn-block login-btn gradient-custom-2 mb-3" type="submit">
-                                        @Login
-                                    </button>
-                                    <div>
-                                        <a class="text-muted" href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
-                                            @ForgotPass
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-center pb-4">
-                                    <p class="mb-0 me-2 mr-1">@DontHaveAcc</p>
-                                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-danger">@CreateNew</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 d-flex">
-                        <img style="width:400px"src="~/img/LiveIT.png" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Forgot Password Modal -->
-<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content forgot-modal-content text-center p-5" style="background-color: #5a7b80; color: #fff; fill-opacity: 0.8">
-            <form method="post" action="/Account/ForgotPassword">
-
-                <div class="mb-2">
-                    <img src="~/img/bb_logo_white.png" alt="Logo" style="width: 110px;" />
-                </div>
-
-                <h2 class="forgot-modal-title mb-2"style="color: #fff; font-size: large">Forgot Password</h2>
-                <p class="forgot-modal-desc mb-2" style="font-weight: 200; font-size: small">
-                    Recover your password if you have forgot the password!
-                </p>
-
-                <div class="mb-3 text-start">
-                    <label for="forgotInput" class="form-label forgot-label" style="font-size: small">Email</label>
-                    <input type="email" class="form-control forgot-input" id="forgotInput" name="Identifier" style="font-size: small; font-weight: 300" placeholder="juan.cruz@gmail.com" required>
-                </div>
-
-                <div class="d-grid mb-3">
-                    <button type="submit" class="btn forgot-btn" style="background-color:#E0B99C; color: black; font-size: revert; font-weight: 500">Send Code</button>
-                </div>
-
-                <a href="#" class="forgot-back-link" style="color: #E0B99C; text-decoration: none; font-size: small; font-weight: 400" data-bs-dismiss="modal">&lt; Back to login</a>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-@section Scripts {
-    <script>
-        // Check for error message and display Toastr notification
-        var errorMessage = '@TempData["ErrorMessage"]';
-        if (errorMessage) {
-            toastr.error(errorMessage);
-        }
-
-        var successMessage = '@TempData["SuccessMessage"]';
-        if (successMessage) {
-            toastr.success(successMessage);
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-} *@
