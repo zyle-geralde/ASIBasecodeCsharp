@@ -151,7 +151,7 @@
                         <span asp-validation-for="SeriesDescription" class="text-danger"></span>
                     </div>
 
-                    <div class="book-master-form-group">
+                    @*<div class="book-master-form-group">
                         <label class="toggle-question-label">Is this a featured book?</label>
                         <div class="featured-toggle-container">
                             <label class="switch">
@@ -161,7 +161,7 @@
                             <span class="toggle-label" id="featuredStatus">No</span>
                         </div>
                         <span asp-validation-for="IsFeatured" class="text-danger"></span>
-                    </div>
+                    </div>*@
                 </div>
             </div>
 
@@ -260,7 +260,7 @@
                     const fileName = this.files[0] ? this.files[0].name : '';
                     if (coverFileNameDisplay) coverFileNameDisplay.value = fileName;
                     if (coverImageUploadStatus) {
-                        coverImageUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
+                        coverImageUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 10MB';
                         coverImageUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: JPG, PNG, JPEG';
                         coverImageUploadStatus.classList.remove('error-message');
                     }
@@ -412,7 +412,7 @@
                         }
                         isValid = false;
                     } else if (coverImageUploadStatus) {
-                        coverImageUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
+                        coverImageUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 10MB';
                         coverImageUploadStatus.classList.remove('error-message');
                     }
 
@@ -424,7 +424,7 @@
                         }
                         isValid = false;
                     } else if (bookFileUploadStatus) {
-                        bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
+                        bookFileUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 40MB';
                         bookFileUploadStatus.classList.remove('error-message');
                     }
 

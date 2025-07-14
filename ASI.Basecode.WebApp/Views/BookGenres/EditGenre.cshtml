@@ -63,7 +63,7 @@
                     <input type="text" class="book-master-file-input-text" readonly id="genreImageFileNameDisplay">
 
                     <p id="genreImageUploadStatus" class="master-upload-status">
-                        <span class="file-size-info required-label">Max file size: 1GB</span>
+                        <span class="file-size-info required-label">Max file size: 10mb</span>
                         <span class="supported-formats-info">Supported formats: JPG, PNG, JPEG</span>
                     </p>
                 </div>
@@ -246,7 +246,7 @@
 
             const fileSizeInfoSpan = genreImageUploadStatusElement.querySelector('.file-size-info');
             const supportedFormatsInfoSpan = genreImageUploadStatusElement.querySelector('.supported-formats-info');
-            if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 1GB';
+            if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 10MB';
             if (supportedFormatsInfoSpan) supportedFormatsInfoSpan.textContent = 'Supported formats: JPG, PNG, JPEG';
             genreImageUploadStatusElement.classList.remove('error-message');
         });
@@ -369,7 +369,7 @@
             } else {
                 const fileSizeInfoSpan = genreImageUploadStatusElement.querySelector('.file-size-info');
                 if (fileSizeInfoSpan) {
-                    fileSizeInfoSpan.textContent = 'Max file size: 1GB';
+                    fileSizeInfoSpan.textContent = 'Max file size: 10MB';
                 }
                 genreImageUploadStatusElement.classList.remove('error-message');
             }
@@ -405,7 +405,7 @@
 
             const fileSizeInfoSpan = genreImageUploadStatusElement.querySelector('.file-size-info');
             const supportedFormatsInfoSpan = genreImageUploadStatusElement.querySelector('.supported-formats-info');
-            if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 1GB';
+            if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 10MB';
             if (supportedFormatsInfoSpan) supportedFormatsInfoSpan.textContent = 'Supported formats: JPG, PNG, JPEG';
             genreImageUploadStatusElement.classList.remove('error-message');
 
@@ -523,7 +523,7 @@
             genredescriptionInput.classList.remove('is-invalid');
             const fileSizeInfoSpan = genreImageUploadStatusElement.querySelector('.file-size-info');
             const supportedFormatsInfoSpan = genreImageUploadStatusElement.querySelector('.supported-formats-info');
-            if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 1GB';
+            if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 10MB';
             if (supportedFormatsInfoSpan) supportedFormatsInfoSpan.textContent = 'Supported formats: JPG, PNG, JPEG';
             genreImageUploadStatusElement.classList.remove('error-message');
 

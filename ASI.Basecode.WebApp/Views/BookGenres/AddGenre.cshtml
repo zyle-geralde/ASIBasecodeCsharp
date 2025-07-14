@@ -137,7 +137,7 @@
             if (genreImageUploadStatusElement) {
                 const fileSizeInfo = genreImageUploadStatusElement.querySelector('.file-size-info');
                 const supportedFormatsInfo = genreImageUploadStatusElement.querySelector('.supported-formats-info');
-                if (fileSizeInfo) fileSizeInfo.textContent = 'Max file size: 1GB';
+                if (fileSizeInfo) fileSizeInfo.textContent = 'Max file size: 10MB';
                 if (supportedFormatsInfo) supportedFormatsInfo.textContent = 'Supported formats: JPG, PNG, JPEG';
                 genreImageUploadStatusElement.classList.remove('error-message');
             }
@@ -288,7 +288,7 @@
             const fileSizeInfoSpan = genreImageUploadStatus.querySelector('.file-size-info');
             const supportedFormatsInfoSpan = genreImageUploadStatus.querySelector('.supported-formats-info');
 
-            if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 1GB';
+            if (fileSizeInfoSpan) fileSizeInfoSpan.textContent = 'Max file size: 40MB';
             if (supportedFormatsInfoSpan) supportedFormatsInfoSpan.textContent = 'Supported formats: JPG, PNG, JPEG';
             genreImageUploadStatus.classList.remove('error-message');
 

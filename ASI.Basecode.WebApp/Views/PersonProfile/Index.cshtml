@@ -776,7 +776,7 @@
             const fileName = this.files[0] ? this.files[0].name : '';
             document.getElementById('profilePictureNameDisplay').value = fileName;
             const profilePictureUploadStatus = document.getElementById('profilePictureUploadStatus');
-            profilePictureUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 1GB';
+            profilePictureUploadStatus.querySelector('.file-size-info').textContent = 'Max file size: 10MB';
             profilePictureUploadStatus.querySelector('.supported-formats-info').textContent = 'Supported formats: JPG, PNG, JPEG';
             profilePictureUploadStatus.classList.remove('error-message');
         });
