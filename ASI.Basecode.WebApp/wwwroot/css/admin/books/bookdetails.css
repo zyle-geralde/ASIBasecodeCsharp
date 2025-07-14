@@ -40,6 +40,7 @@
 .book-header-rating .stars {
     display: inline-block;
     margin-right: 8px;
+    cursor: none;
 }
 
 .book-header-rating .stars i {
@@ -217,6 +218,7 @@
 }
 
 .toc-link {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 6px;
