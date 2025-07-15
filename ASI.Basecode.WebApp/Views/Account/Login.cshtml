@@ -165,13 +165,13 @@
 
                 <div class="mb-4">
                     <label for="newPasswordInput" class="forgot-label">New Password</label>
-                    <input type="text" class="form-control verification-input"
+                    <input type="password" class="form-control verification-input"
                            id="newPasswordInput" name="NewPassword" placeholder="Enter new password" required>
                 </div>
 
                 <div class="mb-4">
                     <label for="confirmPasswordInput" class="forgot-label">Confirm Password</label>
-                    <input type="text" class="form-control verification-input"
+                    <input type="password" class="form-control verification-input"
                            id="confirmPasswordInput" name="ConfirmPassword" placeholder="Confirm password" required>
                 </div>
 
@@ -323,6 +323,11 @@
         const confirmPasswordInput = document.getElementById("confirmPasswordInput");
         const newPasswordButton = document.getElementById("newPasswordButton");
 
+        function isValidPassword(password) {
+            const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+            return passwordPattern.test(password);
+        }
+
 
         function showVerificationModal() {
             $('#forgotPasswordModal').modal('hide');
@@ -341,6 +346,7 @@
                 forgotInput.reportValidity();
                 return;
             }
+
 
             if (sendCodeForgotPassword) {
                 sendCodeForgotPassword.disabled = true;
@@ -405,6 +411,10 @@
 
             if (!confirmPasswordInput.checkValidity()) {
                 confirmPasswordInput.reportValidity();
+                return;
+            }
+            if (!isValidPassword(newPasswordInput.value.trim())) {
+                toastr.error("Password must be at least 8 characters and contain at least one uppercase letter, one number and one special character.");
                 return;
             }
 

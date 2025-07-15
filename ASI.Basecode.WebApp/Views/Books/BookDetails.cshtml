@@ -105,7 +105,7 @@
 
         <!-- Table of Contents / Quick Jump -->
         <div class="book-details-container">
-            <div class="book-toc">
+            @*<div class="book-toc">
                 <h2 class="toc-title">Contents</h2>
                 <div class="toc-links">
                     <a href="#description" class="toc-link">
@@ -130,22 +130,26 @@
                         <i class="fas fa-comments"></i> Reviews
                     </a>
                 </div>
-            </div>
+            </div>*@
             
             <!-- Description Section -->
-            <section id="description" class="book-detail-section">
-                <div class="section-header">
-                    <div class="section-icon">
-                        <i class="fas fa-align-left"></i>
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <section id="description" class="book-detail-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-align-left"></i>
+                        </div>
+                        <h2>Description</h2>
                     </div>
-                    <h2>Description</h2>
-                </div>
-                <div class="section-content">
-                    <div class="book-description">
-                        @Html.DisplayFor(model => model.Description)
+                    <div class="section-content">
+                        <div class="book-description">
+                            @Html.DisplayFor(model => model.Description)
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            }
+
 
             <!-- Book Details Section -->
             <section id="details" class="book-detail-section">

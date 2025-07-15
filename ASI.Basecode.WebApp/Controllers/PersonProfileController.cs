@@ -172,7 +172,7 @@ namespace ASI.Basecode.WebApp.Controllers
             if (!ok)
             {
                 
-                TempData["PwdErrors"] = new[] { "Current password is incorrect or New Password must not be less than 8 characters." };
+                TempData["PwdErrors"] = new[] { "Current password is incorrect" };
             }
             else
             {
