@@ -362,7 +362,7 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Failed to retrieve language genres.", ex);
+                throw new ApplicationException("Failed to retrieve language.", ex);
             }
         }
 
