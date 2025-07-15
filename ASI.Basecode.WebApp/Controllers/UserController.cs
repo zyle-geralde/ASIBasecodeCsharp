@@ -1,19 +1,15 @@
-﻿using ASI.Basecode.Data.Interfaces;
-using ASI.Basecode.Data.Models;
+﻿using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
-using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.AccessControl;
+using ASI.Basecode.WebApp.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using ASI.Basecode.Data.QueryParams;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using ASI.Basecode.WebApp.Authentication;
 
 namespace ASI.Basecode.WebApp.Controllers
 {
@@ -23,7 +19,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IAccessControlInterface _accessControlInterface;
         private readonly SignInManager _signInManager;
 
-        public UserController(IUserService userService,IAccessControlInterface accessControlInterface, SignInManager signInManager)
+        public UserController(IUserService userService, IAccessControlInterface accessControlInterface, SignInManager signInManager)
         {
             _userService = userService;
             _accessControlInterface = accessControlInterface;
@@ -31,7 +27,7 @@ namespace ASI.Basecode.WebApp.Controllers
         }
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Index(string? searchTerm, string? role, string? sortOrder, bool sortDescending = false, int? page = 1)
+        public async Task<IActionResult> Index(string? searchTerm, string? role, string? sortOrder, int? pageSize, bool sortDescending = false, int? page = 1)
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
@@ -39,7 +35,6 @@ namespace ASI.Basecode.WebApp.Controllers
             {
                 ViewData["SuccessMessage"] = TempData["SuccessMessage"];
             }
-            const int PageSize = 10;
             int pageIndex = page.GetValueOrDefault(1);
 
             var queryParams = new UserQueryParams
@@ -49,19 +44,21 @@ namespace ASI.Basecode.WebApp.Controllers
                 SortOrder = sortOrder ?? "email",
                 SortDescending = sortDescending,
                 PageIndex = pageIndex,
-                PageSize = PageSize
+                PageSize = pageSize ?? 10
             };
             ViewData["CurrentSearch"] = searchTerm;
             ViewData["CurrentSort"] = queryParams.SortOrder;
             ViewData["CurrentSortDescending"] = queryParams.SortDescending;
             ViewData["CurrentRoleFilter"] = queryParams.Role;
+            ViewData["CurrentPageSize"] = pageSize;
+
             PaginatedList<User> users = await _userService.GetUsersQueried(queryParams);
 
             return View("~/Views/Users/Index.cshtml", users);
         }
         [HttpGet]
-        [Authorize] 
-        public async Task<IActionResult> AddUser(string role="User")
+        [Authorize]
+        public async Task<IActionResult> AddUser(string role = "User")
         {
 
 
@@ -108,7 +105,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 TempData["ErrorMessage"] = ex.Message;
                 return View("~/Views/Users/AddUser.cshtml", model);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "An unexpected error occurred.";
                 return View("~/Views/Users/AddUser.cshtml", model);
@@ -135,7 +132,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 }
                 if (currentUserId == userId.ToString())
                 {
-                    await _signInManager.SignOutAsync();                  
+                    await _signInManager.SignOutAsync();
 
                     return RedirectToAction("Index", "Home");
                 }

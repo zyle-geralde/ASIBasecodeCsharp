@@ -10,12 +10,14 @@
     var currentSort = (string?)ViewData["CurrentSort"];
     var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
     var currentRoleFilter = (string?)ViewData["CurrentRoleFilter"];
+	var currentPageSize = (int)(ViewData["CurrentPageSize"] ?? 10);
 
     var routeValues = new Dictionary<string, string> {
         ["searchTerm"]     = currentSearch,
         ["role"]           = currentRoleFilter,
         ["sortOrder"]      = currentSort,
-        ["sortDescending"] = currentSortDescending.ToString().ToLowerInvariant()
+        ["sortDescending"] = currentSortDescending.ToString().ToLowerInvariant(),
+		["pageSize"] = currentPageSize.ToString(),
     };
 
     ViewData["CurrentPage"] = Model.PageIndex;
@@ -86,6 +88,7 @@
                                                 <a asp-action="Index" class="btn btn-outline-secondary">
                     Clear All</a>
                     </div>
+					<input type="hidden" id="pageSizeField" name="pageSize" value="@currentPageSize" />
 
                     <input type="hidden" id="roleField" name="role" value="@currentRoleFilter" />
                     <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
@@ -154,6 +157,16 @@
                             </div>
                         </div>
                     </div>
+
+					<div class="filter-section">
+						<label class="form-label">Items per page</label>
+						<select name="pageSize" class="form-select" id="filterPageSize">
+							<option value="10" selected="@(currentPageSize == 10 ? "selected" : null)">10</option>
+							<option value="20" selected="@(currentPageSize == 20 ? "selected" : null)">20</option>
+							<option value="50" selected="@(currentPageSize == 50 ? "selected" : null)">50</option>
+							<option value="100" selected="@(currentPageSize == 100 ? "selected" : null)">100</option>
+						</select>
+					</div>
 
                     <div class="d-flex justify-content-end">                       
                         <button type="button" class="btn btn-outline-secondary" style="margin-right: 10px" id="closeSortButton">Cancel</button>
@@ -338,6 +351,7 @@
             const closeSortButton = document.getElementById('closeSortButton');
             const applySortButton = document.getElementById('applySortButton');
 
+
             // Toggle the sort popup when the sort button is clicked
             sortButton.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -368,11 +382,13 @@
                 const roleValue = document.querySelector('input[name="popupRole"]:checked').value;
                 const sortOrderValue = document.querySelector('input[name="popupSortOrder"]:checked').value;
                 const sortDirectionValue = document.querySelector('input[name="popupSortDirection"]:checked').value;
+				  const pageSizeValue  = document.getElementById('filterPageSize').value;
 
                 // Update hidden form fields
                 document.getElementById('roleField').value = roleValue;
                 document.getElementById('sortOrderField').value = sortOrderValue;
                 document.getElementById('sortDescendingField').value = sortDirectionValue;
+				  document.getElementById('pageSizeField').value    = pageSizeValue;    // ← NEW
 
                 // Find the main form and submit it
                 document.querySelector('.card-body form').submit();
