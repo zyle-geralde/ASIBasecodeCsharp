@@ -4,68 +4,95 @@
 @using ASI.Basecode.Services.ServiceModels;
 
 @{
-	ViewData["Title"] = "Book List";
-	Layout = "_AdminSidebarLayout";
-	string display_name = "Books";
-	var allLanguages = (List<LanguageViewModel>)ViewData["AllLanguages"];
-	var currentCategory = (string?)ViewContext.HttpContext.Request.Query["category"];
-	var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
-	var currentSearch = (string?)ViewData["CurrentSearch"];
-	var currentAuthor = (string?)ViewData["CurrentAuthor"];
-	var currentRating = (int?)ViewData["CurrentRating"];
-	var currentFromDate = (string?)ViewData["CurrentFromDate"];
-	var currentToDate = (string?)ViewData["CurrentToDate"];
-	var currentGenres = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>();
-	var currentSort = (string?)ViewData["CurrentSort"];
-	var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
-	var currentIsFeatured = (bool?)ViewData["CurrentIsFeatured"];
-	var routeValues = new Dictionary<string, string>();
-	var descriptionParts = new List<string>();
-	var currentLanguage = (string?)ViewData["CurrentLanguage"];
+    ViewData["Title"] = "Book List";
+    Layout = "_AdminSidebarLayout";
+    string display_name = "Books";
+    var allLanguages = (List<LanguageViewModel>)ViewData["AllLanguages"];
+    var currentCategory = (string?)ViewContext.HttpContext.Request.Query["category"];
+    var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
+    var currentSearch = (string?)ViewData["CurrentSearch"];
+    var currentAuthor = (string?)ViewData["CurrentAuthor"];
+    var currentRating = (int?)ViewData["CurrentRating"];
+    var currentFromDate = (string?)ViewData["CurrentFromDate"];
+    var currentToDate = (string?)ViewData["CurrentToDate"];
+    var currentGenresRaw = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>(); @*ViewData["CurrentGenres"] as string;*@
+    var currentSort = (string?)ViewData["CurrentSort"];
+    var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
+    var currentIsFeatured = (bool?)ViewData["CurrentIsFeatured"];
+    var routeValues = new Dictionary<string, string>();
+    var descriptionParts = new List<string>();
+    var currentLanguage = (string?)ViewData["CurrentLanguage"];
     var currentPageSize = (int)(ViewData["CurrentPageSize"] ?? 10);
 
-	if (!string.IsNullOrWhiteSpace(currentCategory))
-	{
-		routeValues["category"] = currentCategory;
-	}
-	if (!string.IsNullOrWhiteSpace(currentSearch))
-	{
-		routeValues["searchTerm"] = currentSearch;
-		descriptionParts.Add($"Search: \"{currentSearch}\"");
-	}
-	if (!string.IsNullOrWhiteSpace(currentAuthor))
-	{
-		routeValues["author"] = currentAuthor;
-		descriptionParts.Add($"Author: {currentAuthor}");
-	}
-	if (currentRating.HasValue)
-	{
-		routeValues["rating"] = currentRating.Value.ToString();
-		descriptionParts.Add($"Rating: {currentRating.Value}★ & up");
-	}
-	if (!string.IsNullOrWhiteSpace(currentFromDate))
-	{
-		routeValues["publishedFrom"] = currentFromDate;
-		descriptionParts.Add($"Published from: {DateTime.Parse(currentFromDate).ToString("dd MMMM yyyy")} ");
-	}
-	if (!string.IsNullOrWhiteSpace(currentToDate))
-	{
-		routeValues["publishedTo"] = currentToDate;
-		descriptionParts.Add($"Published to: {DateTime.Parse(currentToDate).ToString("dd MMMM yyyy")} ");
-	}
-	if (currentIsFeatured == true)
-	{
-		routeValues["isFeatured"] = "true";
-		descriptionParts.Add("Featured");
+    string[] currentGenres;
+
+    if (currentGenresRaw.Length > 0)
+    {
+        if (!string.IsNullOrWhiteSpace(currentGenresRaw[0]))
+        {
+            // Split the string by comma and remove any empty entries
+            currentGenres = currentGenresRaw[0].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+        else
+        {
+            currentGenres = Array.Empty<string>();
+        }
+    }
+    else
+    {
+        currentGenres = Array.Empty<string>();
+    }
+
+
+    if (!string.IsNullOrWhiteSpace(currentCategory))
+    {
+        routeValues["category"] = currentCategory;
+    }
+    if (!string.IsNullOrWhiteSpace(currentSearch))
+    {
+        routeValues["searchTerm"] = currentSearch;
+        descriptionParts.Add($"Search: \"{currentSearch}\"");
+    }
+    if (!string.IsNullOrWhiteSpace(currentAuthor))
+    {
+        routeValues["author"] = currentAuthor;
+        descriptionParts.Add($"Author: {currentAuthor}");
+    }
+    if (currentRating.HasValue)
+    {
+        routeValues["rating"] = currentRating.Value.ToString();
+        descriptionParts.Add($"Rating: {currentRating.Value}★ & up");
+    }
+    if (!string.IsNullOrWhiteSpace(currentFromDate))
+    {
+        routeValues["publishedFrom"] = currentFromDate;
+        descriptionParts.Add($"Published from: {DateTime.Parse(currentFromDate).ToString("dd MMMM yyyy")} ");
+    }
+    if (!string.IsNullOrWhiteSpace(currentToDate))
+    {
+        routeValues["publishedTo"] = currentToDate;
+        descriptionParts.Add($"Published to: {DateTime.Parse(currentToDate).ToString("dd MMMM yyyy")} ");
+    }
+    if (currentIsFeatured == true)
+    {
+        routeValues["isFeatured"] = "true";
+        descriptionParts.Add("Featured");
+    }
+
+    if (currentGenres.Any()) {
+        
+
+        routeValues["genreFilter"] = string.Join(",", currentGenres);
+        var selectedNames = allGenres
+            .Where(g => currentGenres.Contains(g.BookGenreId))
+            .Select(g => g.GenreName);
+        descriptionParts.Add($"Genre: {string.Join(", ", selectedNames)}");
+        //descriptionParts.Add($"Genre:");
+
+
 	}
 
-	if (currentGenres.Any()) {
-		routeValues["genreFilter"] = string.Join(",", currentGenres);
-		var selectedNames = allGenres
-			.Where(g => currentGenres.Contains(g.BookGenreId))
-			.Select(g => g.GenreName);
-		descriptionParts.Add($"Genre: {string.Join(", ", selectedNames)}");
-	}
+
 	if (!string.IsNullOrEmpty(currentSort) && currentSort != "title")
 	{
 		routeValues["sortOrder"] = currentSort;

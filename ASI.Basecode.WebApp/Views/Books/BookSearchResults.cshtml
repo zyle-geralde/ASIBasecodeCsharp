@@ -21,6 +21,7 @@
     var routeValues = new Dictionary<string,string>();
     var descriptionParts = new List<string>();
 
+
     if (!string.IsNullOrWhiteSpace(currentCategory)) {
         routeValues["category"] = currentCategory;
         // descriptionParts.Add($"Category: {currentCategory}");
@@ -393,6 +394,7 @@
 </div>
 
 @section scripts {
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const toggleFiltersButton = document.getElementById('toggleFilters');
