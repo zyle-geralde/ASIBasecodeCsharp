@@ -348,36 +348,27 @@
 
 
             <!--Author Details-->
-            <section id="metadata" class="book-detail-section">
+            <section id="author-details" class="book-detail-section">
                 <div class="section-header">
                     <div class="section-icon">
-                        <i class="fas fa-tags"></i>
+                        <i class="fas fa-user-edit"></i>
                     </div>
-                    <h2>Author Details</h2>
+                    <h2>About the Author</h2>
                 </div>
                 <div class="section-content">
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">
-                                <i class="fas fa-barcode"></i> Image
+                    <div class="author-profile">
+                        @if (!string.IsNullOrEmpty(authorImage))
+                        {
+                            <div class="author-image">
+                                <img src="@authorImage" alt="@authorName" />
                             </div>
-                            <img src = @authorImage style = "height:50px; width:50px" />
-                        </div>
-
-                        <div class="info-item">
-                            <div class="info-label">
-                                <i class="fas fa-barcode"></i> Author Name
+                        }
+                        <div class="author-info">
+                            <h3 class="author-name">@authorName</h3>
+                            <div class="author-description">
+                                @authorDesription
                             </div>
-                            <div class="info-value">@authorName</div>
                         </div>
-
-                        <div class="info-item">
-                            <div class="info-label">
-                                <i class="fas fa-calendar-plus"></i> Author Description
-                            </div>
-                            <div class="info-value">@authorDesription</div>
-                        </div>
-
                     </div>
                 </div>
             </section>
