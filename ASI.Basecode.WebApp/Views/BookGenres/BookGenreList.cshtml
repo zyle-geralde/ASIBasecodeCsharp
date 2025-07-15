@@ -12,12 +12,15 @@
     var currentSearch = (string?)ViewData["CurrentSearch"];
     var currentSort = (string?)ViewData["CurrentSort"];
     var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
+	var currentPageSize = (int)(ViewData["CurrentPageSize"] ?? 10);
 
     var routeValues = new Dictionary<string, string>
     {
         ["searchTerm"] = currentSearch,
         ["sortOrder"] = currentSort,
-        ["sortDescending"] = currentSortDescending.ToString().ToLowerInvariant()
+        ["sortDescending"] = currentSortDescending.ToString().ToLowerInvariant(),
+				["pageSize"] = currentPageSize.ToString(),
+
     };
 
     ViewData["CurrentPage"] = Model.PageIndex;
@@ -90,6 +93,8 @@
                         Clear All</a>
                         
                     </div>
+					<input type="hidden" id="pageSizeField" name="pageSize" value="@currentPageSize" />
+
                     <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
                     <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
                 </form>
@@ -126,6 +131,16 @@
                             </div>
                         </div>
                     </div>
+
+					<div class="filter-section">
+						<label class="form-label">Items per page</label>
+						<select name="pageSize" class="form-select" id="filterPageSize">
+							<option value="10" selected="@(currentPageSize == 10 ? "selected" : null)">10</option>
+							<option value="20" selected="@(currentPageSize == 20 ? "selected" : null)">20</option>
+							<option value="50" selected="@(currentPageSize == 50 ? "selected" : null)">50</option>
+							<option value="100" selected="@(currentPageSize == 100 ? "selected" : null)">100</option>
+						</select>
+					</div>
 
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn btn-outline-secondary" style="margin-right: 10px" id="closeSortButton">Cancel</button>
@@ -349,52 +364,6 @@
             });
         }
 
-        // const show_delete_modal = document.querySelectorAll("#deleteButton");
-        // const get_genre_id = document.getElementById("genre-id")
-        // const get_cover_url = document.getElementById("cover-url")
-
-
-        // //Adding click event listener for each delete button
-        // //Grab the bookId cover Url and Book Url from which the trash button was clicked
-        // show_delete_modal.forEach(button =>  {
-        //     button.addEventListener("click", async function (event) {
-
-
-        //         const hold_genre_id = this.dataset.genreId
-        //         const hold_cover_url = this.dataset.coverUrl
-
-        //         get_genre_id.textContent = hold_genre_id
-        //         get_cover_url.textContent = hold_cover_url
-
-        //         try {
-        //             const response = await fetch("/BookGenre/DeleteGenre", {
-        //                 method: "POST",
-        //                 headers: {
-        //                     'Content-Type': 'application/json',
-        //                 },
-        //                 body: JSON.stringify({ BookGenreId: get_genre_id.textContent })
-        //             })
-
-        //             if (response.ok) {
-        //                 const result = await response.json()
-        //                 alert(`${result.message}`)
-        //                 if (get_cover_url.textContent !== null || get_cover_url.textConent !== "") {
-        //                     await deleteCoverUrl(get_cover_url.textContent);
-        //                 }
-
-
-        //                 window.location.reload()
-        //             }
-        //             else {
-        //                 alert(`Error: ${result.message}`)
-        //             }
-        //         }
-        //         catch (error) {
-        //             alert(`Error: An unexpected error occurred while deleting book data. Please try again.`)
-        //         }
-
-        //     })
-        // })
 
         // --- DELETE GENRE MODAL ---
         $(document).on('click', '.delete-genre-btn', function () {
@@ -489,14 +458,17 @@
             // Get selected values
             const sortOrderValue = document.querySelector('input[name="popupSortOrder"]:checked').value;
             const sortDirectionValue = document.querySelector('input[name="popupSortDirection"]:checked').value;
+							  const pageSizeValue  = document.getElementById('filterPageSize').value;
 
             // Update hidden form fields
             document.getElementById('sortOrderField').value = sortOrderValue;
 
             document.getElementById('sortDescendingField').value = sortDirectionValue;
+										  document.getElementById('pageSizeField').value = pageSizeValue;
 
             // Find the main form and submit it
             document.querySelector('#searchFilterForm').submit();
+
         });
 
     </script>

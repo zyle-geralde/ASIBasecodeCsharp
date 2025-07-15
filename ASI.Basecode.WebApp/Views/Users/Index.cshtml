@@ -13,9 +13,9 @@
 	var currentPageSize = (int)(ViewData["CurrentPageSize"] ?? 10);
 
     var routeValues = new Dictionary<string, string> {
-        ["searchTerm"]     = currentSearch,
-        ["role"]           = currentRoleFilter,
-        ["sortOrder"]      = currentSort,
+        ["searchTerm"] = currentSearch,
+        ["role"] = currentRoleFilter,
+        ["sortOrder"] = currentSort,
         ["sortDescending"] = currentSortDescending.ToString().ToLowerInvariant(),
 		["pageSize"] = currentPageSize.ToString(),
     };
@@ -288,6 +288,7 @@
             const deleteModalElement = document.getElementById('deleteModal');
             const deleteModalInstance = bootstrap.Modal.getInstance(deleteModalElement);
             if (deleteModalInstance) {
+            if (deleteModalInstance) {
                 deleteModalInstance.hide();
             }
 
@@ -388,7 +389,7 @@
                 document.getElementById('roleField').value = roleValue;
                 document.getElementById('sortOrderField').value = sortOrderValue;
                 document.getElementById('sortDescendingField').value = sortDirectionValue;
-				  document.getElementById('pageSizeField').value    = pageSizeValue;    // ← NEW
+				  document.getElementById('pageSizeField').value    = pageSizeValue;
 
                 // Find the main form and submit it
                 document.querySelector('.card-body form').submit();
