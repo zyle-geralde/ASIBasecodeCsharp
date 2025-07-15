@@ -29,14 +29,13 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpGet]
         [Route("Author/Index")]
         [Authorize]
-        public async Task<IActionResult> Index(string? searchTerm, string? sortOrder, bool sortDescending = false, int? page = 1)
+        public async Task<IActionResult> Index(string? searchTerm, string? sortOrder, int? pageSize, bool sortDescending = false, int? page = 1)
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
 
             try
             {
-                const int pageSize = 10;
                 int pageIndex = page.GetValueOrDefault(1);
 
                 var queryParams = new AuthorQueryParams
@@ -45,11 +44,13 @@ namespace ASI.Basecode.WebApp.Controllers
                     SortOrder = sortOrder ?? "name",
                     SortDescending = sortDescending,
                     PageIndex = pageIndex,
-                    PageSize = pageSize
+                    PageSize = pageSize ?? 10
                 };
                 ViewData["CurrentSearch"] = searchTerm;
                 ViewData["CurrentSort"] = queryParams.SortOrder;
                 ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+                ViewData["CurrentPageSize"] = pageSize;
+
                 PaginatedList<Author> authorList = await _authorService.GetAuthorQueried(queryParams);
 
 
