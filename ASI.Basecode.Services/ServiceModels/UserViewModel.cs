@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace ASI.Basecode.Services.ServiceModels
@@ -16,7 +17,10 @@ namespace ASI.Basecode.Services.ServiceModels
 
         [Required(ErrorMessage = "Password is required.")]
         [StringLength(100, ErrorMessage = "Password must be at least 8 characters.", MinimumLength = 8)]
-        [DataType(DataType.Password)]
+        [RegularExpression(
+             @"^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$",
+             ErrorMessage = "Password must be at least 8 characters and contain at least one uppercase letter, one number and one special character."
+         )]
 
         public string Password { get; set; }
 

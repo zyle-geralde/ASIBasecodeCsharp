@@ -36,6 +36,7 @@ namespace ASI.Basecode.Services.ServiceModels
         [StringLength(500)]
         public string? Description { get; set; }
 
+        [Range(0, 10000, ErrorMessage = "Number Pages must be between 1-10000")]
         public int? NumberOfPages { get; set; }
 
         [StringLength(500)]
@@ -50,7 +51,7 @@ namespace ASI.Basecode.Services.ServiceModels
 
         [StringLength(100)]
         public string? SeriesName { get; set; }
-
+        [Range(0, 50, ErrorMessage="Series order must be between 1-50")]
         public int? SeriesOrder { get; set; }
 
         [StringLength(500)]

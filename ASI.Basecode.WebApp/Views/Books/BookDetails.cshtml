@@ -510,16 +510,6 @@
                                             <div class="review-date">
                                                 Updated last: @review.UploadDate?.ToString("MMMM dd, yyyy")
                                             </div>
-                                            <div class="review-actions">
-                                                
-                                                 @if (isAdmin)
-                                                    {
-                                                        <button class="btn btn-delete-review"
-                                                                onclick="deleteBookReview('@review.ReviewId')">
-                                                            <i class="fas fa-trash-alt"></i> Delete
-                                                        </button>
-                                                    }
-                                            </div>
                                         </div>
                                     }
                                 }
@@ -535,12 +525,6 @@
                 </div>
             </section>
 
-            <!-- Back to top button -->
-            <div class="back-to-top">
-                <a href="#" title="Back to Top">
-                    <i class="fas fa-arrow-up"></i>
-                </a>
-            </div>
         </div>
     }
     else

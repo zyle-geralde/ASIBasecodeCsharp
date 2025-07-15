@@ -142,7 +142,7 @@ namespace ASI.Basecode.Data.Repositories
 
                 if (isBookNameAndAuthorExist && (book.Author.Trim() != existingBook.Author.Trim() || book.Title.Trim().ToLower() != existingBook.Title.Trim().ToLower()))
                 {
-                    throw new ApplicationException("Book Title and/or Author Exist.");
+                    throw new ApplicationException("Book Title and Author Exist.");
                 }
 
                 //Transfer to Service
