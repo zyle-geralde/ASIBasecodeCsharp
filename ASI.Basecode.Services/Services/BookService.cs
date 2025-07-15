@@ -45,7 +45,7 @@ namespace ASI.Basecode.Services.Services
 
                 if (isBookNameAndAuthorExist)
                 {
-                    throw new ApplicationException("Book Title and/or Author Exist.");
+                    throw new ApplicationException("Book Title and Author Exist.");
                 }
             }
             catch(ApplicationException ex)

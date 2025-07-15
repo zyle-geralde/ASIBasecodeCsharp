@@ -9,8 +9,12 @@ namespace ASI.Basecode.Services.ServiceModels
         [Required, DataType(DataType.Password)]
         public string CurrentPassword { get; set; }
 
-        [Required, DataType(DataType.Password)]
+        [Required(ErrorMessage = "Password is required.")]
         [StringLength(100, ErrorMessage = "Password must be at least 8 characters.", MinimumLength = 8)]
+        [RegularExpression(
+             @"^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$",
+             ErrorMessage = "Password must be at least 8 characters and contain at least one uppercase letter, one number and one special character."
+         )]
 
         public string NewPassword { get; set; }
 

@@ -380,7 +380,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 catch (Exception ex)
                 {
                     Console.Error.WriteLine($"Error updating book: {ex.Message}");
-                    return StatusCode(500, new { Message = $"Error updating book: {ex.Message}" });
+                    return StatusCode(500, new { Message = ex.Message });
                 }
             }
 
