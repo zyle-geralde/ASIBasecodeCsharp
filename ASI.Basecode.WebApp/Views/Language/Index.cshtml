@@ -529,15 +529,10 @@
 
             // Apply button
             applySortButton.addEventListener('click', function () {
-                // Get selected values
                 const sortOrderValue = document.querySelector('input[name="popupSortOrder"]:checked').value;
                 const sortDirectionValue = document.querySelector('input[name="popupSortDirection"]:checked').value;
-
-                // Update hidden form fields
                 document.getElementById('sortOrderField').value = sortOrderValue;
                 document.getElementById('sortDescendingField').value = sortDirectionValue;
-
-                // Find the main form and submit it
                 document.querySelector('#searchFilterForm').submit();
             });
         });
