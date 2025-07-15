@@ -607,10 +607,18 @@
                     </button>
                 </div>
 
-				<a href="#" class="forgot-back-link" data-bs-dismiss="modal" onclick="$('#forgotInput').val('');
-">
-                    &lt; Back to login
-                </a>
+				<a href="#"
+				   class="forgot-back-link"
+				   onclick="
+				   $('#codeVerificationModal').modal('hide');
+				   $('#forgotInput, #verificationCodeInput, #newPasswordInput, #confirmPasswordInput').val('');
+				   localStorage.removeItem('otpMessage');
+				   setTimeout(()=>
+					window.location.href = '/Account/Login', 200);
+					return false;
+					">
+					&lt; Back to Login
+				</a>
             </form>
         </div>
     </div>
@@ -645,10 +653,11 @@
 				<a href="#"
 				   class="forgot-back-link"
 				   onclick="
+				   $('#codeVerificationModal').modal('hide');
+				   $('#forgotInput, #verificationCodeInput, #newPasswordInput, #confirmPasswordInput').val('');
+				   localStorage.removeItem('otpMessage');
 				   setTimeout(()=>
 					window.location.href = '/Account/Login', 200);
-					$('#forgotInput, #verificationCodeInput).val('');
-
 					return false;
 					">
 					&lt; Back to Login
@@ -693,10 +702,11 @@
 				<a href="#"
 				   class="forgot-back-link"
 				   onclick="
+				   $('#codeVerificationModal').modal('hide');
+				   $('#forgotInput, #verificationCodeInput, #newPasswordInput, #confirmPasswordInput').val('');
+				   localStorage.removeItem('otpMessage');
 				   setTimeout(()=>
 					window.location.href = '/Account/Login', 200);
-					$('#forgotInput, #verificationCodeInput, #newPasswordInput, #confirmPasswordInput').val('');
-
 					return false;
 					">
 					&lt; Back to Login
