@@ -297,13 +297,14 @@
                     </div>
                     <div class="row mb-3">
 						<div class="col">
-							<label asp-for="Birthdate" class="form-label">Birthdate</label>
-							<input asp-for="Birthdate"
-								   type="date"
-								   class="form-control"
-								   asp-format="{0:yyyy-MM-dd}" />
-							<span asp-validation-for="Birthdate" class="text-danger"></span>
-						</div>
+                        <label asp-for="Birthdate" class="form-label">Birthdate</label>
+                        <input asp-for="Birthdate"
+                               type="date"
+                               class="form-control"
+                               id="birthdateInput"
+                               asp-format="{0:yyyy-MM-dd}" />
+                        <span asp-validation-for="Birthdate" class="text-danger"></span>
+                    </div>
 
                         <div class="col">
                             <label asp-for="Gender" class="form-label"></label>
@@ -933,5 +934,24 @@
         });
       }
     });
+  </script>  
+  <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const birthdateInput = document.getElementById('birthdateInput');
+            if (birthdateInput) {
+                const today = new Date();
+                const minAgeDate = new Date(
+                    today.getFullYear() - 7,
+                    today.getMonth(),
+                    today.getDate()
+                );
+
+                const year = minAgeDate.getFullYear();
+                const month = String(minAgeDate.getMonth() + 1).padStart(2, '0');
+                const day = String(minAgeDate.getDate()).padStart(2, '0');
+
+                birthdateInput.max = `${year}-${month}-${day}`;
+            }
+        });
   </script>
 }

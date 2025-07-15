@@ -543,11 +543,6 @@
         </div> *@
     </div>
     <div class="login-right-panel">
-        <a href="/Home/Index" class="back-arrow" aria-label="Back">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <path d="M20 8L12 16L20 24" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-        </a>
         <div class="login-form-card">
             <img src="~/img/bb_logo_cream.png" class="login-logo" style="width: 120px;" alt="logo">
             <h2 class="form-title" style="font-size: 22px">
@@ -558,7 +553,7 @@
                     <label class="form-label" for="form2Example11">Email</label>
                     <input type="text" id="form2Example11"
                            class="form-control-custom"
-                           asp-for="UserId" placeholder="sample@gmail.com" />
+                           asp-for="UserId" placeholder="Enter email here" />
                     <span asp-validation-for="UserId" class="error-message"></span>
                 </div>
                 <div class="form-group">
@@ -580,7 +575,7 @@
                 </div>
                 <button class="login-btn" type="submit">Sign In</button>
                 <div class="signup-section">
-                    Already have an account? <a href="/Account/Register" class="signup-section-link">Sign Up</a>
+                    Don't have an account? <a href="/Account/Register" class="signup-section-link">Sign Up</a>
                 </div>
             </form>
         </div>
