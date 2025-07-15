@@ -104,6 +104,8 @@ namespace ASI.Basecode.WebApp.Controllers
             string[] genreFilter,
             string languageFilter,
             string sortOrder,
+                        int? pageSize,
+
             bool sortDescending = false,
             bool? isFeatured = null,
 
@@ -112,13 +114,9 @@ namespace ASI.Basecode.WebApp.Controllers
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
-            const int PageSize = 10;
             int pageIndex = page.GetValueOrDefault(1);
             string authorId = await _authorRepository.GetAuthorByName(author != null ? author : "");
             string authorIdFromSearch = await _authorRepository.GetAuthorByName(searchTerm != null ? searchTerm : "");
-            //string authorIdForSearch = await _authorRepository.GetAuthorByName(searchTerm != null ? searchTerm : "");
-            // authorName != null ? authorName.AuthorName : ""
-
             var queryParams = new BookQueryParams
             {
                 SearchTerm = searchTerm,
@@ -133,8 +131,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 PageIndex = page.GetValueOrDefault(1),
                 IsFeatured = isFeatured,
                 SortOrder = sortOrder ?? "title",
-                PageSize = PageSize,
-
+                PageSize = pageSize ?? 10
 
             };
 
@@ -149,6 +146,7 @@ namespace ASI.Basecode.WebApp.Controllers
             ViewData["CurrentSortDescending"] = queryParams.SortDescending;
             ViewData["CurrentIsFeatured"] = isFeatured;
             ViewData["CurrentLanguage"] = languageFilter;
+            ViewData["CurrentPageSize"] = pageSize;
 
 
             var allGenres = await _bookGenreService.GetAllGenreList();
