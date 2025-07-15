@@ -665,7 +665,7 @@
                     } else {
                         const errorData = await response.json();
                         const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
-                        if (window.toastr) window.toastr.error(`Server error: ${errorMessage}`);
+                        if (window.toastr) window.toastr.error(errorMessage);
 
                         // If new cover different from original, delete the new one
                         if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
