@@ -49,30 +49,176 @@ namespace ASI.Basecode.Services.Services
             this._sessionManager = new SessionManager(httpContextAccessor.HttpContext.Session);
         }
 
-
-        private string GenerateOtpCode()
+        private string GetBase64Logo()
         {
-            //Generate 6-digit numeric OTP
+            try
+            {
+                // Path to your logo file in your application
+                string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "bb_logo_cream.png");
+
+                if (!System.IO.File.Exists(logoPath))
+                {
+                    logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "bb_logo_black.png");
+
+                    if (!System.IO.File.Exists(logoPath))
+                    {
+                        logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "bb_logo_white.png");
+
+                        if (!System.IO.File.Exists(logoPath))
+                        {
+                            // If none of the logo files exist, return empty string
+                            return "";
+                        }
+                    }
+                }
+
+                byte[] imageBytes = System.IO.File.ReadAllBytes(logoPath);
+                return Convert.ToBase64String(imageBytes);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details for debugging
+                Console.WriteLine($"Error loading logo: {ex.Message}");
+                return "";
+            }
+        }
+
+        private async Task<string> CreateAndSendOtpCode(string email, string emailType = "reset")
+        {
+            // Generate 6-digit numeric OTP
             var otpBytes = new byte[4]; // Enough to get a number up to 2^32 - 1
             RandomNumberGenerator.Fill(otpBytes);
-            var otp = BitConverter.ToUInt32(otpBytes, 0) % 1_000_000; //Get a number between 0 and 999,999
-            return otp.ToString("D6"); //Format as a 6-digit string, padding with leading zeros if necessary
-        }
-        public async Task<string> SendOtpCodeEmail(string email)
-        {
-            string otp = GenerateOtpCode();
-            var subject = "BasaBuzz 6 digit code";
-            var message = "This is your code " + otp;
+            var otp = BitConverter.ToUInt32(otpBytes, 0) % 1_000_000; // Get a number between 0 and 999,999
+            var otpString = otp.ToString("D6");
+
+            // Set subject based on email type
+            var subject = emailType.ToLower() == "reset"
+                ? "BasaBuzz Password Reset Code"
+                : "BasaBuzz Email Verification Code";
+
+            // Set title and instructions based on email type
+            var title = emailType.ToLower() == "reset"
+                ? "BasaBuzz Password Reset"
+                : "BasaBuzz Email Verification";
+
+            var instructions = emailType.ToLower() == "reset"
+                ? "We received a request to reset your password. Please use the following verification code to complete your password reset:"
+                : "Thank you for registering with BasaBuzz. Please use the following verification code to complete your registration:";
+
+            var actionText = emailType.ToLower() == "reset"
+                ? "If you did not request a password reset, you can safely ignore this email."
+                : "If you did not create an account with us, you can safely ignore this email.";
+
+            // Create an enhanced HTML email template with inline CSS styling for logo
+            var message = $@"
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {{
+            font-family: 'Montserrat', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }}
+        .email-container {{
+            background-color: #f6f3ea;
+            border-radius: 10px;
+            padding: 30px;
+            border: 1px solid #e0e0e0;
+        }}
+        .header {{
+            text-align: center;
+            margin-bottom: 25px;
+        }}
+        .logo-text {{
+            display: inline-block;
+            font-family: 'Merriweather', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #5b7c78;
+            margin-bottom: 15px;
+        }}
+        h1 {{
+            color: #5b7c78;
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }}
+        .code-container {{
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+        }}
+        .code {{
+            font-size: 32px;
+            font-weight: 700;
+            color: #4b5f5a;
+            letter-spacing: 5px;
+        }}
+        .instructions {{
+            margin-bottom: 20px;
+        }}
+        .expiry-note {{
+            font-size: 14px;
+            color: #666;
+            margin-top: 20px;
+            font-style: italic;
+        }}
+        .footer {{
+            margin-top: 30px;
+            font-size: 12px;
+            text-align: center;
+            color: #777;
+        }}
+    </style>
+</head>
+<body>
+    <div class='email-container'>
+        <div class='header'>
+            <h1 class='logo-text'>{title}</h1>
+        </div>
+        
+        <p>Hello,</p>
+        
+        <p class='instructions'>{instructions}</p>
+        
+        <div class='code-container'>
+            <div class='code'>{otpString}</div>
+        </div>
+        
+        <p>{actionText}</p>
+        
+        <p class='expiry-note'>This code will expire in 5 minutes for security reasons.</p>
+        
+        <div class='footer'>
+            <p>© {DateTime.Now.Year} BasaBuzz. All rights reserved.</p>
+            <p>This is an automated email. Please do not reply.</p>
+        </div>
+    </div>
+</body>
+</html>";
 
             try
             {
                 await _emailSenderService.SendEmailAsync(email, subject, message);
-                return otp;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+
+            return otpString;
+        }
+
+        public async Task<string> SendOtpCodeEmail(string email)
+        {
+            return await CreateAndSendOtpCode(email, "verification");
         }
 
         public async Task<bool> IsEmailVerifiedAndExists(string email)
@@ -186,7 +332,7 @@ namespace ASI.Basecode.Services.Services
                 user.CreatedBy = model.UserName;
                 user.UpdatedBy = model.UserName;
                 user.IsEmailVerified = false;
-                user.OtpCode = await GenerateOtpCode(model.Email);
+                user.OtpCode = await CreateAndSendOtpCode(model.Email, "verification");
                 user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                 await _repository.AddUser(user);
@@ -310,7 +456,7 @@ namespace ASI.Basecode.Services.Services
                 user.CreatedBy = model.UserName;
                 user.UpdatedBy = model.UserName;
                 user.IsEmailVerified = false;
-                user.OtpCode = await GenerateOtpCode(model.Email);
+                user.OtpCode = await CreateAndSendOtpCode(model.Email, "verification");
                 user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                 await _repository.AddUser(user);
@@ -350,7 +496,7 @@ namespace ASI.Basecode.Services.Services
                         get_user.CreatedBy = model.UserName;
                         get_user.UpdatedBy = model.UserName;
                         get_user.IsEmailVerified = false;
-                        get_user.OtpCode = await GenerateOtpCode(model.Email);
+                        get_user.OtpCode = await CreateAndSendOtpCode(model.Email, "verification");
                         get_user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                         await _repository.UpdateUser(get_user);
@@ -406,7 +552,7 @@ namespace ASI.Basecode.Services.Services
                 user.CreatedBy = model.UserName;
                 user.UpdatedBy = model.UserName;
                 user.IsEmailVerified = false;
-                user.OtpCode = await GenerateOtpCode(model.Email);
+                user.OtpCode = await CreateAndSendOtpCode(model.Email, "verification");
                 user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                 await _repository.AddUser(user);
@@ -446,7 +592,7 @@ namespace ASI.Basecode.Services.Services
                         get_user.CreatedBy = model.UserName;
                         get_user.UpdatedBy = model.UserName;
                         get_user.IsEmailVerified = false;
-                        get_user.OtpCode = await GenerateOtpCode(model.Email);
+                        get_user.OtpCode = await CreateAndSendOtpCode(model.Email, "verification");
                         get_user.OtpExpirationDate = DateTime.Now.AddMinutes(5);
 
                         await _repository.UpdateUser(get_user);
@@ -606,29 +752,6 @@ namespace ASI.Basecode.Services.Services
             };
         }
 
-        private async Task<string> GenerateOtpCode(string email)
-        {
-
-            //Generate 6-digit numeric OTP
-            //RNGCryptoServiceProvider for strong randomness
-            var otpBytes = new byte[4]; // Enough to get a number up to 2^32 - 1
-            RandomNumberGenerator.Fill(otpBytes);
-            var otp = BitConverter.ToUInt32(otpBytes, 0) % 1_000_000; //Get a number between 0 and 999,999
-            var otp_string = otp.ToString("D6");
-            var subject = "BasaBuzz 6 digit code";
-            var message = "This is your code " + otp_string;
-            try
-            {
-                await _emailSenderService.SendEmailAsync(email, subject, message);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-
-            return otp_string; //Format as a 6-digit string, padding with leading zeros if necessary
-        }
-
         public async Task<OtpViewModel> RegenerateOtpAsync(string email)
         {
             var user = await _repository.FindUserByEmail(email);
@@ -641,7 +764,7 @@ namespace ASI.Basecode.Services.Services
                 throw new ArgumentException("Email is already verified");
             }
 
-            user.OtpCode = await GenerateOtpCode(email);
+            user.OtpCode = await CreateAndSendOtpCode(email, "verification");
             user.OtpExpirationDate = DateTime.Now.AddMinutes(5); // New expiry
             await _repository.UpdateUser(user);
 
@@ -672,14 +795,12 @@ namespace ASI.Basecode.Services.Services
 
             try
             {
-                string generatedOtp = await GenerateOtpCode(email);
+                string generatedOtp = await CreateAndSendOtpCode(email, "reset");
                 return generatedOtp;
             }catch(Exception ex)
             {
                 throw;
             }
-
-
         }
 
         public async Task CheckValidPassWord(string password)
@@ -721,7 +842,6 @@ namespace ASI.Basecode.Services.Services
             var user = await _repository.GetUserById(id);
             if (user == null) return false;
 
-            // returns error if the current password doesnt match
             var currentHash = PasswordManager.EncryptPassword(currentPassword);
             if (user.Password != currentHash)
                 return false;
