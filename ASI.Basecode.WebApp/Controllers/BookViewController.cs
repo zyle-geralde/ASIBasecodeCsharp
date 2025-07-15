@@ -175,7 +175,10 @@ namespace ASI.Basecode.WebApp.Controllers
         string[] genreFilter,
         string languageFilter,
         string sortOrder,
+                 int? pageSize,
+
         bool sortDescending = false,
+
         bool? isFeatured = null,
         int? page = 1,
         string category = null
@@ -186,7 +189,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             string authorId = await _authorRepository.GetAuthorByName(author != null ? author : "");
             string authorIdFromSearch = await _authorRepository.GetAuthorByName(searchTerm != null ? searchTerm : "");
-            const int PageSize = 12;
+
             int pageIndex = page.GetValueOrDefault(1);
 
             var queryParams = new BookQueryParams
@@ -203,7 +206,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 SortDescending = sortDescending,
                 PageIndex = page.GetValueOrDefault(1),
                 SortOrder = sortOrder ?? "title",
-                PageSize = PageSize,
+                PageSize = pageSize ?? 10
 
 
             };
@@ -219,6 +222,7 @@ namespace ASI.Basecode.WebApp.Controllers
             ViewData["CurrentSort"] = queryParams.SortOrder;
             ViewData["CurrentSortDescending"] = queryParams.SortDescending;
             ViewData["CurrentLanguage"] = languageFilter;
+            ViewData["CurrentPageSize"] = pageSize;
 
             var allGenres = await _bookGenreService.GetAllGenreList();
             ViewData["AllGenres"] = allGenres;

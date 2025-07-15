@@ -16,7 +16,7 @@
     var currentSort = (string?)ViewData["CurrentSort"];
     var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
     var currentCategory = (string?)ViewContext.HttpContext.Request.Query["category"] ?? string.Empty;
-
+	var currentPageSize = (int)(ViewData["CurrentPageSize"] ?? 10);
     
     var routeValues = new Dictionary<string,string>();
     var descriptionParts = new List<string>();
@@ -71,6 +71,7 @@
     if (currentSortDescending) {
         routeValues["sortDescending"] = "true";
     }
+	routeValues["pageSize"] = currentPageSize.ToString();
 
     var descriptionText = descriptionParts.Any()
         ? string.Join(" | ", descriptionParts)
@@ -370,7 +371,15 @@
                     </div>
                 </div>
             </div>
-
+			<div class="filter-section">
+				<label class="form-label">Items per page</label>
+				<select name="pageSize" class="form-select" id="filterPageSize">
+					<option value="10" selected="@(currentPageSize == 10 ? "selected" : null)">10</option>
+					<option value="20" selected="@(currentPageSize == 20 ? "selected" : null)">20</option>
+					<option value="50" selected="@(currentPageSize == 50 ? "selected" : null)">50</option>
+					<option value="100" selected="@(currentPageSize == 100 ? "selected" : null)">100</option>
+				</select>
+			</div>
             <div class="filter-actions">
                 <button type="button" class="btn btn-outline-secondary">
                     <i class="fas fa-times"></i> Clear All
