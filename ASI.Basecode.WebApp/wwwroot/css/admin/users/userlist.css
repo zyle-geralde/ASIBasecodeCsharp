@@ -179,8 +179,8 @@ input[type="text"] {
 .sort-popup 
 {
     position: absolute;
-    right: 0;
-    top: 40px;
+    right: 10px;
+    top: 86px;
     z-index: 1000;
     width: 280px;
     border-radius: 8px;

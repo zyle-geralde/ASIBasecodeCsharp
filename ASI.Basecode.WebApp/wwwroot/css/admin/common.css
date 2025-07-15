@@ -795,7 +795,8 @@ font-weight: 500;
     width: 280px;
     border-radius: 8px;
     border: 1px solid #e0e0e0;
-    right: 20px;
+    right: 10px;
+    top: 86px;
     display: none;
     /*opacity: 0;
     transform: translateY(10px);
@@ -895,8 +896,8 @@ font-weight: 500;
 .filter-popup,
 .book-sort-popup {
     position: absolute;
-    top: 270px;
-    right: 20px;
+    top: 310px;
+    right: 35px;
     width: 350px;
     background: white;
     border-radius: 8px;

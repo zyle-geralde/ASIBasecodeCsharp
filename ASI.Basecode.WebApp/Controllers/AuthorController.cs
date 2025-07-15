@@ -36,7 +36,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
-                const int PageSize = 10;
+                const int pageSize = 10;
                 int pageIndex = page.GetValueOrDefault(1);
 
                 var queryParams = new AuthorQueryParams
@@ -45,7 +45,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     SortOrder = sortOrder ?? "name",
                     SortDescending = sortDescending,
                     PageIndex = pageIndex,
-                    PageSize = PageSize
+                    PageSize = pageSize
                 };
                 ViewData["CurrentSearch"] = searchTerm;
                 ViewData["CurrentSort"] = queryParams.SortOrder;
@@ -80,18 +80,18 @@ namespace ASI.Basecode.WebApp.Controllers
         }
 
         [HttpGet]
-        [Route("Author/EditAuthor/{author_id}")]
+        [Route("Author/EditAuthor/{authorId}")]
         [Authorize]
-        public async Task<IActionResult> EditAuthor(string author_id)
+        public async Task<IActionResult> EditAuthor(string authorId)
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
 
             try
             {
-                AuthorViewModel retreived_author = await _authorService.GetAuthorById(author_id);
+                AuthorViewModel retreivedAuthor = await _authorService.GetAuthorById(authorId);
 
-                return View("~/Views/Author/EditAuthor.cshtml", retreived_author);
+                return View("~/Views/Author/EditAuthor.cshtml", retreivedAuthor);
             }
             catch (ArgumentNullException ex)
             {
@@ -219,12 +219,12 @@ namespace ASI.Basecode.WebApp.Controllers
 
             try
             {
-                List<BookViewModel> retreived_books_by_author = await _authorService.GetBooksByAuthor(authorId);
-                AuthorViewModel retreived_author_by_Id = await _authorService.GetAuthorById(authorId);
+                List<BookViewModel> retreivedBooksByAuthor = await _authorService.GetBooksByAuthor(authorId);
+                AuthorViewModel retreivedAuthorById = await _authorService.GetAuthorById(authorId);
 
-                ViewBag.CurrentAuthorDetails = retreived_author_by_Id;
+                ViewBag.CurrentAuthorDetails = retreivedAuthorById;
 
-                return View("~/Views/Books/ListBook.cshtml", retreived_books_by_author);
+                return View("~/Views/Books/ListBook.cshtml", retreivedBooksByAuthor);
             }
             catch (ApplicationException ex)
             {

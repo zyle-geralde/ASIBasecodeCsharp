@@ -76,7 +76,7 @@
                     <div class="book-master-form-grid">
                         <div class="book-master-form-group">
                             <label for="title" class="required-label">Title</label>
-                            <input type="text" id="title" name="Title" class="book-master-form-input" value="@Model?.Title" required>
+                            <input type="text" id="title" name="Title" class="book-master-form-input" value="@Model?.Title" required maxlength="200">
                             <span asp-validation-for="Title" class="text-danger"></span>
                         </div>
                         <div class="book-master-form-group">
@@ -94,13 +94,13 @@
                         </div>
                         <div class="book-master-form-group">
                             <label for="subtitle">Subtitle</label>
-                            <input type="text" id="subtitle" name="Subtitle" class="book-master-form-input" value="@Model?.Subtitle">
+                            <input type="text" id="subtitle" name="Subtitle" class="book-master-form-input" value="@Model?.Subtitle" maxlength="500">
                             <span asp-validation-for="Subtitle" class="text-danger"></span>
                         </div>
 
                         <div class="book-master-form-group">
                             <label for="publisher">Publisher</label>
-                            <input type="text" id="publisher" name="Publisher" class="book-master-form-input" value="@Model?.Publisher">
+                            <input type="text" id="publisher" name="Publisher" class="book-master-form-input" value="@Model?.Publisher" maxlength="300">
                             <span asp-validation-for="Publisher" class="text-danger"></span>
                         </div>
 
@@ -113,7 +113,7 @@
                         </div>
                         <div class="book-master-form-group">
                             <label for="publicationLocation">Publication Location</label>
-                            <input type="text" id="publicationLocation" name="PublicationLocation" class="book-master-form-input" value="@Model?.PublicationLocation">
+							<input type="text" id="publicationLocation" name="PublicationLocation" class="book-master-form-input" value="@Model?.PublicationLocation" maxlength="300">
                             <span asp-validation-for="PublicationLocation" class="text-danger"></span>
                         </div>
                         <div class="book-master-form-group">
@@ -138,14 +138,14 @@
 
                     <div class="book-master-form-group full-width-description">
                         <label for="description">Description</label>
-                        <textarea id="description" name="Description" class="book-master-form-textarea">@Model?.Description</textarea>
+						<textarea id="description" name="Description" class="book-master-form-textarea" maxlength="500">@Model?.Description</textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
 
                     <div class="book-master-form-grid">
                         <div class="book-master-form-group">
                             <label for="seriesName">Series Name</label>
-                            <input type="text" id="seriesName" name="SeriesName" class="book-master-form-input" value="@Model?.SeriesName">
+							<input type="text" id="seriesName" name="SeriesName" class="book-master-form-input" value="@Model?.SeriesName" maxlength="100">
                             <span asp-validation-for="SeriesName" class="text-danger"></span>
                         </div>
                         <div class="book-master-form-group">
@@ -157,21 +157,10 @@
 
                     <div class="book-master-form-group full-width-description">
                         <label for="seriesDescription">Series Description</label>
-                        <textarea id="seriesDescription" name="SeriesDescription" class="book-master-form-textarea">@Model?.SeriesDescription</textarea>
+						<textarea id="seriesDescription" name="SeriesDescription" class="book-master-form-textarea" maxlength="500">@Model?.SeriesDescription</textarea>
                         <span asp-validation-for="SeriesDescription" class="text-danger"></span>
                     </div>
 
-                    @* <div class="book-master-form-group">
-                        <label class="toggle-question-label">Is this a featured book?</label>
-                        <div class="featured-toggle-container">
-                            <label class="switch">
-                                <input type="checkbox" id="isFeatured" name="IsFeatured" value="true" @(Model?.IsFeatured == true ? "checked" : "")>
-                                <span class="slider round"></span>
-                            </label>
-                            <span class="toggle-label" id="featuredStatus">@(Model?.IsFeatured == true ? "Yes" : "No")</span>
-                        </div>
-                        <span asp-validation-for="IsFeatured" class="text-danger"></span>
-                    </div> *@
                 </div>
             </div>
 
@@ -192,17 +181,17 @@
                 </div>
                 <div class="book-master-form-group">
                     <label for="isbn10">ISBN10</label>
-                    <input type="text" id="isbn10" name="ISBN10" class="book-master-form-input" value="@Model?.ISBN10">
+					<input type="text" id="isbn10" name="ISBN10" class="book-master-form-input" value="@Model?.ISBN10" maxlength="100">
                     <span asp-validation-for="ISBN10" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
                     <label for="isbn13">ISBN13</label>
-                    <input type="text" id="isbn13" name="ISBN13" class="book-master-form-input" value="@Model?.ISBN13">
+					<input type="text" id="isbn13" name="ISBN13" class="book-master-form-input" value="@Model?.ISBN13" maxlength="100">
                     <span asp-validation-for="ISBN13" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
                     <label for="edition">Edition</label>
-                    <input type="text" id="edition" name="Edition" class="book-master-form-input" value="@Model?.Edition">
+					<input type="text" id="edition" name="Edition" class="book-master-form-input" value="@Model?.Edition" maxlength="100">
                     <span asp-validation-for="Edition" class="text-danger"></span>
                 </div>
             </div>

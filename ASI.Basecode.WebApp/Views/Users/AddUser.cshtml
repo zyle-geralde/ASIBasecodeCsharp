@@ -7,16 +7,17 @@
     var isEmailError = errorMessage != null && errorMessage.ToLower().Contains("email");
     var isUsernameError = errorMessage != null && errorMessage.ToLower().Contains("username");
 
-    var showSuccessModal = TempData["ShowSuccessModal"] != null && (bool)TempData["ShowSuccessModal"];
+    var showSuccessModal = TempData["ShowSuccessModal"] != null && (bool)TempData["ShowSuccessModal"]
+                         && Model?.Id > 0;
     var successMessage = TempData["SuccessMessage"] as string ?? "User added successfully!";
 
     var successModal = new SuccessModalModel
-    {
-        Id = "successModal",
-        Title = "Success!",
-        Message = "User added successfully!",
-        OkButtonText = "OK"
-    };
+            {
+                Id = "successModal",
+                Title = "Success!",
+                Message = "User added successfully!",
+                OkButtonText = "OK"
+            };
 }
 
 @section styles {
@@ -41,23 +42,23 @@
             <div class="form-row">
                 <div class="form-group role-group">
                     <div class="btn-group role-btn-group" role="group" aria-label="Role selection" asp-for="Role">
-                         <input type="radio"
-                   asp-for="Role"
-                   class="btn-check"
-                   id="roleUser"
-                   value="User"
-                   autocomplete="off" />
-            <label class="btn role-btn" for="roleUser">User</label>
+                        <input type="radio"
+                               asp-for="Role"
+                               class="btn-check"
+                               id="roleUser"
+                               value="User"
+                               autocomplete="off" />
+                        <label class="btn role-btn" for="roleUser">User</label>
 
-            <input type="radio"
-                   asp-for="Role"
-                   class="btn-check"
-                   id="roleAdmin"
-                   value="Admin"
-                   autocomplete="off" />
-            <label class="btn role-btn" for="roleAdmin">Admin</label>
+                        <input type="radio"
+                               asp-for="Role"
+                               class="btn-check"
+                               id="roleAdmin"
+                               value="Admin"
+                               autocomplete="off" />
+                        <label class="btn role-btn" for="roleAdmin">Admin</label>
                     </div>
-          <span asp-validation-for="Role" class="text-danger"></span>
+                    <span asp-validation-for="Role" class="text-danger"></span>
                 </div>
             </div>
 
@@ -98,8 +99,8 @@
             <div class="button-container">
                 <div class="button-group">
                     <button type="button" class="cancel-btn" onclick="window.location.href='/User/Index'">CANCEL</button>
-					<button type="button" class="submit-btn" id="addUserBtn">ADD USER</button>
-				</div>
+                    <button type="button" class="submit-btn" id="addUserBtn">ADD USER</button>
+                </div>
             </div>
         </form>
     </div>
@@ -133,14 +134,15 @@
     <script src="~/js/modal-helper.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-		  const addBtn = document.getElementById('addUserBtn');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const addBtn = document.getElementById('addUserBtn');
             const emailInput = document.getElementById('userId');
-		  const pwd    = document.getElementById('password');
-		  const cpwd   = document.getElementById('confirmpassword');
-		  const modalEl = document.getElementById('addModal');
-		  const modal = new bootstrap.Modal(modalEl);
+            const emailErrorSpan = emailInput.nextElementSibling;
+            const pwd = document.getElementById('password');
+            const cpwd = document.getElementById('confirmpassword');
+            const modalEl = document.getElementById('addModal');
+            const modal = new bootstrap.Modal(modalEl);
             const usernameInput = document.getElementById('name');
 
         @if (isEmailError)
@@ -153,45 +155,61 @@
         }
         @if (showSuccessModal)
         {
-            <text>toastr.success("@successMessage"); </text>
+            <text>
+                    toastr.success("@successMessage");
+                @{
+                    TempData.Remove("ShowSuccessModal");
+                    TempData.Remove("SuccessMessage");
+                }
+            </text>
         }
 
-		  addBtn.addEventListener('click', function (e) {
-			e.preventDefault();
-			pwd.classList.remove('is-invalid');
-			cpwd.classList.remove('is-invalid');
+                addBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    pwd.classList.remove('is-invalid');
+                    cpwd.classList.remove('is-invalid');
+                    // emailInput.classList.remove('is-invalid');
+                    // emailErrorSpan.textContent = '';
 
-                const username = usernameInput.value.trim();
-                if (username.length < 3 || username.length > 30) {
-                    toastr.error("Username must be between 3 and 30 characters.");
-                    usernameInput.classList.add('is-invalid');
-                    usernameInput.focus();
-                    return; // Exit early if invalid
-                }
+                    // const email = emailInput.value.trim();
+                    // if (!email.toLowerCase().endsWith('@@gmail.com')) {
+                    //     toastr.error("Email must be end with @@gmail.com address.");
+                    //     emailInput.classList.add('is-invalid');
+                    //     emailInput.focus();
+                    //     return;
+                    // }
 
-			if (pwd.value.length < 8) {
-			  toastr.error("Password must be at least 8 characters long.");
-			  pwd.classList.add('is-invalid');
-			  return;
-			}
-			if (pwd.value !== cpwd.value) {
-			  toastr.error("Passwords do not match.");
-			  cpwd.classList.add('is-invalid');
-			  return;
-			}
-			modal.show();
-		  });
+                    const username = usernameInput.value.trim();
+                    if (username.length < 3 || username.length > 30) {
+                        toastr.error("Username must be between 3 and 30 characters.");
+                        usernameInput.classList.add('is-invalid');
+                        usernameInput.focus();
+                        return; // Exit early if invalid
+                    }
 
-		});
+                    if (pwd.value.length < 8) {
+                        toastr.error("Password must be at least 8 characters long.");
+                        pwd.classList.add('is-invalid');
+                        return;
+                    }
+                    if (pwd.value !== cpwd.value) {
+                        toastr.error("Passwords do not match.");
+                        cpwd.classList.add('is-invalid');
+                        return;
+                    }
+                    modal.show();
+                });
 
-		function validateAndSubmitAddUserForm() {
-		  var form = document.getElementById('addUserForm');
-		  if (typeof $ !== 'undefined' && typeof $.validator !== 'undefined') {
-			if ($(form).valid()) form.submit();
-		  } else {
-			form.submit();
-		  }
-		}
-	</script>
+        });
+
+        function validateAndSubmitAddUserForm() {
+            var form = document.getElementById('addUserForm');
+            if (typeof $ !== 'undefined' && typeof $.validator !== 'undefined') {
+                if ($(form).valid()) form.submit();
+            } else {
+                form.submit();
+            }
+        }
+    </script>
 
 }

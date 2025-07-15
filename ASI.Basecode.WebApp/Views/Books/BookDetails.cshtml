@@ -569,7 +569,6 @@
                     <div class="mb-4">
                         <label class="form-label">What do you think of the book?</label>
 						<textarea class="form-control" id="add-comment" name="Comment" rows="5" placeholder="Add feedback" maxlength="1000"></textarea>
-						<small class="text-muted" id="add-comment-count">0 / 1000</small>
                     </div>
                     <div class="mb-4">
                         <label class="form-label">How would you rate the book?</label>
@@ -993,21 +992,7 @@
                     }, 600);
                 }
             });
-			$('#add-comment').on('input', function () {
-				const length = $(this).val().length;
-				$('#add-comment-count').text(`${length} / 1000`);
-		});
-
-// Character counter for Edit Review
-$('#edit-comment').on('input', function () {
-    const length = $(this).val().length;
-    $('#edit-comment-count').text(`${length} / 1000`);
-});
-
-// Reset counter on modal open
-$('#addReview').on('shown.bs.modal', function () {
-    $('#add-comment-count').text('0 / 1000');
-});
+		
 
 $('#editReview').on('shown.bs.modal', function () {
     const currentLength = $('#edit-comment').val().length;
