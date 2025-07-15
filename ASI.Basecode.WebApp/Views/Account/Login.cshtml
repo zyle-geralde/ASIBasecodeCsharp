@@ -607,7 +607,8 @@
                     </button>
                 </div>
 
-                <a href="#" class="forgot-back-link" data-bs-dismiss="modal">
+				<a href="#" class="forgot-back-link" data-bs-dismiss="modal" onclick="$('#forgotInput').val('');
+">
                     &lt; Back to login
                 </a>
             </form>
@@ -641,10 +642,18 @@
                     </button>
                 </div>
 
+				<a href="#"
+				   class="forgot-back-link"
+				   onclick="
+				   setTimeout(()=>
+					window.location.href = '/Account/Login', 200);
+					$('#forgotInput, #verificationCodeInput).val('');
 
-                <a href="#" class="forgot-back-link" onclick="dismissModalCompletely('codeVerificationModal')">
-                    &lt; Back to Login
-                </a>
+					return false;
+					">
+					&lt; Back to Login
+				</a>
+
 
             </form>
         </div>
@@ -681,9 +690,18 @@
                         Submit
                     </button>
                 </div>
-                <a href="#" class="forgot-back-link" onclick="dismissModalCompletely('newPasswordModal')">
-                    &lt; Back to Login
-                </a>
+				<a href="#"
+				   class="forgot-back-link"
+				   onclick="
+				   setTimeout(()=>
+					window.location.href = '/Account/Login', 200);
+					$('#forgotInput, #verificationCodeInput, #newPasswordInput, #confirmPasswordInput').val('');
+
+					return false;
+					">
+					&lt; Back to Login
+				</a>
+
 
             </form>
         </div>
@@ -728,7 +746,7 @@
 
 @section Scripts{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script>
+    @* <script>
         function dismissModalCompletely(modalId) {
             const modalElement = document.getElementById(modalId);
             const modal = bootstrap.Modal.getInstance(modalElement);
@@ -741,7 +759,7 @@
                 document.body.style.paddingRight = '';
             }, 100);
         }
-    </script>
+    </script> *@
     <script>
         $(document).ready(function() {
              toastr.options = {
@@ -900,6 +918,7 @@
                     toastr.success(result.message);
                     setTimeout(() => {
                         $('#newPasswordModal').modal('hide');
+						window.location.href = '/Account/Login';
                     }, 1500);
                 } else {
                     toastr.error(result.message);
