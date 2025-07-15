@@ -4,84 +4,87 @@
 @using ASI.Basecode.Services.ServiceModels;
 
 @{
-    ViewData["Title"] = "Book List";
-    Layout = "_AdminSidebarLayout";
-    string display_name = "Books";
-    var allLanguages = (List<LanguageViewModel>)ViewData["AllLanguages"];
-    var currentCategory = (string?)ViewContext.HttpContext.Request.Query["category"];
-    var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
-    var currentSearch = (string?)ViewData["CurrentSearch"];
-    var currentAuthor = (string?)ViewData["CurrentAuthor"];
-    var currentRating = (int?)ViewData["CurrentRating"];
-    var currentFromDate = (string?)ViewData["CurrentFromDate"];
-    var currentToDate = (string?)ViewData["CurrentToDate"];
-    var currentGenres = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>();
-    var currentSort = (string?)ViewData["CurrentSort"];
-    var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
-    var currentIsFeatured = (bool?)ViewData["CurrentIsFeatured"];
-    var routeValues = new Dictionary<string, string>();
-    var descriptionParts = new List<string>();
-    var currentLanguage = (string?)ViewData["CurrentLanguage"];
+	ViewData["Title"] = "Book List";
+	Layout = "_AdminSidebarLayout";
+	string display_name = "Books";
+	var allLanguages = (List<LanguageViewModel>)ViewData["AllLanguages"];
+	var currentCategory = (string?)ViewContext.HttpContext.Request.Query["category"];
+	var allGenres = (List<BookGenreViewModel>)ViewData["AllGenres"];
+	var currentSearch = (string?)ViewData["CurrentSearch"];
+	var currentAuthor = (string?)ViewData["CurrentAuthor"];
+	var currentRating = (int?)ViewData["CurrentRating"];
+	var currentFromDate = (string?)ViewData["CurrentFromDate"];
+	var currentToDate = (string?)ViewData["CurrentToDate"];
+	var currentGenres = ViewData["CurrentGenres"] as string[] ?? Array.Empty<string>();
+	var currentSort = (string?)ViewData["CurrentSort"];
+	var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
+	var currentIsFeatured = (bool?)ViewData["CurrentIsFeatured"];
+	var routeValues = new Dictionary<string, string>();
+	var descriptionParts = new List<string>();
+	var currentLanguage = (string?)ViewData["CurrentLanguage"];
+    var currentPageSize = (int)(ViewData["CurrentPageSize"] ?? 10);
 
-    if (!string.IsNullOrWhiteSpace(currentCategory))
-    {
-        routeValues["category"] = currentCategory;
-    }
-    if (!string.IsNullOrWhiteSpace(currentSearch))
-    {
-        routeValues["searchTerm"] = currentSearch;
-        descriptionParts.Add($"Search: \"{currentSearch}\"");
-    }
-    if (!string.IsNullOrWhiteSpace(currentAuthor))
-    {
-        routeValues["author"] = currentAuthor;
-        descriptionParts.Add($"Author: {currentAuthor}");
-    }
-    if (currentRating.HasValue)
-    {
-        routeValues["rating"] = currentRating.Value.ToString();
-        descriptionParts.Add($"Rating: {currentRating.Value}★ & up");
-    }
-    if (!string.IsNullOrWhiteSpace(currentFromDate))
-    {
-        routeValues["publishedFrom"] = currentFromDate;
-        descriptionParts.Add($"Published from: {DateTime.Parse(currentFromDate).ToString("dd MMMM yyyy")} ");
-    }
-    if (!string.IsNullOrWhiteSpace(currentToDate))
-    {
-        routeValues["publishedTo"] = currentToDate;
-        descriptionParts.Add($"Published to: {DateTime.Parse(currentToDate).ToString("dd MMMM yyyy")} ");
-    }
-    if (currentIsFeatured == true)
-    {
-        routeValues["isFeatured"] = "true";
-        descriptionParts.Add("Featured");
-    }
+	if (!string.IsNullOrWhiteSpace(currentCategory))
+	{
+		routeValues["category"] = currentCategory;
+	}
+	if (!string.IsNullOrWhiteSpace(currentSearch))
+	{
+		routeValues["searchTerm"] = currentSearch;
+		descriptionParts.Add($"Search: \"{currentSearch}\"");
+	}
+	if (!string.IsNullOrWhiteSpace(currentAuthor))
+	{
+		routeValues["author"] = currentAuthor;
+		descriptionParts.Add($"Author: {currentAuthor}");
+	}
+	if (currentRating.HasValue)
+	{
+		routeValues["rating"] = currentRating.Value.ToString();
+		descriptionParts.Add($"Rating: {currentRating.Value}★ & up");
+	}
+	if (!string.IsNullOrWhiteSpace(currentFromDate))
+	{
+		routeValues["publishedFrom"] = currentFromDate;
+		descriptionParts.Add($"Published from: {DateTime.Parse(currentFromDate).ToString("dd MMMM yyyy")} ");
+	}
+	if (!string.IsNullOrWhiteSpace(currentToDate))
+	{
+		routeValues["publishedTo"] = currentToDate;
+		descriptionParts.Add($"Published to: {DateTime.Parse(currentToDate).ToString("dd MMMM yyyy")} ");
+	}
+	if (currentIsFeatured == true)
+	{
+		routeValues["isFeatured"] = "true";
+		descriptionParts.Add("Featured");
+	}
 
-        if (currentGenres.Any()) {
-        routeValues["genreFilter"] = string.Join(",", currentGenres);
-        var selectedNames = allGenres
-            .Where(g => currentGenres.Contains(g.BookGenreId))
-            .Select(g => g.GenreName);
-        descriptionParts.Add($"Genre: {string.Join(", ", selectedNames)}");
-    }
-    if (!string.IsNullOrEmpty(currentSort) && currentSort != "title")
-    {
-        routeValues["sortOrder"] = currentSort;
-    }
-    if (!string.IsNullOrWhiteSpace(currentLanguage)) {
-        routeValues["languageFilter"] = currentLanguage;
-       var languageName = allLanguages
-        .FirstOrDefault(l => l.LanguageId == currentLanguage)?.LanguageName ?? currentLanguage;
-    
-        descriptionParts.Add($"Language: {languageName}");
+	if (currentGenres.Any()) {
+		routeValues["genreFilter"] = string.Join(",", currentGenres);
+		var selectedNames = allGenres
+			.Where(g => currentGenres.Contains(g.BookGenreId))
+			.Select(g => g.GenreName);
+		descriptionParts.Add($"Genre: {string.Join(", ", selectedNames)}");
+	}
+	if (!string.IsNullOrEmpty(currentSort) && currentSort != "title")
+	{
+		routeValues["sortOrder"] = currentSort;
+	}
+	if (!string.IsNullOrWhiteSpace(currentLanguage)) {
+		routeValues["languageFilter"] = currentLanguage;
+		var languageName = allLanguages
+			.FirstOrDefault(l => l.LanguageId == currentLanguage)?.LanguageName ?? currentLanguage;
 
-    }
+		descriptionParts.Add($"Language: {languageName}");
 
-    if (currentSortDescending)
-    {
-        routeValues["sortDescending"] = "true";
-    }
+	}
+
+	if (currentSortDescending)
+	{
+		routeValues["sortDescending"] = "true";
+	}
+	
+		routeValues["pageSize"] = currentPageSize.ToString();
 
     // Final description text
     var descriptionText = descriptionParts.Any()
@@ -343,18 +346,17 @@
                 </select>
             </div>
 
-            <div class="form-check filter-section">
-                <input class="form-check-input"
-                       type="checkbox"
-                       id="isFeaturedFilter"
-                       name="isFeatured"
-                       value="true"
-                @(currentIsFeatured == true ? "checked" : null) />
-                <label class="form-check-label mt-3" for="isFeaturedFilter">
-                    Featured only
-                </label>
-            </div>
-        </div>
+
+	  <div class="filter-section">
+		  <label class="form-label">Items per page</label>
+		  <select name="pageSize" class="form-select" id="filterPageSize">
+			<option value="10" selected="@(currentPageSize == 10 ? "selected" : null)">10</option>
+			<option value="20" selected="@(currentPageSize == 20 ? "selected" : null)">20</option>
+			<option value="50" selected="@(currentPageSize == 50 ? "selected" : null)">50</option>
+			<option value="100" selected="@(currentPageSize == 100 ? "selected" : null)">100</option>
+		  </select>
+	</div>
+
           
         </div>
                       <div class="card-body">
