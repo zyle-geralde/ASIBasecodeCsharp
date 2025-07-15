@@ -522,7 +522,7 @@ namespace ASI.Basecode.Services.Services
                 }
                 else
                 {
-                    throw new Exception("Expired or Invalid OTP, try a different code or try resending one");
+                    throw new Exception("Expired or Invalid OTP");
                 }
             }
             catch (Exception ex)
@@ -634,7 +634,7 @@ namespace ASI.Basecode.Services.Services
             var user = await _repository.FindUserByEmail(email);
             if (user == null)
             {
-                throw new ArgumentException("User not found for OTP regeneration.");
+                throw new ArgumentException("User not found.");
             }
             if (user.IsEmailVerified == true)
             {
@@ -659,15 +659,15 @@ namespace ASI.Basecode.Services.Services
 
             if (string.IsNullOrEmpty(email))
             {
-                throw new ArgumentException("Email is empty for OTP regeneration.");
+                throw new ArgumentException("Email is empty");
             }
             if(user == null)
             {
-                throw new ArgumentException("Email not found for OTP regeneration.");
+                throw new ArgumentException("Email not found.");
             }
             if (user.IsEmailVerified == false)
             {
-                throw new ArgumentException("Email is not verified");
+                throw new ArgumentException("Email is not verified.");
             }
 
             try
