@@ -560,20 +560,20 @@
         .review-modal .stars i.fas {
             color: #ffc107;
         }
-
-.review-modal .btn-submit {
-    background: linear-gradient(90deg, #495e53 0%, #7bb7a4 100%);
+.review-modal .btn-primary {
+    background-color: #495e53;
     border: none;
-    color: #fff;
-    transition: transform 0.1s, box-shadow 0.1s;
-    box-shadow: 0 2px 8px rgba(73, 94, 83, 0.08);
+    padding: 0.625rem 2rem;
+    font-weight: 500;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #ffffff;
 }
 
-    .review-modal .btn-submit:hover {
-        transform: translateY(-2px) scale(1.03);
-        box-shadow: 0 4px 16px rgba(73, 94, 83, 0.15);
-        background: linear-gradient(90deg, #3d4f45 0%, #5fae8e 100%);
+    .review-modal .btn-primary:hover {
+        background-color: #3d4f45;
     }
+
 
 /* Delete Modal Styles */
 .modal-content {
@@ -620,19 +620,6 @@
         transform: translateY(-1px);
     }
 
-.btn-primary {
-    background: linear-gradient(90deg, #495e53 0%, #7bb7a4 100%);
-    border: none;
-    color: #fff;
-    transition: transform 0.1s, box-shadow 0.1s;
-    box-shadow: 0 2px 8px rgba(73, 94, 83, 0.08);
-}
-
-    .btn-primary:hover {
-        transform: translateY(-2px) scale(1.03);
-        box-shadow: 0 4px 16px rgba(73, 94, 83, 0.15);
-        background: linear-gradient(90deg, #3d4f45 0%, #5fae8e 100%);
-    }
 
 /* Responsive Design */
 @media (max-width: 1200px) {
@@ -1192,19 +1179,19 @@
             color: #ccc;
         }
 
-/* Submit button */
 .btn-submit {
-    background: linear-gradient(90deg, #495e53 0%, #7bb7a4 100%);
+    background-color: #495e53;
     border: none;
-    color: #fff;
-    transition: transform 0.1s, box-shadow 0.1s;
-    box-shadow: 0 2px 8px rgba(73, 94, 83, 0.08);
+    padding: 0.625rem 2rem;
+    font-weight: 500;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #ffffff;
 }
 
     .btn-submit:hover {
-        transform: translateY(-2px) scale(1.03);
-        box-shadow: 0 4px 16px rgba(73, 94, 83, 0.15);
-        background: linear-gradient(90deg, #3d4f45 0%, #5fae8e 100%);
+        background-color: #3d4f45;
+        color: #ffffff;
     }
 
 /* For the active rating state */

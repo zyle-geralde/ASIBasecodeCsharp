@@ -347,7 +347,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Remove from pending registrations
                 _pendingRegistrations.Remove(model.Email);
 
-                TempData["SuccessMessage"] = "Your account has been verified successfully! You can now login!";
+                TempData["SuccessMessage"] = "Your account has been verified successfully!";
                 return RedirectToAction("Login", "Account");
             }
             catch (Exception ex)
@@ -378,7 +378,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 // Update in pending registrations
                 _pendingRegistrations[email] = userModel;
 
-                TempData["SuccessMessage"] = "A new verification code has been sent to your email.";
+                TempData["SuccessMessage"] = "A new verification code has been sent.";
                 return RedirectToAction("VerifyOtpPage", "Account", new { email = email });
             }
             catch (Exception ex)

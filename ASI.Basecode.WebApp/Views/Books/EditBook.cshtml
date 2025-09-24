@@ -76,7 +76,7 @@
                     <div class="book-master-form-grid">
                         <div class="book-master-form-group">
                             <label for="title" class="required-label">Title</label>
-                            <input type="text" id="title" name="Title" class="book-master-form-input" value="@Model?.Title" required>
+                            <input type="text" id="title" name="Title" class="book-master-form-input" value="@Model?.Title" required maxlength="200">
                             <span asp-validation-for="Title" class="text-danger"></span>
                         </div>
                         <div class="book-master-form-group">
@@ -94,13 +94,13 @@
                         </div>
                         <div class="book-master-form-group">
                             <label for="subtitle">Subtitle</label>
-                            <input type="text" id="subtitle" name="Subtitle" class="book-master-form-input" value="@Model?.Subtitle">
+                            <input type="text" id="subtitle" name="Subtitle" class="book-master-form-input" value="@Model?.Subtitle" maxlength="500">
                             <span asp-validation-for="Subtitle" class="text-danger"></span>
                         </div>
 
                         <div class="book-master-form-group">
                             <label for="publisher">Publisher</label>
-                            <input type="text" id="publisher" name="Publisher" class="book-master-form-input" value="@Model?.Publisher">
+                            <input type="text" id="publisher" name="Publisher" class="book-master-form-input" value="@Model?.Publisher" maxlength="300">
                             <span asp-validation-for="Publisher" class="text-danger"></span>
                         </div>
 
@@ -113,7 +113,7 @@
                         </div>
                         <div class="book-master-form-group">
                             <label for="publicationLocation">Publication Location</label>
-                            <input type="text" id="publicationLocation" name="PublicationLocation" class="book-master-form-input" value="@Model?.PublicationLocation">
+							<input type="text" id="publicationLocation" name="PublicationLocation" class="book-master-form-input" value="@Model?.PublicationLocation" maxlength="300">
                             <span asp-validation-for="PublicationLocation" class="text-danger"></span>
                         </div>
                         <div class="book-master-form-group">
@@ -131,47 +131,36 @@
                         </div>
                         <div class="book-master-form-group">
                             <label for="numberOfPages">Number of Pages</label>
-                            <input type="number" id="numberOfPages" name="NumberOfPages" class="book-master-form-input" value="@Model?.NumberOfPages">
+                            <input type="number" id="numberOfPages" name="NumberOfPages" class="book-master-form-input" value="@Model?.NumberOfPages" min="0" max="10000">
                             <span asp-validation-for="NumberOfPages" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="book-master-form-group full-width-description">
                         <label for="description">Description</label>
-                        <textarea id="description" name="Description" class="book-master-form-textarea">@Model?.Description</textarea>
+						<textarea id="description" name="Description" class="book-master-form-textarea" maxlength="450">@Model?.Description</textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
 
                     <div class="book-master-form-grid">
                         <div class="book-master-form-group">
                             <label for="seriesName">Series Name</label>
-                            <input type="text" id="seriesName" name="SeriesName" class="book-master-form-input" value="@Model?.SeriesName">
+							<input type="text" id="seriesName" name="SeriesName" class="book-master-form-input" value="@Model?.SeriesName" maxlength="100">
                             <span asp-validation-for="SeriesName" class="text-danger"></span>
                         </div>
                         <div class="book-master-form-group">
                             <label for="seriesOrder">Series Order</label>
-                            <input type="number" id="seriesOrder" name="SeriesOrder" class="book-master-form-input" value="@Model?.SeriesOrder">
+                            <input type="number" id="seriesOrder" name="SeriesOrder" class="book-master-form-input" value="@Model?.SeriesOrder" min="0" max="50">
                             <span asp-validation-for="SeriesOrder" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="book-master-form-group full-width-description">
                         <label for="seriesDescription">Series Description</label>
-                        <textarea id="seriesDescription" name="SeriesDescription" class="book-master-form-textarea">@Model?.SeriesDescription</textarea>
+						<textarea id="seriesDescription" name="SeriesDescription" class="book-master-form-textarea" maxlength="450">@Model?.SeriesDescription</textarea>
                         <span asp-validation-for="SeriesDescription" class="text-danger"></span>
                     </div>
 
-                    @*<div class="book-master-form-group">
-                        <label class="toggle-question-label">Is this a featured book?</label>
-                        <div class="featured-toggle-container">
-                            <label class="switch">
-                                <input type="checkbox" id="isFeatured" name="IsFeatured" value="true" @(Model?.IsFeatured == true ? "checked" : "")>
-                                <span class="slider round"></span>
-                            </label>
-                            <span class="toggle-label" id="featuredStatus">@(Model?.IsFeatured == true ? "Yes" : "No")</span>
-                        </div>
-                        <span asp-validation-for="IsFeatured" class="text-danger"></span>
-                    </div>*@
                 </div>
             </div>
 
@@ -192,17 +181,17 @@
                 </div>
                 <div class="book-master-form-group">
                     <label for="isbn10">ISBN10</label>
-                    <input type="text" id="isbn10" name="ISBN10" class="book-master-form-input" value="@Model?.ISBN10">
+					<input type="text" id="isbn10" name="ISBN10" class="book-master-form-input" value="@Model?.ISBN10" maxlength="100">
                     <span asp-validation-for="ISBN10" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
                     <label for="isbn13">ISBN13</label>
-                    <input type="text" id="isbn13" name="ISBN13" class="book-master-form-input" value="@Model?.ISBN13">
+					<input type="text" id="isbn13" name="ISBN13" class="book-master-form-input" value="@Model?.ISBN13" maxlength="100">
                     <span asp-validation-for="ISBN13" class="text-danger"></span>
                 </div>
                 <div class="book-master-form-group">
                     <label for="edition">Edition</label>
-                    <input type="text" id="edition" name="Edition" class="book-master-form-input" value="@Model?.Edition">
+					<input type="text" id="edition" name="Edition" class="book-master-form-input" value="@Model?.Edition" maxlength="100">
                     <span asp-validation-for="Edition" class="text-danger"></span>
                 </div>
             </div>
@@ -270,17 +259,16 @@
                 seriesName: form.querySelector('#seriesName').value,
                 seriesOrder: form.querySelector('#seriesOrder').value,
                 seriesDescription: form.querySelector('#seriesDescription').value,
-                isFeatured: form.querySelector('#isFeatured').checked,
                 genreList: form.querySelector('#concatenatedGenre').value,
                 isbn10: form.querySelector('#isbn10').value,
                 isbn13: form.querySelector('#isbn13').value,
                 edition: form.querySelector('#edition').value,
-                coverImageUrl: form.querySelector('#coverImageUrl').value, // initial URL of the cover image
-                bookFileUrl: form.querySelector('#bookFileUrl').value      // initial URL of the book file
+                coverImageUrl: form.querySelector('#coverImageUrl').value, 
+                bookFileUrl: form.querySelector('#bookFileUrl').value      
             };
         }
 
-       
+
         function checkForChanges() {
             const form = document.getElementById('editBookForm');
             if (!form) return false;
@@ -305,13 +293,12 @@
                 form.querySelector('#seriesName').value !== initialFormState.seriesName ||
                 form.querySelector('#seriesOrder').value !== initialFormState.seriesOrder ||
                 form.querySelector('#seriesDescription').value !== initialFormState.seriesDescription ||
-                form.querySelector('#isFeatured').checked !== initialFormState.isFeatured ||
                 form.querySelector('#concatenatedGenre').value !== initialFormState.genreList ||
                 form.querySelector('#isbn10').value !== initialFormState.isbn10 ||
                 form.querySelector('#isbn13').value !== initialFormState.isbn13 ||
                 form.querySelector('#edition').value !== initialFormState.edition
             ) {
-                return true; 
+                return true;
             }
 
             if (currentCoverFileSelected || currentBookFileSelected) {
@@ -320,15 +307,15 @@
 
             if (currentCoverImageUrl !== initialFormState.coverImageUrl ||
                 currentBookFileUrl !== initialFormState.bookFileUrl) {
-                return true; 
+                return true;
             }
 
-            return false; 
+            return false;
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
             const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024;
-            const MAX_BOOK_FILE_SIZE_BYTES = 100 * 1024 * 1024;
+            const MAX_BOOK_FILE_SIZE_BYTES = 40 * 1024 * 1024;
 
             // Get all elements
             const coverImageFile = document.getElementById('coverImageFile');
@@ -383,7 +370,7 @@
                 });
             }
 
-            //  Pre-fill File Display and Image Preview with existing data 
+            //  Pre-fill File Display and Image Preview with existing data
             // Cover Image
             const coverImageUrl = '@Model?.CoverImageUrl';
             if (coverImageUrl && coverImagePreview && coverImagePlaceholder && coverFileNameDisplay) {
@@ -397,13 +384,13 @@
 
             // Book File
             const bookFileUrl = '@Model?.BookFileUrl';
-            if (bookFileUrl && bookFileNameDisplay && !bookFileUrl.includes("placeholder.pdf")) { 
+            if (bookFileUrl && bookFileNameDisplay && !bookFileUrl.includes("placeholder.pdf")) {
                 bookFileNameDisplay.value = bookFileUrl.substring(bookFileUrl.lastIndexOf('/') + 1);
             }
 
-            // Initialize all the modular functions 
+            // Initialize all the modular functions
             initializeFeaturedToggle();
-            await initializeSingleSelectAuthor(); 
+            await initializeSingleSelectAuthor();
             await initializeSingleSelectLanguage(); 
             await initializeMultiSelect({ 
                 containerId: 'genreContainer',
@@ -433,9 +420,10 @@
 
             const form = document.getElementById('editBookForm');
 
-            // Cancel Button 
+            // Cancel Button (with Discard Confirmation) ---
             document.getElementById('cancelButton').addEventListener('click', () => {
                 if (checkForChanges()) {
+                    // Show discard confirmation modal if changes exist
                     if (discardChangesConfirmationModal) {
                         discardChangesConfirmationModal.show();
                     }
@@ -444,17 +432,17 @@
                 }
             });
 
-            // Confirm Discard Action 
+            // Confirm Discard Action
             if (confirmDiscardButton) {
                 confirmDiscardButton.addEventListener('click', () => {
                     window.location.href = '/Book/ListBook';
                 });
             }
 
-            // Form Submission(with Save Confirmation) 
+            // Form Submission(with Save Confirmation)
             if (form) {
                 form.addEventListener('submit', async (event) => {
-                    event.preventDefault(); 
+                    event.preventDefault(); // Prevent default form submission
 
                     //  client-side validation first
                     const titleInput = document.getElementById('title');
@@ -492,13 +480,6 @@
                             isValid = false;
                         }
                     }
-                    // if (!publicationDateInput.value) { missingFields.push('Publication Date'); isValid = false; }
-
-                    // const today = new Date();
-                    // today.setHours(0, 0, 0, 0);
-                    // const pubDate = new Date(publicationDateInput.value);
-
-                    // if (pubDate > today) { missingFields.push('Publication Date (cannot be in the future)'); isValid = false; }
 
                     if (!languageInput.value.trim()) { missingFields.push('Language'); isValid = false; }
                     if (!genreInput.value) { missingFields.push('Genre'); isValid = false; }
@@ -511,7 +492,7 @@
                     if ((seriesDescriptionInput.value.trim() || (seriesOrderInput.value !== '' && parseInt(seriesOrderInput.value) > 0)) && !seriesNameInput.value.trim()) {
                         missingFields.push('Series Name (required if Series Description or Series Order is provided)');
                         isValid = false;
-                    } 
+                    }
 
                     const coverImageFileChanged = coverImageFileInput.files.length > 0;
                     if (!coverImageFileChanged && !coverImageUrlInput.value) {
@@ -538,7 +519,7 @@
                         }
                         isValid = false;
                     } else if (bookFileChanged && bookFileInput.files[0].size > MAX_BOOK_FILE_SIZE_BYTES) {
-                        toastr.error('Book file size exceeds the 100MB limit.');
+                        toastr.error('Book file size exceeds the 40MB limit.');
                         isValid = false;
                     }
                     else if (bookFileUploadStatus) {
@@ -664,8 +645,8 @@
                         if (window.toastr) window.toastr.success('Book updated successfully!');
                         // Re-capture initial state after successful save
                         captureInitialFormState();
-                        
-                         // If new cover different from original, delete the new one
+
+                        // If new cover different from original, delete the new one
                         if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
                             console.log(uploadedCoverUrl)
                             console.log(originalCoverImageUrl)
@@ -675,7 +656,7 @@
                         // If new book file different from original, delete the new one
                         if (uploadedBookUrl && uploadedBookUrl !== originalBookFileUrl) {
                             await deleteFileFromFirebase(originalBookFileUrl);
-                            bookFileUrlInput.value = uploadedBookUrl; 
+                            bookFileUrlInput.value = uploadedBookUrl;
                         }
 
                         setTimeout(() => {
@@ -684,7 +665,7 @@
                     } else {
                         const errorData = await response.json();
                         const errorMessage = JSON.stringify(errorData.errors || errorData.message || "An unknown error occurred on the server.");
-                        if (window.toastr) window.toastr.error(`Server error: ${errorMessage}`);
+                        if (window.toastr) window.toastr.error(errorMessage);
 
                         // If new cover different from original, delete the new one
                         if (uploadedCoverUrl && uploadedCoverUrl !== originalCoverImageUrl) {
@@ -694,7 +675,7 @@
                         // If new book file different from original, delete the new one
                         if (uploadedBookUrl && uploadedBookUrl !== originalBookFileUrl) {
                             await deleteFileFromFirebase(uploadedBookUrl);
-                            bookFileUrlInput.value = originalBookFileUrl; 
+                            bookFileUrlInput.value = originalBookFileUrl;
                         }
                     }
                 } catch (error) {

@@ -45,7 +45,7 @@ namespace ASI.Basecode.Services.Services
 
                 if (isBookNameAndAuthorExist)
                 {
-                    throw new ApplicationException("Book Title and/or Author Exist.");
+                    throw new ApplicationException("Book Title and Author Exist.");
                 }
             }
             catch(ApplicationException ex)
@@ -362,7 +362,7 @@ namespace ASI.Basecode.Services.Services
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Failed to retrieve language genres.", ex);
+                throw new ApplicationException("Failed to retrieve language.", ex);
             }
         }
 

@@ -1,20 +1,15 @@
-﻿using ASI.Basecode.Data.Interfaces;
-using ASI.Basecode.Data.Models;
+﻿using ASI.Basecode.Data.Models;
 using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
-using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.AccessControl;
 using ASI.Basecode.WebApp.Payload.BookGenrePayload;
-using ASI.Basecode.WebApp.Payload.BooksPayload;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace ASI.Basecode.WebApp.Controllers
@@ -25,7 +20,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IBookService BookService;
         private readonly IAccessControlInterface _accessControlInterface;
 
-        public BookGenreController(IBookGenreService book_genre_service,IBookService book_service, IAccessControlInterface accessControlInterface)
+        public BookGenreController(IBookGenreService book_genre_service, IBookService book_service, IAccessControlInterface accessControlInterface)
         {
             BookGenreService = book_genre_service;
             BookService = book_service;
@@ -53,7 +48,8 @@ namespace ASI.Basecode.WebApp.Controllers
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
 
-            if (ModelState.IsValid){
+            if (ModelState.IsValid)
+            {
                 try
                 {
                     await BookGenreService.AddGenre(book_genre);
@@ -83,13 +79,12 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpGet]
         [Route("BookGenre/ListGenre")]
         [Authorize]
-        public async Task<IActionResult> ListGenre(string? searchTerm, string? sortOrder, bool sortDescending = false, int? page = 1)
+        public async Task<IActionResult> ListGenre(string? searchTerm, string? sortOrder, int? pageSize, bool sortDescending = false, int? page = 1)
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
             try
             {
-                const int PageSize = 10;
                 int pageIndex = page.GetValueOrDefault(1);
 
                 var queryParams = new GenreQueryParams
@@ -98,11 +93,13 @@ namespace ASI.Basecode.WebApp.Controllers
                     SortOrder = sortOrder ?? "Name",
                     SortDescending = sortDescending,
                     PageIndex = pageIndex,
-                    PageSize = PageSize
+                    PageSize = pageSize ?? 10
                 };
                 ViewData["CurrentSearch"] = searchTerm;
                 ViewData["CurrentSort"] = queryParams.SortOrder;
                 ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+                ViewData["CurrentPageSize"] = pageSize;
+
                 PaginatedList<BookGenre> bookGenreList = await BookGenreService.GetGenreQueried(queryParams);
 
                 return View("~/Views/BookGenres/BookGenreList.cshtml", bookGenreList);
@@ -154,7 +151,7 @@ namespace ASI.Basecode.WebApp.Controllers
 
                 return View("~/Views/BookGenres/EditGenre.cshtml", retreived_genre);
             }
-            catch(ArgumentNullException ex)
+            catch (ArgumentNullException ex)
             {
                 return BadRequest(new { Message = ex.Message });
             }

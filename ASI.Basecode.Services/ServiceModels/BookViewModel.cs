@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ASI.Basecode.Services.ServiceModels
 {
@@ -12,11 +9,11 @@ namespace ASI.Basecode.Services.ServiceModels
         [StringLength(500)]
         public string BookId { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        [Required(ErrorMessage = "Book title is required")]
+        [StringLength(200)]
         public string Title { get; set; }
 
-        [StringLength(100)]
+        [StringLength(500)]
         public string? Subtitle { get; set; }
         public string? GenreList { get; set; }
 
@@ -27,23 +24,26 @@ namespace ASI.Basecode.Services.ServiceModels
         public DateTime? UpdatedDate { get; set; }
 
         [DataType(DataType.Date)]
+        [Required(ErrorMessage = "Publication date is required")]
         public DateTime? PublicationDate { get; set; }
 
-        [StringLength(100)]
+        [StringLength(300)]
         public string? Publisher { get; set; }
 
-        [StringLength(100)]
+        [StringLength(300)]
         public string? PublicationLocation { get; set; }
 
-        [StringLength(10000)]
+        [StringLength(500)]
         public string? Description { get; set; }
 
+        [Range(0, 10000, ErrorMessage = "Number Pages must be between 1-10000")]
         public int? NumberOfPages { get; set; }
 
         [StringLength(500)]
         public string? Language { get; set; }
 
         [StringLength(1000)]
+        [Required]
         public string? CoverImageUrl { get; set; }
 
         [StringLength(1000)]
@@ -51,7 +51,7 @@ namespace ASI.Basecode.Services.ServiceModels
 
         [StringLength(100)]
         public string? SeriesName { get; set; }
-
+        [Range(0, 50, ErrorMessage="Series order must be between 1-50")]
         public int? SeriesOrder { get; set; }
 
         [StringLength(500)]
@@ -59,7 +59,7 @@ namespace ASI.Basecode.Services.ServiceModels
 
         public float? AverageRating { get; set; }
 
-        [StringLength(100)]
+        [StringLength(450)]
         public string? Author { get; set; }
 
         public int? Likes { get; set; }

@@ -1,23 +1,20 @@
 ﻿using ASI.Basecode.Data.Interfaces;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 using Basecode.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Runtime.Intrinsics.X86;
-using System.Security.Policy;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ASI.Basecode.Data.Repositories
 {
-    public class BookRepository:BaseRepository, IBookRepository
+    public class BookRepository : BaseRepository, IBookRepository
     {
         private readonly AsiBasecodeDBContext _dbContext;
 
-        public BookRepository(IUnitOfWork unitOfWork, AsiBasecodeDBContext dbContext ): base(unitOfWork)
+        public BookRepository(IUnitOfWork unitOfWork, AsiBasecodeDBContext dbContext) : base(unitOfWork)
         {
             _dbContext = dbContext;
         }
@@ -45,7 +42,7 @@ namespace ASI.Basecode.Data.Repositories
                 var term = queryParams.SearchTerm.Trim();
                 var authorTerm = queryParams.SearchAuhtor?.Trim() ?? "";
                 query = query.Where(b =>
-                (b.Title != null && b.Title.Contains(term)  || (b.Author != null && authorTerm.Trim().Contains(b.Author))));
+                (b.Title != null && b.Title.Contains(term) || (b.Author != null && authorTerm.Trim().Contains(b.Author))));
 
             }
 
@@ -72,11 +69,11 @@ namespace ASI.Basecode.Data.Repositories
             }
             if (!string.IsNullOrEmpty(queryParams.Language))
             {
-                query=query.Where(b=>b.Language == queryParams.Language);
+                query = query.Where(b => b.Language == queryParams.Language);
             }
 
 
-                if (!string.IsNullOrEmpty(queryParams.SortOrder))
+            if (!string.IsNullOrEmpty(queryParams.SortOrder))
             {
                 bool desc = queryParams.SortDescending;
                 switch (queryParams.SortOrder.Trim().ToLower())
@@ -99,8 +96,8 @@ namespace ASI.Basecode.Data.Repositories
                             : query.OrderBy(b => b.AverageRating);
                         break;
                     case "uploaddate":
-                        query = desc 
-                            ? query.OrderByDescending(b => b.UploadDate) 
+                        query = desc
+                            ? query.OrderByDescending(b => b.UploadDate)
                             : query.OrderBy(b => b.UploadDate);
                         break;
 
@@ -111,7 +108,7 @@ namespace ASI.Basecode.Data.Repositories
                         break;
                     case "reviewcount":
                         query = desc
-                            ? query.OrderByDescending(b=> b.ReviewCount)
+                            ? query.OrderByDescending(b => b.ReviewCount)
                             : query.OrderBy(b => b.ReviewCount);
                         break;
                     default:
@@ -119,7 +116,7 @@ namespace ASI.Basecode.Data.Repositories
                         break;
                 }
             }
-            
+
             return await GetPaged(query, queryParams.PageIndex, queryParams.PageSize);
         }
 
@@ -135,13 +132,13 @@ namespace ASI.Basecode.Data.Repositories
 
             try
             {
-                
+
 
                 bool isBookNameAndAuthorExist = await CheckBookNameAndAuthorExist(book.Author.Trim(), book.Title.Trim().ToLower());
 
                 if (isBookNameAndAuthorExist && (book.Author.Trim() != existingBook.Author.Trim() || book.Title.Trim().ToLower() != existingBook.Title.Trim().ToLower()))
                 {
-                    throw new ApplicationException("Book Title and/or Author Exist.");
+                    throw new ApplicationException("Book Title and Author Exist.");
                 }
 
                 //Transfer to Service
@@ -169,7 +166,7 @@ namespace ASI.Basecode.Data.Repositories
 
                 await _dbContext.SaveChangesAsync();
             }
-            catch (ApplicationException ex)
+            catch (ApplicationException)
             {
                 throw;
             }
@@ -179,7 +176,7 @@ namespace ASI.Basecode.Data.Repositories
             }
 
 
-           
+
         }
         public async Task DeleteBook(string bookId)
         {
@@ -187,7 +184,7 @@ namespace ASI.Basecode.Data.Repositories
 
             _dbContext.Books.Remove(existingBook);
             await _dbContext.SaveChangesAsync();
-            
+
         }
 
         public async Task<List<BookGenre>> GetAllGenres()
@@ -196,7 +193,7 @@ namespace ASI.Basecode.Data.Repositories
             {
                 return await _dbContext.BookGenres.ToListAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -208,7 +205,7 @@ namespace ASI.Basecode.Data.Repositories
             {
                 return await _dbContext.Languages.ToListAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -249,7 +246,7 @@ namespace ASI.Basecode.Data.Repositories
             {
                 return await _dbContext.Books.ToListAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -261,13 +258,13 @@ namespace ASI.Basecode.Data.Repositories
             {
                 return await _dbContext.Authors.ToListAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
         }
 
-        public async Task<bool> CheckBookNameAndAuthorExist(string author,string bookName)
+        public async Task<bool> CheckBookNameAndAuthorExist(string author, string bookName)
         {
             // Use AsNoTracking for read-only queries
             return await _dbContext.Books.AsNoTracking().AnyAsync(b => b.Author != null && b.Title != null && b.Author.ToLower() == author && b.Title.ToLower() == bookName);

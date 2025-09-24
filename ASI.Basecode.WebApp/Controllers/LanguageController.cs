@@ -2,17 +2,13 @@
 using ASI.Basecode.Data.QueryParams;
 using ASI.Basecode.Services.Interfaces;
 using ASI.Basecode.Services.ServiceModels;
-using ASI.Basecode.Services.Services;
 using ASI.Basecode.WebApp.AccessControl;
-using ASI.Basecode.WebApp.Payload.BooksPayload;
 using ASI.Basecode.WebApp.Payload.LanguagePayload;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ASI.Basecode.WebApp.Controllers
@@ -24,7 +20,7 @@ namespace ASI.Basecode.WebApp.Controllers
         private readonly IAccessControlInterface _accessControlInterface;
         private readonly IBookGenreService _bookGenreService;
 
-        public LanguageController(ILanguageService languageService,IAccessControlInterface accessControlInterface, IBookGenreService bookGenreService)
+        public LanguageController(ILanguageService languageService, IAccessControlInterface accessControlInterface, IBookGenreService bookGenreService)
         {
             _languageService = languageService;
             _accessControlInterface = accessControlInterface;
@@ -35,14 +31,13 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpGet]
         [Route("Language/Index")]
         [Authorize]
-        public async Task<IActionResult> Index(string? searchTerm, string? sortOrder, bool sortDescending = false, int? page = 1)
+        public async Task<IActionResult> Index(string? searchTerm, string? sortOrder, int? pageSize, bool sortDescending = false, int? page = 1)
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
 
             try
             {
-                const int PageSize = 10;
                 int pageIndex = page.GetValueOrDefault(1);
 
                 var queryParams = new LanguageQueryParams
@@ -51,21 +46,23 @@ namespace ASI.Basecode.WebApp.Controllers
                     SortOrder = sortOrder ?? "Name",
                     SortDescending = sortDescending,
                     PageIndex = pageIndex,
-                    PageSize = PageSize
+                    PageSize = pageSize ?? 10
                 };
                 ViewData["CurrentSearch"] = searchTerm;
                 ViewData["CurrentSort"] = queryParams.SortOrder;
                 ViewData["CurrentSortDescending"] = queryParams.SortDescending;
+                ViewData["CurrentPageSize"] = pageSize;
+
                 PaginatedList<Language> languageList = await _languageService.GetLanguageQueried(queryParams);
 
                 return View("~/Views/Language/Index.cshtml", languageList);
             }
-            catch (ApplicationException ex)
+            catch (ApplicationException)
             {
 
                 return View("~/Views/Language/Index.cshtml", new List<LanguageViewModel>());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return View("~/Views/Language/Index.cshtml", new List<LanguageViewModel>());
 
@@ -103,7 +100,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpPost]
         [Route("Language/AddLanguage")]
         [Authorize]
-        public async Task<IActionResult> AddLanguage([FromBody]LanguageViewModel language)
+        public async Task<IActionResult> AddLanguage([FromBody] LanguageViewModel language)
         {
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
             if (!checkAdminAccess) return RedirectToAction("Index", "Home");
@@ -159,7 +156,7 @@ namespace ASI.Basecode.WebApp.Controllers
                 TempData["showToastrAfterTableLoads"] = true;
 
                 return RedirectToAction(nameof(Index));
-               // return Ok(new { Message = "Language Deleted successfully!" });
+                // return Ok(new { Message = "Language Deleted successfully!" });
             }
             catch (ApplicationException ex)
             {
@@ -175,7 +172,7 @@ namespace ASI.Basecode.WebApp.Controllers
         [HttpPost]
         [Route("Language/Edit")]
         [Authorize]
-        public async Task<IActionResult> EditGenre([FromBody]LanguageViewModel language)
+        public async Task<IActionResult> EditGenre([FromBody] LanguageViewModel language)
         {
 
             bool checkAdminAccess = await _accessControlInterface.CheckAdminAccess();
@@ -190,7 +187,7 @@ namespace ASI.Basecode.WebApp.Controllers
                     TempData["showToastrAfterTableLoads"] = true;
 
                     return RedirectToAction(nameof(Index));
-                   // return Ok(new { Message = "Language Successfully edited" });
+                    // return Ok(new { Message = "Language Successfully edited" });
 
                 }
                 catch (ArgumentException ex)

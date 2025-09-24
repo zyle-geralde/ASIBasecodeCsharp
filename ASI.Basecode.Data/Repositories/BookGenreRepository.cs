@@ -97,7 +97,7 @@ namespace ASI.Basecode.Data.Repositories
         {
             try
             {
-                // 
+                 
                 return await DbContext.Books.ToListAsync();
             }
             catch(Exception ex)

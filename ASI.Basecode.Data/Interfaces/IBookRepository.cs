@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ASI.Basecode.Data.Models;
+using ASI.Basecode.Data.QueryParams;
 
 namespace ASI.Basecode.Data.Interfaces
 {

@@ -9,12 +9,15 @@
     var currentSearch = (string?)ViewData["CurrentSearch"];
     var currentSort = (string?)ViewData["CurrentSort"];
     var currentSortDescending = (bool)(ViewData["CurrentSortDescending"] ?? false);
+	var currentPageSize = (int)(ViewData["CurrentPageSize"] ?? 10);
 
     var routeValues = new Dictionary<string, string>
             {
                 ["searchTerm"] = currentSearch,
                 ["sortOrder"] = currentSort,
-                ["sortDescending"] = currentSortDescending.ToString().ToLowerInvariant()
+                ["sortDescending"] = currentSortDescending.ToString().ToLowerInvariant(),
+		["pageSize"] = currentPageSize.ToString(),
+
             };
 
     ViewData["CurrentPage"] = Model.PageIndex;
@@ -103,6 +106,8 @@
                                              <a asp-action="Index" class="btn btn-outline-secondary">Clear All</a>
 
                     </div>
+					<input type="hidden" id="pageSizeField" name="pageSize" value="@currentPageSize" />
+
                     <input type="hidden" id="sortOrderField" name="sortOrder" value="@currentSort" />
                     <input type="hidden" id="sortDescendingField" name="sortDescending" value="@(currentSortDescending.ToString().ToLowerInvariant())" />
                 </form>
@@ -139,8 +144,16 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="d-flex justify-content-end">
+					<div class="filter-section">
+						<label class="form-label fw-bold">Items per page</label>
+						<select name="pageSize" class="form-select" id="filterPageSize">
+							<option value="10" selected="@(currentPageSize == 10 ? "selected" : null)">10</option>
+							<option value="20" selected="@(currentPageSize == 20 ? "selected" : null)">20</option>
+							<option value="50" selected="@(currentPageSize == 50 ? "selected" : null)">50</option>
+							<option value="100" selected="@(currentPageSize == 100 ? "selected" : null)">100</option>
+						</select>
+					</div>
+                    <div class="d-flex justify-content-end" style = "margin-top:20px;">
                         <button type="button" class="btn btn-outline-secondary" style="margin-right: 10px" id="closeSortButton">Cancel</button>
                         <button type="button" class="btn btn-secondary me-2" id="applySortButton">Apply</button>
                     </div>
@@ -181,7 +194,7 @@
                                 {
                                     <tr>
                                         <td class="align-middle" style="padding-left: 10px">@language.LanguageName</td>
-											<td class="align-middle">@language.UploadDate?.ToString("yyyy-MM-dd")
+											<td class="align-middle">@language.UploadDate?.ToString("dd MMMM yyyy")
 
 										<td >
                                             <a asp-controller="Book"
@@ -207,12 +220,12 @@
                                                     <button type="button" class="action-icon-button text-primary edit-language-btn"
                                                             data-bs-toggle="modal" data-bs-target="#editLanguageModal"
                                                             data-id="@language.LanguageId" data-name="@language.LanguageName" id="edit_language_button">
-                                                        <i class="fas fa-edit"></i>
+                                                        <i class="fas fa-edit" style="color: #447D9B"></i>
                                                     </button>
                                                 <button type="button" class="action-icon-button text-danger delete-language-btn"
                                                         data-bs-toggle="modal" data-bs-target="#deleteLanguageModal"
                                                         data-id="@language.LanguageId" data-name="@language.LanguageName" id="delete_language_button">
-                                                    <i class="fas fa-trash"></i>
+                                                        <i class="fas fa-trash" style="color: #B22222"></i>
                                                 </button>
                                                 
                                             </div>
@@ -529,15 +542,15 @@
 
             // Apply button
             applySortButton.addEventListener('click', function () {
-                // Get selected values
                 const sortOrderValue = document.querySelector('input[name="popupSortOrder"]:checked').value;
                 const sortDirectionValue = document.querySelector('input[name="popupSortDirection"]:checked').value;
+											  const pageSizeValue  = document.getElementById('filterPageSize').value;
 
                 // Update hidden form fields
                 document.getElementById('sortOrderField').value = sortOrderValue;
                 document.getElementById('sortDescendingField').value = sortDirectionValue;
+														  document.getElementById('pageSizeField').value = pageSizeValue;
 
-                // Find the main form and submit it
                 document.querySelector('#searchFilterForm').submit();
             });
         });
